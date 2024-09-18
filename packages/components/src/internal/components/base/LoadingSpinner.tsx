@@ -18,6 +18,7 @@ import React from 'react';
 interface SpinnerProps {
     msg?: React.ReactNode;
     wrapperClassName?: string;
+    nums?: number[];
 }
 
 export class LoadingSpinner extends React.PureComponent<SpinnerProps, any> {
@@ -27,7 +28,9 @@ export class LoadingSpinner extends React.PureComponent<SpinnerProps, any> {
     };
 
     render() {
-        const { msg, wrapperClassName } = this.props;
+        const { msg, wrapperClassName, nums } = this.props;
+
+        console.log(nums?.at(-1));
 
         return (
             <span className={wrapperClassName}>
