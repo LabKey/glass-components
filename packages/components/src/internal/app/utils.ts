@@ -22,7 +22,6 @@ import { AppProperties } from './models';
 import {
     ASSAYS_KEY,
     BIOLOGICS_APP_PROPERTIES,
-    EXPERIMENTAL_APP_PLATE_SUPPORT,
     EXPERIMENTAL_PRODUCT_ALL_FOLDER_LOOKUPS,
     EXPERIMENTAL_PRODUCT_FOLDER_DATA_LISTING_SCOPED,
     EXPERIMENTAL_REQUESTS_MENU,
@@ -354,10 +353,7 @@ export function isNonstandardAssayEnabled(moduleContext?: ModuleContext): boolea
 }
 
 export function isPlatesEnabled(moduleContext?: ModuleContext): boolean {
-    return (
-        biologicsIsPrimaryApp(moduleContext) &&
-        resolveModuleContext(moduleContext)?.biologics?.[EXPERIMENTAL_APP_PLATE_SUPPORT] === true
-    );
+    return biologicsIsPrimaryApp(moduleContext);
 }
 
 export function isChartBuilderEnabled(moduleContext?: ModuleContext): boolean {
