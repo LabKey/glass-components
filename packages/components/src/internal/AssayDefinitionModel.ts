@@ -1,8 +1,8 @@
-import { fromJS, List, Map, OrderedMap, Record as ImmutableRecord } from 'immutable';
+import { fromJS, List, Map, Record as ImmutableRecord } from 'immutable';
 import { Filter } from '@labkey/api';
 
+import { ExtendedMap } from '../public/ExtendedMap';
 import { QueryColumn } from '../public/QueryColumn';
-
 import { SchemaQuery } from '../public/SchemaQuery';
 
 import { AssayUploadTabs } from './constants';
@@ -10,7 +10,7 @@ import { AssayUploadTabs } from './constants';
 import { AppURL, createProductUrlFromParts } from './url/AppURL';
 
 import { SCHEMAS } from './schemas';
-import { WHERE_FILTER_TYPE } from './url/WhereFilterType';
+import { ASSAYS_KEY } from './app/constants';
 
 export enum AssayDomainTypes {
     BATCH = 'Batch',
@@ -66,6 +66,18 @@ export class AssayDefinitionModel extends ImmutableRecord({
     declare reRunSupport: string;
     declare templateLink: string;
     declare type: string;
+
+    get batchesSchemaQuery(): SchemaQuery {
+        return new SchemaQuery(this.protocolSchemaName, 'Batches');
+    }
+
+    get resultsSchemaQuery(): SchemaQuery {
+        return new SchemaQuery(this.protocolSchemaName, 'Data');
+    }
+
+    get runsSchemaQuery(): SchemaQuery {
+        return new SchemaQuery(this.protocolSchemaName, 'Runs');
+    }
 
     static create(rawModel): AssayDefinitionModel {
         let domains = Map<string, List<QueryColumn>>();
@@ -136,7 +148,7 @@ export class AssayDefinitionModel extends ImmutableRecord({
                 targetProductId,
                 currentProductId,
                 params,
-                'assays',
+                ASSAYS_KEY,
                 this.type,
                 this.name,
                 'upload'
@@ -150,8 +162,12 @@ export class AssayDefinitionModel extends ImmutableRecord({
         return url;
     }
 
-    getRunsUrl() {
-        return AppURL.create('assays', this.type, this.name, 'runs');
+    getAppImportUrl(): AppURL {
+        return AppURL.create(ASSAYS_KEY, this.type, this.name, 'upload');
+    }
+
+    getRunsUrl(): AppURL {
+        return AppURL.create(ASSAYS_KEY, this.type, this.name, 'runs');
     }
 
     hasLookup(targetSQ: SchemaQuery, isPicklist?: boolean): boolean {
@@ -193,47 +209,27 @@ export class AssayDefinitionModel extends ImmutableRecord({
         return false;
     }
 
-    private getSampleColumnsByDomain(domainType: AssayDomainTypes): ScopedSampleColumn[] {
-        const ret = [];
-        const columns = this.getDomainByType(domainType);
-
-        if (columns) {
-            columns.forEach(column => {
-                if (column.isSampleLookup()) {
-                    ret.push({ column, domain: domainType });
-                }
-            });
-        }
-
-        return ret;
-    }
-
     /**
      * get all sample lookup columns found in the result, run, and batch domains, or from a specific domainType
      */
-    getSampleColumns(domainType?: AssayDomainTypes): List<ScopedSampleColumn> {
-        let ret = [];
+    getSampleColumns(domainType?: AssayDomainTypes): ScopedSampleColumn[] {
+        const columns: ScopedSampleColumn[] = [];
         // The order matters here, we care about result, run, and batch in that order.
         const domainTypes = domainType
             ? [domainType]
             : [AssayDomainTypes.RESULT, AssayDomainTypes.RUN, AssayDomainTypes.BATCH];
         for (const domain of domainTypes) {
-            const columns = this.getSampleColumnsByDomain(domain);
-
-            if (columns && columns.length > 0) {
-                ret = ret.concat(columns);
-            }
+            columns.push(...this.getSampleColumnsByDomain(domain));
         }
 
-        return List(ret);
+        return columns;
     }
 
     /**
      * get the first sample lookup column found in the result, run, or batch domain.
      */
     getSampleColumn(domainType?: AssayDomainTypes): ScopedSampleColumn {
-        const sampleColumns = this.getSampleColumns(domainType);
-        return !sampleColumns.isEmpty() ? sampleColumns.first() : null;
+        return this.getSampleColumns(domainType)[0];
     }
 
     /**
@@ -253,54 +249,35 @@ export class AssayDefinitionModel extends ImmutableRecord({
     /**
      * returns the FieldKey string of the sample columns relative from the assay Results table.
      */
-    getSampleColumnFieldKeys(): List<string> {
-        const sampleCols = this.getSampleColumns();
-        return List(sampleCols.map(this.sampleColumnFieldKey));
+    getSampleColumnFieldKeys(domainType?: AssayDomainTypes): string[] {
+        return this.getSampleColumns(domainType).map(this.sampleColumnFieldKey);
     }
 
-    createSampleFilter(sampleColumns: List<string>, value: Array<string | number>, singleFilter: Filter.IFilterType) {
-        const keyCol = '/RowId';
-        if (sampleColumns.size === 1) {
-            // generate simple equals filter
-            const sampleColumn = sampleColumns.get(0);
-            return Filter.create(sampleColumn + keyCol, value, singleFilter);
-        } else if (sampleColumns.size > 1) {
-            // generate a where clause filter to include all sample columns via a UNION (issue 47346)
-            const whereClause =
-                'RowId IN (' +
-                sampleColumns
-                    .map(sampleCol => {
-                        const fieldKey = (sampleCol + keyCol)
-                            .split('/')
-                            .map(token => '"' + token + '"')
-                            .join('.');
-                        return `SELECT RowId FROM Data WHERE ${fieldKey} IN (${value.join(',')})`;
-                    })
-                    .join(' UNION ') +
-                ')';
-            return Filter.create('*', whereClause, WHERE_FILTER_TYPE);
-        }
-    }
-
-    getDomainColumns(type: AssayDomainTypes): OrderedMap<string, QueryColumn> {
-        const columns = OrderedMap<string, QueryColumn>().asMutable();
+    getDomainColumns(type: AssayDomainTypes): ExtendedMap<string, QueryColumn> {
+        const columns = new ExtendedMap<string, QueryColumn>();
 
         if (this.domains && this.domains.size) {
-            const domainColumns = this.getDomainByType(type);
-
-            if (domainColumns && domainColumns.size) {
-                domainColumns.forEach(dc => {
-                    columns.set(dc.fieldKey.toLowerCase(), dc);
-                });
-            }
+            this.getDomainByType(type)?.forEach(dc => {
+                columns.set(dc.fieldKey.toLowerCase(), dc);
+            });
         }
 
-        return columns.asImmutable();
+        return columns;
     }
 
     getDomainFileColumns(type: AssayDomainTypes): QueryColumn[] {
-        return this.getDomainColumns(type)
-            .filter(col => col.isFileInput)
-            .toArray();
+        return this.getDomainColumns(type).filter(col => col.isFileInput).valueArray;
+    }
+
+    private getSampleColumnsByDomain(domainType: AssayDomainTypes): ScopedSampleColumn[] {
+        const columns: ScopedSampleColumn[] = [];
+
+        this.getDomainByType(domainType)?.forEach(column => {
+            if (column.isSampleLookup()) {
+                columns.push({ column, domain: domainType });
+            }
+        });
+
+        return columns;
     }
 }
