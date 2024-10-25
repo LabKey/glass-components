@@ -1422,23 +1422,25 @@ export function getSampleIdentifyingFieldGridData(
 export function updateCellValuesForSampleIds(
     editorModelChanges: Partial<EditorModel>,
     cellKeyMap: Record<string, number>,
-    sampleQueryModel?: QueryModel
+    samplesQueryInfo?: QueryInfo
 ): Promise<{
     cellKeyChanges: { toAddOrUpdate: { [key: string]: number }; toRemove: string[] };
     editorModelChanges: Partial<EditorModel>;
 }> {
     return new Promise((resolve, reject) => {
+        const identifyingFieldKeys = getIdentifyingFieldKeys(samplesQueryInfo);
         const cellKeyChanges = {
             toRemove: [],
             toAddOrUpdate: {},
         };
-        if (editorModelChanges?.cellValues) {
+
+        // only need to update cell values if we have identifyingFieldKeys for the given sample type
+        if (identifyingFieldKeys.length > 0 && editorModelChanges?.cellValues) {
             // map from wellLabel to sampleId
             const samplesToRetrieve = [];
             const sampleIdToRowInd = {};
             const dataRemovedIndexes = [];
             const cellValues = editorModelChanges.cellValues;
-            const identifyingFieldKeys = getIdentifyingFieldKeys(sampleQueryModel?.queryInfo);
             cellValues
                 .keySeq()
                 .filter(key => parseCellKey(key).fieldKey === 'sampleid')
@@ -1480,7 +1482,7 @@ export function updateCellValuesForSampleIds(
             }
             if (samplesToRetrieve.length > 0) {
                 let updates = Map<string, List<any>>();
-                getSampleIdentifyingFieldGridData(samplesToRetrieve, sampleQueryModel?.queryInfo)
+                getSampleIdentifyingFieldGridData(samplesToRetrieve, samplesQueryInfo)
                     .then(newSamplesData => {
                         Object.values(newSamplesData).forEach(data => {
                             sampleIdToRowInd[data.rowId].forEach(rowInd => {
