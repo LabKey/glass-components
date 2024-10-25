@@ -204,7 +204,7 @@ import {
     setSelected,
     setSnapshotSelections,
 } from './internal/actions';
-import { cancelEvent } from './internal/events';
+import { cancelEvent, isCtrlOrMetaKey } from './internal/events';
 import { createGridModelId } from './internal/models';
 import { initQueryGridState } from './internal/global';
 import {
@@ -1163,6 +1163,7 @@ export {
     EditableGridEvent,
     updateGridFromBulkForm,
     cancelEvent,
+    isCtrlOrMetaKey,
     // url and location related items
     AppURL,
     ActionMapper,
