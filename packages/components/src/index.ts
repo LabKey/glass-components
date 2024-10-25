@@ -539,6 +539,7 @@ import {
     sampleDeleteDependencyText,
     getSampleIdCellKey,
     SAMPLE_ID_FIELD_KEY,
+    updateCellKeySampleIdMap,
 } from './internal/components/entities/utils';
 import {
     ALIQUOT_CREATION,
@@ -1409,6 +1410,7 @@ export {
     getSampleIdCellKey,
     updateCellValuesForSampleIds,
     getSampleIdentifyingFieldGridData,
+    updateCellKeySampleIdMap,
     // metric related items
     UnitModel,
     MEASUREMENT_UNITS,

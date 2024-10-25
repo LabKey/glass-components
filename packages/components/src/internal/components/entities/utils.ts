@@ -176,3 +176,15 @@ export const SAMPLE_ID_FIELD_KEY = 'sampleid';
 export function getSampleIdCellKey(rowIdx: number): string {
     return genCellKey(SAMPLE_ID_FIELD_KEY, rowIdx);
 }
+
+export function updateCellKeySampleIdMap(
+    initialMap: Record<string, number>,
+    cellKeyChanges: { toAddOrUpdate: { [key: string]: number }; toRemove: string[] }
+): Record<string, number> {
+    const updatedCellKeyMap = { ...initialMap };
+    cellKeyChanges.toRemove.forEach(key => {
+        delete updatedCellKeyMap[key];
+    });
+    Object.assign(updatedCellKeyMap, cellKeyChanges.toAddOrUpdate);
+    return updatedCellKeyMap;
+}

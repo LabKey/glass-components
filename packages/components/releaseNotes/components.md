@@ -5,6 +5,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD October 2024
 - Add identifying fields to grids when insert assay data via EditableGrid
   - migrate some sample identifying fields utils from @labkey/premium
+  - factor out updateCellKeySampleIdMap() as utility function
   - add QueryColumn.isSingleSampleTypeLookup()
 
 ### version 5.17.3
