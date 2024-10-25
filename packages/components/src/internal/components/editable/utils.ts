@@ -105,8 +105,11 @@ export function onCellSelectChange(
 
 const CELL_KEY_SEPARATOR = '&&';
 
+export function genCellKeyPrefix(fieldKey: string): string {
+    return fieldKey.toLowerCase() + CELL_KEY_SEPARATOR;
+}
 export function genCellKey(fieldKey: string, rowIdx: number): string {
-    return [fieldKey.toLowerCase(), rowIdx].join(CELL_KEY_SEPARATOR);
+    return genCellKeyPrefix(fieldKey) + rowIdx;
 }
 
 interface CellKeyParts {

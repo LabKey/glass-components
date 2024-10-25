@@ -28,10 +28,15 @@ import { QueryModel } from '../../../public/QueryModel/QueryModel';
 import { getQueryColumnRenderers } from '../../global';
 import { caseInsensitive, isQuotedWithDelimiters, quoteValueWithDelimiters } from '../../util/utils';
 
-import { hasProductFolders } from '../../app/utils';
-
 import { CellCoordinates, EditableGridEvent } from './constants';
-import { genCellKey, getValidatedEditableGridValue, isSparseSelection, parseCellKey, sortCellKeys } from './utils';
+import {
+    genCellKey,
+    genCellKeyPrefix,
+    getValidatedEditableGridValue,
+    isSparseSelection,
+    parseCellKey,
+    sortCellKeys,
+} from './utils';
 
 export interface EditableColumnMetadata {
     align?: string;
@@ -526,6 +531,14 @@ export class EditorModel
 
     getValue(fieldKey: string, rowIdx: number): List<ValueDescriptor> {
         return this.getValueForCellKey(genCellKey(fieldKey, rowIdx));
+    }
+
+    getValuesForColumn(col: QueryColumn): Map<string, List<ValueDescriptor>> {
+        return this.cellValues
+            .filter((valueList, cellKey) => {
+                return cellKey.startsWith(genCellKeyPrefix(col.fieldKey));
+            })
+            .toMap();
     }
 
     getValueForCellKey(cellKey: string): List<ValueDescriptor> {

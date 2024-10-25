@@ -7,6 +7,7 @@ Components, models, actions, and utility functions for LabKey applications and p
   - migrate some sample identifying fields utils from @labkey/premium
   - factor out updateCellKeySampleIdMap() as utility function
   - add QueryColumn.isSingleSampleTypeLookup()
+  - EditorModel.getValuesForColumn() to get cellValues for a single column
 
 ### version 5.17.3
 *Released*: 23 October 2024
