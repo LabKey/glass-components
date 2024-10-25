@@ -1,5 +1,6 @@
 import React, { PureComponent, ReactNode } from 'react';
 import { Network } from 'vis-network';
+
 import { DropdownButton, MenuItem } from '../../../dropdowns';
 
 const PAN_INCREMENT = 20;
