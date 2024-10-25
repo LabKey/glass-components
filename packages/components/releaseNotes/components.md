@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.17.4
+*Released*: 25 October 2024
+- Add `SchemaQuery` properties on `AssayDefinitionModel`.
+- Refactor `AssayDefinitionModel` to use `ExtendedMap`.
+
 ### version 5.17.3
 *Released*: 23 October 2024
 - Issue 39332: Make sure export started messages shows before export starts in TabbedGridPanel exportTabs case
