@@ -31,7 +31,7 @@ export interface DataTypeSelectorProps {
     entityDataType?: EntityDataType;
     hiddenEntities?: any[]; // number[] | string[]
     inactiveSectionLabel?: string;
-    isNewFolder?: boolean;
+    isNewEntity?: boolean;
     noHeader?: boolean;
     showUncheckedWarning?: boolean;
     toggleSelectAll?: boolean;
@@ -184,7 +184,7 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
         updateUncheckedTypes,
         columns,
         noHeader,
-        isNewFolder,
+        isNewEntity,
         container,
         showUncheckedWarning = true,
         dataTypePrefix = '',
@@ -192,6 +192,9 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
     } = props;
 
     const [dataTypes, setDataTypes] = useState<DataTypeEntity[]>();
+    const [activeDataTypes, setActiveDataTypes] = useState<DataTypeEntity[]>([]);
+    const [inactiveDataTypes, setInactiveDataTypes] = useState<DataTypeEntity[]>([]);
+
     const [dataType, setDataType] = useState<FolderConfigurableDataType>();
     const [error, setError] = useState<string>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -223,6 +226,37 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
         }
     }, [hiddenEntities /* only called on changes to hiddenEntities */]);
 
+    useEffect(() => {
+        if (loading || !dataTypes || dataTypes?.length === 0)
+            return;
+
+        const activeDataTypes_: DataTypeEntity[] = [],
+            inactiveDataTypes_: DataTypeEntity[] = [], inactiveDataTypeLsids = [];
+        if (isNewEntity) {
+            dataTypes?.forEach(dataType => {
+                if (dataType.inactive) {
+                    inactiveDataTypes_.push(dataType);
+                    inactiveDataTypeLsids.push(dataType.lsid);
+                }
+                else activeDataTypes_.push(dataType);
+            });
+            if (inactiveDataTypeLsids?.length > 0) {
+                updateUncheckedTypes(dataType, inactiveDataTypeLsids);
+                setUncheckedEntities(inactiveDataTypeLsids);
+            }
+        }
+        else {
+            dataTypes?.forEach(dataType => {
+                if (dataType.inactive) inactiveDataTypes_.push(dataType);
+                else activeDataTypes_.push(dataType);
+            });
+        }
+
+        setActiveDataTypes(activeDataTypes_);
+        setInactiveDataTypes(inactiveDataTypes_);
+
+    }, [loading, dataTypes, isNewEntity]);
+
     useEffect(
         () => {
             if (allDataCounts) setDataCounts(allDataCounts);
@@ -243,29 +277,32 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
     const ensureCount = useCallback(async () => {
         if (dataCounts) return;
 
-        const results = await api.query.getFolderDataTypeDataCount(dataType, container?.path, dataTypes, isNewFolder);
+        const results = await api.query.getFolderDataTypeDataCount(dataType, container?.path, dataTypes, isNewEntity);
         setDataCounts(results);
-    }, [api.query, dataCounts, dataType, dataTypes, isNewFolder, container?.path]);
+    }, [api.query, dataCounts, dataType, dataTypes, isNewEntity, container?.path]);
 
     const onChange = useCallback(
         (entityId: number | string, toggle: boolean, check?: boolean) => {
             if (disabled) return;
             ensureCount();
-            const updated = [...uncheckedEntities];
-            let checked = check;
-            if (toggle) {
-                checked = uncheckedEntities?.indexOf(entityId) > -1;
-            }
 
-            if (checked) {
-                const ind = updated.indexOf(entityId);
-                updated.splice(ind, 1);
-            } else {
-                updated.push(entityId);
-            }
+            setUncheckedEntities((prevState) => {
+                const updated = [...prevState];
+                let checked = check;
+                if (toggle) {
+                    checked = uncheckedEntities?.indexOf(entityId) > -1;
+                }
 
-            updateUncheckedTypes(dataType, updated);
-            setUncheckedEntities(updated);
+                if (checked) {
+                    const ind = updated.indexOf(entityId);
+                    updated.splice(ind, 1);
+                } else {
+                    updated.push(entityId);
+                }
+
+                updateUncheckedTypes(dataType, updated);
+                return updated;
+            });
         },
         [disabled, ensureCount, uncheckedEntities, updateUncheckedTypes, dataType]
     );
@@ -300,17 +337,6 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
 
         return null;
     }, [dataTypeLabel, entityDataType]);
-
-    const { activeDataTypes, inactiveDataTypes } = useMemo(() => {
-        const activeDataTypes: DataTypeEntity[] = [],
-            inactiveDataTypes: DataTypeEntity[] = [];
-        if (loading) return { activeDataTypes, inactiveDataTypes };
-        dataTypes?.forEach(dataType => {
-            if (dataType.inactive) inactiveDataTypes.push(dataType);
-            else activeDataTypes.push(dataType);
-        });
-        return { activeDataTypes, inactiveDataTypes };
-    }, [loading, dataTypes]);
 
     const generateInactiveSectionHeader = useMemo(() => {
         return (
@@ -353,7 +379,7 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
                             showUncheckedWarning={showUncheckedWarning}
                         />
                     )}
-                    {!loading && activeDataTypes.length === 0 && (
+                    {!loading && activeDataTypes?.length === 0 && (
                         <div className="help-block margin-left-more">No {headerLabel.toLowerCase()}</div>
                     )}
                 </div>

@@ -193,7 +193,7 @@ export const QueryFilterPanel: FC<Props> = memo(props => {
         if (!filters || !filterQueryKey || !activeField) return null;
 
         // Issue 45135: include any model filters (baseFilters or queryInfo filters)
-        const valueFilters = selectDistinctOptions ? [...selectDistinctOptions.filterArray] : [];
+        const valueFilters = selectDistinctOptions?.filterArray ? [...selectDistinctOptions.filterArray] : [];
 
         // use active filters to filter distinct values, but exclude filters on current field
         filters?.[filterQueryKey]?.forEach(field => {

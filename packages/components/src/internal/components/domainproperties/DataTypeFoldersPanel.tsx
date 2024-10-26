@@ -72,13 +72,6 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                         } as DataTypeEntity;
                     });
 
-                    const activeContainers = [];
-                    const archivedContainers = [];
-                    allContainers_.forEach(container => {
-                        if (container.inactive) archivedContainers.push(container);
-                        else activeContainers.push(container);
-                    });
-
                     setChildFolders(allContainers_.slice(1));
                     setAllContainers(allContainers_);
 
@@ -186,6 +179,8 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                                 noHeader
                                 columns={2}
                                 inactiveSectionLabel="Archived Folders"
+                                isNewEntity={!dataTypeRowId}
+                                showUncheckedWarning={!!dataTypeRowId}
                             />
                         </div>
                     )}
@@ -201,6 +196,8 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                                     uncheckedEntitiesDB={excludedContainerIdsDB}
                                     dataTypeLabel="Include in Folders"
                                     inactiveSectionLabel="Archived Folders"
+                                    isNewEntity={!dataTypeRowId}
+                                    showUncheckedWarning={!!dataTypeRowId}
                                 />
                             </div>
                             <div className="col-xs-6 bottom-spacing">
@@ -214,6 +211,8 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                                     hiddenEntities={excludedContainerIds}
                                     dataTypeLabel={relatedDataTypeLabel}
                                     inactiveSectionLabel="Archived Folders"
+                                    isNewEntity={!dataTypeRowId}
+                                    showUncheckedWarning={false}
                                 />
                             </div>
                         </>

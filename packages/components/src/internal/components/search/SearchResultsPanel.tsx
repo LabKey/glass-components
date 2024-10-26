@@ -73,7 +73,7 @@ export const SearchResultsPanel: FC<Props> = memo(({ emptyResultDisplay, iconUrl
                                     iconUrl={iconUrl}
                                     cardData={item.get('cardData').toJS()}
                                     isTopResult={offset === 0 && i === 0}
-                                    archived={archivedFolders.indexOf(item.get('container')) > -1}
+                                    archived={archivedFolders?.indexOf(item.get('container')) > -1}
                                 />
                             </div>
                         ))}

@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "5.18.0-fb-archiveFolder.1",
+  "version": "5.18.0-fb-archiveFolder.3",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [
@@ -49,7 +49,7 @@
   "homepage": "https://github.com/LabKey/labkey-ui-components#readme",
   "dependencies": {
     "@hello-pangea/dnd": "16.6.0",
-    "@labkey/api": "1.35.4-fb-archiveFolder.1",
+    "@labkey/api": "1.35.4-fb-archiveFolder.3",
     "@testing-library/jest-dom": "~6.5.0",
     "@testing-library/react": "~16.0.1",
     "@testing-library/dom": "~10.4.0",
