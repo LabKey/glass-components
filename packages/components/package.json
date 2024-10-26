@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "5.18.0-fb-archiveFolder.3",
+  "version": "5.18.0-fb-archiveFolder.4",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [

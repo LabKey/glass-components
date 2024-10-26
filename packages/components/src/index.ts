@@ -964,6 +964,7 @@ const App = {
     hasPremiumModule,
     hasProductFolders,
     hasModule,
+    generateNameWithTimestamp,
     getContainerFormats,
     getDateFormat,
     getDateTimeFormat,
