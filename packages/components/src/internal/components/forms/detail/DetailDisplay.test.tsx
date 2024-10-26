@@ -11,12 +11,7 @@ import { AssayRunReferenceRenderer } from '../../../renderers/AssayRunReferenceR
 import { LabelColorRenderer } from '../../../renderers/LabelColorRenderer';
 import { FileColumnRenderer } from '../../../renderers/FileColumnRenderer';
 
-import {
-    DetailDisplay,
-    resolveDetailRenderer,
-    defaultTitleRenderer,
-    Renderer
-} from './DetailDisplay';
+import { DetailDisplay, resolveDetailRenderer, defaultTitleRenderer, Renderer } from './DetailDisplay';
 
 describe('DetailDisplay', () => {
     const namePatternCol = new QueryColumn({
@@ -151,13 +146,27 @@ describe('DetailDisplay', () => {
 
 describe('defaultTitleRenderer', () => {
     test('editable', () => {
-        const col = new QueryColumn({ caption: 'test', readOnly: false, userEditable: true, shownInUpdateView: true, required: true });
+        const col = new QueryColumn({
+            caption: 'test',
+            readOnly: false,
+            userEditable: true,
+            shownInUpdateView: true,
+            required: true,
+        });
         render(<div>{defaultTitleRenderer(col)}</div>);
-        expect(document.querySelector('span').innerHTML).toEqual("test&nbsp;<span class=\"required-symbol\">* </span><div class=\"overlay-trigger\"><i class=\"fa fa-question-circle\"></i></div>");
+        expect(document.querySelector('span').innerHTML).toEqual(
+            'test&nbsp;<span class="required-symbol">* </span><div class="overlay-trigger"><i class="fa fa-question-circle"></i></div>'
+        );
     });
 
     test('not editable', () => {
-        const col = new QueryColumn({ caption: 'test', readOnly: false, userEditable: true, shownInUpdateView: false, required: true });
+        const col = new QueryColumn({
+            caption: 'test',
+            readOnly: false,
+            userEditable: true,
+            shownInUpdateView: false,
+            required: true,
+        });
         render(<div>{defaultTitleRenderer(col)}</div>);
         expect(document.querySelector('span').innerHTML).toEqual('test');
     });

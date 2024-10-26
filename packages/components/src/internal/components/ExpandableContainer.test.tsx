@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { userEvent } from "@testing-library/user-event";
+import { userEvent } from '@testing-library/user-event';
 
 import { ExpandableContainer } from './ExpandableContainer';
 
@@ -47,7 +47,8 @@ describe('<ExpandableContainer/>', () => {
                 containerCls="test-container-cls"
             >
                 <div>Body</div>
-            </ExpandableContainer>);
+            </ExpandableContainer>
+        );
         expect(document.querySelectorAll('.row.container-expandable')).toHaveLength(0);
         expect(document.querySelectorAll('.XY.container-expandable')).toHaveLength(1);
         expect(document.querySelectorAll('.container-expandable-child__img')).toHaveLength(0);

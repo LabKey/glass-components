@@ -44,6 +44,7 @@ interface Props {
     fullWidth?: boolean;
     hasNotInQueryFilter?: boolean;
     hasNotInQueryFilterLabel?: string;
+    isAncestor?: boolean;
     metricFeatureArea?: string;
     onFilterUpdate: (field: QueryColumn, newFilters: Filter.IFilter[], index: number) => void;
     onHasNoValueInQueryChange?: (check: boolean) => void;
@@ -52,7 +53,6 @@ interface Props {
     skipDefaultViewCheck?: boolean;
     validFilterField?: (field: QueryColumn, queryInfo: QueryInfo, exprColumnsWithSubSelect?: string[]) => boolean;
     viewName?: string;
-    isAncestor?: boolean;
 }
 
 export const QueryFilterPanel: FC<Props> = memo(props => {

@@ -227,25 +227,23 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
     }, [hiddenEntities /* only called on changes to hiddenEntities */]);
 
     useEffect(() => {
-        if (loading || !dataTypes || dataTypes?.length === 0)
-            return;
+        if (loading || !dataTypes || dataTypes?.length === 0) return;
 
         const activeDataTypes_: DataTypeEntity[] = [],
-            inactiveDataTypes_: DataTypeEntity[] = [], inactiveDataTypeLsids = [];
+            inactiveDataTypes_: DataTypeEntity[] = [],
+            inactiveDataTypeLsids = [];
         if (isNewEntity) {
             dataTypes?.forEach(dataType => {
                 if (dataType.inactive) {
                     inactiveDataTypes_.push(dataType);
                     inactiveDataTypeLsids.push(dataType.lsid);
-                }
-                else activeDataTypes_.push(dataType);
+                } else activeDataTypes_.push(dataType);
             });
             if (inactiveDataTypeLsids?.length > 0) {
                 updateUncheckedTypes(dataType, inactiveDataTypeLsids);
                 setUncheckedEntities(inactiveDataTypeLsids);
             }
-        }
-        else {
+        } else {
             dataTypes?.forEach(dataType => {
                 if (dataType.inactive) inactiveDataTypes_.push(dataType);
                 else activeDataTypes_.push(dataType);
@@ -254,7 +252,6 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
 
         setActiveDataTypes(activeDataTypes_);
         setInactiveDataTypes(inactiveDataTypes_);
-
     }, [loading, dataTypes, isNewEntity]);
 
     useEffect(
@@ -286,7 +283,7 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
             if (disabled) return;
             ensureCount();
 
-            setUncheckedEntities((prevState) => {
+            setUncheckedEntities(prevState => {
                 const updated = [...prevState];
                 let checked = check;
                 if (toggle) {
