@@ -1,6 +1,7 @@
 import React from 'react';
+import { userEvent } from '@testing-library/user-event';
 
-import { TEST_FOLDER_CONTAINER, TEST_PROJECT_CONTAINER } from '../../containerFixtures';
+import { TEST_ARCHIVED_FOLDER_CONTAINER, TEST_FOLDER_CONTAINER, TEST_PROJECT_CONTAINER } from '../../containerFixtures';
 
 import { TEST_USER_APP_ADMIN, TEST_USER_EDITOR } from '../../userFixtures';
 
@@ -18,8 +19,33 @@ describe('FolderMenu', () => {
         };
     }
 
+    const topFolderMenu = {
+        id: TEST_PROJECT_CONTAINER.id,
+        path: TEST_PROJECT_CONTAINER.path,
+        href: undefined,
+        isTopLevel: true,
+        label: TEST_PROJECT_CONTAINER.title,
+        archived: false,
+    };
+    const childFolderMenu = {
+        id: TEST_FOLDER_CONTAINER.id,
+        path: TEST_FOLDER_CONTAINER.path,
+        href: undefined,
+        isTopLevel: false,
+        label: TEST_FOLDER_CONTAINER.title,
+        archived: false,
+    };
+    const archivedChildFolderMenu = {
+        id: TEST_ARCHIVED_FOLDER_CONTAINER.id,
+        path: TEST_ARCHIVED_FOLDER_CONTAINER.path,
+        href: undefined,
+        isTopLevel: false,
+        label: TEST_ARCHIVED_FOLDER_CONTAINER.title,
+        archived: true,
+    };
+
     it('no folders', () => {
-        const wrapper = renderWithAppContext(<FolderMenu {...getDefaultProps()} />, {
+        renderWithAppContext(<FolderMenu {...getDefaultProps()} />, {
             serverContext: {
                 user: TEST_USER_APP_ADMIN,
                 moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT,
@@ -37,29 +63,16 @@ describe('FolderMenu', () => {
         expect(document.querySelectorAll('.fa-home')).toHaveLength(0);
         expect(document.querySelectorAll('.fa-gear')).toHaveLength(0);
         expect(document.querySelectorAll('hr')).toHaveLength(0);
-
-        wrapper.unmount();
+        expect(document.querySelectorAll('.archived-product-menu')).toHaveLength(0);
     });
 
     it('with folders, with top level', () => {
-        const wrapper = renderWithAppContext(
+        renderWithAppContext(
             <FolderMenu
                 {...getDefaultProps()}
                 items={[
-                    {
-                        id: TEST_PROJECT_CONTAINER.id,
-                        path: TEST_PROJECT_CONTAINER.path,
-                        href: undefined,
-                        isTopLevel: true,
-                        label: TEST_PROJECT_CONTAINER.title,
-                    },
-                    {
-                        id: TEST_PROJECT_CONTAINER.id,
-                        path: TEST_PROJECT_CONTAINER.path,
-                        href: undefined,
-                        isTopLevel: false,
-                        label: TEST_FOLDER_CONTAINER.title,
-                    },
+                    topFolderMenu,
+                    childFolderMenu
                 ]}
             />,
             {
@@ -81,23 +94,62 @@ describe('FolderMenu', () => {
         expect(document.querySelectorAll('.fa-home')).toHaveLength(2);
         expect(document.querySelectorAll('.fa-gear')).toHaveLength(2);
         expect(document.querySelectorAll('hr')).toHaveLength(1);
-
-        wrapper.unmount();
+        expect(document.querySelectorAll('.archived-product-menu')).toHaveLength(0);
     });
 
-    it('with folders, without top level', () => {
-        const wrapper = renderWithAppContext(
+    it('with archived folders', async () => {
+        renderWithAppContext(
             <FolderMenu
                 {...getDefaultProps()}
                 items={[
-                    {
-                        id: TEST_PROJECT_CONTAINER.id,
-                        path: TEST_PROJECT_CONTAINER.path,
-                        href: undefined,
-                        isTopLevel: false,
-                        label: TEST_FOLDER_CONTAINER.title,
-                    },
+                    topFolderMenu,
+                    archivedChildFolderMenu,
+                    childFolderMenu,
                 ]}
+                activeContainerId={TEST_ARCHIVED_FOLDER_CONTAINER.id}
+            />,
+            {
+                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT }
+            }
+
+        );
+
+        expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
+        expect(document.querySelectorAll('ul')).toHaveLength(1);
+        expect(document.querySelectorAll('li')).toHaveLength(3);
+        expect(document.querySelectorAll('.active')).toHaveLength(0);
+        expect(document.querySelectorAll('.menu-section-header')).toHaveLength(1);
+        expect(document.querySelectorAll('.menu-section-item')).toHaveLength(1);
+        expect(document.querySelectorAll('.menu-folder-item')).toHaveLength(2);
+        expect(document.querySelectorAll('.menu-folder-item')[0].textContent).toBe(TEST_PROJECT_CONTAINER.title);
+        expect(document.querySelectorAll('.menu-folder-item')[1].textContent).toBe(TEST_FOLDER_CONTAINER.title);
+        expect(document.querySelectorAll('.menu-folder-icons')).toHaveLength(2);
+        expect(document.querySelectorAll('.fa-home')).toHaveLength(2);
+        expect(document.querySelectorAll('.fa-gear')).toHaveLength(2);
+        expect(document.querySelectorAll('hr')).toHaveLength(1);
+
+        expect(document.querySelectorAll('.archived-product-menu')).toHaveLength(1);
+        // expand archived
+        await userEvent.click(document.querySelector('.container-expandable__inactive'));
+        expect(document.querySelectorAll('ul')).toHaveLength(1);
+        expect(document.querySelectorAll('li')).toHaveLength(4);
+        expect(document.querySelectorAll('.menu-folder-item')[2].textContent).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.title);
+        expect(document.querySelectorAll('.menu-folder-icons')).toHaveLength(3);
+        expect(document.querySelectorAll('.fa-home')).toHaveLength(3);
+        expect(document.querySelectorAll('.fa-gear')).toHaveLength(3);
+        expect(document.querySelectorAll('.active')).toHaveLength(1);
+        expect(document.querySelectorAll('.archived-product-menu')).toHaveLength(1);
+        // collapse archived
+        await userEvent.click(document.querySelector('.container-expandable-child__inactive'));
+        expect(document.querySelectorAll('li')).toHaveLength(3);
+        expect(document.querySelectorAll('.menu-folder-icons')).toHaveLength(2);
+    });
+
+    it('with folders, without top level', () => {
+        renderWithAppContext(
+            <FolderMenu
+                {...getDefaultProps()}
+                items={[childFolderMenu]}
             />,
             {
                 serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT }
@@ -117,30 +169,16 @@ describe('FolderMenu', () => {
         expect(document.querySelectorAll('.fa-home')).toHaveLength(1);
         expect(document.querySelectorAll('.fa-gear')).toHaveLength(1);
         expect(document.querySelectorAll('hr')).toHaveLength(0);
-
-        wrapper.unmount();
     });
 
     it('with folders, activeContainerId', () => {
-        const wrapper = renderWithAppContext(
+        renderWithAppContext(
             <FolderMenu
                 {...getDefaultProps()}
                 activeContainerId={TEST_PROJECT_CONTAINER.id}
                 items={[
-                    {
-                        id: TEST_PROJECT_CONTAINER.id,
-                        path: TEST_PROJECT_CONTAINER.path,
-                        href: undefined,
-                        isTopLevel: true,
-                        label: TEST_PROJECT_CONTAINER.title,
-                    },
-                    {
-                        id: TEST_PROJECT_CONTAINER.id,
-                        path: TEST_PROJECT_CONTAINER.path,
-                        href: undefined,
-                        isTopLevel: false,
-                        label: TEST_FOLDER_CONTAINER.title,
-                    },
+                    topFolderMenu,
+                    childFolderMenu
                 ]}
             />,
             {
@@ -153,7 +191,7 @@ describe('FolderMenu', () => {
         expect(document.querySelectorAll('li')).toHaveLength(3);
         expect(document.querySelectorAll('.menu-section-header')).toHaveLength(1);
         expect(document.querySelectorAll('.menu-section-item')).toHaveLength(1);
-        expect(document.querySelectorAll('.active')).toHaveLength(2);
+        expect(document.querySelectorAll('.active')).toHaveLength(1);
         expect(document.querySelectorAll('.menu-folder-item')).toHaveLength(2);
         expect(document.querySelectorAll('.menu-folder-item')[0].textContent).toBe(TEST_PROJECT_CONTAINER.title);
         expect(document.querySelectorAll('.menu-folder-item')[1].textContent).toBe(TEST_FOLDER_CONTAINER.title);
@@ -162,28 +200,15 @@ describe('FolderMenu', () => {
         expect(document.querySelectorAll('.fa-gear')).toHaveLength(2);
         expect(document.querySelectorAll('hr')).toHaveLength(1);
 
-        wrapper.unmount();
     });
 
     it('with folders, non admin', () => {
-        const wrapper = renderWithAppContext(
+        renderWithAppContext(
             <FolderMenu
                 {...getDefaultProps()}
                 items={[
-                    {
-                        id: TEST_PROJECT_CONTAINER.id,
-                        path: TEST_PROJECT_CONTAINER.path,
-                        href: undefined,
-                        isTopLevel: true,
-                        label: TEST_PROJECT_CONTAINER.title,
-                    },
-                    {
-                        id: TEST_PROJECT_CONTAINER.id,
-                        path: TEST_PROJECT_CONTAINER.path,
-                        href: undefined,
-                        isTopLevel: false,
-                        label: TEST_FOLDER_CONTAINER.title,
-                    },
+                    topFolderMenu,
+                    childFolderMenu
                 ]}
             />,
             {
@@ -204,7 +229,5 @@ describe('FolderMenu', () => {
         expect(document.querySelectorAll('.fa-home')).toHaveLength(2);
         expect(document.querySelectorAll('.fa-gear')).toHaveLength(0);
         expect(document.querySelectorAll('hr')).toHaveLength(1);
-
-        wrapper.unmount();
     });
 });

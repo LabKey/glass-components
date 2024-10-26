@@ -58,6 +58,10 @@ const TEST_FOLDER_CONTAINER_CONFIG = {
 export const TEST_FOLDER_CONTAINER = new Container(TEST_FOLDER_CONTAINER_CONFIG);
 export const TEST_ARCHIVED_FOLDER_CONTAINER = new Container({
     ...TEST_FOLDER_CONTAINER_CONFIG,
+    name: 'ArchiveFolderContainer',
+    id: 'b685712f-0800-103a-9286-8131958dcf60',
+    path: `${TEST_PROJECT_CONTAINER.path}/ArchiveFolderContainer`,
+    title: 'Archived Folder Container',
     isArchived: true,
 });
 export const TEST_FOLDER_CONTAINER_ADMIN = new Container({

@@ -211,6 +211,8 @@ describe('DataTypeSelector', () => {
         expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(3);
         expect(document.querySelectorAll('.folder-faceted-data-type')[2].textContent).toBe('PBMC');
         expect(document.querySelectorAll('.filter-faceted__checkbox')[2].getAttribute('checked')).toBe('');
+        await userEvent.click(document.querySelector('.container-expandable-child__inactive'));
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(2);
     });
 
     test('with only inactive data types', async () => {
