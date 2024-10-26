@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "5.17.5",
+  "version": "5.17.6-fb-upgrade-visjs.0",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [
