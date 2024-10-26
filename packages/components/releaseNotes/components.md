@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.17.5
+*Released*: 26 October 2024
+- Remove reference to the experimental flag for plates.
+
 ### version 5.17.4
 *Released*: 25 October 2024
 - Add `SchemaQuery` properties on `AssayDefinitionModel`.
