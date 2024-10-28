@@ -6,6 +6,7 @@ import { render } from '@testing-library/react';
 
 import { getTestAPIWrapper } from '../../APIWrapper';
 import { getQueryTestAPIWrapper } from '../../query/APIWrapper';
+import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
 import { FilterFacetedSelector } from './FilterFacetedSelector';
 
@@ -138,6 +139,27 @@ describe('FilterFacetedSelector', () => {
         expect(document.querySelector('.fa-spinner')).toBeNull();
 
         validate(allDisplayValuesShort, [], allDisplayValuesShort, false);
+    });
+
+    test('is Folder field', async () => {
+        await act(async () => {
+            renderWithAppContext(<FilterFacetedSelector {...DEFAULT_PROPS} fieldKey="folder" />,
+                {
+                    serverContext: {
+                        moduleContext: {
+                            samplemanagement: {
+                                archivedContainers: ['ned', 'red']
+                            },
+                        },
+                    },
+                }
+            );
+        });
+
+        expect(document.querySelector('.fa-spinner')).toBeNull();
+
+        const options = ['[All]', '[blank]', 'bed', 'ed', 'nedArchived', 'redArchived', 'ted'];
+        validate(options, [], options, false);
     });
 
     test('with no initial filter, not blank', async () => {
