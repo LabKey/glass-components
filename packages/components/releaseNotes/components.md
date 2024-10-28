@@ -1,6 +1,12 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.17.6
+*Released*: 28 October 2024
+- Update to `vis-network@9.1.9`
+- Add necessary peer dependency `vis-data@7.1.9` to our dependencies
+- Simplify typings and adjust API usages to match latest version
+
 ### version 5.17.5
 *Released*: 26 October 2024
 - Remove reference to the experimental flag for plates.

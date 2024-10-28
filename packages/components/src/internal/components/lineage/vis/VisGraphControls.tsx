@@ -1,5 +1,6 @@
 import React, { PureComponent, ReactNode } from 'react';
 import { Network } from 'vis-network';
+
 import { DropdownButton, MenuItem } from '../../../dropdowns';
 
 const PAN_INCREMENT = 20;
@@ -78,7 +79,11 @@ export class VisGraphControls extends PureComponent<GraphControlsProps> {
                     </div>
                 </div>
                 <div className="lineage-visgraph-control-pan">
-                    <button className="lineage-visgraph-control-pan-up btn btn-default" onClick={this.panUp} type="button">
+                    <button
+                        className="lineage-visgraph-control-pan-up btn btn-default"
+                        onClick={this.panUp}
+                        type="button"
+                    >
                         <i className="fa fa-arrow-up" />
                     </button>
                     <div className="btn-group">

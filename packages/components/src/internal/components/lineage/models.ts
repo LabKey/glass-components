@@ -4,8 +4,10 @@
  */
 import { immerable, produce } from 'immer';
 import { List, Map, Record as ImmutableRecord } from 'immutable';
+import { DataSet } from 'vis-data';
+import { Edge, IdType, Node } from 'vis-network';
+
 import { Experiment, Utils } from '@labkey/api';
-import { DataSet, Edge, IdType, Node } from 'vis-network';
 
 import { QueryInfo } from '../../../public/QueryInfo';
 
@@ -683,7 +685,7 @@ export interface VisGraphCombinedNode extends Node {
 
 // vis.js doesn't expose cluster nodes directly, so this is our shim
 interface VisGraphClusterNode {
-    id: string | number;
+    id: IdType;
     kind: 'cluster';
     nodesInCluster: VisGraphNodeType[];
 }
@@ -702,14 +704,7 @@ export function isClusterNode(item: VisGraphNodeType): item is VisGraphClusterNo
     return item && item.kind === 'cluster';
 }
 
-interface IVisGraphOptions {
-    edges: DataSet<Edge>;
-    initialSelection: string[];
-    nodes: DataSet<VisGraphNode | VisGraphCombinedNode>;
-    options: Record<string, any>;
-}
-
-export class VisGraphOptions implements IVisGraphOptions {
+export class VisGraphOptions {
     [immerable] = true;
 
     readonly edges: DataSet<Edge>;
@@ -717,7 +712,7 @@ export class VisGraphOptions implements IVisGraphOptions {
     readonly nodes: DataSet<VisGraphNode | VisGraphCombinedNode>;
     readonly options: Record<string, any>;
 
-    constructor(config?: Partial<IVisGraphOptions>) {
+    constructor(config?: Partial<VisGraphOptions>) {
         Object.assign(this, config);
     }
 

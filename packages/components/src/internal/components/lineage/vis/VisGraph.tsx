@@ -3,7 +3,8 @@
  * any form or by any electronic or mechanical means without written permission from LabKey Corporation.
  */
 import React, { Component } from 'react';
-import { DataSet, Edge, IdType, Network, Node } from 'vis-network';
+import { DataSet } from 'vis-data';
+import { Edge, IdType, Network, Node } from 'vis-network';
 
 import { isCombinedNode, VisGraphCombinedNode, VisGraphNodeType, VisGraphOptions } from '../models';
 
@@ -200,11 +201,11 @@ export class VisGraph extends Component<VisGraphProps, VisGraphState> {
     };
 
     getCombinedNodes = (): VisGraphCombinedNode[] => {
-        return this.data.nodes.get({ filter: isCombinedNode });
+        return this.data.nodes.get({ filter: isCombinedNode }) as VisGraphCombinedNode[];
     };
 
     getNodes = (ids: IdType[]): VisGraphNodeType[] => {
-        return ids.map(id => this.getNode(id)).filter(n => n !== null && n !== undefined);
+        return ids.map(this.getNode).filter(n => n !== null && n !== undefined);
     };
 
     getNode = (id: IdType): VisGraphNodeType => {
@@ -299,7 +300,12 @@ export class VisGraph extends Component<VisGraphProps, VisGraphState> {
     private onNodeDeselect = (visEvent: VisDeselectEvent): void => {
         if (this.props.onNodeDeselect) {
             const selectedNodes = this.getNodes(visEvent.nodes);
-            const previousSelectedNodes = this.getNodes(visEvent.previousSelection.nodes);
+            // event.previousSelection.nodes is supposed to contain an array of node identifiers (string | number),
+            // however, there is a bug in v9.1.9 of vis-network that broke this contract and
+            // event.previousSelection is an array of nodes. Mapping back to identifiers here.
+            // See https://github.com/visjs/vis-network/issues/1688
+            const previousNodeIds = visEvent.previousSelection.nodes.map((n: any) => n.id);
+            const previousSelectedNodes = this.getNodes(previousNodeIds);
             this.props.onNodeDeselect(selectedNodes, previousSelectedNodes);
         }
     };
