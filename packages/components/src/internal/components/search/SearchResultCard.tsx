@@ -20,9 +20,8 @@ import { SVGIcon } from '../base/SVGIcon';
 import { incrementClientSideMetricCount } from '../../actions';
 import { getCurrentAppProperties } from '../../app/utils';
 
-import { Alert } from '../base/Alert';
-
 import { SearchResultCardData } from './models';
+import { ArchivedFolderTag } from '../folder/ArchivedFolderTag';
 
 interface SearchResultProps {
     archived?: boolean;
@@ -67,7 +66,7 @@ export const SearchResultCard: FC<SearchResultProps> = memo(
                             {textParts.length > 0 && (
                                 <div className="margin-left status-pill muted">{textParts.join(': ')}</div>
                             )}
-                            {archived && <Alert className="folder-field_archived-tag">Archived</Alert>}
+                            <ArchivedFolderTag archived={archived} />
                         </div>
                         <div className="search-result__summary">{summaryText}</div>
                     </div>

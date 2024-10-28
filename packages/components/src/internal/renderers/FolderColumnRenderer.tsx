@@ -3,7 +3,7 @@ import { Iterable, Map } from 'immutable';
 
 import { useServerContext } from '../components/base/ServerContext';
 import { getArchivedFolders } from '../app/utils';
-import { Alert } from '../components/base/Alert';
+import { ArchivedFolderTag } from '../components/folder/ArchivedFolderTag';
 
 export interface FolderColumnRendererProps {
     className?: string;
@@ -35,7 +35,7 @@ export const FolderColumnRenderer: FC<FolderColumnRendererProps> = memo(({ data,
     return (
         <span className={className}>
             {displayValue}
-            {archived && <Alert className="folder-field_archived-tag">Archived</Alert>}
+            <ArchivedFolderTag archived={archived} />
         </span>
     );
 });

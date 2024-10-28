@@ -67,19 +67,25 @@ export const getUncheckedEntityWarning = (
     return null;
 };
 
-interface DataTypeSelectorListProps {
-    columns?: number;
-    dataType?: DataTypeEntity;
-    dataTypes?: DataTypeEntity[];
+interface DataTypeSelectorProp {
     disabled: boolean;
     getUncheckedEntityWarning?: (id: number | string) => React.ReactNode;
-    index?: number;
     onChange: (entityId: number | string, toggle: boolean, check?: boolean) => void;
-    showUncheckedWarning: boolean;
     uncheckedEntities: any[];
+    showUncheckedWarning: boolean;
 }
 
-export const DataTypeSelectorItem: FC<DataTypeSelectorListProps> = memo(props => {
+interface DataTypeSelectorItemProps extends DataTypeSelectorProp {
+    index?: number;
+    dataType?: DataTypeEntity;
+}
+
+interface DataTypeSelectorListProps extends DataTypeSelectorProp {
+    columns?: number;
+    dataTypes: DataTypeEntity[];
+}
+
+export const DataTypeSelectorItem: FC<DataTypeSelectorItemProps> = memo(props => {
     const { index, disabled, getUncheckedEntityWarning, uncheckedEntities, onChange, showUncheckedWarning, dataType } =
         props;
 
@@ -91,14 +97,14 @@ export const DataTypeSelectorItem: FC<DataTypeSelectorListProps> = memo(props =>
         (event: ChangeEvent<HTMLInputElement>) => {
             onChange(entityId, false, event.target.checked);
         },
-        [entityId]
+        [entityId, onChange]
     );
 
     const handleClick = useCallback(
-        (event: any) => {
+        () => {
             onChange(entityId, true);
         },
-        [entityId]
+        [entityId, onChange]
     );
 
     return (
@@ -335,7 +341,7 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
         return null;
     }, [dataTypeLabel, entityDataType]);
 
-    const generateInactiveSectionHeader = useMemo(() => {
+    const inactiveSectionHeader = useMemo(() => {
         return (
             <div className="gray-text">
                 <span>{inactiveSectionLabel}</span>
@@ -384,7 +390,7 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
                     <div className="container-listing-left container-data-type-selector">
                         <ExpandableContainer
                             isExpandable={true}
-                            clause={generateInactiveSectionHeader}
+                            clause={inactiveSectionHeader}
                             links={null}
                             noIcon={true}
                             useGreyTheme={true}

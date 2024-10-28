@@ -48,7 +48,7 @@ import {
     SOURCES_KEY,
     USER_KEY,
     WORKFLOW_KEY,
-    ARCHIVED_FOLDER,
+    ARCHIVED_FOLDERS,
 } from './constants';
 
 declare var LABKEY: LabKey;
@@ -306,7 +306,7 @@ export function getFolderDataExclusion(moduleContext?: ModuleContext): { [key: s
 }
 
 export function getArchivedFolders(moduleContext?: ModuleContext): string[] {
-    return resolveModuleContext(moduleContext)?.samplemanagement?.[ARCHIVED_FOLDER];
+    return resolveModuleContext(moduleContext)?.samplemanagement?.[ARCHIVED_FOLDERS];
 }
 
 export function getFolderDashboardSampleTypeExclusion(moduleContext?: ModuleContext): number[] {
