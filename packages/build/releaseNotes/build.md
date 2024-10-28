@@ -1,5 +1,11 @@
 # @labkey/build
 
+### version 8.0.0
+*Released*: 29 October 2024
+- support "dependencies" on entry points
+- remove "passwordGauge.js", "vis/vis", and "vis/genericChart/genericChartHelper.js" dependencies from default generated view.xml
+- retain "clientapi" dependency in default generated view.xml
+
 ### version 7.7.1
 *Released*: 10 September 2024
 - Add `date-fns/format` and `date-fns-tz` to list of external packages.
