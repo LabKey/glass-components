@@ -71,13 +71,13 @@ interface DataTypeSelectorProp {
     disabled: boolean;
     getUncheckedEntityWarning?: (id: number | string) => React.ReactNode;
     onChange: (entityId: number | string, toggle: boolean, check?: boolean) => void;
-    uncheckedEntities: any[];
     showUncheckedWarning: boolean;
+    uncheckedEntities: any[];
 }
 
 interface DataTypeSelectorItemProps extends DataTypeSelectorProp {
-    index?: number;
     dataType?: DataTypeEntity;
+    index?: number;
 }
 
 interface DataTypeSelectorListProps extends DataTypeSelectorProp {
@@ -100,12 +100,9 @@ export const DataTypeSelectorItem: FC<DataTypeSelectorItemProps> = memo(props =>
         [entityId, onChange]
     );
 
-    const handleClick = useCallback(
-        () => {
-            onChange(entityId, true);
-        },
-        [entityId, onChange]
-    );
+    const handleClick = useCallback(() => {
+        onChange(entityId, true);
+    }, [entityId, onChange]);
 
     return (
         <li key={entityId} className="folder-faceted-data-type">

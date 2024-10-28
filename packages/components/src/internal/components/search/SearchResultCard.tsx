@@ -20,8 +20,9 @@ import { SVGIcon } from '../base/SVGIcon';
 import { incrementClientSideMetricCount } from '../../actions';
 import { getCurrentAppProperties } from '../../app/utils';
 
-import { SearchResultCardData } from './models';
 import { ArchivedFolderTag } from '../folder/ArchivedFolderTag';
+
+import { SearchResultCardData } from './models';
 
 interface SearchResultProps {
     archived?: boolean;

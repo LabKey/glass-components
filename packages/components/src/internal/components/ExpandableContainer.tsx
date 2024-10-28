@@ -23,8 +23,20 @@ interface Props extends PropsWithChildren {
 }
 
 export const ExpandableContainer: FC<Props> = memo(props => {
-    const { clause, containerCls, iconFaCls, iconSrc, initExpanded, isExpandable,
-        links, noIcon, onClick, rowCls = 'row', useGreyTheme, children } = props;
+    const {
+        clause,
+        containerCls,
+        iconFaCls,
+        iconSrc,
+        initExpanded,
+        isExpandable,
+        links,
+        noIcon,
+        onClick,
+        rowCls = 'row',
+        useGreyTheme,
+        children,
+    } = props;
     const [visible, setVisible] = useState<boolean>(false);
     const [isHover, setIsHover] = useState<boolean>(false);
 
@@ -46,10 +58,10 @@ export const ExpandableContainer: FC<Props> = memo(props => {
             return;
         }
 
-        setVisible((prevState) => {
+        setVisible(prevState => {
             onClick?.(!prevState);
             return !prevState;
-        })
+        });
     }, [isExpandable, onClick, setVisible]);
 
     const handleMouseEnter = useCallback(() => {
@@ -61,7 +73,7 @@ export const ExpandableContainer: FC<Props> = memo(props => {
     }, [setIsHover]);
 
     return (
-        <div className={classNames(rowCls, 'container-expandable', {disabled: !isExpandable})}>
+        <div className={classNames(rowCls, 'container-expandable', { disabled: !isExpandable })}>
             <div
                 onClick={hasOnClick || isExpandable ? handleClick : undefined}
                 onMouseEnter={isExpandable ? handleMouseEnter : undefined}
@@ -69,17 +81,17 @@ export const ExpandableContainer: FC<Props> = memo(props => {
                 className={classNames(
                     containerCls,
                     containerDivCls,
-                    {'container-expandable-child__inactive': visible},
-                    {'container-expandable__active': isHover || visible},
-                    {'container-expandable__inactive': !isHover && !visible}
+                    { 'container-expandable-child__inactive': visible },
+                    { 'container-expandable__active': isHover || visible },
+                    { 'container-expandable__inactive': !isHover && !visible }
                 )}
             >
                 {!noIcon && (
                     <i className="container-expandable-child__img">
                         {iconFaCls ? (
-                            <i style={{padding: '5px'}} className={'fa fa-' + iconFaCls}/>
+                            <i style={{ padding: '5px' }} className={'fa fa-' + iconFaCls} />
                         ) : (
-                            <SVGIcon iconSrc={iconSrc} isActive={isHover} height="50px" width="50px"/>
+                            <SVGIcon iconSrc={iconSrc} isActive={isHover} height="50px" width="50px" />
                         )}
                     </i>
                 )}
@@ -104,5 +116,5 @@ export const ExpandableContainer: FC<Props> = memo(props => {
             </div>
             {visible && children}
         </div>
-    )
+    );
 });

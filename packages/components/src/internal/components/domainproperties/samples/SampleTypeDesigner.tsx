@@ -284,21 +284,24 @@ export class SampleTypeDesignerImpl extends React.PureComponent<Props & Injected
     };
 
     onUpdateExcludedFolders = (dataType: FolderConfigurableDataType, excludedContainerIds: string[]): void => {
-        this.setState(prevState => {
-            let newModel = prevState.model;
-            if (dataType === 'SampleType') {
-                newModel = newModel.set('excludedContainerIds', excludedContainerIds) as SampleTypeModel;
-            } else if (dataType === 'DashboardSampleType') {
-                newModel = newModel.set('excludedDashboardContainerIds', excludedContainerIds) as SampleTypeModel;
+        this.setState(
+            prevState => {
+                let newModel = prevState.model;
+                if (dataType === 'SampleType') {
+                    newModel = newModel.set('excludedContainerIds', excludedContainerIds) as SampleTypeModel;
+                } else if (dataType === 'DashboardSampleType') {
+                    newModel = newModel.set('excludedDashboardContainerIds', excludedContainerIds) as SampleTypeModel;
+                }
+                return {
+                    ...prevState,
+                    model: newModel,
+                    uniqueIdsConfirmed: undefined,
+                };
+            },
+            () => {
+                this.props.onChange?.(this.state.model);
             }
-            return {
-                ...prevState,
-                model: newModel,
-                uniqueIdsConfirmed: undefined
-            };
-        }, () => {
-            this.props.onChange?.(this.state.model);
-        });
+        );
     };
 
     domainChangeHandler = (

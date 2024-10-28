@@ -305,7 +305,10 @@ export function getFolderDataExclusion(moduleContext?: ModuleContext): { [key: s
     return resolveModuleContext(moduleContext)?.samplemanagement?.[FOLDER_DATA_TYPE_EXCLUSIONS];
 }
 
-export function setFolderDataExclusion(moduleContext: ModuleContext, dataTypeExclusions: { [key: string]: number[] }): ModuleContext {
+export function setFolderDataExclusion(
+    moduleContext: ModuleContext,
+    dataTypeExclusions: { [key: string]: number[] }
+): ModuleContext {
     // side-effect set global moduleContext
     if (LABKEY?.moduleContext?.samplemanagement) {
         LABKEY.moduleContext.samplemanagement.dataTypeExclusions = dataTypeExclusions;

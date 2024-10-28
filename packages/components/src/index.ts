@@ -901,7 +901,7 @@ import { NameIdSettings } from './internal/components/settings/NameIdSettings';
 import { BaseModal, Modal, ModalHeader } from './internal/Modal';
 import { Tab, Tabs } from './internal/Tabs';
 import { CheckboxLK } from './internal/Checkbox';
-import { ArchivedFolderTag } from './internal/components/folder/ArchivedFolderTag'
+import { ArchivedFolderTag } from './internal/components/folder/ArchivedFolderTag';
 
 // See Immer docs for why we do this: https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
 enableMapSet();
