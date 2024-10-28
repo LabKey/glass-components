@@ -305,6 +305,17 @@ export function getFolderDataExclusion(moduleContext?: ModuleContext): { [key: s
     return resolveModuleContext(moduleContext)?.samplemanagement?.[FOLDER_DATA_TYPE_EXCLUSIONS];
 }
 
+export function setFolderDataExclusion(moduleContext: ModuleContext, dataTypeExclusions: { [key: string]: number[] }): ModuleContext {
+    // side-effect set global moduleContext
+    if (LABKEY?.moduleContext?.samplemanagement) {
+        LABKEY.moduleContext.samplemanagement.dataTypeExclusions = dataTypeExclusions;
+    }
+
+    return Object.assign(moduleContext ?? {}, {
+        samplemanagement: Object.assign(moduleContext?.samplemanagement ?? {}, { dataTypeExclusions }),
+    });
+}
+
 export function getArchivedFolders(moduleContext?: ModuleContext): string[] {
     return resolveModuleContext(moduleContext)?.samplemanagement?.[ARCHIVED_FOLDERS];
 }

@@ -50,7 +50,7 @@ export interface FolderAPIWrapper {
         excludeArchived?: boolean
     ) => Promise<Container[]>;
     getDataTypeExcludedContainers: (dataType: FolderConfigurableDataType, dataTypeRowId: number) => Promise<string[]>;
-    getFolderDataTypeExclusions: (excludedContainer?: string) => Promise<{ [key: string]: number[] }>;
+    getFolderDataTypeExclusions: (excludedContainer?: string, reload?: boolean) => Promise<{ [key: string]: number[] }>;
     renameFolder: (options: FolderSettingsOptions, containerPath?: string) => Promise<Container>;
     setAuditCommentsRequired: (isRequired: boolean, containerPath?: string) => Promise<void>;
     updateContainerDataExclusions: (options: FolderSettingsOptions, containerPath?: string) => Promise<void>;
