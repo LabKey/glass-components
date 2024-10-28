@@ -7,8 +7,9 @@ import { TEST_USER_APP_ADMIN, TEST_USER_EDITOR } from '../../userFixtures';
 
 import { TEST_LIMS_STARTER_MODULE_CONTEXT } from '../../productFixtures';
 
-import { FolderMenu, FolderMenuProps } from './FolderMenu';
 import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
+
+import { FolderMenu, FolderMenuProps } from './FolderMenu';
 
 describe('FolderMenu', () => {
     function getDefaultProps(): FolderMenuProps {
@@ -49,7 +50,7 @@ describe('FolderMenu', () => {
             serverContext: {
                 user: TEST_USER_APP_ADMIN,
                 moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT,
-            }
+            },
         });
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
@@ -67,19 +68,9 @@ describe('FolderMenu', () => {
     });
 
     it('with folders, with top level', () => {
-        renderWithAppContext(
-            <FolderMenu
-                {...getDefaultProps()}
-                items={[
-                    topFolderMenu,
-                    childFolderMenu
-                ]}
-            />,
-            {
-                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT }
-            }
-
-        );
+        renderWithAppContext(<FolderMenu {...getDefaultProps()} items={[topFolderMenu, childFolderMenu]} />, {
+            serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+        });
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
         expect(document.querySelectorAll('ul')).toHaveLength(1);
@@ -101,17 +92,12 @@ describe('FolderMenu', () => {
         renderWithAppContext(
             <FolderMenu
                 {...getDefaultProps()}
-                items={[
-                    topFolderMenu,
-                    archivedChildFolderMenu,
-                    childFolderMenu,
-                ]}
+                items={[topFolderMenu, archivedChildFolderMenu, childFolderMenu]}
                 activeContainerId={TEST_ARCHIVED_FOLDER_CONTAINER.id}
             />,
             {
-                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT }
+                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
             }
-
         );
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
@@ -133,7 +119,9 @@ describe('FolderMenu', () => {
         await userEvent.click(document.querySelector('.container-expandable__inactive'));
         expect(document.querySelectorAll('ul')).toHaveLength(1);
         expect(document.querySelectorAll('li')).toHaveLength(4);
-        expect(document.querySelectorAll('.menu-folder-item')[2].textContent).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.title);
+        expect(document.querySelectorAll('.menu-folder-item')[2].textContent).toBe(
+            TEST_ARCHIVED_FOLDER_CONTAINER.title
+        );
         expect(document.querySelectorAll('.menu-folder-icons')).toHaveLength(3);
         expect(document.querySelectorAll('.fa-home')).toHaveLength(3);
         expect(document.querySelectorAll('.fa-gear')).toHaveLength(3);
@@ -146,16 +134,9 @@ describe('FolderMenu', () => {
     });
 
     it('with folders, without top level', () => {
-        renderWithAppContext(
-            <FolderMenu
-                {...getDefaultProps()}
-                items={[childFolderMenu]}
-            />,
-            {
-                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT }
-            }
-
-        );
+        renderWithAppContext(<FolderMenu {...getDefaultProps()} items={[childFolderMenu]} />, {
+            serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+        });
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
         expect(document.querySelectorAll('ul')).toHaveLength(1);
@@ -176,13 +157,10 @@ describe('FolderMenu', () => {
             <FolderMenu
                 {...getDefaultProps()}
                 activeContainerId={TEST_PROJECT_CONTAINER.id}
-                items={[
-                    topFolderMenu,
-                    childFolderMenu
-                ]}
+                items={[topFolderMenu, childFolderMenu]}
             />,
             {
-                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT }
+                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
             }
         );
 
@@ -199,22 +177,12 @@ describe('FolderMenu', () => {
         expect(document.querySelectorAll('.fa-home')).toHaveLength(2);
         expect(document.querySelectorAll('.fa-gear')).toHaveLength(2);
         expect(document.querySelectorAll('hr')).toHaveLength(1);
-
     });
 
     it('with folders, non admin', () => {
-        renderWithAppContext(
-            <FolderMenu
-                {...getDefaultProps()}
-                items={[
-                    topFolderMenu,
-                    childFolderMenu
-                ]}
-            />,
-            {
-                serverContext: { user: TEST_USER_EDITOR, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT }
-            }
-        );
+        renderWithAppContext(<FolderMenu {...getDefaultProps()} items={[topFolderMenu, childFolderMenu]} />, {
+            serverContext: { user: TEST_USER_EDITOR, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+        });
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
         expect(document.querySelectorAll('ul')).toHaveLength(1);

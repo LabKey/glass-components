@@ -143,17 +143,15 @@ describe('FilterFacetedSelector', () => {
 
     test('is Folder field', async () => {
         await act(async () => {
-            renderWithAppContext(<FilterFacetedSelector {...DEFAULT_PROPS} fieldKey="folder" />,
-                {
-                    serverContext: {
-                        moduleContext: {
-                            samplemanagement: {
-                                archivedContainers: ['ned', 'red']
-                            },
+            renderWithAppContext(<FilterFacetedSelector {...DEFAULT_PROPS} fieldKey="folder" />, {
+                serverContext: {
+                    moduleContext: {
+                        samplemanagement: {
+                            archivedContainers: ['ned', 'red'],
                         },
                     },
-                }
-            );
+                },
+            });
         });
 
         expect(document.querySelector('.fa-spinner')).toBeNull();

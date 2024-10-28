@@ -134,8 +134,8 @@ describe('DataTypeSelector', () => {
             description: null,
             type: 'SampleType',
             lsid: 'urn:lsid:labkey.com:SampleSet.Folder-105:3',
-            inactive: true
-        }
+            inactive: true,
+        },
     ];
     const apiWithResults = getTestAPIWrapper(jest.fn, {
         query: getQueryTestAPIWrapper(jest.fn, {
@@ -144,7 +144,9 @@ describe('DataTypeSelector', () => {
     });
     const apiWithInactiveResults = getTestAPIWrapper(jest.fn, {
         query: getQueryTestAPIWrapper(jest.fn, {
-            getFolderConfigurableEntityTypeOptions: jest.fn().mockResolvedValue([...sampleTypes, ...inactiveSampleTypes]),
+            getFolderConfigurableEntityTypeOptions: jest
+                .fn()
+                .mockResolvedValue([...sampleTypes, ...inactiveSampleTypes]),
         }),
     });
     const apiWithOnlyInactiveResults = getTestAPIWrapper(jest.fn, {
@@ -230,7 +232,6 @@ describe('DataTypeSelector', () => {
         expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(1);
         expect(document.querySelectorAll('.folder-faceted-data-type')[0].textContent).toBe('PBMC');
         expect(document.querySelectorAll('.filter-faceted__checkbox')[0].getAttribute('checked')).toBe('');
-
     });
 
     test('with 2 columns', async () => {

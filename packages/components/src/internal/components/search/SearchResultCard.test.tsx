@@ -25,9 +25,7 @@ describe('<SearchResultCard/>', () => {
             title: 'my title',
             iconSrc: 'testsource',
         };
-        render(
-            <SearchResultCard cardData={cardData} summary="Card Summary" url="#card" isTopResult={false} />
-        );
+        render(<SearchResultCard cardData={cardData} summary="Card Summary" url="#card" isTopResult={false} />);
 
         // When there is no category or typeName the first card detail will be the summary
         expect(document.querySelectorAll('.search-result__summary')[0].textContent).toEqual(summary);
@@ -39,11 +37,9 @@ describe('<SearchResultCard/>', () => {
         const cardData = {
             title: 'my title',
             iconSrc: 'testsource',
-            category
+            category,
         };
-        render(
-            <SearchResultCard cardData={cardData} summary="Card Summary" url="#card" isTopResult={false} />
-        );
+        render(<SearchResultCard cardData={cardData} summary="Card Summary" url="#card" isTopResult={false} />);
 
         expect(document.querySelector('.status-pill').textContent).toEqual(category);
     });
@@ -67,10 +63,16 @@ describe('<SearchResultCard/>', () => {
         const cardData = {
             title: 'my title',
             iconSrc: 'testsource',
-            category: 'samples'
+            category: 'samples',
         };
         const wrapper = render(
-            <SearchResultCard cardData={cardData} summary="Card Summary" url="#card" isTopResult={false} archived={true} />
+            <SearchResultCard
+                cardData={cardData}
+                summary="Card Summary"
+                url="#card"
+                isTopResult={false}
+                archived={true}
+            />
         );
 
         expect(document.querySelectorAll('.folder-field_archived-tag')).toHaveLength(1);
@@ -97,20 +99,26 @@ describe('<SearchResultCard/>', () => {
             iconDir: 'test/dir',
         };
         const wrapper = render(
-            <SearchResultCard cardData={cardData} summary="Card Summary" url="#card" isTopResult={false} iconUrl={iconUrl} />
+            <SearchResultCard
+                cardData={cardData}
+                summary="Card Summary"
+                url="#card"
+                isTopResult={false}
+                iconUrl={iconUrl}
+            />
         );
         expect(document.querySelector('img').getAttribute('src')).toBe(iconUrl);
     });
 
     test('no summary', () => {
         render(<SearchResultCard cardData={{}} summary={undefined} url="#card" isTopResult={false} />);
-        expect(document.querySelector('.search-result__summary').textContent).toEqual("No summary provided");
+        expect(document.querySelector('.search-result__summary').textContent).toEqual('No summary provided');
     });
 
     test('summary empty', () => {
-        render(<SearchResultCard cardData={{}} summary={""} url="#card" isTopResult={false} />);
+        render(<SearchResultCard cardData={{}} summary="" url="#card" isTopResult={false} />);
 
-        expect(document.querySelector('.search-result__summary').textContent).toEqual("No summary provided");
+        expect(document.querySelector('.search-result__summary').textContent).toEqual('No summary provided');
     });
 
     test('none empty summary', () => {
@@ -127,7 +135,5 @@ describe('<SearchResultCard/>', () => {
 
         // Long summary should get truncated
         expect(document.querySelector('.search-result__summary').textContent).toEqual(longSummary);
-
     });
-
 });

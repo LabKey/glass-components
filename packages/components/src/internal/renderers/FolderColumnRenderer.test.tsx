@@ -1,8 +1,9 @@
 import React, { act } from 'react';
 import { Map } from 'immutable';
 
-import { FolderColumnRenderer } from './FolderColumnRenderer';
 import { renderWithAppContext } from '../test/reactTestLibraryHelpers';
+
+import { FolderColumnRenderer } from './FolderColumnRenderer';
 
 describe('FolderColumnRenderer', () => {
     test('No data', async () => {
@@ -31,7 +32,7 @@ describe('FolderColumnRenderer', () => {
                 serverContext: {
                     moduleContext: {
                         samplemanagement: {
-                            archivedContainers: ['Folder1', 'testContainerEntityId']
+                            archivedContainers: ['Folder1', 'testContainerEntityId'],
                         },
                     },
                 },
@@ -47,7 +48,7 @@ describe('FolderColumnRenderer', () => {
                 serverContext: {
                     moduleContext: {
                         samplemanagement: {
-                            archivedContainers: ['Folder1', 'testContainerEntityId']
+                            archivedContainers: ['Folder1', 'testContainerEntityId'],
                         },
                     },
                 },
@@ -68,7 +69,7 @@ describe('FolderColumnRenderer', () => {
                 serverContext: {
                     moduleContext: {
                         samplemanagement: {
-                            archivedContainers: ['Folder1', 'archivedContainerEntityId2']
+                            archivedContainers: ['Folder1', 'archivedContainerEntityId2'],
                         },
                     },
                 },
@@ -77,6 +78,4 @@ describe('FolderColumnRenderer', () => {
 
         expect(document.querySelector('body').textContent).toBe('Folder2');
     });
-
-
 });
