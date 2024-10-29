@@ -370,7 +370,7 @@ describe('createFolderItem', () => {
         expect(item.label).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.title);
         expect(item.path).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.path);
         expect(item.isTopLevel).toBe(true);
-        expect(item.href).toBe('/labkey/controller/TestProjectContainer/TestFolderContainer/app.view');
+        expect(item.href).toBe('/labkey/controller/TestProjectContainer/ArchiveFolderContainer/app.view');
         expect(item.archived).toBeTruthy();
     });
 
