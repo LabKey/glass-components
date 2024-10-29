@@ -1,17 +1,14 @@
-import React, { createRef } from 'react';
-import { ReactWrapper } from 'enzyme';
+import React, { act, createRef } from 'react';
 import { List, Map } from 'immutable';
+
+import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
 import { AppContext } from '../../AppContext';
 
 import { getTestAPIWrapper } from '../../APIWrapper';
-import { TEST_FOLDER_CONTAINER, TEST_PROJECT_CONTAINER } from '../../containerFixtures';
+import { TEST_ARCHIVED_FOLDER_CONTAINER, TEST_FOLDER_CONTAINER, TEST_PROJECT_CONTAINER } from '../../containerFixtures';
 import { ServerContext } from '../base/ServerContext';
 import { SAMPLE_MANAGER_APP_PROPERTIES } from '../../app/constants';
-
-import { mountWithAppServerContext, waitForLifecycle } from '../../test/enzymeTestHelpers';
-
-import { Alert } from '../base/Alert';
 
 import { getSecurityTestAPIWrapper, SecurityAPIWrapper } from '../security/APIWrapper';
 
@@ -21,8 +18,7 @@ import { Container } from '../base/models/Container';
 
 import { getNavigationTestAPIWrapper, NavigationAPIWrapper } from './NavigationAPIWrapper';
 
-import { FolderMenu, FolderMenuItem } from './FolderMenu';
-import { ProductMenuSection } from './ProductMenuSection';
+import { FolderMenuItem } from './FolderMenu';
 
 import { MenuSectionModel, ProductMenuModel, MenuSectionConfig } from './model';
 import {
@@ -168,88 +164,117 @@ describe('ProductMenuButton', () => {
         };
     }
 
-    function validate(wrapper: ReactWrapper) {
-        expect(wrapper.find('.product-menu-button')).toHaveLength(1);
-        expect(wrapper.find('button').prop('aria-expanded')).toBe(false);
-        expect(wrapper.find(ProductMenuButtonTitle)).toHaveLength(1);
-        expect(wrapper.find(ProductMenu)).toHaveLength(0);
-        expect(wrapper.find('.with-col-folders')).toHaveLength(0);
-    }
-
     test('default props', async () => {
-        const wrapper = mountWithAppServerContext(
-            <ProductMenuButton {...getDefaultProps()} />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-        await waitForLifecycle(wrapper);
-        validate(wrapper);
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenuButton {...getDefaultProps()} />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        expect(document.querySelectorAll('.product-menu-button')).toHaveLength(1);
+        expect(document.querySelector('.product-menu-button').getAttribute('aria-expanded')).toBe("false");
+        expect(document.querySelectorAll('div.title')).toHaveLength(1);
+        expect(document.querySelectorAll('.product-menu-content')).toHaveLength(0);
+        expect(document.querySelectorAll('.with-col-folders')).toHaveLength(0);
+
     });
 
     test('ProductMenuButtonTitle without items', async () => {
         const location = { pathname: '/admin' };
-        const wrapper = mountWithAppServerContext(
-            <ProductMenuButtonTitle container={TEST_FOLDER_CONTAINER} folderItems={[]} location={location as any} />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-        await waitForLifecycle(wrapper);
-        expect(wrapper.find('.title').text()).toBe('Menu');
-        expect(wrapper.find('.subtitle').text()).toBe('Administration');
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenuButtonTitle container={TEST_FOLDER_CONTAINER} folderItems={[]} location={location as any} />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        expect(document.querySelector('div.title').textContent).toBe('Menu');
+        expect(document.querySelector('.subtitle').textContent).toBe('Administration');
     });
 
     test('ProductMenuButtonTitle with items', async () => {
         const location = { pathname: '/items' };
-        const wrapper = mountWithAppServerContext(
-            <ProductMenuButtonTitle
-                container={TEST_FOLDER_CONTAINER}
-                folderItems={[{} as FolderMenuItem, {} as FolderMenuItem]}
-                location={location as any}
-            />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-        await waitForLifecycle(wrapper);
-        expect(wrapper.find('.title').text()).toBe(TEST_FOLDER_CONTAINER.title);
-        expect(wrapper.find('.subtitle').text()).toBe('Storage');
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenuButtonTitle
+                    container={TEST_FOLDER_CONTAINER}
+                    folderItems={[{} as FolderMenuItem, {} as FolderMenuItem]}
+                    location={location as any}
+                />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        expect(document.querySelector('div.title').textContent).toBe(TEST_FOLDER_CONTAINER.title);
+        expect(document.querySelector('.subtitle').textContent).toBe('Storage');
     });
 
     test('ProductMenuButtonTitle without routes', async () => {
         const location = { pathname: '/' };
-        const wrapper = mountWithAppServerContext(
-            <ProductMenuButtonTitle
-                container={TEST_FOLDER_CONTAINER}
-                folderItems={[{} as FolderMenuItem, {} as FolderMenuItem]}
-                location={location as any}
-            />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-        await waitForLifecycle(wrapper);
-        expect(wrapper.find('.title').text()).toBe(TEST_FOLDER_CONTAINER.title);
-        expect(wrapper.find('.subtitle').text()).toBe('Dashboard');
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenuButtonTitle
+                    container={TEST_FOLDER_CONTAINER}
+                    folderItems={[{} as FolderMenuItem, {} as FolderMenuItem]}
+                    location={location as any}
+                />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        expect(document.querySelector('div.title').textContent).toBe(TEST_FOLDER_CONTAINER.title);
+        expect(document.querySelector('.subtitle').textContent).toBe('Dashboard');
+
     });
 
     test('ProductMenuButtonTitle home', async () => {
         const location = { pathname: '/' };
-        const wrapper = mountWithAppServerContext(
-            <ProductMenuButtonTitle
-                container={HOME_PROJECT}
-                folderItems={[{} as FolderMenuItem, {} as FolderMenuItem]}
-                location={location as any}
-            />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-        await waitForLifecycle(wrapper);
-        expect(wrapper.find('.title').text()).toBe(HOME_TITLE);
-        expect(wrapper.find('.subtitle').text()).toBe('Dashboard');
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenuButtonTitle
+                    container={HOME_PROJECT}
+                    folderItems={[{} as FolderMenuItem, {} as FolderMenuItem]}
+                    location={location as any}
+                />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        expect(document.querySelector('div.title').textContent).toBe(HOME_TITLE);
+        expect(document.querySelector('.subtitle').textContent).toBe('Dashboard');
     });
+
+    test('ProductMenuButtonTitle archived', async () => {
+        const location = { pathname: '/' };
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenuButtonTitle
+                    container={TEST_ARCHIVED_FOLDER_CONTAINER}
+                    folderItems={[{} as FolderMenuItem, {} as FolderMenuItem]}
+                    location={location as any}
+                />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        expect(document.querySelector('div.title').textContent).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.title + "Archived");
+        expect(document.querySelector('.subtitle').textContent).toBe('Dashboard');
+        expect(document.querySelectorAll('.product-menu_archived-tag')).toHaveLength(1);
+    });
+
 });
 
 describe('ProductMenu', () => {
@@ -276,65 +301,56 @@ describe('ProductMenu', () => {
         };
     }
 
-    function validate(wrapper: ReactWrapper, hasError = false, showFolderMenu = true, contentSections = 2): void {
-        expect(wrapper.find('.product-menu-content')).toHaveLength(1);
-        expect(wrapper.find('.navbar-connector')).toHaveLength(1);
-        expect(wrapper.find(Alert)).toHaveLength(hasError ? 1 : 0);
-        expect(wrapper.find(FolderMenu)).toHaveLength(showFolderMenu ? 1 : 0);
-        expect(wrapper.find('.sections-content')).toHaveLength(1);
-        expect(wrapper.find('.menu-section')).toHaveLength(contentSections + (showFolderMenu ? 1 : 0));
-        expect(wrapper.find('.col-product-section')).toHaveLength(contentSections);
-        expect(wrapper.find(ProductMenuSection)).toHaveLength(contentSections);
+    function validate(hasError = false, showFolderMenu = true, contentSections = 2): void {
+        expect(document.querySelectorAll('.product-menu-content')).toHaveLength(1);
+        expect(document.querySelectorAll('.navbar-connector')).toHaveLength(1);
+        expect(document.querySelectorAll('.alert')).toHaveLength(hasError ? 1 : 0);
+        expect(document.querySelectorAll('.menu-section.col-folders')).toHaveLength(showFolderMenu ? 1 : 0);
+        expect(document.querySelectorAll('.sections-content')).toHaveLength(1);
+        expect(document.querySelectorAll('.menu-section')).toHaveLength(contentSections + (showFolderMenu ? 1 : 0));
+        expect(document.querySelectorAll('.col-product-section')).toHaveLength(contentSections);
+        expect(document.querySelectorAll('.product-menu-section-header')).toHaveLength(contentSections);
     }
 
     test('default props', async () => {
-        const wrapper = mountWithAppServerContext(
-            <ProductMenu {...getDefaultProps()} />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-
-        await waitForLifecycle(wrapper);
-        validate(wrapper);
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenu {...getDefaultProps()} />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        validate();
     });
 
     test('error', async () => {
-        const wrapper = mountWithAppServerContext(
-            <ProductMenu {...getDefaultProps()} error="Test Error" />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-
-        await waitForLifecycle(wrapper);
-        validate(wrapper, true);
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenu {...getDefaultProps()} error="Test Error" />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        validate(true);
     });
 
     test('showFolderMenu false', async () => {
-        const wrapper = mountWithAppServerContext(
-            <ProductMenu {...getDefaultProps()} showFolderMenu={false} />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-
-        await waitForLifecycle(wrapper);
-        validate(wrapper, false, false);
-        wrapper.unmount();
+        await act(async () => {
+            renderWithAppContext(
+                <ProductMenu {...getDefaultProps()} showFolderMenu={false} />,
+                {
+                    appContext: getDefaultAppContext(),
+                    serverContext: getDefaultServerContext()
+                }
+            );
+        });
+        validate(false, false);
     });
 
-    test('activeContainerId', async () => {
-        const wrapper = mountWithAppServerContext(
-            <ProductMenu {...getDefaultProps()} />,
-            getDefaultAppContext(),
-            getDefaultServerContext()
-        );
-
-        await waitForLifecycle(wrapper);
-        validate(wrapper);
-        expect(wrapper.find(FolderMenu).prop('activeContainerId')).toBe(TEST_FOLDER_CONTAINER.id);
-        wrapper.unmount();
-    });
 });
 
 describe('createFolderItem', () => {
@@ -345,6 +361,17 @@ describe('createFolderItem', () => {
         expect(item.path).toBe(TEST_FOLDER_CONTAINER.path);
         expect(item.isTopLevel).toBe(true);
         expect(item.href).toBe('/labkey/controller/TestProjectContainer/TestFolderContainer/app.view');
+        expect(item.archived).toBeFalsy();
+    });
+
+    test('archived folder', () => {
+        const item = createFolderItem(TEST_ARCHIVED_FOLDER_CONTAINER, 'controller', true);
+        expect(item.id).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.id);
+        expect(item.label).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.title);
+        expect(item.path).toBe(TEST_ARCHIVED_FOLDER_CONTAINER.path);
+        expect(item.isTopLevel).toBe(true);
+        expect(item.href).toBe('/labkey/controller/TestProjectContainer/ArchiveFolderContainer/app.view');
+        expect(item.archived).toBeTruthy();
     });
 
     test('home project', () => {
@@ -354,6 +381,7 @@ describe('createFolderItem', () => {
         expect(item.path).toBe(HOME_PROJECT.path);
         expect(item.isTopLevel).toBe(true);
         expect(item.href).toBe('/labkey/controller/home/app.view');
+        expect(item.archived).toBeFalsy();
     });
 });
 

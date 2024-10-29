@@ -169,3 +169,12 @@
 .identifying_field_label {
     color: #777777
 }
+
+.folder-field_archived-tag {
+    display: inline;
+
+    &.alert {
+        margin: 0 3px 0 10px;
+        padding: 2px 3px;
+    }
+}

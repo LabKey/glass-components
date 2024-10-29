@@ -114,6 +114,7 @@ export const EXPERIMENTAL_REQUESTS_MENU = 'experimental-biologics-requests-menu'
 export const EXPERIMENTAL_SAMPLE_ALIQUOT_SELECTOR = 'experimental-sample-aliquot-selector';
 
 export const FOLDER_DATA_TYPE_EXCLUSIONS = 'dataTypeExclusions';
+export const ARCHIVED_FOLDERS = 'archivedContainers';
 
 export const BASE_APP_HELP_LINK = 'https://www.labkey.org/SampleManagerHelp/wiki-page.view?name=';
 

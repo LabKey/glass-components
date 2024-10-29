@@ -48,6 +48,7 @@ import {
     SOURCES_KEY,
     USER_KEY,
     WORKFLOW_KEY,
+    ARCHIVED_FOLDERS,
 } from './constants';
 
 declare var LABKEY: LabKey;
@@ -302,6 +303,24 @@ export function isProductFoldersDataListingScopedToFolder(moduleContext?: Module
 
 export function getFolderDataExclusion(moduleContext?: ModuleContext): { [key: string]: number[] } {
     return resolveModuleContext(moduleContext)?.samplemanagement?.[FOLDER_DATA_TYPE_EXCLUSIONS];
+}
+
+export function setFolderDataExclusion(
+    moduleContext: ModuleContext,
+    dataTypeExclusions: { [key: string]: number[] }
+): ModuleContext {
+    // side-effect set global moduleContext
+    if (LABKEY?.moduleContext?.samplemanagement) {
+        LABKEY.moduleContext.samplemanagement.dataTypeExclusions = dataTypeExclusions;
+    }
+
+    return Object.assign(moduleContext ?? {}, {
+        samplemanagement: Object.assign(moduleContext?.samplemanagement ?? {}, { dataTypeExclusions }),
+    });
+}
+
+export function getArchivedFolders(moduleContext?: ModuleContext): string[] {
+    return resolveModuleContext(moduleContext)?.samplemanagement?.[ARCHIVED_FOLDERS];
 }
 
 export function getFolderDashboardSampleTypeExclusion(moduleContext?: ModuleContext): number[] {

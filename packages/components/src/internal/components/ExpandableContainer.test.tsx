@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { userEvent } from "@testing-library/user-event";
+import { userEvent } from '@testing-library/user-event';
 
 import { ExpandableContainer } from './ExpandableContainer';
 
@@ -32,6 +32,26 @@ describe('<ExpandableContainer/>', () => {
 
         const { container } = render(component);
         expect(container).toMatchSnapshot();
+    });
+
+    test('noIcon, custom rowCls', () => {
+        render(
+            <ExpandableContainer
+                clause={<div>Clause</div>}
+                links={<div>links</div>}
+                isExpandable={false}
+                initExpanded={true}
+                noIcon
+                rowCls="XY"
+                iconFaCls="fa-test"
+                containerCls="test-container-cls"
+            >
+                <div>Body</div>
+            </ExpandableContainer>
+        );
+        expect(document.querySelectorAll('.row.container-expandable')).toHaveLength(0);
+        expect(document.querySelectorAll('.XY.container-expandable')).toHaveLength(1);
+        expect(document.querySelectorAll('.container-expandable-child__img')).toHaveLength(0);
     });
 
     test('with state', async () => {

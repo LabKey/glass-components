@@ -1,5 +1,6 @@
 import React, { act } from 'react';
 import { screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import { getTestAPIWrapper } from '../../APIWrapper';
 import { getQueryTestAPIWrapper } from '../../query/APIWrapper';
@@ -125,9 +126,32 @@ describe('DataTypeSelector', () => {
             lsid: 'urn:lsid:labkey.com:SampleSet.Folder-107:11',
         },
     ];
+    const inactiveSampleTypes = [
+        {
+            label: 'PBMC',
+            labelColor: '#2980b9',
+            rowId: 25,
+            description: null,
+            type: 'SampleType',
+            lsid: 'urn:lsid:labkey.com:SampleSet.Folder-105:3',
+            inactive: true,
+        },
+    ];
     const apiWithResults = getTestAPIWrapper(jest.fn, {
         query: getQueryTestAPIWrapper(jest.fn, {
             getFolderConfigurableEntityTypeOptions: jest.fn().mockResolvedValue(sampleTypes),
+        }),
+    });
+    const apiWithInactiveResults = getTestAPIWrapper(jest.fn, {
+        query: getQueryTestAPIWrapper(jest.fn, {
+            getFolderConfigurableEntityTypeOptions: jest
+                .fn()
+                .mockResolvedValue([...sampleTypes, ...inactiveSampleTypes]),
+        }),
+    });
+    const apiWithOnlyInactiveResults = getTestAPIWrapper(jest.fn, {
+        query: getQueryTestAPIWrapper(jest.fn, {
+            getFolderConfigurableEntityTypeOptions: jest.fn().mockResolvedValue(inactiveSampleTypes),
         }),
     });
     const apiWithNoResults = getTestAPIWrapper(jest.fn, {
@@ -166,6 +190,48 @@ describe('DataTypeSelector', () => {
         expect(document.querySelectorAll('.filter-faceted__checkbox')[1].getAttribute('checked')).toBe('');
         expect(document.querySelectorAll('.col-xs-12')).toHaveLength(2); // outer col + 1 inner col
         expect(document.querySelectorAll('.col-md-6')).toHaveLength(0);
+
+        const archivedSectionHeader = document.querySelectorAll('.container-expandable');
+        expect(archivedSectionHeader.length).toBe(0);
+    });
+
+    test('with inactive data types', async () => {
+        await act(async () => {
+            renderWithAppContext(<DataTypeSelector {...defaultProps()} api={apiWithInactiveResults} />);
+        });
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(2);
+        expect(document.querySelectorAll('.folder-faceted-data-type')[0].textContent).toBe('Blood');
+        expect(document.querySelectorAll('.filter-faceted__checkbox')[0].getAttribute('checked')).toBe('');
+        expect(document.querySelectorAll('.folder-faceted-data-type')[1].textContent).toBe('DNA');
+        expect(document.querySelectorAll('.filter-faceted__checkbox')[1].getAttribute('checked')).toBe('');
+        expect(document.querySelectorAll('.col-xs-12')).toHaveLength(2); // outer col + 1 inner col
+        expect(document.querySelectorAll('.col-md-6')).toHaveLength(0);
+
+        const archivedSectionHeader = document.querySelectorAll('.container-expandable');
+        expect(archivedSectionHeader.length).toBe(1);
+        await userEvent.click(document.querySelector('.container-expandable__inactive'));
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(3);
+        expect(document.querySelectorAll('.folder-faceted-data-type')[2].textContent).toBe('PBMC');
+        expect(document.querySelectorAll('.filter-faceted__checkbox')[2].getAttribute('checked')).toBe('');
+        await userEvent.click(document.querySelector('.container-expandable-child__inactive'));
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(2);
+    });
+
+    test('with only inactive data types', async () => {
+        await act(async () => {
+            renderWithAppContext(<DataTypeSelector {...defaultProps()} api={apiWithOnlyInactiveResults} />);
+        });
+        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(document.querySelector('.content-group-label').textContent).toBe('Sample Types');
+        expect(document.querySelector('.help-block').textContent).toBe('No sample types');
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(0);
+
+        const archivedSectionHeader = document.querySelectorAll('.container-expandable');
+        expect(archivedSectionHeader.length).toBe(1);
+        await userEvent.click(document.querySelector('.container-expandable__inactive'));
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(1);
+        expect(document.querySelectorAll('.folder-faceted-data-type')[0].textContent).toBe('PBMC');
+        expect(document.querySelectorAll('.filter-faceted__checkbox')[0].getAttribute('checked')).toBe('');
     });
 
     test('with 2 columns', async () => {
@@ -179,6 +245,21 @@ describe('DataTypeSelector', () => {
         expect(document.querySelectorAll('.filter-faceted__checkbox')[1].getAttribute('checked')).toBe('');
         expect(document.querySelectorAll('.col-xs-12')).toHaveLength(3); // outer col + 2 inner col
         expect(document.querySelectorAll('.col-md-6')).toHaveLength(2);
+    });
+
+    test('with 2 columns and with inactive data types', async () => {
+        await act(async () => {
+            renderWithAppContext(<DataTypeSelector {...defaultProps()} api={apiWithInactiveResults} columns={2} />);
+        });
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(2);
+        expect(document.querySelectorAll('.col-xs-12')).toHaveLength(3); // outer col + 2 inner col
+        expect(document.querySelectorAll('.col-md-6')).toHaveLength(2);
+
+        const archivedSectionHeader = document.querySelectorAll('.container-expandable');
+        expect(archivedSectionHeader.length).toBe(1);
+        await userEvent.click(document.querySelector('.container-expandable__inactive'));
+        expect(document.querySelectorAll('.folder-faceted-data-type')).toHaveLength(3);
+        expect(document.querySelectorAll('.folder-faceted-data-type')[2].textContent).toBe('PBMC');
     });
 
     test('toggleSelectAll = false', async () => {

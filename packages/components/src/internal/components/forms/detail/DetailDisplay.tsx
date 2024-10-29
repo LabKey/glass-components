@@ -39,6 +39,7 @@ import { NoLinkRenderer } from '../../../renderers/NoLinkRenderer';
 import { UserDetailsRenderer } from '../../../renderers/UserDetailsRenderer';
 import { ExpirationDateColumnRenderer } from '../../../renderers/ExpirationDateColumnRenderer';
 import { getContainerFilterForLookups } from '../../../query/api';
+import { FolderColumnRenderer } from '../../../renderers/FolderColumnRenderer';
 
 export type Renderer = (data: any, row?: any) => ReactNode;
 
@@ -453,6 +454,9 @@ export function resolveDetailRenderer(column: QueryColumn): Renderer {
                 break;
             case 'filecolumnrenderer':
                 renderer = d => <FileColumnRenderer data={d} col={column} />;
+                break;
+            case 'foldercolumnrenderer':
+                renderer = d => <FolderColumnRenderer data={d} />;
                 break;
             case 'nolinkrenderer':
                 renderer = d => <NoLinkRenderer data={d} />;

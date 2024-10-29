@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Alert } from '../base/Alert';
 import { resolveErrorMessage } from '../../util/messaging';
@@ -9,6 +9,8 @@ import { ComponentsAPIWrapper, getDefaultAPIWrapper } from '../../APIWrapper';
 import { ColorIcon } from '../base/ColorIcon';
 
 import { Container } from '../base/models/Container';
+
+import { ExpandableContainer } from '../ExpandableContainer';
 
 import { DataTypeEntity, EntityDataType, FolderConfigurableDataType } from './models';
 
@@ -28,7 +30,8 @@ export interface DataTypeSelectorProps {
     disabled?: boolean;
     entityDataType?: EntityDataType;
     hiddenEntities?: any[]; // number[] | string[]
-    isNewFolder?: boolean;
+    inactiveSectionLabel?: string;
+    isNewEntity?: boolean;
     noHeader?: boolean;
     showUncheckedWarning?: boolean;
     toggleSelectAll?: boolean;
@@ -64,6 +67,112 @@ export const getUncheckedEntityWarning = (
     return null;
 };
 
+interface DataTypeSelectorProp {
+    disabled: boolean;
+    getUncheckedEntityWarning?: (id: number | string) => React.ReactNode;
+    onChange: (entityId: number | string, toggle: boolean, check?: boolean) => void;
+    showUncheckedWarning: boolean;
+    uncheckedEntities: any[];
+}
+
+interface DataTypeSelectorItemProps extends DataTypeSelectorProp {
+    dataType?: DataTypeEntity;
+    index?: number;
+}
+
+interface DataTypeSelectorListProps extends DataTypeSelectorProp {
+    columns?: number;
+    dataTypes: DataTypeEntity[];
+}
+
+export const DataTypeSelectorItem: FC<DataTypeSelectorItemProps> = memo(props => {
+    const { index, disabled, getUncheckedEntityWarning, uncheckedEntities, onChange, showUncheckedWarning, dataType } =
+        props;
+
+    const entityId = useMemo(() => {
+        return dataType.rowId ?? dataType.lsid;
+    }, [dataType]);
+
+    const handleChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => {
+            onChange(entityId, false, event.target.checked);
+        },
+        [entityId, onChange]
+    );
+
+    const handleClick = useCallback(() => {
+        onChange(entityId, true);
+    }, [entityId, onChange]);
+
+    return (
+        <li key={entityId} className="folder-faceted-data-type">
+            <div className="form-check">
+                <input
+                    className="form-check-input filter-faceted__checkbox"
+                    type="checkbox"
+                    name={'field-value-' + index}
+                    onChange={handleChange}
+                    checked={uncheckedEntities?.indexOf(entityId) < 0}
+                    disabled={disabled}
+                />
+                <div className="margin-left-more folder-datatype-faceted__value" onClick={handleClick}>
+                    {dataType.labelColor && (
+                        <ColorIcon cls="label_color color-icon__circle-small" value={dataType.labelColor} />
+                    )}
+                    {dataType.label}
+                </div>
+            </div>
+            {!!dataType.sublabel && <div className="help-block margin-left-more">{dataType.sublabel}</div>}
+            {showUncheckedWarning && getUncheckedEntityWarning(entityId)}
+        </li>
+    );
+});
+
+export const DataTypeSelectorList: FC<DataTypeSelectorListProps> = memo(props => {
+    const {
+        columns = 1,
+        dataTypes,
+        disabled,
+        getUncheckedEntityWarning,
+        uncheckedEntities,
+        onChange,
+        showUncheckedWarning,
+    } = props;
+
+    const colWidth = 12 / columns;
+    const subSize = Math.ceil(dataTypes.length / columns);
+    const columnIndexes = [];
+    for (let i = 0; i < columns; i++) columnIndexes.push(i);
+
+    return (
+        <>
+            {columnIndexes.map(ind => {
+                const maxInd = Math.min(dataTypes.length, (ind + 1) * subSize);
+                const subList = dataTypes.slice(ind * subSize, maxInd);
+                return (
+                    <div className={`col-xs-12 col-md-${colWidth}`} key={ind}>
+                        <ul className="nav nav-stacked labkey-wizard-pills">
+                            {subList?.map((type, index) => {
+                                return (
+                                    <DataTypeSelectorItem
+                                        index={index}
+                                        dataType={type}
+                                        disabled={disabled}
+                                        getUncheckedEntityWarning={getUncheckedEntityWarning}
+                                        uncheckedEntities={uncheckedEntities}
+                                        onChange={onChange}
+                                        showUncheckedWarning={showUncheckedWarning}
+                                    />
+                                );
+                            })}
+                        </ul>
+                    </div>
+                );
+            })}
+        </>
+    );
+});
+
 export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
     const {
         api = getDefaultAPIWrapper(),
@@ -78,13 +187,17 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
         updateUncheckedTypes,
         columns,
         noHeader,
-        isNewFolder,
+        isNewEntity,
         container,
         showUncheckedWarning = true,
         dataTypePrefix = '',
+        inactiveSectionLabel = 'Inactive',
     } = props;
 
     const [dataTypes, setDataTypes] = useState<DataTypeEntity[]>();
+    const [activeDataTypes, setActiveDataTypes] = useState<DataTypeEntity[]>([]);
+    const [inactiveDataTypes, setInactiveDataTypes] = useState<DataTypeEntity[]>([]);
+
     const [dataType, setDataType] = useState<FolderConfigurableDataType>();
     const [error, setError] = useState<string>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -116,6 +229,34 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
         }
     }, [hiddenEntities /* only called on changes to hiddenEntities */]);
 
+    useEffect(() => {
+        if (loading || !dataTypes || dataTypes?.length === 0) return;
+
+        const activeDataTypes_: DataTypeEntity[] = [],
+            inactiveDataTypes_: DataTypeEntity[] = [],
+            inactiveDataTypeLsids = [];
+        if (isNewEntity) {
+            dataTypes?.forEach(dataType => {
+                if (dataType.inactive) {
+                    inactiveDataTypes_.push(dataType);
+                    inactiveDataTypeLsids.push(dataType.lsid);
+                } else activeDataTypes_.push(dataType);
+            });
+            if (inactiveDataTypeLsids?.length > 0) {
+                updateUncheckedTypes(dataType, inactiveDataTypeLsids);
+                setUncheckedEntities(inactiveDataTypeLsids);
+            }
+        } else {
+            dataTypes?.forEach(dataType => {
+                if (dataType.inactive) inactiveDataTypes_.push(dataType);
+                else activeDataTypes_.push(dataType);
+            });
+        }
+
+        setActiveDataTypes(activeDataTypes_);
+        setInactiveDataTypes(inactiveDataTypes_);
+    }, [loading, dataTypes, isNewEntity]);
+
     useEffect(
         () => {
             if (allDataCounts) setDataCounts(allDataCounts);
@@ -136,29 +277,32 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
     const ensureCount = useCallback(async () => {
         if (dataCounts) return;
 
-        const results = await api.query.getFolderDataTypeDataCount(dataType, container?.path, dataTypes, isNewFolder);
+        const results = await api.query.getFolderDataTypeDataCount(dataType, container?.path, dataTypes, isNewEntity);
         setDataCounts(results);
-    }, [api.query, dataCounts, dataType, dataTypes, isNewFolder, container?.path]);
+    }, [api.query, dataCounts, dataType, dataTypes, isNewEntity, container?.path]);
 
     const onChange = useCallback(
         (entityId: number | string, toggle: boolean, check?: boolean) => {
             if (disabled) return;
             ensureCount();
-            const updated = [...uncheckedEntities];
-            let checked = check;
-            if (toggle) {
-                checked = uncheckedEntities?.indexOf(entityId) > -1;
-            }
 
-            if (checked) {
-                const ind = updated.indexOf(entityId);
-                updated.splice(ind, 1);
-            } else {
-                updated.push(entityId);
-            }
+            setUncheckedEntities(prevState => {
+                const updated = [...prevState];
+                let checked = check;
+                if (toggle) {
+                    checked = uncheckedEntities?.indexOf(entityId) > -1;
+                }
 
-            updateUncheckedTypes(dataType, updated);
-            setUncheckedEntities(updated);
+                if (checked) {
+                    const ind = updated.indexOf(entityId);
+                    updated.splice(ind, 1);
+                } else {
+                    updated.push(entityId);
+                }
+
+                updateUncheckedTypes(dataType, updated);
+                return updated;
+            });
         },
         [disabled, ensureCount, uncheckedEntities, updateUncheckedTypes, dataType]
     );
@@ -194,73 +338,19 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
         return null;
     }, [dataTypeLabel, entityDataType]);
 
-    // FIXME: This should be a component, not a callback
-    const getEntitiesSubList = useCallback(
-        (dataTypeEntities: DataTypeEntity[]): React.ReactNode => {
-            return (
-                <ul className="nav nav-stacked labkey-wizard-pills">
-                    {dataTypeEntities?.map((type, index) => {
-                        const entityId = type.rowId ?? type.lsid;
-                        // FIXME: This should be a component so we can use useCallback for the onChange/onClick below
-                        return (
-                            <li key={entityId} className="folder-faceted-data-type">
-                                <div className="form-check">
-                                    <input
-                                        className="form-check-input filter-faceted__checkbox"
-                                        type="checkbox"
-                                        name={'field-value-' + index}
-                                        onChange={event => onChange(entityId, false, event.target.checked)}
-                                        checked={uncheckedEntities?.indexOf(entityId) < 0}
-                                        disabled={disabled}
-                                    />
-                                    <div
-                                        className="margin-left-more folder-datatype-faceted__value"
-                                        onClick={() => onChange(entityId, true)}
-                                    >
-                                        {type.labelColor && (
-                                            <ColorIcon
-                                                cls="label_color color-icon__circle-small"
-                                                value={type.labelColor}
-                                            />
-                                        )}
-                                        {type.label}
-                                    </div>
-                                </div>
-                                {!!type.sublabel && <div className="help-block margin-left-more">{type.sublabel}</div>}
-                                {showUncheckedWarning && _getUncheckedEntityWarning(entityId)}
-                            </li>
-                        );
-                    })}
-                </ul>
-            );
-        },
-        [uncheckedEntities, disabled, showUncheckedWarning, _getUncheckedEntityWarning, onChange]
-    );
-
-    // FIXME: this should be a component, not a callback
-    const getEntitiesList = useCallback((): React.ReactNode => {
-        if (!columns || columns === 1) {
-            return <div className="col-xs-12">{getEntitiesSubList(dataTypes)}</div>;
-        }
-
-        const lists = [];
-        const colWidth = 12 / columns;
-        const subSize = Math.ceil(dataTypes.length / columns);
-        for (let i = 0; i < columns; i++) {
-            const maxInd = Math.min(dataTypes.length, (i + 1) * subSize);
-            const subList = dataTypes.slice(i * subSize, maxInd);
-            lists.push(
-                <div className={`col-xs-12 col-md-${colWidth}`} key={i}>
-                    {getEntitiesSubList(subList)}
-                </div>
-            );
-        }
-        return <>{lists}</>;
-    }, [dataTypes, columns, getEntitiesSubList]);
+    const inactiveSectionHeader = useMemo(() => {
+        return (
+            <div className="gray-text">
+                <span>{inactiveSectionLabel}</span>
+            </div>
+        );
+    }, [inactiveSectionLabel]);
 
     // Note: because we return LoadingSpinner here when loading we can remove all the stuff below that renders based on
     // loading status
-    if (!dataTypes || loading) return <LoadingSpinner />;
+    if (!dataTypes || loading) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <>
@@ -278,11 +368,42 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
                 )}
                 <div className="row">
                     {loading && <LoadingSpinner />}
-                    {!loading && getEntitiesList()}
-                    {!loading && dataTypes.length === 0 && (
+                    {!loading && (
+                        <DataTypeSelectorList
+                            columns={columns}
+                            dataTypes={activeDataTypes}
+                            disabled={disabled}
+                            getUncheckedEntityWarning={_getUncheckedEntityWarning}
+                            uncheckedEntities={uncheckedEntities}
+                            onChange={onChange}
+                            showUncheckedWarning={showUncheckedWarning}
+                        />
+                    )}
+                    {!loading && activeDataTypes?.length === 0 && (
                         <div className="help-block margin-left-more">No {headerLabel.toLowerCase()}</div>
                     )}
                 </div>
+                {inactiveDataTypes?.length > 0 && (
+                    <div className="container-listing-left container-data-type-selector">
+                        <ExpandableContainer
+                            isExpandable={true}
+                            clause={inactiveSectionHeader}
+                            links={null}
+                            noIcon={true}
+                            useGreyTheme={true}
+                        >
+                            <DataTypeSelectorList
+                                columns={columns}
+                                dataTypes={inactiveDataTypes}
+                                disabled={disabled}
+                                getUncheckedEntityWarning={_getUncheckedEntityWarning}
+                                uncheckedEntities={uncheckedEntities}
+                                onChange={onChange}
+                                showUncheckedWarning={showUncheckedWarning}
+                            />
+                        </ExpandableContainer>
+                    </div>
+                )}
             </div>
         </>
     );

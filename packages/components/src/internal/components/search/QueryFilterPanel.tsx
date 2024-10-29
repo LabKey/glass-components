@@ -44,6 +44,7 @@ interface Props {
     fullWidth?: boolean;
     hasNotInQueryFilter?: boolean;
     hasNotInQueryFilterLabel?: string;
+    isAncestor?: boolean;
     metricFeatureArea?: string;
     onFilterUpdate: (field: QueryColumn, newFilters: Filter.IFilter[], index: number) => void;
     onHasNoValueInQueryChange?: (check: boolean) => void;
@@ -52,7 +53,6 @@ interface Props {
     skipDefaultViewCheck?: boolean;
     validFilterField?: (field: QueryColumn, queryInfo: QueryInfo, exprColumnsWithSubSelect?: string[]) => boolean;
     viewName?: string;
-    isAncestor?: boolean;
 }
 
 export const QueryFilterPanel: FC<Props> = memo(props => {
@@ -193,7 +193,7 @@ export const QueryFilterPanel: FC<Props> = memo(props => {
         if (!filters || !filterQueryKey || !activeField) return null;
 
         // Issue 45135: include any model filters (baseFilters or queryInfo filters)
-        const valueFilters = selectDistinctOptions ? [...selectDistinctOptions.filterArray] : [];
+        const valueFilters = selectDistinctOptions?.filterArray ? [...selectDistinctOptions.filterArray] : [];
 
         // use active filters to filter distinct values, but exclude filters on current field
         filters?.[filterQueryKey]?.forEach(field => {

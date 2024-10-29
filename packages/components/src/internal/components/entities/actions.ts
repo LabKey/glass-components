@@ -1110,7 +1110,10 @@ export const initParentOptionsSelects = (
     });
 };
 
-export const getFolderDataTypeExclusions = (excludedContainer?: string): Promise<{ [key: string]: number[] }> => {
+export const getFolderDataTypeExclusions = (
+    excludedContainer?: string,
+    reload?: boolean
+): Promise<{ [key: string]: number[] }> => {
     if (!hasModule(SAMPLE_MANAGER_APP_PROPERTIES.moduleName)) {
         return Promise.resolve(undefined);
     }
@@ -1122,7 +1125,7 @@ export const getFolderDataTypeExclusions = (excludedContainer?: string): Promise
             isCurrentContainer = false;
     }
 
-    if (isCurrentContainer) {
+    if (isCurrentContainer && !reload) {
         return new Promise(resolve => resolve(getFolderDataExclusion()));
     }
 

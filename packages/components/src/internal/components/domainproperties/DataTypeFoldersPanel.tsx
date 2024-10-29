@@ -64,7 +64,12 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                     const containers = await api.folder.getContainers(container, moduleContext, true, true, true);
 
                     const allContainers_ = containers.map(container_ => {
-                        return { label: container_.title, lsid: container_.id, type: 'Container' } as DataTypeEntity;
+                        return {
+                            label: container_.title,
+                            lsid: container_.id,
+                            type: 'Container',
+                            inactive: container_.isArchived,
+                        } as DataTypeEntity;
                     });
 
                     setChildFolders(allContainers_.slice(1));
@@ -173,6 +178,9 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                                 dataTypeLabel="folders"
                                 noHeader
                                 columns={2}
+                                inactiveSectionLabel="Archived Folders"
+                                isNewEntity={!dataTypeRowId}
+                                showUncheckedWarning={!!dataTypeRowId}
                             />
                         </div>
                     )}
@@ -187,6 +195,9 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                                     updateUncheckedTypes={updateExcludedFolders}
                                     uncheckedEntitiesDB={excludedContainerIdsDB}
                                     dataTypeLabel="Include in Folders"
+                                    inactiveSectionLabel="Archived Folders"
+                                    isNewEntity={!dataTypeRowId}
+                                    showUncheckedWarning={!!dataTypeRowId}
                                 />
                             </div>
                             <div className="col-xs-6 bottom-spacing">
@@ -199,6 +210,9 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                                     uncheckedEntitiesDB={relatedExcludedContainerIdsDB}
                                     hiddenEntities={excludedContainerIds}
                                     dataTypeLabel={relatedDataTypeLabel}
+                                    inactiveSectionLabel="Archived Folders"
+                                    isNewEntity={!dataTypeRowId}
+                                    showUncheckedWarning={false}
                                 />
                             </div>
                         </>
