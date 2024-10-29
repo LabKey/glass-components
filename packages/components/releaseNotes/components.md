@@ -14,6 +14,14 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Modified DataTypeFolderPanel to section active vs archived folders and uncheck archived folders by default
   - Modified move and create data UIs to exclude archived folder from target options
 
+### version 5.17.8
+*Released*: 29 October 2024
+- Bump `@labkey/build` package dependency
+
+### version 5.17.7
+*Released*: 28 October 2024
+- Bump `@labkey/api` package dependency
+
 ### version 5.17.6
 *Released*: 28 October 2024
 - Update to `vis-network@9.1.9`
