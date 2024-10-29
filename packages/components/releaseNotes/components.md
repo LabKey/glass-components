@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.17.8
+*Released*: 29 October 2024
+- Bump `@labkey/build` package dependency
+
 ### version 5.17.7
 *Released*: 28 October 2024
 - Bump `@labkey/api` package dependency
