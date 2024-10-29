@@ -4,7 +4,7 @@ import { getCurrentProductName, isAssayEnabled, isELNEnabled, isWorkflowEnabled 
 
 import { naturalSort } from '../../../public/sort';
 import { QueryInfo } from '../../../public/QueryInfo';
-import { EditableColumnMetadata } from '../editable/models';
+import {EditableColumnMetadata, EditorModel} from '../editable/models';
 import { SCHEMAS } from '../../schemas';
 
 import { getURLParamsForSampleSelectionKey } from '../samples/utils';
@@ -173,8 +173,21 @@ export function getIdentifyingFieldKeys(queryInfo: QueryInfo): string[] {
 }
 
 export const SAMPLE_ID_FIELD_KEY = 'sampleid';
-export function getSampleIdCellKey(rowIdx: number): string {
-    return genCellKey(SAMPLE_ID_FIELD_KEY, rowIdx);
+export function getSampleIdCellKey(rowIdx: number, sampleFieldKey = SAMPLE_ID_FIELD_KEY): string {
+    return genCellKey(sampleFieldKey, rowIdx);
+}
+
+export function getCellKeySampleIdMap(
+    editorModel: EditorModel,
+    sampleFieldKey: string
+): Record<string, number> {
+    const sampleCellValues = editorModel.getValuesForColumn(sampleFieldKey);
+    return sampleCellValues.reduce((map, row, key) => {
+        if (row.size > 0) {
+            map[key] = row.get(0).raw;
+        }
+        return map;
+    }, {});
 }
 
 export function updateCellKeySampleIdMap(

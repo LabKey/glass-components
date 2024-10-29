@@ -108,8 +108,8 @@ const CELL_KEY_SEPARATOR = '&&';
 export function genCellKeyPrefix(fieldKey: string): string {
     return fieldKey.toLowerCase() + CELL_KEY_SEPARATOR;
 }
-export function genCellKey(fieldKey: string, rowIdx: number): string {
-    return genCellKeyPrefix(fieldKey) + rowIdx;
+export function genCellKey(fieldKey: string, rowIdx: number, sampleFieldKeyPrefix?: string): string {
+    return (sampleFieldKeyPrefix ? sampleFieldKeyPrefix + '/' : '') + genCellKeyPrefix(fieldKey) + rowIdx;
 }
 
 interface CellKeyParts {
