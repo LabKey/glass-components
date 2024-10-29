@@ -261,7 +261,7 @@ export class QueryInfo {
         return extraDisplayColumn;
     }
 
-    getLookupViewEditableGridColumns(includeNameField = false, prefixFieldKey?: string): QueryColumn[] {
+    getIdentifyingFieldsEditableGridColumns(includeNameField = false, prefixFieldKey?: string): QueryColumn[] {
         const cols: QueryColumn[] = [];
         if (this.views.has(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)) {
             this.getDisplayColumns(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME).forEach(col => {

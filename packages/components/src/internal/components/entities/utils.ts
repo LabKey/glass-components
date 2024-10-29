@@ -169,7 +169,7 @@ export function getIdentifyingFieldKeys(queryInfo: QueryInfo): string[] {
     if (!idView) {
         return [];
     }
-    return queryInfo.getLookupViewEditableGridColumns(true).map(col => col.fieldKey);
+    return queryInfo.getIdentifyingFieldsEditableGridColumns(true).map(col => col.fieldKey);
 }
 
 export const SAMPLE_ID_FIELD_KEY = 'sampleid';
@@ -177,12 +177,9 @@ export function getSampleIdCellKey(rowIdx: number, sampleFieldKey = SAMPLE_ID_FI
     return genCellKey(sampleFieldKey, rowIdx);
 }
 
-export function getCellKeySampleIdMap(
-    editorModel: EditorModel,
-    sampleFieldKey: string
-): Record<string, number> {
-    const sampleCellValues = editorModel.getValuesForColumn(sampleFieldKey);
-    return sampleCellValues.reduce((map, row, key) => {
+export function getCellKeyColumnMap(editorModel: EditorModel, colFieldKey: string): Record<string, number> {
+    const colCellValues = editorModel.getValuesForColumn(colFieldKey);
+    return colCellValues.reduce((map, row, key) => {
         if (row.size > 0) {
             map[key] = row.get(0).raw;
         }

@@ -424,7 +424,7 @@ describe('QueryInfo', () => {
         });
     });
 
-    describe('getLookupViewEditableGridColumns', () => {
+    describe('getIdentifyingFieldsEditableGridColumns', () => {
         const columns = [
             { fieldKey: 'name', name: 'name', jsonType: 'string' },
             { fieldKey: 'intCol', name: 'intCol', jsonType: 'int' },
@@ -457,14 +457,14 @@ describe('QueryInfo', () => {
         );
 
         test('without identifying view', () => {
-            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns()).toStrictEqual([]);
-            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns(true)).toStrictEqual([]);
-            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns(false, 'samplePrefixFk')).toStrictEqual([]);
-            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns(true, 'samplePrefixFk')).toStrictEqual([]);
+            expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns()).toStrictEqual([]);
+            expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(true)).toStrictEqual([]);
+            expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(false, 'samplePrefixFk')).toStrictEqual([]);
+            expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(true, 'samplePrefixFk')).toStrictEqual([]);
         });
 
         test('with identifying view', () => {
-            let cols = QUERY_INFO_WITH_ID_VIEW.getLookupViewEditableGridColumns();
+            let cols = QUERY_INFO_WITH_ID_VIEW.getIdentifyingFieldsEditableGridColumns();
             expect(cols).toHaveLength(3);
             expect(cols[0].fieldKey).toBe('intCol');
             expect(cols[0].name).toBe('intCol');
@@ -476,7 +476,7 @@ describe('QueryInfo', () => {
             expect(cols[2].name).toBe('textCol');
             expect(cols[2].readOnly).toBe(true);
 
-            cols = QUERY_INFO_WITH_ID_VIEW.getLookupViewEditableGridColumns(true, 'samplePrefixFk');
+            cols = QUERY_INFO_WITH_ID_VIEW.getIdentifyingFieldsEditableGridColumns(true, 'samplePrefixFk');
             expect(cols).toHaveLength(4);
             expect(cols[0].fieldKey).toBe('samplePrefixFk/name');
             expect(cols[0].name).toBe('samplePrefixFk/name');

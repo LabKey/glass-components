@@ -22,14 +22,15 @@ import { genCellKey } from '../editable/utils';
 
 import { IEntityTypeOption } from './models';
 import {
-    getCellKeySampleIdMap,
+    getCellKeyColumnMap,
     getEntityDescription,
     getEntityNoun,
     getIdentifyingFieldKeys,
     getInitialParentChoices,
     getJobCreationHref,
     getSampleIdCellKey,
-    sampleDeleteDependencyText, updateCellKeySampleIdMap,
+    sampleDeleteDependencyText,
+    updateCellKeySampleIdMap,
 } from './utils';
 import { DataClassDataType, SampleTypeDataType } from './constants';
 
@@ -412,9 +413,9 @@ describe('get cell key helpers', () => {
         rowCount: 4,
     }) as EditorModel;
 
-    test('getCellKeySampleIdMap', () => {
-        expect(getCellKeySampleIdMap(editorModel, 'bogus')).toStrictEqual({});
-        expect(getCellKeySampleIdMap(editorModel, sampleFK)).toStrictEqual({
+    test('getCellKeyColumnMap', () => {
+        expect(getCellKeyColumnMap(editorModel, 'bogus')).toStrictEqual({});
+        expect(getCellKeyColumnMap(editorModel, sampleFK)).toStrictEqual({
             'samplefieldkey&&0': 1,
             'samplefieldkey&&1': 2,
             'samplefieldkey&&3': 3,
@@ -422,7 +423,7 @@ describe('get cell key helpers', () => {
     });
 
     test('updateCellKeySampleIdMap', () => {
-        const initMap = getCellKeySampleIdMap(editorModel, sampleFK);
+        const initMap = getCellKeyColumnMap(editorModel, sampleFK);
         expect(updateCellKeySampleIdMap(initMap, { toAddOrUpdate: {}, toRemove: [] })).toStrictEqual(initMap);
 
         expect(
