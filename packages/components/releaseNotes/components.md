@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.??.?
-*Released*: ?? October 2024
+### version 5.17.9
+*Released*: 29 October 2024
 - Export isCtrlOrMetaKey
 
 ### version 5.17.8
