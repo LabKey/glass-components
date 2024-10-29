@@ -519,6 +519,7 @@ export interface EntityDataType {
     insertColumnNamePrefix?: string;
     instanceKey?: string;
     instanceSchemaName: string;
+    isFromSharedContainer?: boolean;
     labelColorCol?: string;
     listingSchemaQuery: SchemaQuery;
     moveNoun?: string;
@@ -528,7 +529,6 @@ export interface EntityDataType {
     nounSingular: string;
     operationConfirmationActionName: string;
     operationConfirmationControllerName: string;
-    isFromSharedContainer?: boolean;
     sampleFinderCardType?: SampleFinderCardType;
     supportHasNoValueInQuery?: boolean;
     supportsCrossTypeImport?: boolean;
@@ -652,6 +652,7 @@ export interface IParentAlias {
 
 export interface DataTypeEntity {
     description?: string;
+    inactive?: boolean;
     label: string;
     labelColor?: string;
     lsid?: string;

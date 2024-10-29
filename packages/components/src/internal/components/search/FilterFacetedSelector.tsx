@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, memo, useCallback, useEffect, useMemo, useRef, useState, ReactNode } from 'react';
 
 import { Filter, Query } from '@labkey/api';
 
@@ -10,6 +10,8 @@ import { LoadingSpinner } from '../base/LoadingSpinner';
 import { ComponentsAPIWrapper, getDefaultAPIWrapper } from '../../APIWrapper';
 
 import { useRequestHandler } from '../../util/RequestHandler';
+
+import { FolderColumnRenderer } from '../../renderers/FolderColumnRenderer';
 
 import { ALL_VALUE_DISPLAY, EMPTY_VALUE_DISPLAY, getCheckedFilterValues, getUpdatedChooseValuesFilter } from './utils';
 
@@ -26,6 +28,10 @@ interface Props {
     // show search box if number of unique values > N
     showSearchLength?: number;
 }
+
+const rendererFolderValue = (value: any): ReactNode => {
+    return <FolderColumnRenderer data={value} />;
+};
 
 export const FilterFacetedSelector: FC<Props> = memo(props => {
     const {
@@ -46,6 +52,7 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
     const [searchStr, setSearchStr] = useState<string>(undefined);
     const [allShown, setAllShown] = useState<boolean>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isFolderField, setIsFolderField] = useState<boolean>(false);
 
     const { requestHandler, resetRequestHandler } = useRequestHandler();
 
@@ -56,6 +63,15 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
 
     useEffect(() => {
         setDistinctValues(true);
+        const fieldKeyLc = fieldKey.toLowerCase();
+        if (
+            fieldKeyLc === 'folder' ||
+            fieldKeyLc === 'folder/displayname' ||
+            fieldKeyLc === 'container' ||
+            fieldKeyLc === 'container/displayname'
+        ) {
+            setIsFolderField(true);
+        }
     }, [fieldKey]); // on fieldKey change, reload selection values
 
     const setDistinctValues = useCallback(
@@ -189,6 +205,16 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
         });
     }, [fieldDistinctValues, searchDistinctValues, searchStr]);
 
+    const renderValue = useCallback(
+        (value: any) => {
+            if (isFolderField) {
+                return rendererFolderValue(value);
+            }
+            return value;
+        },
+        [isFolderField]
+    );
+
     if (!fieldDistinctValues || allShown === undefined) return <LoadingSpinner />;
 
     return (
@@ -242,7 +268,7 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
                                                     className="filter-faceted__value"
                                                     onClick={() => onChange(value, true, true)}
                                                 >
-                                                    {displayValue}
+                                                    {renderValue(displayValue)}
                                                 </div>
                                             </div>
                                         </li>

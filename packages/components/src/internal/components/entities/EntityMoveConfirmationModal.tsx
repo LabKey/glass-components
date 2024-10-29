@@ -13,16 +13,17 @@ import { SelectInput, SelectInputOption } from '../forms/input/SelectInput';
 import { HOME_PATH, HOME_TITLE } from '../navigation/constants';
 import { Container } from '../base/models/Container';
 
-import { FolderConfigurableDataType } from './models';
 import { CommentTextArea } from '../forms/input/CommentTextArea';
 import { useDataChangeCommentsRequired } from '../forms/input/useDataChangeCommentsRequired';
 import { ComponentsAPIWrapper } from '../../APIWrapper';
 
+import { FolderConfigurableDataType } from './models';
+
 export interface EntityMoveConfirmationModalProps extends Omit<ModalProps, 'onConfirm'> {
     currentContainer?: Container;
-    excludeCurrentAsTarget?: boolean;
     dataType?: FolderConfigurableDataType;
     dataTypeRowId?: number;
+    excludeCurrentAsTarget?: boolean;
     nounPlural: string;
     onConfirm: (targetContainer: string, targetName: string, userComment: string) => void;
 }
@@ -36,7 +37,7 @@ export async function getContainerOptions(
     dataType: FolderConfigurableDataType,
     dataTypeRowId: number
 ): Promise<SelectInputOption[]> {
-    let folders = await api.folder.getContainers(container, moduleContext, true, true, true);
+    let folders = await api.folder.getContainers(container, moduleContext, true, true, true, true);
 
     const excludedFolders = await api.folder.getDataTypeExcludedContainers(dataType, dataTypeRowId);
 
@@ -130,10 +131,7 @@ export const EntityMoveConfirmationModal: FC<EntityMoveConfirmationModalProps> =
 
     if (isLoading(loading)) {
         return (
-            <Modal
-                title={confirmModalProps.title}
-                onCancel={confirmModalProps.onCancel}
-            >
+            <Modal title={confirmModalProps.title} onCancel={confirmModalProps.onCancel}>
                 <LoadingSpinner msg="Loading target folders..." />
             </Modal>
         );
@@ -141,11 +139,7 @@ export const EntityMoveConfirmationModal: FC<EntityMoveConfirmationModalProps> =
 
     if (error) {
         return (
-            <Modal
-                title={confirmModalProps.title}
-                onCancel={confirmModalProps.onCancel}
-                cancelText="Dismiss"
-            >
+            <Modal title={confirmModalProps.title} onCancel={confirmModalProps.onCancel} cancelText="Dismiss">
                 <Alert>{error}</Alert>
             </Modal>
         );
@@ -153,11 +147,7 @@ export const EntityMoveConfirmationModal: FC<EntityMoveConfirmationModalProps> =
 
     if (containerOptions?.length === 0) {
         return (
-            <Modal
-                title={confirmModalProps.title}
-                onCancel={confirmModalProps.onCancel}
-                cancelText="Dismiss"
-            >
+            <Modal title={confirmModalProps.title} onCancel={confirmModalProps.onCancel} cancelText="Dismiss">
                 You do not have permission to move {nounPlural} to any of the available folders.
             </Modal>
         );

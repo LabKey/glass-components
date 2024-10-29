@@ -204,7 +204,7 @@ import {
     setSelected,
     setSnapshotSelections,
 } from './internal/actions';
-import { cancelEvent } from './internal/events';
+import { cancelEvent, isCtrlOrMetaKey } from './internal/events';
 import { createGridModelId } from './internal/models';
 import { initQueryGridState } from './internal/global';
 import {
@@ -282,6 +282,7 @@ import { StorageStatusRenderer } from './internal/renderers/StorageStatusRendere
 import { StoredAmountRenderer } from './internal/renderers/StoredAmountRenderer';
 import { SampleStatusRenderer } from './internal/renderers/SampleStatusRenderer';
 import { ExpirationDateColumnRenderer } from './internal/renderers/ExpirationDateColumnRenderer';
+import { FolderColumnRenderer } from './internal/renderers/FolderColumnRenderer';
 import { AppendUnits } from './internal/renderers/AppendUnits';
 import { AttachmentCard } from './internal/renderers/AttachmentCard';
 import { DefaultRenderer } from './internal/renderers/DefaultRenderer';
@@ -709,9 +710,11 @@ import {
     getCurrentAppProperties,
     getCurrentProductName,
     getPrimaryAppProperties,
+    getArchivedFolders,
     getFolderAssayDesignExclusion,
     getFolderDataClassExclusion,
     getFolderDataExclusion,
+    setFolderDataExclusion,
     getProjectPath,
     getFolderSampleTypeExclusion,
     hasModule,
@@ -796,6 +799,7 @@ import {
     TEST_FOLDER_CONTAINER_ADMIN,
     TEST_FOLDER_OTHER_CONTAINER,
     TEST_FOLDER_OTHER_CONTAINER_ADMIN,
+    TEST_ARCHIVED_FOLDER_CONTAINER,
     TEST_PROJECT,
     TEST_PROJECT_CONTAINER,
     TEST_PROJECT_CONTAINER_ADMIN,
@@ -904,6 +908,7 @@ import { NameIdSettings } from './internal/components/settings/NameIdSettings';
 import { BaseModal, Modal, ModalHeader } from './internal/Modal';
 import { Tab, Tabs } from './internal/Tabs';
 import { CheckboxLK } from './internal/Checkbox';
+import { ArchivedFolderTag } from './internal/components/folder/ArchivedFolderTag';
 
 // See Immer docs for why we do this: https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
 enableMapSet();
@@ -956,6 +961,8 @@ const App = {
     isSampleEntity,
     isDataClassEntity,
     getPrimaryAppProperties,
+    getArchivedFolders,
+    setFolderDataExclusion,
     getFolderDataExclusion,
     getFolderAssayDesignExclusion,
     getFolderDataClassExclusion,
@@ -1064,6 +1071,7 @@ const App = {
     TEST_FOLDER_CONTAINER_ADMIN,
     TEST_FOLDER_OTHER_CONTAINER,
     TEST_FOLDER_OTHER_CONTAINER_ADMIN,
+    TEST_ARCHIVED_FOLDER_CONTAINER,
     MEDIA_KEY,
     REGISTRY_KEY,
     CROSS_TYPE_KEY,
@@ -1169,6 +1177,7 @@ export {
     EditableGridEvent,
     updateGridFromBulkForm,
     cancelEvent,
+    isCtrlOrMetaKey,
     // url and location related items
     AppURL,
     ActionMapper,
@@ -1194,6 +1203,7 @@ export {
     createProductUrl,
     createProductUrlFromParts,
     // renderers
+    ArchivedFolderTag,
     AttachmentCard,
     AliasRenderer,
     ANCESTOR_LOOKUP_CONCEPT_URI,
@@ -1206,6 +1216,7 @@ export {
     MultiValueRenderer,
     NoLinkRenderer,
     ExpirationDateColumnRenderer,
+    FolderColumnRenderer,
     StorageStatusRenderer,
     StoredAmountRenderer,
     SampleStatusRenderer,

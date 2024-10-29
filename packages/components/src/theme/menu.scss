@@ -18,3 +18,12 @@
 .popover-message {
     max-width: 350px;
 }
+
+.product-menu_archived-tag {
+    display: inline;
+    margin-left: 10px;
+
+    &.alert {
+        padding: 2px 3px;
+    }
+}

@@ -21,6 +21,7 @@ const defaultContainer: IContainer = {
     iconHref: '',
     id: '',
     isContainerTab: false,
+    isArchived: false,
     isWorkbook: false,
     name: '',
     parentId: '',
@@ -43,6 +44,7 @@ export class Container implements IContainer {
     declare hasRestrictedActiveModule: boolean;
     declare iconHref: string;
     declare id: string;
+    declare isArchived: boolean;
     declare isContainerTab: boolean;
     declare isWorkbook: boolean;
     declare name: string;

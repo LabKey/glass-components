@@ -38,6 +38,7 @@ export interface AuditSettingsResponse {
 }
 
 export interface FolderAPIWrapper {
+    archiveFolder: (archive: boolean, containerPath?: string) => Promise<Container>;
     createFolder: (options: FolderSettingsOptions, containerPath?: string) => Promise<Container>;
     getAuditSettings: (containerPath?: string) => Promise<AuditSettingsResponse>;
     getContainers: (
@@ -45,10 +46,11 @@ export interface FolderAPIWrapper {
         moduleContext?: ModuleContext,
         includeStandardProperties?: boolean,
         includeEffectivePermissions?: boolean,
-        includeTopFolder?: boolean
+        includeTopFolder?: boolean,
+        excludeArchived?: boolean
     ) => Promise<Container[]>;
     getDataTypeExcludedContainers: (dataType: FolderConfigurableDataType, dataTypeRowId: number) => Promise<string[]>;
-    getFolderDataTypeExclusions: (excludedContainer?: string) => Promise<{ [key: string]: number[] }>;
+    getFolderDataTypeExclusions: (excludedContainer?: string, reload?: boolean) => Promise<{ [key: string]: number[] }>;
     renameFolder: (options: FolderSettingsOptions, containerPath?: string) => Promise<Container>;
     setAuditCommentsRequired: (isRequired: boolean, containerPath?: string) => Promise<void>;
     updateContainerDataExclusions: (options: FolderSettingsOptions, containerPath?: string) => Promise<void>;
@@ -73,6 +75,26 @@ export class ServerFolderAPIWrapper implements FolderAPIWrapper {
                     resolve(new Container(folder));
                 }),
                 failure: handleRequestFailure(reject, 'Failed to create folder'),
+            });
+        });
+    };
+
+    archiveFolder = (archive: boolean = true, containerPath?: string): Promise<Container> => {
+        return new Promise((resolve, reject) => {
+            Ajax.request({
+                url: ActionURL.buildURL(
+                    SAMPLE_MANAGER_APP_PROPERTIES.controllerName,
+                    'archiveFolder.api',
+                    containerPath
+                ),
+                method: 'POST',
+                jsonData: {
+                    archive,
+                },
+                success: Utils.getCallbackWrapper(({ folder }) => {
+                    resolve(new Container(folder));
+                }),
+                failure: handleRequestFailure(reject, 'Failed to ' + (archive ? 'archive' : 'restore') + ' folder'),
             });
         });
     };
@@ -185,7 +207,8 @@ export class ServerFolderAPIWrapper implements FolderAPIWrapper {
         moduleContext?: ModuleContext,
         includeStandardProperties?: boolean,
         includeEffectivePermissions?: boolean,
-        includeTopFolder?: boolean
+        includeTopFolder?: boolean,
+        excludeArchived?: boolean
     ): Promise<Container[]> => {
         return new Promise((resolve, reject) => {
             const topFolderPath = isAppHomeFolder(container, moduleContext) ? container.path : container.parentPath;
@@ -202,7 +225,9 @@ export class ServerFolderAPIWrapper implements FolderAPIWrapper {
                         // if user doesn't have permissions to the parent/project, the response will come back with an empty Container object
                         .filter(c => c !== undefined && c.id !== '');
 
-                    const childFolders = folders.filter(c => c.path !== topFolderPath);
+                    const childFolders = folders.filter(
+                        c => c.path !== topFolderPath && (!excludeArchived || !c.isArchived)
+                    );
                     // Issue 45805: sort folders by title as server-side sorting is insufficient
                     childFolders.sort(naturalSortByProperty('title'));
 
@@ -234,6 +259,7 @@ export function getFolderTestAPIWrapper(
     overrides: Partial<FolderAPIWrapper> = {}
 ): FolderAPIWrapper {
     return {
+        archiveFolder: mockFn(),
         createFolder: mockFn(),
         renameFolder: mockFn(),
         getAuditSettings: mockFn(),
