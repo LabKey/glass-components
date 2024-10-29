@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.X
-*Released*: X October 2024
+### version 5.18.0
+*Released*: 29 October 2024
 - Folders: Archive V1 (Hide from view/show hidden)
   - Add isArchived to Container class
   - Add App.getArchivedFolders util
@@ -13,6 +13,10 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Modified SearchResultCard and FilterFacetedSelector to show archived tag for folders
   - Modified DataTypeFolderPanel to section active vs archived folders and uncheck archived folders by default
   - Modified move and create data UIs to exclude archived folder from target options
+
+### version 5.17.9
+*Released*: 29 October 2024
+- Export isCtrlOrMetaKey
 
 ### version 5.17.8
 *Released*: 29 October 2024
