@@ -3,7 +3,11 @@ import assayDefNoSampleIdJSON from '../test/data/assayDefinitionModelNoSampleId.
 
 import { SchemaQuery } from '../public/SchemaQuery';
 
+import { QueryInfo } from '../public/QueryInfo';
+
 import { AssayDefinitionModel, AssayDomainTypes } from './AssayDefinitionModel';
+import { getTestAPIWrapper } from './APIWrapper';
+import { getQueryTestAPIWrapper } from './query/APIWrapper';
 
 describe('AssayDefinitionModel', () => {
     test('with getSampleColumn()', () => {
@@ -89,5 +93,47 @@ describe('AssayDefinitionModel', () => {
         });
         const columns = modelWithFiles.getDomainFileColumns(AssayDomainTypes.RESULT);
         expect(columns.map(c => c.fieldKey)).toStrictEqual(['f1', 'f2']);
+    });
+
+    test('isSampleColInResults', () => {
+        const modelWithSampleId = AssayDefinitionModel.create(assayDefJSON);
+        const sampleColumn = modelWithSampleId.getSampleColumn();
+        expect(modelWithSampleId.isSampleColInResults(undefined, undefined)).toBeFalsy();
+        expect(modelWithSampleId.isSampleColInResults(undefined, sampleColumn.domain)).toBeFalsy();
+        expect(modelWithSampleId.isSampleColInResults(sampleColumn.column, undefined)).toBeFalsy();
+        expect(modelWithSampleId.isSampleColInResults(sampleColumn.column, sampleColumn.domain)).toBeTruthy();
+        expect(modelWithSampleId.isSampleColInResults(sampleColumn.column, AssayDomainTypes.RESULT)).toBeTruthy();
+        expect(modelWithSampleId.isSampleColInResults(sampleColumn.column, AssayDomainTypes.RUN)).toBeFalsy();
+        expect(modelWithSampleId.isSampleColInResults(sampleColumn.column, AssayDomainTypes.BATCH)).toBeFalsy();
+    });
+
+    test('getResultsSampleTypeQueryInfo', async () => {
+        const modelWithSampleId = AssayDefinitionModel.create(assayDefJSON);
+        expect(
+            await modelWithSampleId.getResultsSampleTypeQueryInfo(
+                getTestAPIWrapper(jest.fn, {
+                    query: getQueryTestAPIWrapper(jest.fn, {
+                        getQueryDetails: jest.fn().mockResolvedValue(new QueryInfo({})),
+                    }),
+                })
+            )
+        ).toBeDefined();
+
+        // should be undefined if sample column is lookup to All Samples (i.e. exp.Material)
+        const json = assayDefJSON;
+        json.domains['GPAT 1 Data Fields'][0].lookup.schema = 'exp';
+        json.domains['GPAT 1 Data Fields'][0].lookup.schemaName = 'exp';
+        json.domains['GPAT 1 Data Fields'][0].lookup.table = 'Material';
+        json.domains['GPAT 1 Data Fields'][0].lookup.queryName = 'Material';
+        const modelWithAllSampleId = AssayDefinitionModel.create(json);
+        expect(
+            await modelWithAllSampleId.getResultsSampleTypeQueryInfo(
+                getTestAPIWrapper(jest.fn, {
+                    query: getQueryTestAPIWrapper(jest.fn, {
+                        getQueryDetails: jest.fn().mockResolvedValue(new QueryInfo({})),
+                    }),
+                })
+            )
+        ).toBeUndefined();
     });
 });

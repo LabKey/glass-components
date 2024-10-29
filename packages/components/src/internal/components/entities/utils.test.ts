@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { Filter } from '@labkey/api';
 
 import {
@@ -16,15 +16,20 @@ import { makeTestQueryModel } from '../../../public/QueryModel/testUtils';
 
 import { ViewInfo } from '../../ViewInfo';
 
+import { CellMessage, EditorModel, ValueDescriptor } from '../editable/models';
+
+import { genCellKey } from '../editable/utils';
+
 import { IEntityTypeOption } from './models';
 import {
+    getCellKeySampleIdMap,
     getEntityDescription,
     getEntityNoun,
     getIdentifyingFieldKeys,
     getInitialParentChoices,
     getJobCreationHref,
     getSampleIdCellKey,
-    sampleDeleteDependencyText,
+    sampleDeleteDependencyText, updateCellKeySampleIdMap,
 } from './utils';
 import { DataClassDataType, SampleTypeDataType } from './constants';
 
@@ -344,6 +349,7 @@ describe('getIdentifyingFieldKeys', () => {
     );
 
     test('no view defined', () => {
+        expect(getIdentifyingFieldKeys(undefined)).toStrictEqual([]);
         expect(getIdentifyingFieldKeys(QUERY_INFO_NO_ID_VIEW)).toStrictEqual([]);
     });
 
@@ -373,5 +379,73 @@ describe('get cell key helpers', () => {
     test('getSampleIdCellKey', () => {
         expect(getSampleIdCellKey(0)).toBe('sampleid&&0');
         expect(getSampleIdCellKey(9)).toBe('sampleid&&9');
+        expect(getSampleIdCellKey(9, 'otherSampleKey')).toBe('othersamplekey&&9');
+    });
+
+    const sampleFK = 'SampleFieldKey';
+    const editorModel = new EditorModel({}).merge({
+        cellMessages: Map<string, CellMessage>({
+            '1-0': 'description 1 message',
+        }),
+        cellValues: Map<string, List<ValueDescriptor>>({
+            [genCellKey(sampleFK, 0)]: List<ValueDescriptor>([
+                {
+                    display: 'S-1',
+                    raw: 1,
+                },
+            ]),
+            [genCellKey(sampleFK, 1)]: List<ValueDescriptor>([
+                {
+                    display: 'S-2',
+                    raw: 2,
+                },
+            ]),
+            [genCellKey(sampleFK, 2)]: List<ValueDescriptor>([]),
+            [genCellKey(sampleFK, 3)]: List<ValueDescriptor>([
+                {
+                    display: 'S-3',
+                    raw: 3,
+                },
+            ]),
+        }),
+        orderedColumns: List([sampleFK]),
+        rowCount: 4,
+    }) as EditorModel;
+
+    test('getCellKeySampleIdMap', () => {
+        expect(getCellKeySampleIdMap(editorModel, 'bogus')).toStrictEqual({});
+        expect(getCellKeySampleIdMap(editorModel, sampleFK)).toStrictEqual({
+            'samplefieldkey&&0': 1,
+            'samplefieldkey&&1': 2,
+            'samplefieldkey&&3': 3,
+        });
+    });
+
+    test('updateCellKeySampleIdMap', () => {
+        const initMap = getCellKeySampleIdMap(editorModel, sampleFK);
+        expect(updateCellKeySampleIdMap(initMap, { toAddOrUpdate: {}, toRemove: [] })).toStrictEqual(initMap);
+
+        expect(
+            updateCellKeySampleIdMap(initMap, {
+                toAddOrUpdate: { 'samplefieldkey&&2': 4 },
+                toRemove: [],
+            })
+        ).toStrictEqual({
+            'samplefieldkey&&0': 1,
+            'samplefieldkey&&1': 2,
+            'samplefieldkey&&2': 4,
+            'samplefieldkey&&3': 3,
+        });
+
+        expect(
+            updateCellKeySampleIdMap(initMap, {
+                toAddOrUpdate: { 'samplefieldkey&&2': 4 },
+                toRemove: ['samplefieldkey&&0'],
+            })
+        ).toStrictEqual({
+            'samplefieldkey&&1': 2,
+            'samplefieldkey&&2': 4,
+            'samplefieldkey&&3': 3,
+        });
     });
 });

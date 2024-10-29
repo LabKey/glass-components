@@ -8,7 +8,14 @@ import { DATE_RANGE_URI } from '../domainproperties/constants';
 import sampleSetQueryInfoJSON from '../../../test/data/sampleSetAllFieldTypes-getQueryDetails.json';
 
 import { EditableGridLoader, EditorMode } from './models';
-import { computeRangeChange, genCellKey, getValidatedEditableGridValue, parseCellKey, sortCellKeys } from './utils';
+import {
+    computeRangeChange,
+    genCellKey,
+    genCellKeyPrefix,
+    getValidatedEditableGridValue,
+    parseCellKey,
+    sortCellKeys
+} from './utils';
 import { initEditorModel } from './actions';
 
 class MockEditableGridLoader implements EditableGridLoader {
@@ -394,6 +401,12 @@ describe('other utils', () => {
     test('genCellKey', () => {
         expect(genCellKey('test', 0)).toBe('test&&0');
         expect(genCellKey('other', 2)).toBe('other&&2');
+        expect(genCellKey('other', 2, 'SampleColumn')).toBe('samplecolumn/other&&2');
+    });
+
+    test('genCellKeyPrefix', () => {
+        expect(genCellKeyPrefix('test')).toBe('test&&');
+        expect(genCellKeyPrefix('TEST')).toBe('test&&');
     });
 
     test('parseCellKey', () => {

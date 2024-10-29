@@ -423,4 +423,73 @@ describe('QueryInfo', () => {
             expect(queryInfo.getView('~~details~~')?.name).toBe('LKB detail');
         });
     });
+
+    describe('getLookupViewEditableGridColumns', () => {
+        const columns = [
+            { fieldKey: 'name', name: 'name', jsonType: 'string' },
+            { fieldKey: 'intCol', name: 'intCol', jsonType: 'int' },
+            { fieldKey: 'doubleCol', name: 'doubleCol', jsonType: 'double' },
+            { fieldKey: 'textCol', name: 'textCol', jsonType: 'string' },
+        ];
+        const QUERY_INFO_NO_ID_VIEW = QueryInfo.fromJsonForTests(
+            {
+                columns,
+                name: 'query',
+                schemaName: 'schema',
+                views: [
+                    { columns, name: ViewInfo.DEFAULT_NAME },
+                    { columns, name: 'view' },
+                ],
+            },
+            true
+        );
+        const QUERY_INFO_WITH_ID_VIEW = QueryInfo.fromJsonForTests(
+            {
+                columns,
+                name: 'query',
+                schemaName: 'schema',
+                views: [
+                    { columns, name: ViewInfo.DEFAULT_NAME },
+                    { columns, name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME },
+                ],
+            },
+            true
+        );
+
+        test('without identifying view', () => {
+            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns()).toStrictEqual([]);
+            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns(true)).toStrictEqual([]);
+            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns(false, 'samplePrefixFk')).toStrictEqual([]);
+            expect(QUERY_INFO_NO_ID_VIEW.getLookupViewEditableGridColumns(true, 'samplePrefixFk')).toStrictEqual([]);
+        });
+
+        test('with identifying view', () => {
+            let cols = QUERY_INFO_WITH_ID_VIEW.getLookupViewEditableGridColumns();
+            expect(cols).toHaveLength(3);
+            expect(cols[0].fieldKey).toBe('intCol');
+            expect(cols[0].name).toBe('intCol');
+            expect(cols[0].readOnly).toBe(true);
+            expect(cols[1].fieldKey).toBe('doubleCol');
+            expect(cols[1].name).toBe('doubleCol');
+            expect(cols[1].readOnly).toBe(true);
+            expect(cols[2].fieldKey).toBe('textCol');
+            expect(cols[2].name).toBe('textCol');
+            expect(cols[2].readOnly).toBe(true);
+
+            cols = QUERY_INFO_WITH_ID_VIEW.getLookupViewEditableGridColumns(true, 'samplePrefixFk');
+            expect(cols).toHaveLength(4);
+            expect(cols[0].fieldKey).toBe('samplePrefixFk/name');
+            expect(cols[0].name).toBe('samplePrefixFk/name');
+            expect(cols[0].readOnly).toBe(true);
+            expect(cols[1].fieldKey).toBe('samplePrefixFk/intCol');
+            expect(cols[1].name).toBe('samplePrefixFk/intCol');
+            expect(cols[1].readOnly).toBe(true);
+            expect(cols[2].fieldKey).toBe('samplePrefixFk/doubleCol');
+            expect(cols[2].name).toBe('samplePrefixFk/doubleCol');
+            expect(cols[2].readOnly).toBe(true);
+            expect(cols[3].fieldKey).toBe('samplePrefixFk/textCol');
+            expect(cols[3].name).toBe('samplePrefixFk/textCol');
+            expect(cols[3].readOnly).toBe(true);
+        });
+    });
 });
