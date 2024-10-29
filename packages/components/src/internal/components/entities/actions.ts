@@ -40,6 +40,7 @@ import {
     isAssayResultEntity,
     isDataClassEntity,
     isSampleEntity,
+    SAMPLE_ID_FIELD_KEY,
 } from './utils';
 import {
     AssayRunOperation,
@@ -1422,12 +1423,15 @@ export function getSampleIdentifyingFieldGridData(
 export function updateCellValuesForSampleIds(
     editorModelChanges: Partial<EditorModel>,
     cellKeyMap: Record<string, number>,
-    samplesQueryInfo?: QueryInfo
+    samplesQueryInfo?: QueryInfo,
+    sampleFieldKeyPrefix?: string
 ): Promise<{
     cellKeyChanges: { toAddOrUpdate: { [key: string]: number }; toRemove: string[] };
     editorModelChanges: Partial<EditorModel>;
 }> {
     return new Promise((resolve, reject) => {
+        const sampleFieldKeyPrefix_ = sampleFieldKeyPrefix?.toLowerCase();
+        const sampleFieldKey = sampleFieldKeyPrefix_ ?? SAMPLE_ID_FIELD_KEY;
         const identifyingFieldKeys = getIdentifyingFieldKeys(samplesQueryInfo);
         const cellKeyChanges = {
             toRemove: [],
@@ -1443,7 +1447,7 @@ export function updateCellValuesForSampleIds(
             const cellValues = editorModelChanges.cellValues;
             cellValues
                 .keySeq()
-                .filter(key => parseCellKey(key).fieldKey === 'sampleid')
+                .filter(key => parseCellKey(key).fieldKey === sampleFieldKey)
                 .forEach(key => {
                     // find all the samples that have moved or been added
                     const id = cellValues.get(key).get(0)?.raw;
@@ -1468,7 +1472,7 @@ export function updateCellValuesForSampleIds(
                         .filter(key => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(key.toLowerCase()) === -1)
                         .forEach(key => {
                             updates = updates.set(
-                                genCellKey(key, rowInd),
+                                genCellKey(key, rowInd, sampleFieldKeyPrefix_),
                                 List<any>([
                                     {
                                         display: undefined,
@@ -1487,7 +1491,7 @@ export function updateCellValuesForSampleIds(
                         Object.values(newSamplesData).forEach(data => {
                             sampleIdToRowInd[data.rowId].forEach(rowInd => {
                                 updates = updates.set(
-                                    getSampleIdCellKey(rowInd),
+                                    getSampleIdCellKey(rowInd, sampleFieldKey),
                                     List<any>([
                                         {
                                             display: data.sampleId,
@@ -1501,7 +1505,7 @@ export function updateCellValuesForSampleIds(
                                     )
                                     .forEach(key => {
                                         updates = updates.set(
-                                            genCellKey(key, rowInd),
+                                            genCellKey(key, rowInd, sampleFieldKeyPrefix_),
                                             List<any>([
                                                 {
                                                     display: data[key],

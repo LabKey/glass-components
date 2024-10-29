@@ -533,10 +533,10 @@ export class EditorModel
         return this.getValueForCellKey(genCellKey(fieldKey, rowIdx));
     }
 
-    getValuesForColumn(col: QueryColumn): Map<string, List<ValueDescriptor>> {
+    getValuesForColumn(sampleFieldKey: string): Map<string, List<ValueDescriptor>> {
         return this.cellValues
             .filter((valueList, cellKey) => {
-                return cellKey.startsWith(genCellKeyPrefix(col.fieldKey));
+                return cellKey.startsWith(genCellKeyPrefix(sampleFieldKey));
             })
             .toMap();
     }

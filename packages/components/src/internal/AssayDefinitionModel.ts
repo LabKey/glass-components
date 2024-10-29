@@ -11,6 +11,8 @@ import { AppURL, createProductUrlFromParts } from './url/AppURL';
 
 import { SCHEMAS } from './schemas';
 import { ASSAYS_KEY } from './app/constants';
+import {QueryInfo} from "../public/QueryInfo";
+import {ComponentsAPIWrapper} from "./APIWrapper";
 
 export enum AssayDomainTypes {
     BATCH = 'Batch',
@@ -279,5 +281,21 @@ export class AssayDefinitionModel extends ImmutableRecord({
         });
 
         return columns;
+    }
+
+    isSampleColInResults(column: QueryColumn, domain: AssayDomainTypes): boolean {
+        return column && domain === AssayDomainTypes.RESULT;
+    }
+
+    async getResultsSampleTypeQueryInfo(api: ComponentsAPIWrapper): Promise<QueryInfo> {
+        const sampleColumnData = this.getSampleColumn();
+        if (
+            sampleColumnData &&
+            this.isSampleColInResults(sampleColumnData.column, sampleColumnData.domain) &&
+            sampleColumnData.column.isSingleSampleTypeLookup()
+        ) {
+            return api.query.getQueryDetails(sampleColumnData.column.lookup.schemaQuery);
+        }
+        return undefined;
     }
 }

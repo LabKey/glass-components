@@ -539,6 +539,7 @@ import {
     sampleDeleteDependencyText,
     getSampleIdCellKey,
     SAMPLE_ID_FIELD_KEY,
+    getCellKeySampleIdMap,
     updateCellKeySampleIdMap,
 } from './internal/components/entities/utils';
 import {
@@ -1411,6 +1412,7 @@ export {
     getSampleIdCellKey,
     updateCellValuesForSampleIds,
     getSampleIdentifyingFieldGridData,
+    getCellKeySampleIdMap,
     updateCellKeySampleIdMap,
     // metric related items
     UnitModel,
