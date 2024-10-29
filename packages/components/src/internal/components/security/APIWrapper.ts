@@ -12,7 +12,6 @@ import {
 import { Principal, SecurityPolicy, SecurityRole } from '../permissions/models';
 import { selectRows } from '../../query/selectRows';
 import { SCHEMAS } from '../../schemas';
-import { buildURL } from '../../url/AppURL';
 import { naturalSortByProperty } from '../../../public/sort';
 import { caseInsensitive, handleRequestFailure } from '../../util/utils';
 import { getUserProperties } from '../user/actions';
@@ -67,7 +66,7 @@ export interface SecurityAPIWrapper {
     ) => Promise<SecurityPolicy>;
     fetchRoles: () => Promise<List<SecurityRole>>;
     getAuditLogDate: (filterCol: string, filterVal: string | number) => Promise<string>;
-    getDeletionSummaries: () => Promise<Summary[]>;
+    getDeletionSummaries: (containerPath?: string) => Promise<Summary[]>;
     getGroupMemberships: () => Promise<GroupMembership[]>;
     getInheritedContainers: (container: Container) => Promise<string[]>;
     getUserLimitSettings: (containerPath?: string) => Promise<UserLimitSettings>;
@@ -113,7 +112,7 @@ export class ServerSecurityAPIWrapper implements SecurityAPIWrapper {
     createApiKey = (type = 'apikey', description?: string): Promise<string> => {
         return new Promise((resolve, reject) => {
             Ajax.request({
-                url: buildURL('security', 'createApiKey.api'),
+                url: ActionURL.buildURL('security', 'createApiKey.api'),
                 method: 'POST',
                 jsonData: { type, description },
                 success: Utils.getCallbackWrapper(response => {
@@ -235,10 +234,10 @@ export class ServerSecurityAPIWrapper implements SecurityAPIWrapper {
         return dateRow.formattedValue ?? dateRow.value;
     };
 
-    getDeletionSummaries = (): Promise<Summary[]> => {
+    getDeletionSummaries = (containerPath?: string): Promise<Summary[]> => {
         return new Promise((resolve, reject) => {
             Ajax.request({
-                url: buildURL('core', 'getModuleSummary.api'),
+                url: ActionURL.buildURL('core', 'getModuleSummary.api', containerPath),
                 success: Utils.getCallbackWrapper(response => {
                     const { moduleSummary } = response;
                     moduleSummary.sort(naturalSortByProperty('noun'));
@@ -339,7 +338,7 @@ export class ServerSecurityAPIWrapper implements SecurityAPIWrapper {
     updateUserDetails = (data: FormData): Promise<any> => {
         return new Promise((resolve, reject) => {
             Ajax.request({
-                url: buildURL('user', 'updateUserDetails.api'),
+                url: ActionURL.buildURL('user', 'updateUserDetails.api'),
                 method: 'POST',
                 form: data,
                 success: Utils.getCallbackWrapper((response, request) => {
