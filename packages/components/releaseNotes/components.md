@@ -9,6 +9,7 @@ Components, models, actions, and utility functions for LabKey applications and p
   - add QueryColumn.isSingleSampleTypeLookup()
   - EditorModel.getValuesForColumn() to get cellValues for a single column
   - update sample identifying fields utils/actions to take in optional sampleFieldKey prefix
+  - EditorModel.getUpdatedData() to skip readOnly fields when comparing values
 
 ### version 5.17.5
 *Released*: 26 October 2024
