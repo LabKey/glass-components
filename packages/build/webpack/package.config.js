@@ -19,7 +19,7 @@ const tsCheckerConfig = {
             compilerOptions: { outDir: 'dist/' },
             include: ["src/**/*"],
             // excluding spec/test files shaves time off the build
-            exclude: ["node_modules", "**/*.spec.*", "**/*.test.*", "src/test"]
+            exclude: ["node_modules", "**/__mocks__/**/*", "**/*.spec.*", "**/*.test.*", "src/test"]
         }
     }
 };
@@ -145,6 +145,5 @@ module.exports = {
         'ts-jest',
         'use-immer',
         'vis-network',
-        'xhr-mock',
     ]
 };
