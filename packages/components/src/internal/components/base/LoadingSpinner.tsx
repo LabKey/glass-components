@@ -25,3 +25,4 @@ export const LoadingSpinner: FC<Props> = memo(({ msg = 'Loading...', wrapperClas
         <i aria-hidden="true" className="fa fa-spinner fa-pulse" /> {msg}
     </span>
 ));
+LoadingSpinner.displayName = 'LoadingSpinner';
