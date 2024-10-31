@@ -12,6 +12,7 @@ import {
     getNonStandardFormatWarning,
     getDateTimeSettingWarning,
     splitDateTimeFormat,
+    isValidAltDateTimeFormatOptions,
 } from '../../util/Date';
 
 import { useServerContext } from '../base/ServerContext';
@@ -65,7 +66,7 @@ export const getInitDateTimeSetting = (
             currentFormat = inherited ? parentFormat : fieldFormat;
             timeFormat = currentFormat;
     }
-    const invalidWarning = getNonStandardFormatWarning(formatType, currentFormat);
+    const invalidWarning = getNonStandardFormatWarning(formatType, currentFormat, true);
     if (invalidWarning && formatType === DateFormatType.DateTime) {
         dateFormat = currentFormat;
         timeFormat = '';
@@ -124,10 +125,13 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                         updates.timeFormat = parts[1];
                     }
                 }
-                updates.invalidWarning = getDateTimeSettingWarning({
-                    ...prevSetting,
-                    ...updates,
-                } as DateTimeSettingProp);
+                updates.invalidWarning = getDateTimeSettingWarning(
+                    {
+                        ...prevSetting,
+                        ...updates,
+                    } as DateTimeSettingProp,
+                    true
+                );
                 const updatedSetting = {
                     ...prevSetting,
                     ...updates,
@@ -147,10 +151,13 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 const updates: Partial<DateTimeSettingProp> = {
                     [isTime ? 'timeFormat' : 'dateFormat']: newFormat == null ? '' : newFormat,
                 };
-                updates.invalidWarning = getDateTimeSettingWarning({
-                    ...prevSetting,
-                    ...updates,
-                } as DateTimeSettingProp);
+                updates.invalidWarning = getDateTimeSettingWarning(
+                    {
+                        ...prevSetting,
+                        ...updates,
+                    } as DateTimeSettingProp,
+                    true
+                );
 
                 const updatedSetting = {
                     ...prevSetting,
@@ -214,6 +221,8 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 {setting.isDate && (
                     <div className="col-xs-3">
                         <SelectInput
+                            allowCreate
+                            isValidNewOption={isValidAltDateTimeFormatOptions}
                             containerClass=""
                             inputClass="form-group"
                             id={createFormInputId(DOMAIN_FIELD_FORMAT + '_date' + type, domainIndex, index)}
@@ -231,6 +240,8 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 {setting.isTime && (
                     <div className="col-xs-3">
                         <SelectInput
+                            allowCreate={setting.isTimeRequired}
+                            isValidNewOption={setting.isTimeRequired ? isValidAltDateTimeFormatOptions : undefined}
                             containerClass=""
                             inputClass="form-group"
                             id={createFormInputId(DOMAIN_FIELD_FORMAT + '_time' + type, domainIndex, index)}
