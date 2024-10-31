@@ -177,10 +177,6 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
         [onFormatChange]
     );
 
-    const isValidNewOption = useCallback((inputValue: string) => {
-        return isValidAltDateTimeFormatOptions(inputValue);
-    }, []);
-
     const onTimeFormatChange = useCallback(
         (name: string, selectedValue: string, selectedOption: SelectInputOption): void => {
             onFormatChange(selectedOption?.value, true);
@@ -226,7 +222,7 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                     <div className="col-xs-3">
                         <SelectInput
                             allowCreate
-                            isValidNewOption={isValidNewOption}
+                            isValidNewOption={isValidAltDateTimeFormatOptions}
                             containerClass=""
                             inputClass="form-group"
                             id={createFormInputId(DOMAIN_FIELD_FORMAT + '_date' + type, domainIndex, index)}
@@ -245,7 +241,7 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                     <div className="col-xs-3">
                         <SelectInput
                             allowCreate={setting.isTimeRequired}
-                            isValidNewOption={setting.isTimeRequired ? isValidNewOption : undefined}
+                            isValidNewOption={setting.isTimeRequired ? isValidAltDateTimeFormatOptions : undefined}
                             containerClass=""
                             inputClass="form-group"
                             id={createFormInputId(DOMAIN_FIELD_FORMAT + '_time' + type, domainIndex, index)}
