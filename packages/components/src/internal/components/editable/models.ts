@@ -28,10 +28,15 @@ import { QueryModel } from '../../../public/QueryModel/QueryModel';
 import { getQueryColumnRenderers } from '../../global';
 import { caseInsensitive, isQuotedWithDelimiters, quoteValueWithDelimiters } from '../../util/utils';
 
-import { hasProductFolders } from '../../app/utils';
-
 import { CellCoordinates, EditableGridEvent } from './constants';
-import { genCellKey, getValidatedEditableGridValue, isSparseSelection, parseCellKey, sortCellKeys } from './utils';
+import {
+    genCellKey,
+    genCellKeyPrefix,
+    getValidatedEditableGridValue,
+    isSparseSelection,
+    parseCellKey,
+    sortCellKeys,
+} from './utils';
 
 export interface EditableColumnMetadata {
     align?: string;
@@ -528,6 +533,14 @@ export class EditorModel
         return this.getValueForCellKey(genCellKey(fieldKey, rowIdx));
     }
 
+    getValuesForColumn(colFieldKey: string): Map<string, List<ValueDescriptor>> {
+        return this.cellValues
+            .filter((valueList, cellKey) => {
+                return cellKey.startsWith(genCellKeyPrefix(colFieldKey));
+            })
+            .toMap();
+    }
+
     getValueForCellKey(cellKey: string): List<ValueDescriptor> {
         if (this.cellValues.has(cellKey)) {
             return this.cellValues.get(cellKey) ?? List<ValueDescriptor>();
@@ -749,6 +762,9 @@ export class EditorModel
                     let originalValue = originalRow.get(key, undefined);
                     // For lineage grids the parent columns aren't on the queryInfo
                     const col = queryInfo.getColumn(key) ?? this.columnMap.get(key.toLowerCase());
+
+                    // we can skip any readOnly columns
+                    if (col?.readOnly) return row;
 
                     // Convert empty cell to null
                     if (value === '') value = null;

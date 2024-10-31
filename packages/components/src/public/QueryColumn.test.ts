@@ -471,6 +471,36 @@ describe('QueryColumn', () => {
         expect(new QueryColumn({ conceptURI: 'test' }).isCalculatedField).toBeFalsy();
         expect(new QueryColumn({ conceptURI: CALCULATED_CONCEPT_URI }).isCalculatedField).toBeTruthy();
     });
+
+    test('isSingleSampleTypeLookup', () => {
+        expect(new QueryColumn({}).isCalculatedField).toBeFalsy();
+
+        const singleSampleLookup = new QueryColumn({
+            conceptURI: 'http://www.labkey.org/exp/xml#sample',
+            lookup: {
+                displayColumn: 'Name',
+                isPublic: true,
+                keyColumn: 'Name',
+                queryName: 'MySampleType',
+                schemaName: 'SaMpLeS',
+                table: 'SAMPLES',
+            },
+        });
+        expect(singleSampleLookup.isSingleSampleTypeLookup()).toBeTruthy();
+
+        const allSampleLookup = new QueryColumn({
+            conceptURI: 'http://www.labkey.org/exp/xml#sample',
+            lookup: {
+                displayColumn: 'Name',
+                isPublic: true,
+                keyColumn: 'Name',
+                queryName: 'Material',
+                schemaName: 'exp',
+                table: 'Material',
+            },
+        });
+        expect(allSampleLookup.isSingleSampleTypeLookup()).toBeFalsy();
+    });
 });
 
 describe('insertColumnFilter', () => {

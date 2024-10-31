@@ -1181,7 +1181,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
         const { disabled, editorModel } = this.props;
         const { isSparseSelection, selectionCells } = editorModel;
 
-        if (disabled || isSparseSelection) return;
+        if (disabled || isSparseSelection || selectionCells.length === 0) return;
 
         const firstRowIdx = parseCellKey(selectionCells[0]).rowIdx;
         const firstRowCellKeys = selectionCells.filter(cellKey => parseCellKey(cellKey).rowIdx === firstRowIdx);
@@ -1561,14 +1561,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
     };
 
     renderBulkUpdate = (): ReactNode => {
-        const {
-            addControlProps,
-            bulkUpdateProps,
-            editorModel,
-            forUpdate,
-            showAsTab,
-            containerPath,
-        } = this.props;
+        const { addControlProps, bulkUpdateProps, editorModel, forUpdate, showAsTab, containerPath } = this.props;
         const { pendingBulkFormData } = this.state;
 
         return (

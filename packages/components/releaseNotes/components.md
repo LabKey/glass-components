@@ -5,6 +5,21 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: X October 2024
 - Issue 51491: DateTime field should tolerate Date and DateTime pseudo format patterns
 
+### version 5.19.1
+*Released*: 31 October 2024
+- Issue 51557: fix counts for folder deletion summary
+- Support optional `containerPath` on `api.security.getDeletionSummaries()` endpoint wrapper
+
+### version 5.19.0
+*Released*: 31 October 2024
+- Add identifying fields to grids when insert assay data via EditableGrid
+  - migrate some sample identifying fields utils from `@labkey/premium`
+  - factor out updateCellKeySampleIdMap() as utility function
+  - add QueryColumn.isSingleSampleTypeLookup()
+  - EditorModel.getValuesForColumn() to get cellValues for a single column
+  - update sample identifying fields utils/actions to take in optional sampleFieldKey prefix
+  - EditorModel.getUpdatedData() to skip readOnly fields when comparing values
+
 ### version 5.18.0
 *Released*: 29 October 2024
 - Folders: Archive V1 (Hide from view/show hidden)

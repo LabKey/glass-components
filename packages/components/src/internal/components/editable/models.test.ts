@@ -661,6 +661,37 @@ describe('EditorModel', () => {
             // ExpInput columns should be converted to comma separated string values
             expect(updatedRows[0][lookupCol.fieldKey]).toEqual('Value 123');
         });
+        test('readOnly column should be excluded', () => {
+            const lookupCol = new QueryColumn({
+                name: 'lookup',
+                caption: 'lookup',
+                fieldKey: 'lookup',
+                fieldKeyArray: ['lookup'],
+                readOnly: true,
+                shownInInsertView: true,
+                userEditable: true,
+                lookup: { queryName: 'lookupQuery', schemaName: 'lookupSchema' },
+            });
+            const em = modifyEm({
+                columnMap: basicEditorModel.columnMap.set(lookupCol.fieldKey, lookupCol),
+                orderedColumns: basicEditorModel.orderedColumns.push(lookupCol.fieldKey),
+                originalData: basicEditorModel.originalData.setIn(
+                    [0, lookupCol.fieldKey],
+                    List([{ value: 456, displayValue: 'Value 456' }])
+                ),
+                cellValues: basicEditorModel.cellValues.set(
+                    genCellKey('lookup', 0),
+                    List([
+                        {
+                            raw: 123,
+                            display: 'Value 123',
+                        },
+                    ])
+                ),
+            });
+            const updatedRows = em.getUpdatedData();
+            expect(updatedRows).toHaveLength(0);
+        });
         test('expInput value updated', () => {
             const materialInputs = QueryColumn.MATERIAL_INPUTS.toLowerCase();
             const expInputCol = new QueryColumn({
@@ -813,6 +844,21 @@ describe('EditorModel', () => {
             expect(model.getValueForCellKey(genCellKey(colTwoFk, 1)).get(0).raw).toBe('bb');
 
             expect(basicEditorModel.getValueForCellKey(genCellKey(colOneFk, 2)).size).toBe(0);
+        });
+
+        test('getValuesForColumn', () => {
+            const model = new EditorModel({
+                cellValues: basicCellValues,
+            });
+            expect(model.getValuesForColumn('bogus').size).toBe(0);
+            expect(model.getValuesForColumn(colOneFk).toJS()).toStrictEqual({
+                'both&&0': [{ display: 'A', raw: 'a' }],
+                'both&&1': [{ display: 'AA', raw: 'aa' }],
+            });
+            expect(model.getValuesForColumn(colTwoFk).toJS()).toStrictEqual({
+                'insert&&0': [{ display: 'B', raw: 'b' }],
+                'insert&&1': [{ display: 'BB', raw: 'bb' }],
+            });
         });
 
         test('hasFocus', () => {

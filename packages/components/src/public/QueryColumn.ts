@@ -379,6 +379,10 @@ export class QueryColumn implements IQueryColumn {
         return SCHEMAS.EXP_TABLES.MATERIALS.isEqual(lookupSQ) || lookupSQ.hasSchema(SCHEMAS.SAMPLE_SETS.SCHEMA);
     }
 
+    isSingleSampleTypeLookup(): boolean {
+        return this.isSampleLookup() && this.lookup.schemaQuery.hasSchema(SCHEMAS.SAMPLE_SETS.SCHEMA);
+    }
+
     isMaterialInput(checkLookup = true): boolean {
         return (
             this.name &&

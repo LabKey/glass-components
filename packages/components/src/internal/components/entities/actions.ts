@@ -28,12 +28,19 @@ import { SAMPLE_MANAGER_APP_PROPERTIES } from '../../app/constants';
 
 import { QueryModel } from '../../../public/QueryModel/QueryModel';
 
+import { genCellKey, parseCellKey } from '../editable/utils';
+
+import { EditorModel } from '../editable/models';
+
 import {
+    getIdentifyingFieldKeys,
     getInitialParentChoices,
+    getSampleIdCellKey,
     isAssayDesignEntity,
     isAssayResultEntity,
     isDataClassEntity,
     isSampleEntity,
+    SAMPLE_ID_FIELD_KEY,
 } from './utils';
 import {
     AssayRunOperation,
@@ -1366,5 +1373,166 @@ export function getDataTypesWithRequiredLineage(
             }),
             failure: handleRequestFailure(reject, 'Failed to get data types with required lineage.'),
         });
+    });
+}
+
+const DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS = ['rowid', 'name'];
+
+export function getSampleIdentifyingFieldGridData(
+    sampleIds: number[] | string[],
+    sampleQueryInfo?: QueryInfo,
+    includeDefaultColumns = true
+): Promise<Record<string, Record<string, any>>> {
+    const columns = [...DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS];
+    const sampleIdentifyingFieldKeys = [...getIdentifyingFieldKeys(sampleQueryInfo)];
+    if (sampleIdentifyingFieldKeys.length > 0) {
+        columns.push(...sampleIdentifyingFieldKeys);
+    } else {
+        return Promise.resolve({}); // if we don't have any additional data to retrieve, return early
+    }
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await selectRows({
+                schemaQuery: sampleQueryInfo?.schemaQuery ?? SCHEMAS.EXP_TABLES.MATERIALS,
+                filterArray: [Filter.create('RowId', sampleIds, Filter.Types.IN)],
+                columns,
+            });
+            const samplesData = {};
+            response.rows.forEach(row => {
+                const rowId = caseInsensitive(row, 'RowId').value;
+                const d = includeDefaultColumns
+                    ? {
+                          rowId,
+                          sampleId: caseInsensitive(row, 'Name')?.value,
+                      }
+                    : {};
+                sampleIdentifyingFieldKeys.forEach(c => {
+                    const colData = caseInsensitive(row, c);
+                    if (colData.value) {
+                        d[c] = colData?.formattedValue ?? colData?.displayValue ?? colData?.value;
+                    }
+                });
+                samplesData[rowId] = d;
+            });
+            resolve(samplesData);
+        } catch (e) {
+            console.error('Unable to retrieve sample identifying fields data', e);
+            reject(resolveErrorMessage(e));
+        }
+    });
+}
+
+export function updateCellValuesForSampleIds(
+    editorModelChanges: Partial<EditorModel>,
+    cellKeyMap: Record<string, number>,
+    samplesQueryInfo?: QueryInfo,
+    sampleFieldKeyPrefix?: string
+): Promise<{
+    cellKeyChanges: { toAddOrUpdate: { [key: string]: number }; toRemove: string[] };
+    editorModelChanges: Partial<EditorModel>;
+}> {
+    return new Promise((resolve, reject) => {
+        const sampleFieldKeyPrefix_ = sampleFieldKeyPrefix?.toLowerCase();
+        const sampleFieldKey = sampleFieldKeyPrefix_ ?? SAMPLE_ID_FIELD_KEY;
+        const identifyingFieldKeys = getIdentifyingFieldKeys(samplesQueryInfo);
+        const cellKeyChanges = {
+            toRemove: [],
+            toAddOrUpdate: {},
+        };
+
+        // only need to update cell values if we have identifyingFieldKeys for the given sample type
+        if (identifyingFieldKeys.length > 0 && editorModelChanges?.cellValues) {
+            // map from wellLabel to sampleId
+            const samplesToRetrieve = [];
+            const sampleIdToRowInd = {};
+            const dataRemovedIndexes = [];
+            const cellValues = editorModelChanges.cellValues;
+            cellValues
+                .keySeq()
+                .filter(key => parseCellKey(key).fieldKey === sampleFieldKey)
+                .forEach(key => {
+                    // find all the samples that have moved or been added
+                    const id = cellValues.get(key).get(0)?.raw;
+                    if (id && (!cellKeyMap[key] || cellKeyMap[key] !== id)) {
+                        samplesToRetrieve.push(id);
+                        if (!sampleIdToRowInd[id]) {
+                            sampleIdToRowInd[id] = [];
+                        }
+                        sampleIdToRowInd[id].push(parseCellKey(key).rowIdx);
+                        cellKeyChanges.toAddOrUpdate[key] = id;
+                    }
+                    // Find the cellValues where there is no sampleid, but it existed previously in the key map
+                    else if (!id && cellKeyMap[key]) {
+                        dataRemovedIndexes.push(parseCellKey(key).rowIdx);
+                        cellKeyChanges.toRemove.push(key);
+                    }
+                });
+            if (dataRemovedIndexes.length > 0) {
+                let updates = Map<string, List<any>>();
+                dataRemovedIndexes.forEach(rowInd => {
+                    identifyingFieldKeys
+                        .filter(key => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(key.toLowerCase()) === -1)
+                        .forEach(key => {
+                            updates = updates.set(
+                                genCellKey(key, rowInd, sampleFieldKeyPrefix_),
+                                List<any>([
+                                    {
+                                        display: undefined,
+                                        raw: undefined,
+                                    },
+                                ])
+                            );
+                        });
+                });
+                editorModelChanges['cellValues'] = cellValues.merge(updates);
+            }
+            if (samplesToRetrieve.length > 0) {
+                let updates = Map<string, List<any>>();
+                getSampleIdentifyingFieldGridData(samplesToRetrieve, samplesQueryInfo)
+                    .then(newSamplesData => {
+                        Object.values(newSamplesData).forEach(data => {
+                            sampleIdToRowInd[data.rowId].forEach(rowInd => {
+                                updates = updates.set(
+                                    getSampleIdCellKey(rowInd, sampleFieldKey),
+                                    List<any>([
+                                        {
+                                            display: data.sampleId,
+                                            raw: data.rowId,
+                                        },
+                                    ])
+                                );
+                                identifyingFieldKeys
+                                    .filter(
+                                        key => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(key.toLowerCase()) === -1
+                                    )
+                                    .forEach(key => {
+                                        updates = updates.set(
+                                            genCellKey(key, rowInd, sampleFieldKeyPrefix_),
+                                            List<any>([
+                                                {
+                                                    display: data[key],
+                                                    raw: data[key],
+                                                },
+                                            ])
+                                        );
+                                    });
+                            });
+                        });
+                        editorModelChanges['cellValues'] = cellValues.merge(updates);
+                        resolve({
+                            editorModelChanges,
+                            cellKeyChanges,
+                        });
+                    })
+                    .catch(error => {
+                        reject(resolveErrorMessage(error));
+                    });
+            } else {
+                resolve({ editorModelChanges, cellKeyChanges });
+            }
+        } else {
+            resolve({ editorModelChanges, cellKeyChanges });
+        }
     });
 }

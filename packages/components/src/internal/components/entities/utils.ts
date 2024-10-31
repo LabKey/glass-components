@@ -4,13 +4,17 @@ import { getCurrentProductName, isAssayEnabled, isELNEnabled, isWorkflowEnabled 
 
 import { naturalSort } from '../../../public/sort';
 import { QueryInfo } from '../../../public/QueryInfo';
-import { EditableColumnMetadata } from '../editable/models';
+import { EditableColumnMetadata, EditorModel } from '../editable/models';
 import { SCHEMAS } from '../../schemas';
 
 import { getURLParamsForSampleSelectionKey } from '../samples/utils';
 import { AppURL, createProductUrlFromParts } from '../../url/AppURL';
 import { WORKFLOW_KEY } from '../../app/constants';
 import { QueryModel } from '../../../public/QueryModel/QueryModel';
+
+import { genCellKey } from '../editable/utils';
+
+import { ViewInfo } from '../../ViewInfo';
 
 import { EntityChoice, EntityDataType, IEntityTypeOption } from './models';
 
@@ -158,4 +162,39 @@ export function getJobCreationHref(
 
     const actionUrl = createProductUrlFromParts(targetProductId, currentProductId, params, WORKFLOW_KEY, 'new');
     return actionUrl instanceof AppURL ? actionUrl.toHref() : actionUrl;
+}
+
+export function getIdentifyingFieldKeys(queryInfo: QueryInfo): string[] {
+    const idView = queryInfo?.getView(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME);
+    if (!idView) {
+        return [];
+    }
+    return queryInfo.getIdentifyingFieldsEditableGridColumns(true).map(col => col.fieldKey);
+}
+
+export const SAMPLE_ID_FIELD_KEY = 'sampleid';
+export function getSampleIdCellKey(rowIdx: number, sampleFieldKey = SAMPLE_ID_FIELD_KEY): string {
+    return genCellKey(sampleFieldKey, rowIdx);
+}
+
+export function getCellKeyColumnMap(editorModel: EditorModel, colFieldKey: string): Record<string, number> {
+    const colCellValues = editorModel.getValuesForColumn(colFieldKey);
+    return colCellValues.reduce((map, row, key) => {
+        if (row.size > 0) {
+            map[key] = row.get(0).raw;
+        }
+        return map;
+    }, {});
+}
+
+export function updateCellKeySampleIdMap(
+    initialMap: Record<string, number>,
+    cellKeyChanges: { toAddOrUpdate: { [key: string]: number }; toRemove: string[] }
+): Record<string, number> {
+    const updatedCellKeyMap = { ...initialMap };
+    cellKeyChanges.toRemove.forEach(key => {
+        delete updatedCellKeyMap[key];
+    });
+    Object.assign(updatedCellKeyMap, cellKeyChanges.toAddOrUpdate);
+    return updatedCellKeyMap;
 }
