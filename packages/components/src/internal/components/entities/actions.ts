@@ -461,8 +461,7 @@ export async function getChosenParentData(
     parentEntityDataTypes: Map<string, EntityDataType>,
     allowParents: boolean,
     isItemSamples?: boolean,
-    targetQueryName?: string,
-    combineParentTypes?: boolean
+    targetQueryName?: string
 ): Promise<Partial<EntityIdCreationModel>> {
     const entityParents = EntityIdCreationModel.getEmptyEntityParents(
         parentEntityDataTypes.reduce(
@@ -492,13 +491,7 @@ export async function getChosenParentData(
             if (chosenParent.value !== undefined && parentSchemaNames.contains(chosenParent.schema)) {
                 totalParentValueCount += chosenParent.value.size;
                 isParentTypeOnly = chosenParent.isParentTypeOnly;
-
-                // If combining parent types, use the first parent type for the queryName
-                parentEntityDataType = (
-                    combineParentTypes
-                        ? parentEntityDataTypes.valueSeq().first()
-                        : parentEntityDataTypes.get(chosenParent.schema)
-                ).typeListingSchemaQuery.queryName;
+                parentEntityDataType = parentEntityDataTypes.get(chosenParent.schema).typeListingSchemaQuery.queryName;
             }
         });
 
@@ -609,7 +602,6 @@ export async function getFolderConfigurableEntityTypeOptions(
  * @param targetQueryName the name of the listing schema query that represents the initial target for creation.
  * @param allowParents are parents of this entity type allowed or not
  * @param isItemSamples use the selectionKey from inventory.items table to query sample parents
- * @param combineParentTypes
  */
 export function getEntityTypeData(
     model: EntityIdCreationModel,
@@ -617,21 +609,13 @@ export function getEntityTypeData(
     parentSchemaQueries: Map<string, EntityDataType>,
     targetQueryName: string,
     allowParents: boolean,
-    isItemSamples: boolean,
-    combineParentTypes: boolean
+    isItemSamples: boolean
 ): Promise<Partial<EntityIdCreationModel>> {
     return new Promise((resolve, reject) => {
         const promises: Array<Promise<any>> = [
             getEntityTypeOptions(entityDataType),
             // get all the parent schemaQuery data
-            getChosenParentData(
-                model,
-                parentSchemaQueries,
-                allowParents,
-                isItemSamples,
-                targetQueryName,
-                combineParentTypes
-            ),
+            getChosenParentData(model, parentSchemaQueries, allowParents, isItemSamples, targetQueryName),
             ...parentSchemaQueries.map(edt => getEntityTypeOptions(edt)).toArray(),
         ];
 
