@@ -692,6 +692,36 @@ describe('EditorModel', () => {
             const updatedRows = em.getUpdatedData();
             expect(updatedRows).toHaveLength(0);
         });
+        test('non-userEditable column should be excluded', () => {
+            const lookupCol = new QueryColumn({
+                name: 'lookup',
+                caption: 'lookup',
+                fieldKey: 'lookup',
+                fieldKeyArray: ['lookup'],
+                shownInInsertView: true,
+                userEditable: false,
+                lookup: { queryName: 'lookupQuery', schemaName: 'lookupSchema' },
+            });
+            const em = modifyEm({
+                columnMap: basicEditorModel.columnMap.set(lookupCol.fieldKey, lookupCol),
+                orderedColumns: basicEditorModel.orderedColumns.push(lookupCol.fieldKey),
+                originalData: basicEditorModel.originalData.setIn(
+                    [0, lookupCol.fieldKey],
+                    List([{ value: 456, displayValue: 'Value 456' }])
+                ),
+                cellValues: basicEditorModel.cellValues.set(
+                    genCellKey('lookup', 0),
+                    List([
+                        {
+                            raw: 123,
+                            display: 'Value 123',
+                        },
+                    ])
+                ),
+            });
+            const updatedRows = em.getUpdatedData();
+            expect(updatedRows).toHaveLength(0);
+        });
         test('expInput value updated', () => {
             const materialInputs = QueryColumn.MATERIAL_INPUTS.toLowerCase();
             const expInputCol = new QueryColumn({
