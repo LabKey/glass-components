@@ -6,10 +6,11 @@ import { userEvent } from '@testing-library/user-event';
 
 import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
+import { isValidAltDateTimeFormatOptions } from '../../util/Date';
+
 import { createFormInputId } from './utils';
 import { DOMAIN_FIELD_FORMAT, DOMAIN_FIELD_NOT_LOCKED } from './constants';
 import { DateTimeFieldOptions } from './DateTimeFieldOptions';
-import { isValidAltDateTimeFormatOptions } from '../../util/Date';
 
 const DEFAULT_PROP = {
     index: 1,
@@ -66,7 +67,9 @@ function verifyInputs(
     if (type === 'dateTime') {
         expect(selectInputs[1].hasAttribute('aria-disabled')).toEqual(inherit);
         expect(selectInputs[0].textContent.startsWith(date + (skipDatePreview ? '' : ' ('))).toBeTruthy();
-        expect(selectInputs[1].textContent.startsWith(time ? time + (skipTimePreview ? '' : ' (') : '<none>')).toBeTruthy();
+        expect(
+            selectInputs[1].textContent.startsWith(time ? time + (skipTimePreview ? '' : ' (') : '<none>')
+        ).toBeTruthy();
     } else if (type === 'date') {
         expect(selectInputs[0].textContent.startsWith(date + (skipDatePreview ? '' : ' ('))).toBeTruthy();
     } else {

@@ -449,9 +449,12 @@ export function isValidAltDateTimeFormatOptions(format: string): boolean {
     return FIELD_ALT_DATETIME_FORMATS.indexOf(format?.toLowerCase()) > -1;
 }
 
-export function getNonStandardFormatWarning(formatType: DateFormatType, formatPattern: string, allowAltFormat?: boolean): string {
-    if (allowAltFormat && isValidAltDateTimeFormatOptions(formatPattern))
-        return null;
+export function getNonStandardFormatWarning(
+    formatType: DateFormatType,
+    formatPattern: string,
+    allowAltFormat?: boolean
+): string {
+    if (allowAltFormat && isValidAltDateTimeFormatOptions(formatPattern)) return null;
 
     switch (formatType) {
         case DateFormatType.Date:

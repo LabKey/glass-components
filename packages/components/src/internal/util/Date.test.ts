@@ -87,9 +87,7 @@ describe('Date Utilities', () => {
     test('getNonStandardFormatWarning', () => {
         expect(getNonStandardFormatWarning(DateFormatType.Date, null)).toBe('Non-standard date format.');
         expect(getNonStandardFormatWarning(DateFormatType.Time, '')).toBe('Non-standard time format.');
-        expect(getNonStandardFormatWarning(DateFormatType.DateTime, undefined)).toBe(
-            'Non-standard date-time format.'
-        );
+        expect(getNonStandardFormatWarning(DateFormatType.DateTime, undefined)).toBe('Non-standard date-time format.');
 
         expect(getNonStandardFormatWarning(DateFormatType.Date, 'yyyy-MM-dd')).toBeNull();
         expect(getNonStandardFormatWarning(DateFormatType.DateTime, 'yyyy-MM-dd')).toBeNull();
@@ -131,11 +129,16 @@ describe('Date Utilities', () => {
 
         expect(getNonStandardFormatWarning(DateFormatType.Date, 'Date Time', true)).toBe('Non-standard date format.');
         expect(getNonStandardFormatWarning(DateFormatType.Date, 'timestamp', true)).toBe('Non-standard date format.');
-        expect(getNonStandardFormatWarning(DateFormatType.DateTime, 'time ', true)).toBe('Non-standard date-time format.');
-        expect(getNonStandardFormatWarning(DateFormatType.DateTime, 'date and time', true)).toBe('Non-standard date-time format.');
-        expect(getNonStandardFormatWarning(DateFormatType.DateTime, 'DATEONLY', true)).toBe('Non-standard date-time format.');
+        expect(getNonStandardFormatWarning(DateFormatType.DateTime, 'time ', true)).toBe(
+            'Non-standard date-time format.'
+        );
+        expect(getNonStandardFormatWarning(DateFormatType.DateTime, 'date and time', true)).toBe(
+            'Non-standard date-time format.'
+        );
+        expect(getNonStandardFormatWarning(DateFormatType.DateTime, 'DATEONLY', true)).toBe(
+            'Non-standard date-time format.'
+        );
         expect(getNonStandardFormatWarning(DateFormatType.Time, 'Time only', true)).toBe('Non-standard time format.');
-
     });
 
     test('getDateTimeInputOptions', () => {
