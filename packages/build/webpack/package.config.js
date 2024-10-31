@@ -14,12 +14,12 @@ const tsCheckerConfig = {
     ...constants.TS_CHECKER_CONFIG,
     typescript: {
         ...constants.TS_CHECKER_CONFIG.typescript,
-        mode: "write-dts",
+        mode: 'write-dts',
         configOverwrite: {
             compilerOptions: { outDir: 'dist/' },
-            include: ["src/**/*"],
+            include: ['src/**/*'],
             // excluding spec/test files shaves time off the build
-            exclude: ["node_modules", "**/__mocks__/**/*", "**/*.spec.*", "**/*.test.*", "src/test"]
+            exclude: ['node_modules', '**/__mocks__/**/*', '**/*.spec.*', '**/*.test.*', 'src/test']
         }
     }
 };
