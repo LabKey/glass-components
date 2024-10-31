@@ -1,5 +1,5 @@
 import React, { act } from 'react';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { getTestAPIWrapper } from '../../APIWrapper';
@@ -49,7 +49,8 @@ describe('getUncheckedEntityWarning', () => {
 
     test('dataCounts null', () => {
         const warning = getUncheckedEntityWarning([1, 2], [1], null, SampleTypeDataType, 2);
-        expect(JSON.stringify(warning)).toContain('Loading...');
+        render(warning);
+        expect(document.querySelector('.fa-spinner')).toBeInTheDocument();
     });
 
     test('dataCounts empty', () => {

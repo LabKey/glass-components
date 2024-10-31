@@ -116,9 +116,11 @@ export const sleep = (ms = 0): Promise<void> => {
     });
 };
 
+// FIXME: This should be refactored as a React component
 export const wrapDraggable = element => {
     return (
-        <DragDropContext onDragEnd={jest.fn()}>
+        // eslint-disable-next-line react/jsx-no-bind,no-empty-function
+        <DragDropContext onDragEnd={() => {}}>
             <Droppable droppableId="jest-test-droppable">
                 {provided => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
