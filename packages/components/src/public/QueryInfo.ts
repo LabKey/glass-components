@@ -261,6 +261,24 @@ export class QueryInfo {
         return extraDisplayColumn;
     }
 
+    getIdentifyingFieldsEditableGridColumns(includeNameField = false, prefixFieldKey?: string): QueryColumn[] {
+        const cols: QueryColumn[] = [];
+        if (this.views.has(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)) {
+            this.getDisplayColumns(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME).forEach(col => {
+                const qCol = new QueryColumn(col);
+                if (includeNameField || col.fieldKey.toLowerCase() !== 'name') {
+                    qCol.readOnly = true;
+                    if (prefixFieldKey) {
+                        qCol.name = prefixFieldKey + '/' + qCol.name;
+                        qCol.fieldKey = prefixFieldKey + '/' + qCol.fieldKey;
+                    }
+                    cols.push(qCol);
+                }
+            });
+        }
+        return cols;
+    }
+
     getLookupViewColumns(displayColumnFieldKey?: string): QueryColumn[] {
         let cols: QueryColumn[] = [];
         if (this.views.has(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)) {

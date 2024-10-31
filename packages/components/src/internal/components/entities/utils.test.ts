@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { Filter } from '@labkey/api';
 
 import {
@@ -14,13 +14,23 @@ import { QueryInfo } from '../../../public/QueryInfo';
 
 import { makeTestQueryModel } from '../../../public/QueryModel/testUtils';
 
+import { ViewInfo } from '../../ViewInfo';
+
+import { CellMessage, EditorModel, ValueDescriptor } from '../editable/models';
+
+import { genCellKey } from '../editable/utils';
+
 import { IEntityTypeOption } from './models';
 import {
+    getCellKeyColumnMap,
     getEntityDescription,
     getEntityNoun,
+    getIdentifyingFieldKeys,
     getInitialParentChoices,
     getJobCreationHref,
+    getSampleIdCellKey,
     sampleDeleteDependencyText,
+    updateCellKeySampleIdMap,
 } from './utils';
 import { DataClassDataType, SampleTypeDataType } from './constants';
 
@@ -305,5 +315,138 @@ describe('getJobCreationHref', () => {
         expect(getJobCreationHref(queryModel, undefined, true, undefined, false, null, 'from', 'to')).toBe(
             '/labkey/to/app.view#/workflow/new?selectionKey=id'
         );
+    });
+});
+
+describe('getIdentifyingFieldKeys', () => {
+    const columns = [
+        { fieldKey: 'intCol', jsonType: 'int' },
+        { fieldKey: 'doubleCol', jsonType: 'double' },
+        { fieldKey: 'textCol', jsonType: 'string' },
+    ];
+    const QUERY_INFO_NO_ID_VIEW = QueryInfo.fromJsonForTests(
+        {
+            columns,
+            name: 'query',
+            schemaName: 'schema',
+            views: [
+                { columns, name: ViewInfo.DEFAULT_NAME },
+                { columns, name: 'view' },
+            ],
+        },
+        true
+    );
+    const QUERY_INFO_WITH_ID_VIEW = QueryInfo.fromJsonForTests(
+        {
+            columns,
+            name: 'query',
+            schemaName: 'schema',
+            views: [
+                { columns, name: ViewInfo.DEFAULT_NAME },
+                { columns, name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME },
+            ],
+        },
+        true
+    );
+
+    test('no view defined', () => {
+        expect(getIdentifyingFieldKeys(undefined)).toStrictEqual([]);
+        expect(getIdentifyingFieldKeys(QUERY_INFO_NO_ID_VIEW)).toStrictEqual([]);
+    });
+
+    test('view with default labels', () => {
+        expect(getIdentifyingFieldKeys(QUERY_INFO_WITH_ID_VIEW)).toStrictEqual(['intCol', 'doubleCol', 'textCol']);
+    });
+
+    test('view with custom labels', () => {
+        const newColumn = { fieldKey: 'intCol', jsonType: 'int', title: 'Counter' };
+        const queryInfo = QueryInfo.fromJsonForTests(
+            {
+                columns: [newColumn, columns[1], columns[2]],
+                name: 'query',
+                schemaName: 'schema',
+                views: [
+                    { columns, name: ViewInfo.DEFAULT_NAME },
+                    { columns: [columns[1], newColumn], name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME },
+                ],
+            },
+            true
+        );
+        expect(getIdentifyingFieldKeys(queryInfo)).toStrictEqual(['doubleCol', 'intCol']);
+    });
+});
+
+describe('get cell key helpers', () => {
+    test('getSampleIdCellKey', () => {
+        expect(getSampleIdCellKey(0)).toBe('sampleid&&0');
+        expect(getSampleIdCellKey(9)).toBe('sampleid&&9');
+        expect(getSampleIdCellKey(9, 'otherSampleKey')).toBe('othersamplekey&&9');
+    });
+
+    const sampleFK = 'SampleFieldKey';
+    const editorModel = new EditorModel({}).merge({
+        cellMessages: Map<string, CellMessage>({
+            '1-0': 'description 1 message',
+        }),
+        cellValues: Map<string, List<ValueDescriptor>>({
+            [genCellKey(sampleFK, 0)]: List<ValueDescriptor>([
+                {
+                    display: 'S-1',
+                    raw: 1,
+                },
+            ]),
+            [genCellKey(sampleFK, 1)]: List<ValueDescriptor>([
+                {
+                    display: 'S-2',
+                    raw: 2,
+                },
+            ]),
+            [genCellKey(sampleFK, 2)]: List<ValueDescriptor>([]),
+            [genCellKey(sampleFK, 3)]: List<ValueDescriptor>([
+                {
+                    display: 'S-3',
+                    raw: 3,
+                },
+            ]),
+        }),
+        orderedColumns: List([sampleFK]),
+        rowCount: 4,
+    }) as EditorModel;
+
+    test('getCellKeyColumnMap', () => {
+        expect(getCellKeyColumnMap(editorModel, 'bogus')).toStrictEqual({});
+        expect(getCellKeyColumnMap(editorModel, sampleFK)).toStrictEqual({
+            'samplefieldkey&&0': 1,
+            'samplefieldkey&&1': 2,
+            'samplefieldkey&&3': 3,
+        });
+    });
+
+    test('updateCellKeySampleIdMap', () => {
+        const initMap = getCellKeyColumnMap(editorModel, sampleFK);
+        expect(updateCellKeySampleIdMap(initMap, { toAddOrUpdate: {}, toRemove: [] })).toStrictEqual(initMap);
+
+        expect(
+            updateCellKeySampleIdMap(initMap, {
+                toAddOrUpdate: { 'samplefieldkey&&2': 4 },
+                toRemove: [],
+            })
+        ).toStrictEqual({
+            'samplefieldkey&&0': 1,
+            'samplefieldkey&&1': 2,
+            'samplefieldkey&&2': 4,
+            'samplefieldkey&&3': 3,
+        });
+
+        expect(
+            updateCellKeySampleIdMap(initMap, {
+                toAddOrUpdate: { 'samplefieldkey&&2': 4 },
+                toRemove: ['samplefieldkey&&0'],
+            })
+        ).toStrictEqual({
+            'samplefieldkey&&1': 2,
+            'samplefieldkey&&2': 4,
+            'samplefieldkey&&3': 3,
+        });
     });
 });
