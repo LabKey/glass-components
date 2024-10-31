@@ -9,6 +9,7 @@ import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 import { createFormInputId } from './utils';
 import { DOMAIN_FIELD_FORMAT, DOMAIN_FIELD_NOT_LOCKED } from './constants';
 import { DateTimeFieldOptions } from './DateTimeFieldOptions';
+import { isValidAltDateTimeFormatOptions } from '../../util/Date';
 
 const DEFAULT_PROP = {
     index: 1,
@@ -59,14 +60,17 @@ function verifyInputs(
     const selectInputs = document.querySelectorAll('.select-input__control');
     expect(selectInputs.length).toEqual(type === 'dateTime' ? 2 : 1);
     expect(selectInputs[0].hasAttribute('aria-disabled')).toEqual(inherit);
+
+    const skipDatePreview = dateInvalid || isValidAltDateTimeFormatOptions(date);
+    const skipTimePreview = timeInvalid || isValidAltDateTimeFormatOptions(time);
     if (type === 'dateTime') {
         expect(selectInputs[1].hasAttribute('aria-disabled')).toEqual(inherit);
-        expect(selectInputs[0].textContent.startsWith(date + (dateInvalid ? '' : ' ('))).toBeTruthy();
-        expect(selectInputs[1].textContent.startsWith(time ? time + (timeInvalid ? '' : ' (') : '<none>')).toBeTruthy();
+        expect(selectInputs[0].textContent.startsWith(date + (skipDatePreview ? '' : ' ('))).toBeTruthy();
+        expect(selectInputs[1].textContent.startsWith(time ? time + (skipTimePreview ? '' : ' (') : '<none>')).toBeTruthy();
     } else if (type === 'date') {
-        expect(selectInputs[0].textContent.startsWith(date + (dateInvalid ? '' : ' ('))).toBeTruthy();
+        expect(selectInputs[0].textContent.startsWith(date + (skipDatePreview ? '' : ' ('))).toBeTruthy();
     } else {
-        expect(selectInputs[0].textContent.startsWith(time + (timeInvalid ? '' : ' ('))).toBeTruthy();
+        expect(selectInputs[0].textContent.startsWith(time + (skipTimePreview ? '' : ' ('))).toBeTruthy();
     }
 
     expect(document.querySelectorAll('.fa-exclamation-circle')).toHaveLength(dateInvalid || timeInvalid ? 1 : 0);
@@ -203,6 +207,22 @@ describe('DateTimeFieldOptions', () => {
         await act(() => userEvent.click(checkbox));
         expect(DEFAULT_PROP.onChange).toHaveBeenCalledTimes(4);
         expect(document.querySelectorAll('.fa-exclamation-circle')).toHaveLength(0);
+    });
+
+    test('Date type, with alternative format override', async () => {
+        const props = {
+            ...DEFAULT_PROP,
+            format: 'dateTime',
+            type: 'date',
+        };
+
+        await act(async () => {
+            renderWithAppContext(<DateTimeFieldOptions {...props} />, {
+                appContext: APP_CONTEXT,
+            });
+        });
+
+        verifyInputs('date', false, 'dateTime', null, false, false);
     });
 
     test('Time type, with invalid override', async () => {

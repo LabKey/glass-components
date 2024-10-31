@@ -32,6 +32,8 @@ const STANDARD_DATE_DISPLAY_FORMATS = ['yyyy-MM-dd', 'yyyy-MMM-dd', 'dd-MMM-yyyy
 
 const STANDARD_TIME_DISPLAY_FORMATS = ['HH:mm:ss', 'HH:mm', 'HH:mm:ss.SSS', 'hh:mm a'];
 
+const FIELD_ALT_DATETIME_FORMATS = ['date', 'datetime', 'time'];
+
 const MISSING_FORMAT_DISPLAY = '<none>';
 
 // Intended to match against ISO_DATE_FORMAT_STRING
@@ -443,7 +445,14 @@ export function getNonStandardDateTimeFormatWarning(dateTimeFormat: string): str
     return warning;
 }
 
-export function getNonStandardFormatWarning(formatType: DateFormatType, formatPattern: string): string {
+export function isValidAltDateTimeFormatOptions(format: string): boolean {
+    return FIELD_ALT_DATETIME_FORMATS.indexOf(format?.toLowerCase()) > -1;
+}
+
+export function getNonStandardFormatWarning(formatType: DateFormatType, formatPattern: string, allowAltFormat?: boolean): string {
+    if (allowAltFormat && isValidAltDateTimeFormatOptions(formatPattern))
+        return null;
+
     switch (formatType) {
         case DateFormatType.Date:
             return isStandardDateDisplayFormat(formatPattern) ? null : 'Non-standard date format.';
@@ -523,9 +532,9 @@ export const getDateTimeSettingFormat = (setting: DateTimeSettingProp, checkInhe
           : timeFormat;
 };
 
-export const getDateTimeSettingWarning = (setting: DateTimeSettingProp): string => {
+export const getDateTimeSettingWarning = (setting: DateTimeSettingProp, allowAltFormat?: boolean): string => {
     const { formatType } = setting;
-    return getNonStandardFormatWarning(formatType, getDateTimeSettingFormat(setting, true));
+    return getNonStandardFormatWarning(formatType, getDateTimeSettingFormat(setting, true), allowAltFormat);
 };
 
 function _formatDate(date: Date | string | number, dateFormat: string, timezone?: string): string {

@@ -12,6 +12,7 @@ import {
     getNonStandardFormatWarning,
     getDateTimeSettingWarning,
     splitDateTimeFormat,
+    isValidAltDateTimeFormatOptions,
 } from '../../util/Date';
 
 import { useServerContext } from '../base/ServerContext';
@@ -65,7 +66,7 @@ export const getInitDateTimeSetting = (
             currentFormat = inherited ? parentFormat : fieldFormat;
             timeFormat = currentFormat;
     }
-    const invalidWarning = getNonStandardFormatWarning(formatType, currentFormat);
+    const invalidWarning = getNonStandardFormatWarning(formatType, currentFormat, true);
     if (invalidWarning && formatType === DateFormatType.DateTime) {
         dateFormat = currentFormat;
         timeFormat = '';
@@ -127,7 +128,7 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 updates.invalidWarning = getDateTimeSettingWarning({
                     ...prevSetting,
                     ...updates,
-                } as DateTimeSettingProp);
+                } as DateTimeSettingProp, true);
                 const updatedSetting = {
                     ...prevSetting,
                     ...updates,
@@ -150,7 +151,7 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 updates.invalidWarning = getDateTimeSettingWarning({
                     ...prevSetting,
                     ...updates,
-                } as DateTimeSettingProp);
+                } as DateTimeSettingProp, true);
 
                 const updatedSetting = {
                     ...prevSetting,
@@ -169,6 +170,10 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
         },
         [onFormatChange]
     );
+
+    const isValidNewOption = useCallback((inputValue: string) => {
+        return isValidAltDateTimeFormatOptions(inputValue);
+    }, []);
 
     const onTimeFormatChange = useCallback(
         (name: string, selectedValue: string, selectedOption: SelectInputOption): void => {
@@ -214,6 +219,8 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 {setting.isDate && (
                     <div className="col-xs-3">
                         <SelectInput
+                            allowCreate
+                            isValidNewOption={isValidNewOption}
                             containerClass=""
                             inputClass="form-group"
                             id={createFormInputId(DOMAIN_FIELD_FORMAT + '_date' + type, domainIndex, index)}
@@ -231,6 +238,8 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 {setting.isTime && (
                     <div className="col-xs-3">
                         <SelectInput
+                            allowCreate={setting.isTimeRequired}
+                            isValidNewOption={setting.isTimeRequired ? isValidNewOption : undefined}
                             containerClass=""
                             inputClass="form-group"
                             id={createFormInputId(DOMAIN_FIELD_FORMAT + '_time' + type, domainIndex, index)}
