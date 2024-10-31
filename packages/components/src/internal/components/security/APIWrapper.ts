@@ -52,8 +52,8 @@ export interface RemoveGroupMembersResponse {
 export interface SecurityAPIWrapper {
     addGroupMembers: (groupId: number, principalIds: number[], projectPath: string) => Promise<AddGroupMembersResponse>;
     createApiKey: (type?: string, description?: string) => Promise<string>;
-    deleteApiKeys: (selections: Set<string>) => Promise<QueryCommandResponse>;
     createGroup: (groupName: string, projectPath: string) => Promise<Security.CreateGroupResponse>;
+    deleteApiKeys: (selections: Set<string>) => Promise<QueryCommandResponse>;
     deleteContainer: (options: DeleteContainerOptions) => Promise<Record<string, unknown>>;
     deleteGroup: (id: number, projectPath: string) => Promise<DeleteGroupResponse>;
     deletePolicy: (resourceId: string, containerPath?: string) => Promise<any>;
