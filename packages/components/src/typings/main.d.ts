@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// This allows for IntelliJ to resolve custom jest matcher typings from
+// @testing-library/jest-dom which are included via import in jest.setup.ts.
+/// <reference types="@testing-library/jest-dom" />
+/// <reference types="jest" />
+
 /**
  * @deprecated Use getServerContext() from @labkey/api instead
  */

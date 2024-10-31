@@ -1,6 +1,6 @@
 {
   "name": "@labkey/build",
-  "version": "8.0.0",
+  "version": "8.2.0",
   "description": "LabKey client-side build assets",
   "files": [
     "webpack/"
