@@ -5,14 +5,15 @@ import { ExtendedMap } from '../public/ExtendedMap';
 import { QueryColumn } from '../public/QueryColumn';
 import { SchemaQuery } from '../public/SchemaQuery';
 
+import { QueryInfo } from '../public/QueryInfo';
+
 import { AssayUploadTabs } from './constants';
 
 import { AppURL, createProductUrlFromParts } from './url/AppURL';
 
 import { SCHEMAS } from './schemas';
 import { ASSAYS_KEY } from './app/constants';
-import {QueryInfo} from "../public/QueryInfo";
-import {ComponentsAPIWrapper} from "./APIWrapper";
+import { ComponentsAPIWrapper } from './APIWrapper';
 
 export enum AssayDomainTypes {
     BATCH = 'Batch',

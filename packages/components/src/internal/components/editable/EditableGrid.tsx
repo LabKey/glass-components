@@ -1561,14 +1561,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
     };
 
     renderBulkUpdate = (): ReactNode => {
-        const {
-            addControlProps,
-            bulkUpdateProps,
-            editorModel,
-            forUpdate,
-            showAsTab,
-            containerPath,
-        } = this.props;
+        const { addControlProps, bulkUpdateProps, editorModel, forUpdate, showAsTab, containerPath } = this.props;
         const { pendingBulkFormData } = this.state;
 
         return (

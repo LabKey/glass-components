@@ -14,7 +14,7 @@ import {
     genCellKeyPrefix,
     getValidatedEditableGridValue,
     parseCellKey,
-    sortCellKeys
+    sortCellKeys,
 } from './utils';
 import { initEditorModel } from './actions';
 
