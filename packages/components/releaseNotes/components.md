@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD October 2024
+### version 5.19.0
+*Released*: 31 October 2024
 - Add identifying fields to grids when insert assay data via EditableGrid
   - migrate some sample identifying fields utils from @labkey/premium
   - factor out updateCellKeySampleIdMap() as utility function
