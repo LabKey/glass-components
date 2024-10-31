@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.??.?
-*Released*: 30 October 2024
+### version 5.20.0
+*Released*: 31 October 2024
 - Bump build
 - Convert LoadingSpinner to FC
 
