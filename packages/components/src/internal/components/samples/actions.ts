@@ -241,7 +241,7 @@ export function getSelectionLineageData(
     schema: string,
     query: string,
     viewName: string,
-    columns?: string[]
+    extraColumns: string[] = []
 ): Promise<ISelectRowsResult> {
     if (selections?.size === 0) return Promise.reject('No data is selected.');
     const rowIds = Array.from(selections).map(s => parseInt(s, 10));
@@ -250,7 +250,7 @@ export function getSelectionLineageData(
         schemaName: schema,
         queryName: query,
         viewName,
-        columns: columns ?? List.of('RowId', 'Name', 'LSID', 'Folder').concat(ParentEntityLineageColumns).toArray(),
+        columns: List.of('RowId', 'Name', 'LSID', 'Folder').concat(ParentEntityLineageColumns).toArray().concat(extraColumns),
         filterArray: [Filter.create('RowId', rowIds, Filter.Types.IN)],
     });
 }

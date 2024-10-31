@@ -3,6 +3,12 @@ Components, models, actions, and utility functions for LabKey applications and p
 
 ### version 5.19.0
 *Released*: 31 October 2024
+- Add identifying fields to grids when editing via grid for Samples and Sources
+  - include identifying fields in getSelectionLineageData()
+  - EditorModel.getUpdatedData() to skip non-userEditable fields when comparing values
+
+### version 5.19.0
+*Released*: 31 October 2024
 - Add identifying fields to grids when insert assay data via EditableGrid
   - migrate some sample identifying fields utils from @labkey/premium
   - factor out updateCellKeySampleIdMap() as utility function
