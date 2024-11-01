@@ -39,7 +39,7 @@ const STANDARD_DATE_DISPLAY_FORMATS = [
     'ddMMMyy',
     'MM/dd/yyyy',
     'MM-dd-yyyy',
-    'MMMM dd yyyy'
+    'MMMM dd yyyy',
 ];
 
 const STANDARD_TIME_DISPLAY_FORMATS = ['HH:mm:ss', 'HH:mm', 'HH:mm:ss.SSS', 'hh:mm a'];
@@ -429,18 +429,18 @@ export function splitDateTimeFormat(dateTimeFormatStr: string): string[] {
     const dateTimeFormat = dateTimeFormatStr?.trim();
     if (!dateTimeFormat) return ['', ''];
 
-    let standardDatePart = null, restTimePart = '';
+    let standardDatePart = null,
+        restTimePart = '';
     STANDARD_DATE_DISPLAY_FORMATS.forEach(standardDate => {
         if (dateTimeFormat.startsWith(standardDate)) {
             if (dateTimeFormat.length === standardDate.length) {
                 standardDatePart = standardDate;
-            }
-            else if (dateTimeFormat[standardDate.length] === ' ') {
+            } else if (dateTimeFormat[standardDate.length] === ' ') {
                 standardDatePart = standardDate;
                 restTimePart = dateTimeFormat.substring(standardDate.length).trim();
             }
         }
-    })
+    });
     if (standardDatePart) {
         return [standardDatePart, restTimePart];
     }
