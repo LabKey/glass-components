@@ -150,10 +150,15 @@ describe('Date Utilities', () => {
             dateOptions: [
                 { label: 'yyyy-MM-dd (2020-08-06)', value: 'yyyy-MM-dd' },
                 { label: 'yyyy-MMM-dd (2020-Aug-06)', value: 'yyyy-MMM-dd' },
+                { label: 'yyyy-MM (2020-08)', value: 'yyyy-MM' },
+                { label: 'dd-MM-yyyy (06-08-2020)', value: 'dd-MM-yyyy' },
                 { label: 'dd-MMM-yyyy (06-Aug-2020)', value: 'dd-MMM-yyyy' },
                 { label: 'dd-MMM-yy (06-Aug-20)', value: 'dd-MMM-yy' },
                 { label: 'ddMMMyyyy (06Aug2020)', value: 'ddMMMyyyy' },
                 { label: 'ddMMMyy (06Aug20)', value: 'ddMMMyy' },
+                { label: 'MM/dd/yyyy (08/06/2020)', value: 'MM/dd/yyyy' },
+                { label: 'MM-dd-yyyy (08-06-2020)', value: 'MM-dd-yyyy' },
+                { label: 'MMMM dd yyyy (August 06 2020)', value: 'MMMM dd yyyy' },
             ],
             optionalTimeOptions: [
                 { label: '<none>', value: '' },
