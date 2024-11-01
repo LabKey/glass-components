@@ -8,6 +8,10 @@ Components, models, actions, and utility functions for LabKey applications and p
     - EditorModel.getUpdatedData() to skip non-userEditable fields when comparing values
     - getIdentifyingFieldsEditableGridColumns() to take param for hasProductFolders to determine if Folder should be excluded
 
+### version 5.20.1
+*Released*: 31 October 2024
+- Issue 51491: DateTime field should tolerate Date and DateTime pseudo format patterns
+
 ### version 5.20.0
 *Released*: 31 October 2024
 - Bump build
