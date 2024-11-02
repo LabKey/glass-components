@@ -34,23 +34,21 @@
     "supertest": "7.0.0"
   },
   "devDependencies": {
-    "@labkey/api": "1.35.0",
-    "@types/enzyme": "3.10.18",
-    "@types/jest": "29.5.12",
+    "@labkey/api": "1.35.7-fb-package-updates-1124.0",
+    "@types/jest": "29.5.14",
     "@types/node": "20.14.11",
     "@types/supertest": "2.0.16",
     "copy-webpack-plugin": "12.0.2",
     "cross-env": "7.0.3",
-    "enzyme": "3.11.0",
     "jest": "29.7.0",
     "jest-cli": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "jest-teamcity-reporter": "0.9.0",
     "rimraf": "6.0.1",
-    "ts-jest": "29.2.3",
+    "ts-jest": "29.2.5",
     "ts-loader": "9.5.1",
-    "typescript": "5.5.4",
-    "webpack": "5.93.0",
+    "typescript": "5.6.3",
+    "webpack": "5.96.1",
     "webpack-cli": "5.1.4"
   },
   "peerDependencies": {
