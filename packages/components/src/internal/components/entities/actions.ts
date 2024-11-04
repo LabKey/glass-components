@@ -434,7 +434,6 @@ function resolveEntityParentTypeFromIds(
 // export for jest
 export function extractEntityTypeOptionFromRow(
     row: Row,
-    lowerCaseValue = true,
     entityDataType?: EntityDataType,
     requiredParentTypes?: string[]
 ): IEntityTypeOption {
@@ -447,7 +446,7 @@ export function extractEntityTypeOptionFromRow(
         label: name,
         lsid: caseInsensitive(row, 'LSID').value,
         rowId: caseInsensitive(row, 'RowId').value,
-        value: lowerCaseValue ? name.toLowerCase() : name, // we match values on lower case because (at least) when parsed from an id they are lower case
+        value: name.toLowerCase(), // we match values on lower case because (at least) when parsed from an id they are lower case
         query: name,
         entityDataType,
         isFromSharedContainer: caseInsensitive(row, 'Folder/Path')?.value === SHARED_CONTAINER_PATH,
@@ -551,7 +550,7 @@ export async function getEntityTypeOptions(
 
     const options: IEntityTypeOption[] = result.rows
         .map(row => ({
-            ...extractEntityTypeOptionFromRow(row, true, entityDataType, requiredParentTypes),
+            ...extractEntityTypeOptionFromRow(row, entityDataType, requiredParentTypes),
             schema: instanceSchemaName, // e.g. "samples" or "dataclasses"
         }))
         .sort(naturalSortByProperty('label'));
