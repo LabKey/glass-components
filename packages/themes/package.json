@@ -33,7 +33,7 @@
     "mini-css-extract-plugin": "2.9.2",
     "resolve-url-loader": "5.0.0",
     "rimraf": "6.0.1",
-    "sass": "1.79.6",
+    "sass": "1.77.8",
     "sass-loader": "14.2.1",
     "webpack": "5.96.1",
     "webpack-cli": "5.1.4"
