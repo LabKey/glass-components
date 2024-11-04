@@ -462,9 +462,9 @@ describe('QueryInfo', () => {
             expect(
                 QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(false, false, 'samplePrefixFk')
             ).toStrictEqual([]);
-            expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(true, false, 'samplePrefixFk')).toStrictEqual(
-                []
-            );
+            expect(
+                QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(true, false, 'samplePrefixFk')
+            ).toStrictEqual([]);
         });
 
         test('with identifying view', () => {
