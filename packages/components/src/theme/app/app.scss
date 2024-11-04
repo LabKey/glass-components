@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .app-body {
     margin-top: 56px;
 }
@@ -29,5 +31,5 @@
 }
 
 .menu-section-icon {
-  color:  lighten($brand-primary, 10%);
+  color: color.adjust($brand-primary, $lightness: 10%);
 }

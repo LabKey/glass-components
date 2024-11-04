@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $editor-padding-horizontal: 15px;
 
 .editor-toolbar__button {
@@ -64,7 +66,7 @@ $editor-padding-horizontal: 15px;
 
     &:hover {
         text-decoration: underline;
-        color: darken(#2980B9, 15);
+        color: color.adjust(#2980B9, $lightness: -15%);
     }
 }
 .discussions-container__title {
@@ -173,7 +175,7 @@ $editor-padding-horizontal: 15px;
     cursor: pointer;
 
     &:hover {
-        color: darken($brand-danger, 15%);
+        color: color.adjust($brand-danger, $lightness: -15%);
     }
 }
 .thread-attachment-icon--file {
