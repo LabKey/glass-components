@@ -763,8 +763,8 @@ export class EditorModel
                     // For lineage grids the parent columns aren't on the queryInfo
                     const col = queryInfo.getColumn(key) ?? this.columnMap.get(key.toLowerCase());
 
-                    // we can skip any readOnly columns
-                    if (col?.readOnly) return row;
+                    // we can skip any readOnly columns or non-userEditable columns
+                    if (col?.readOnly || !col?.userEditable) return row;
 
                     // Convert empty cell to null
                     if (value === '') value = null;
