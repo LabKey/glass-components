@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.20.X
-*Released*: X November 2024
+### version 5.20.2
+*Released*: 4 November 2024
 - Issue 51563: LKSM: Add additional date and date/time formats
 
 ### version 5.20.1
