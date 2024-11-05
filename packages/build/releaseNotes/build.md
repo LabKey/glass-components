@@ -1,8 +1,12 @@
 # @labkey/build
 
-### version 8.1.0
+### version 8.3.0
 *Released*: 5 November 2024
 - Package updates
+
+### version 8.2.0
+*Released*: 31 October 2024
+- Add `__mocks__` to `tsconfig.json` excludes
 
 ### version 8.0.0
 *Released*: 29 October 2024
