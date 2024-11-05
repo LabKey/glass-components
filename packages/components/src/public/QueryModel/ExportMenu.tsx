@@ -3,7 +3,7 @@ import { Set } from 'immutable';
 
 import { exportRows as exportRows_ } from '../../internal/actions';
 
-import { EXPORT_TYPES } from '../../internal/constants';
+import { EXPORT_TYPES, MAX_SELECTION_ACTION_ROWS } from '../../internal/constants';
 import { Tip } from '../../internal/components/base/Tip';
 
 import { DropdownButton, MenuDivider, MenuHeader, MenuItem } from '../../internal/dropdowns';
@@ -11,6 +11,7 @@ import { DropdownButton, MenuDivider, MenuHeader, MenuItem } from '../../interna
 import { QueryModel } from './QueryModel';
 import { getQueryModelExportParams } from './utils';
 import { Actions } from './withQueryModels';
+import { SelectionMenuItem } from '../../internal/components/menus/SelectionMenuItem';
 
 interface ExportMenuProps {
     actions: Actions;
@@ -43,12 +44,13 @@ const exportOptions = [
 
 interface ExportMenuItemProps {
     hasSelections: boolean;
+    model: QueryModel;
     onExport: (option: ExportOption) => void;
     option: ExportOption;
     supportedTypes: Set<EXPORT_TYPES>;
 }
 
-const ExportMenuItem: FC<ExportMenuItemProps> = ({ hasSelections, onExport, option, supportedTypes }) => {
+const ExportMenuItem: FC<ExportMenuItemProps> = ({ model, onExport, option, supportedTypes }) => {
     const onClick = useCallback(() => {
         onExport(option);
     }, [onExport, option]);
@@ -64,10 +66,25 @@ const ExportMenuItem: FC<ExportMenuItemProps> = ({ hasSelections, onExport, opti
             <React.Fragment key={option.type}>
                 <MenuDivider />
                 <MenuHeader text={exportAndPrintHeader} />
-                <MenuItem onClick={onClick}>
-                    <span className={`fa ${option.icon} export-menu-icon`} />
-                    {option.label}
-                </MenuItem>
+                {option.type === EXPORT_TYPES.LABEL && (
+                    <SelectionMenuItem
+                        nounPlural="samples"
+                        queryModel={model}
+                        text={
+                            <>
+                                <span className={`fa ${option.icon} export-menu-icon`} />
+                                {option.label}
+                            </>
+                        }
+                        maxSelection={MAX_SELECTION_ACTION_ROWS}
+                    />
+                )}
+                {option.type !== EXPORT_TYPES.LABEL && (
+                    <MenuItem onClick={onClick}>
+                        <span className={`fa ${option.icon} export-menu-icon`} />
+                        {option.label}
+                    </MenuItem>
+                )}
             </React.Fragment>
         );
     }
@@ -95,7 +112,7 @@ const ExportMenuItem: FC<ExportMenuItemProps> = ({ hasSelections, onExport, opti
     );
 };
 
-export interface ExportMenuImplProps extends Omit<ExportMenuProps, 'model'> {
+export interface ExportMenuImplProps extends ExportMenuProps {
     exportHandler: (option: ExportOption) => void;
     hasData: boolean;
     hasSelections?: boolean;
@@ -103,7 +120,7 @@ export interface ExportMenuImplProps extends Omit<ExportMenuProps, 'model'> {
 }
 
 const ExportMenuImpl: FC<ExportMenuImplProps> = memo(props => {
-    const { id, hasData, supportedTypes, hasSelections, exportHandler, onExport } = props;
+    const { model, id, hasData, supportedTypes, hasSelections, exportHandler, onExport } = props;
 
     const exportCallback = useCallback(
         (option: ExportOption) => {
@@ -133,6 +150,7 @@ const ExportMenuImpl: FC<ExportMenuImplProps> = memo(props => {
                                 onExport={exportCallback}
                                 option={option}
                                 supportedTypes={supportedTypes}
+                                model={model}
                             />
                         ))}
                     </DropdownButton>
@@ -163,6 +181,7 @@ export class ExportMenu extends PureComponent<ExportMenuProps> {
         return (
             <ExportMenuImpl
                 {...rest}
+                model={model}
                 id={id}
                 hasData={hasData}
                 hasSelections={hasSelections}
