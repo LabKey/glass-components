@@ -1,5 +1,9 @@
 # @labkey/build
 
+### version 8.1.0
+*Released*: 5 November 2024
+- Package updates
+
 ### version 8.0.0
 *Released*: 29 October 2024
 - support "dependencies" on entry points
