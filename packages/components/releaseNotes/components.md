@@ -4,6 +4,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version TBD
 *Released*: TBD
 - Issue 51574: Limit selection for View Assay Results
+- Issue 51482: Add metric to track Help link clicks
 
 ### version 5.22.1
 *Released*: 5 November 2024
