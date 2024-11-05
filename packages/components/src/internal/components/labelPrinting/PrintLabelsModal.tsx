@@ -161,7 +161,12 @@ export class PrintLabelsModalImpl extends PureComponent<PrintModalProps & Inject
         if (numSamples === 0) {
             return 'Print Labels with BarTender';
         } else {
-            return 'Print Labels for ' + numSamples + (numSamples === 1 ? ' Sample' : ' Samples') + ' with BarTender';
+            return (
+                'Print Labels for ' +
+                numSamples.toLocaleString() +
+                (numSamples === 1 ? ' Sample' : ' Samples') +
+                ' with BarTender'
+            );
         }
     }
 
