@@ -68,8 +68,7 @@ export interface EntityAPIWrapper {
         parentSchemaQueries: Map<string, EntityDataType>,
         targetQueryName: string,
         allowParents: boolean,
-        isItemSamples: boolean,
-        combineParentTypes: boolean
+        isItemSamples: boolean
     ) => Promise<Partial<EntityIdCreationModel>>;
     getMoveConfirmationData: (
         dataType: EntityDataType,

@@ -12,21 +12,12 @@ describe('extractEntityTypeOptionFromRow', () => {
         LSID: { value: 'ABC123' },
     };
 
-    test('lowerCaseValue = true', () => {
+    test('return value as expected', () => {
         const options = extractEntityTypeOptionFromRow(ROW);
         expect(options.label).toBe(NAME);
         expect(options.lsid).toBe('ABC123');
         expect(options.rowId).toBe(1);
         expect(options.value).toBe(NAME.toLowerCase());
-        expect(options.query).toBe(NAME);
-    });
-
-    test('lowerCaseValue = false', () => {
-        const options = extractEntityTypeOptionFromRow(ROW, false);
-        expect(options.label).toBe(NAME);
-        expect(options.lsid).toBe('ABC123');
-        expect(options.rowId).toBe(1);
-        expect(options.value).toBe(NAME);
         expect(options.query).toBe(NAME);
     });
 });

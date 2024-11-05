@@ -68,7 +68,6 @@ export interface SampleTypeAppContext {
     SamplesTabbedGridPanelComponent: SamplesTabbedGridPanel;
     WorkflowGridComponent: WorkflowGrid;
     assayProviderType?: string;
-    combineParentTypes?: boolean;
     controllerName: string;
     dataClassAliasCaption?: string;
     dataClassParentageLabel?: string;
