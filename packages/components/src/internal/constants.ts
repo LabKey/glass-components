@@ -30,6 +30,7 @@ export const SAMPLE_SET_DISPLAY_TEXT = 'Sample Type';
 export const STORAGE_MAP_EXPORT_CONTROLLER = 'inventory';
 
 export const MAX_EDITABLE_GRID_ROWS = 1000;
+export const DEFAULT_MAX_SELECTION = MAX_EDITABLE_GRID_ROWS;
 export const LOOKUP_DEFAULT_SIZE = 25;
 
 export enum AssayUploadTabs {
