@@ -1,6 +1,10 @@
 # @labkey/themes
 UI themes for LabKey Server.
 
+### version 1.4.0
+*Released*: 5 November 2024
+- Package updates
+
 ### version 1.3.2
 *Released*: 22 September 2023
 * Migrate build from yarn to npm
