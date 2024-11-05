@@ -10,7 +10,7 @@ import { incrementClientSideMetricCount } from '../../actions';
 import { userCanReadAssays } from '../../app/utils';
 import { ResponsiveMenuButton } from '../buttons/ResponsiveMenuButton';
 import { SampleTypeDataType } from './constants';
-import { DEFAULT_MAX_SELECTION } from '../../constants';
+import { MAX_SELECTION_ACTION_ROWS } from '../../constants';
 
 function getAssayResultsHref(
     model: QueryModel,
@@ -56,7 +56,7 @@ export const AssayResultsForSamplesMenuItem: FC<Props> = memo(props => {
             href={getAssayResultsHref(model, picklistName, isAssay, sampleFieldKey, currentProductId, targetProductId)}
             onClick={incrementMetric}
             queryModel={model}
-            maxSelection={DEFAULT_MAX_SELECTION}
+            maxSelection={MAX_SELECTION_ACTION_ROWS}
             nounPlural={SampleTypeDataType.nounPlural}
         />
     );
