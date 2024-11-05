@@ -1,3 +1,5 @@
+@use "sass:color";
+
 //
 // LabKey Variables
 // --------------------------------------------------
@@ -13,11 +15,11 @@ $internal-images-dir: '#{$internal-webapp-dir}/_images';
 //
 // # Imported "labkey-theme" colors
 $gray-base:              #000 !default;
-$gray-darker:            lighten($gray-base, 13.5%) !default; // #222
-$gray-dark:              lighten($gray-base, 20%) !default;   // #333
-$gray:                   lighten($gray-base, 33.5%) !default; // #555
-$gray-light:             lighten($gray-base, 46.7%) !default; // #777
-$gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
+$gray-darker:            color.adjust($gray-base, $lightness: 13.5%) !default; // #222
+$gray-dark:              color.adjust($gray-base, $lightness: 20%) !default;   // #333
+$gray:                   color.adjust($gray-base, $lightness: 33.5%) !default; // #555
+$gray-light:             color.adjust($gray-base, $lightness: 46.7%) !default; // #777
+$gray-lighter:           color.adjust($gray-base, $lightness: 93.5%) !default; // #eee
 $white: #FFFFFF;
 
 // TODO: Migrate all of these away from !default and remove usages of these from anywhere outside of this file
@@ -67,19 +69,19 @@ $lk-form-label-bg-color: $lk-webpart-color !default;
 
 $lk-state-success-text: #3c763d !default;
 $lk-state-success-bg: #dff0d8 !default;
-$lk-state-success-border: darken(adjust-hue($lk-state-success-bg, -10), 5%) !default;
+$lk-state-success-border: color.adjust($lk-state-success-bg, $hue: -10deg, $lightness: -5%) !default;
 
 $lk-state-info-text: #31708f !default;
 $lk-state-info-bg: #d9edf7 !default;
-$lk-state-info-border: darken(adjust-hue($lk-state-info-bg, -10), 7%) !default;
+$lk-state-info-border: color.adjust($lk-state-info-bg, $hue: -10deg, $lightness: -7%) !default;
 
 $lk-state-warning-text: #8a6d3b !default;
 $lk-state-warning-bg: #fcf8e3 !default;
-$lk-state-warning-border: darken(adjust-hue($lk-state-warning-bg, -10), 5%) !default;
+$lk-state-warning-border: color.adjust($lk-state-warning-bg, $hue: -10deg, $lightness: -5%) !default;
 
 $lk-state-danger-text: #a94442 !default;
 $lk-state-danger-bg: #f2dede !default;
-$lk-state-danger-border: darken(adjust-hue($lk-state-danger-bg, -10), 5%) !default;
+$lk-state-danger-border: color.adjust($lk-state-danger-bg, $hue: -10deg, $lightness: -5%) !default;
 
 //== Media query breakpoints
 //
@@ -141,7 +143,7 @@ $lk-button-primary-bg-color: $lk-accent-color !default;
 $lk-button-primary-bg-color-hover: $lk-button-bg-color-hover !default;
 $lk-button-primary-bg-color-start: $lk-button-bg-color-start !default;
 $lk-button-primary-bg-color-end: $lk-button-bg-color-end !default;
-$lk-button-primary-color: darken($lk-button-primary-bg-color, 5%) !default;
+$lk-button-primary-color: color.adjust($lk-button-primary-bg-color, $lightness: -5%) !default;
 $lk-button-primary-color-hover: $lk-button-primary-color !default;
 
 $lk-button-primary-border-size: $lk-button-border-size !default;
@@ -266,7 +268,7 @@ $lk-input-color: $lk-text-color !default;
 //== Links
 //
 $lk-link-color: $lk-brand-color !default;
-$lk-link-color-hover: darken($lk-link-color, 40%) !default;
+$lk-link-color-hover: color.adjust($lk-link-color, $lightness: -40%) !default;
 $lk-link-hover-decoration: none !default;
 $lk-text-link-color: $lk-brand-color !default;
 $lk-text-link-color-hover: $gray-base !default;
@@ -395,7 +397,7 @@ $lk-tooltip-opacity: 0.8 !default;
 //== Wells
 //
 $lk-well-bg-color: $white !default;
-$lk-well-border-color: darken($lk-well-bg-color, 15%) !default;
+$lk-well-border-color: color.adjust($lk-well-bg-color, $lightness: -15%) !default;
 
 //== Modals
 $lk-modal-title-padding: 15px !default;

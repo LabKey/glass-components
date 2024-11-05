@@ -27,7 +27,7 @@ export const ConceptPathInfo: FC<ConceptPathInfoProps> = memo(props => {
                     setAlternatePaths(response);
                 })
                 .catch(reason => {
-                    setError('Unable to load alternate concept paths: ' + reason?.exception ?? 'error unknown');
+                    setError('Unable to load alternate concept paths: ' + (reason?.exception ?? 'error unknown'));
                     setAlternatePaths([]);
                 });
         }

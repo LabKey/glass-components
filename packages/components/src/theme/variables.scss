@@ -1,13 +1,15 @@
+@use "sass:color";
+
 $light-gray: #d3d3d3;
 $white: #fff;
 
 $gray-base:              #000 !default;
-$gray-darker:            lighten($gray-base, 13.5%) !default; // #222
-$gray-dark:              lighten($gray-base, 20%)   !default; // #333
-$gray:                   lighten($gray-base, 33.5%) !default; // #555
-$gray-light:             lighten($gray-base, 46.7%) !default; // #777
-$gray-lighten:           lighten($gray-base, 60%)   !default; // #999
-$gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
+$gray-darker:            color.adjust($gray-base, $lightness: 13.5%) !default; // #222
+$gray-dark:              color.adjust($gray-base, $lightness: 20%)   !default; // #333
+$gray:                   color.adjust($gray-base, $lightness: 33.5%) !default; // #555
+$gray-light:             color.adjust($gray-base, $lightness: 46.7%) !default; // #777
+$gray-lighten:           color.adjust($gray-base, $lightness: 60%)   !default; // #999
+$gray-lighter:           color.adjust($gray-base, $lightness: 93.5%) !default; // #eee
 
 //TODO: how to set or get these from the app instead or make sure the app can override them?
 $brand-danger:    #d9534f;
@@ -27,7 +29,7 @@ $blue-dark:   #1e4f6f;
 $text-color-gray:   #9d9d9d;
 
 $text-color:            $gray-dark !default;
-$link-hover-color:      darken($brand-primary, 15%) !default;
+$link-hover-color:      color.adjust($brand-primary, $lightness: 15%) !default;
 
 $font-family-sans-serif:  "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 
@@ -71,10 +73,10 @@ $blue-bkgrd-selected:   rgba(41, 128, 185, 0.1);
 $grid-action-item-color:                #0088cc; // pale blue
 $grid-action-item-bg:                   #f1f9fc;
 $grid-action-item-border-color:         #c9e6f2;
-$grid-action-item-hover-bg:             darken($grid-action-item-bg, 5%);
+$grid-action-item-hover-bg:             color.adjust($grid-action-item-bg, $lightness: 5%);
 $grid-action-item-disabled-color:       #333;
 $grid-action-item-disabled-bg:          #fcfcfc;
-$grid-action-item-disabled-border-color: darken($grid-action-item-disabled-bg, 10%);
+$grid-action-item-disabled-border-color: color.adjust($grid-action-item-disabled-bg, $lightness: 10%);
 
 
 // Navigation variables

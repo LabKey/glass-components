@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .notification-container {
   margin-top: 10px;
     a:hover {
@@ -121,7 +123,7 @@
 
     &:hover {
         text-decoration: underline;
-        color: darken($brand-primary, 15);
+        color: color.adjust($brand-primary, $lightness: -15%);
     }
 
     .fa {

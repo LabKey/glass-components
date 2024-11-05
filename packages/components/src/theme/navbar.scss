@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .app-navigation {
     position: fixed;
     top: 0;
@@ -513,7 +515,7 @@
           padding: 8px 10px;
 
           &:hover {
-            border-bottom: 3px solid lighten($brand-secondary, 15%);
+            border-bottom: 3px solid color.adjust($brand-secondary, $lightness: 15%);
           }
         }
 
