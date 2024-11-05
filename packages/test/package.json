@@ -34,7 +34,7 @@
     "supertest": "7.0.0"
   },
   "devDependencies": {
-    "@labkey/api": "1.35.7-fb-package-updates-1124.0",
+    "@labkey/api": "1.36.0",
     "@types/jest": "29.5.14",
     "@types/node": "20.14.11",
     "@types/supertest": "2.0.16",
