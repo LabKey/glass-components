@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "target": "es6",
-    "lib": ["es2015", "es2017", "dom"],
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "types": ["jest", "node"]
   },
   "include": [

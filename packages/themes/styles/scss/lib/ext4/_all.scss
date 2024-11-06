@@ -1940,12 +1940,12 @@ body.x4-nbr .x4-btn-default-small-frameInfo {
 .x4-btn-default-small-disabled {
 
   cursor: $lk-button-disabled-cursor;
+  opacity: $lk-button-disabled-opacity;
+
   /* Adjustment due to blanket override of .x4-item-disabled */
   * {
     cursor: $lk-button-disabled-cursor;
   }
-
-  opacity: $lk-button-disabled-opacity;
 
   .x4-frame-tl,
   .x4-frame-bl,

@@ -28,7 +28,19 @@ const ISO_SHORT_TIME_FORMAT_STRING = 'HH:mm';
 const ISO_TIME_FORMAT_STRING = 'HH:mm:ss';
 const ISO_DATE_TIME_FORMAT_STRING = `${ISO_DATE_FORMAT_STRING} ${ISO_TIME_FORMAT_STRING}`;
 
-const STANDARD_DATE_DISPLAY_FORMATS = ['yyyy-MM-dd', 'yyyy-MMM-dd', 'dd-MMM-yyyy', 'dd-MMM-yy', 'ddMMMyyyy', 'ddMMMyy'];
+const STANDARD_DATE_DISPLAY_FORMATS = [
+    'yyyy-MM-dd',
+    'yyyy-MMM-dd',
+    'yyyy-MM',
+    'dd-MM-yyyy',
+    'dd-MMM-yyyy',
+    'dd-MMM-yy',
+    'ddMMMyyyy',
+    'ddMMMyy',
+    'MM/dd/yyyy',
+    'MM-dd-yyyy',
+    'MMMM dd yyyy',
+];
 
 const STANDARD_TIME_DISPLAY_FORMATS = ['HH:mm:ss', 'HH:mm', 'HH:mm:ss.SSS', 'hh:mm a'];
 
@@ -416,6 +428,23 @@ function isStandardTimeDisplayFormat(timeFormat: string): boolean {
 export function splitDateTimeFormat(dateTimeFormatStr: string): string[] {
     const dateTimeFormat = dateTimeFormatStr?.trim();
     if (!dateTimeFormat) return ['', ''];
+
+    let standardDatePart = null,
+        restTimePart = '';
+    STANDARD_DATE_DISPLAY_FORMATS.forEach(standardDate => {
+        if (dateTimeFormat.startsWith(standardDate)) {
+            if (dateTimeFormat.length === standardDate.length) {
+                standardDatePart = standardDate;
+            } else if (dateTimeFormat[standardDate.length] === ' ') {
+                standardDatePart = standardDate;
+                restTimePart = dateTimeFormat.substring(standardDate.length).trim();
+            }
+        }
+    });
+    if (standardDatePart) {
+        return [standardDatePart, restTimePart];
+    }
+
     if (dateTimeFormat.indexOf(' h') > 0 || dateTimeFormat.indexOf(' H') > 0) {
         const splitInd = dateTimeFormat.indexOf(' h') > 0 ? dateTimeFormat.indexOf(' h') : dateTimeFormat.indexOf(' H');
         const date = dateTimeFormat.substring(0, splitInd).trim();

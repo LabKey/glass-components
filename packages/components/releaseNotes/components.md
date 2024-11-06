@@ -6,12 +6,29 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Issue 51495: LKSM: Grid Showing Incorrect Number Selected
   - Fixed buildQueryParams util to allow >1 filter values per filter parameter
 
+### version 5.22.2
+*Released*: 6 November 2024
+- Merge from release24.11-SNAPSHOT to develop
+    - includes changes from 5.20.2 #1629
+
+### version 5.22.1
+*Released*: 5 November 2024
+- Remove combineParentTypes
+
+### version 5.22.0
+*Released*: 5 November 2024
+- Package updates
+
 ### version 5.21.0
 *Released*: 4 November 2024
 - Add identifying fields to grids when editing via grid for Samples and Sources
     - include identifying fields in getSelectionLineageData()
     - EditorModel.getUpdatedData() to skip non-userEditable fields when comparing values
     - getIdentifyingFieldsEditableGridColumns() to take param for hasProductFolders to determine if Folder should be excluded
+
+### version 5.20.2
+*Released*: 4 November 2024
+- Issue 51563: LKSM: Add additional date and date/time formats
 
 ### version 5.20.1
 *Released*: 31 October 2024

@@ -279,7 +279,10 @@ export function resolveDetailEditRenderer(
             return detailNonEditableRenderer(col, data);
         }
 
-        const showLabel = !options?.hideLabel ?? false;
+        let showLabel = false;
+        if (options?.hideLabel === false) {
+            showLabel = true;
+        }
         let value = resolveDetailFieldValue(data);
 
         const ColumnInputRenderer = resolveInputRenderer(col);

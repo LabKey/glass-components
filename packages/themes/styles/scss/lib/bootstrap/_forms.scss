@@ -1,3 +1,5 @@
+@use "sass:color";
+
 //
 // Forms
 // --------------------------------------------------
@@ -493,7 +495,7 @@ input[type="checkbox"] {
   display: block; // account for any element using help-block
   margin-top: 4px;
   margin-bottom: 0;
-  color: lighten($text-color, 25%); // lighten the text some for contrast
+  color: color.adjust($text-color, $lightness: 25%); // lighten the text some for contrast
   .form-text {
     font-size: $lk-form-contextContent-size;
     &has.error {
@@ -636,7 +638,7 @@ input[type="checkbox"] {
   // Reposition the icon because it's now within a grid column and columns have
   // `position: relative;` on them. Also accounts for the grid gutter padding.
   .has-feedback .form-control-feedback {
-    right: floor(($grid-gutter-width / 2));
+    right: floor(calc($grid-gutter-width / 2));
   }
 
   // Form group sizes

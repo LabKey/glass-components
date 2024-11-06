@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .dropdown-submenu {
   // relative to allow for drop arrow
   position: relative;
@@ -16,12 +18,11 @@
     top: 8px;
 
     &:hover {
-      color: darken(lightgray, 10%);
+      color: color.adjust(lightgray, $lightness: -10%);
     }
   }
 
   ul {
-    //background-color: #f5f5f5;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -40,7 +41,6 @@
 
       &:hover, &:focus {
         text-decoration: none;
-        //background-color: darken(#f5f5f5, 10%);
       }
     }
 

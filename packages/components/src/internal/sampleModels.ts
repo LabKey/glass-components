@@ -70,7 +70,6 @@ export type SampleGridButton = ComponentType<SampleGridButtonProps & RequiresMod
 
 // This interface stores app-wide settings passed to the LineageEditableGrid
 export interface LineageEditableGridProps {
-    combineParentTypes?: boolean;
     parentDataTypes: EntityDataType[];
 }
 
