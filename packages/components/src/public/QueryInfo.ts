@@ -261,13 +261,24 @@ export class QueryInfo {
         return extraDisplayColumn;
     }
 
+    hasIdentifyingFieldsView(): boolean {
+        if (this.views.has(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)) {
+            // if the view is defined but only has the default Name column, consider it not to be defined
+            const cols = this.views
+                .get(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)
+                .columns.filter(col => col.fieldKey.toLowerCase() !== 'name');
+            return cols.length > 0;
+        }
+        return false;
+    }
+
     getIdentifyingFieldsEditableGridColumns(
         includeNameField = false,
         hasProductFolders = false,
         prefixFieldKey?: string
     ): QueryColumn[] {
         const cols: QueryColumn[] = [];
-        if (this.views.has(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)) {
+        if (this.hasIdentifyingFieldsView()) {
             const identifyingCols = this.getDisplayColumns(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)
                 .filter(col => includeNameField || col.fieldKey.toLowerCase() !== 'name')
                 // if app hasProductFolders and Folder is set as an identifying field, we don't want to include it since it will already be in the editable grid
@@ -288,7 +299,7 @@ export class QueryInfo {
 
     getLookupViewColumns(displayColumnFieldKey?: string): QueryColumn[] {
         let cols: QueryColumn[] = [];
-        if (this.views.has(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME)) {
+        if (this.hasIdentifyingFieldsView()) {
             this.views.get(ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME).columns.forEach(col => {
                 const qCol = this.getColumn(col.fieldKey);
                 if (qCol) {
