@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.22.2
+*Released*: 6 November 2024
+- Merge from release24.11-SNAPSHOT to develop
+    - includes changes from 5.20.2 #1629
+
 ### version 5.22.1
 *Released*: 5 November 2024
 - Remove combineParentTypes
@@ -15,6 +20,10 @@ Components, models, actions, and utility functions for LabKey applications and p
     - include identifying fields in getSelectionLineageData()
     - EditorModel.getUpdatedData() to skip non-userEditable fields when comparing values
     - getIdentifyingFieldsEditableGridColumns() to take param for hasProductFolders to determine if Folder should be excluded
+
+### version 5.20.2
+*Released*: 4 November 2024
+- Issue 51563: LKSM: Add additional date and date/time formats
 
 ### version 5.20.1
 *Released*: 31 October 2024
