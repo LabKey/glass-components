@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.22.2
+*Released*: 6 November 2024
+- Merge from release24.11-SNAPSHOT to develop
+    - includes changes from 5.20.2 #1629
+
 ### version 5.22.1
 *Released*: 5 November 2024
 - Remove combineParentTypes
