@@ -60,7 +60,10 @@ const QUERY_INFO_WITH_ID_VIEW_NAME_ONLY = QueryInfo.fromJsonForTests(
         schemaName: 'schema',
         views: [
             { name: ViewInfo.DEFAULT_NAME, columns },
-            { name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME, columns: [{ fieldKey: 'name', name: 'name', jsonType: 'string' }] },
+            {
+                name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME,
+                columns: [{ fieldKey: 'name', name: 'name', jsonType: 'string' }],
+            },
         ],
     },
     true
@@ -478,8 +481,6 @@ describe('QueryInfo', () => {
     });
 
     describe('getIdentifyingFieldsEditableGridColumns', () => {
-
-
         test('without identifying view', () => {
             expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns()).toStrictEqual([]);
             expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(true)).toStrictEqual([]);
