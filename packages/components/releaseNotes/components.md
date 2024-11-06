@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- QueryInfo.hasIdentifyingFieldsView() to check for identifying fields view existence and if it has more than just the default "Name" column
+
 ### version 5.22.1
 *Released*: 5 November 2024
 - Remove combineParentTypes
