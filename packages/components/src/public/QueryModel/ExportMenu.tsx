@@ -43,7 +43,6 @@ const exportOptions = [
 ] as ExportOption[];
 
 interface ExportMenuItemProps {
-    hasSelections: boolean;
     model: QueryModel;
     onExport: (option: ExportOption) => void;
     option: ExportOption;
@@ -77,6 +76,7 @@ const ExportMenuItem: FC<ExportMenuItemProps> = ({ model, onExport, option, supp
                             </>
                         }
                         maxSelection={MAX_SELECTION_ACTION_ROWS}
+                        onClick={onClick}
                     />
                 )}
                 {option.type !== EXPORT_TYPES.LABEL && (
@@ -146,7 +146,6 @@ const ExportMenuImpl: FC<ExportMenuImplProps> = memo(props => {
                         {exportOptions.map(option => (
                             <ExportMenuItem
                                 key={option.label}
-                                hasSelections={hasSelections}
                                 onExport={exportCallback}
                                 option={option}
                                 supportedTypes={supportedTypes}
