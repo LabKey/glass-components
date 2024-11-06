@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.X
-*Released*: X November 2024
+### version 5.22.3
+*Released*: 6 November 2024
 - Issue 51495: LKSM: Grid Showing Incorrect Number Selected
   - Fixed buildQueryParams util to allow >1 filter values per filter parameter
 
