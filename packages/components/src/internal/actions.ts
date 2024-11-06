@@ -331,7 +331,17 @@ function buildQueryParams(
     containerFilter?: Query.ContainerFilter
 ): Record<string, any> {
     const filters: Record<string, any> = filterArray.reduce((_filters, filter) => {
-        _filters[filter.getURLParameterName()] = filter.getURLParameterValue();
+        const name = filter.getURLParameterName();
+        let value = filter.getURLParameterValue();
+        if (_filters[name] !== undefined) {
+            let values = _filters[name];
+            if (!Array.isArray(values)) {
+                values = [values];
+            }
+            values.push(value);
+            value = values;
+        }
+        _filters[name] = value;
         return _filters;
     }, {});
 
