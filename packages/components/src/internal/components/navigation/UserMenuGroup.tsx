@@ -29,7 +29,7 @@ import { AppContext, useAppContext } from '../../AppContext';
 
 import { getHelpLink } from '../../util/helpLinks';
 
-import { RELEASE_NOTES_METRIC } from '../productnavigation/constants';
+import { HELP_LINK_METRIC, RELEASE_NOTES_METRIC } from '../productnavigation/constants';
 
 import { DropdownAnchor, DropdownButton, MenuDivider, MenuHeader, MenuItem } from '../../dropdowns';
 
@@ -108,6 +108,10 @@ export const UserMenuGroupImpl: FC<UserMenuProps & ImplProps> = props => {
         api.query.incrementClientSideMetricCount(RELEASE_NOTES_METRIC, 'FromHelpMenu');
     }, []);
 
+    const onHelpClick = useCallback(() => {
+        api.query.incrementClientSideMetricCount(HELP_LINK_METRIC, 'clickCount');
+    }, []);
+
     if (!model || !user) {
         return null;
     }
@@ -172,7 +176,7 @@ export const UserMenuGroupImpl: FC<UserMenuProps & ImplProps> = props => {
                     >
                         <div className="navbar-icon-connector" />
                         {helpHref && (
-                            <MenuItem href={helpHref} target="_blank" rel="noopener noreferrer">
+                            <MenuItem href={helpHref} target="_blank" rel="noopener noreferrer" onClick={onHelpClick}>
                                 Help
                             </MenuItem>
                         )}

@@ -29,12 +29,12 @@ interface Props {
     nounPlural: string; // always used, doesn't need default value
     onClick?: () => void;
     queryModel: QueryModel;
-    text: string;
+    text: React.ReactNode;
 }
 
 interface DisabledSelectionMenuItemProps {
     message: string;
-    text: string;
+    text: React.ReactNode;
 }
 
 export const DisabledSelectionMenuItem: FC<DisabledSelectionMenuItemProps> = ({ message, text }) => {

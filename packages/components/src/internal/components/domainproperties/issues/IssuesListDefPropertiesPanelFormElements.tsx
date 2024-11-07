@@ -252,7 +252,7 @@ export class AssignedToGroupInput extends PureComponent<AssignmentOptionsInputPr
             <div className="row margin-top">
                 <div className="col-xs-3 col-lg-4">
                     <DomainFieldLabel
-                        label="Populate ‘Assigned To’ Field from"
+                        label="Populate 'Assigned To' Field from"
                         helpTipBody={ISSUES_LIST_GROUP_ASSIGN_TIP}
                         required={false}
                     />
