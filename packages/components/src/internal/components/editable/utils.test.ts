@@ -401,7 +401,6 @@ describe('other utils', () => {
     test('genCellKey', () => {
         expect(genCellKey('test', 0)).toBe('test&&0');
         expect(genCellKey('other', 2)).toBe('other&&2');
-        expect(genCellKey('other', 2, 'SampleColumn')).toBe('samplecolumn/other&&2');
     });
 
     test('genCellKeyPrefix', () => {

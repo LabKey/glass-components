@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD November 2024
+- Revert recent change to genCellKey and move the sample field key prefix to the usage in updateCellValuesForSampleIds()
+
 ### version 5.22.4
 *Released*: 6 November 2024
 - QueryInfo.hasIdentifyingFieldsView() to check for identifying fields view existence and if it has more than just the default "Name" column
