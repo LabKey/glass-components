@@ -431,17 +431,23 @@ export class EntityIdCreationModel extends Record({
                 }
             });
 
-            if (separateParents && this.creationType && this.creationType != SampleCreationType.PooledSamples) {
-                parentCols.forEach(parentCol => {
-                    const parents: any[] = values.get(parentCol);
-                    parents.forEach(parent => {
-                        let singleParentValues = Map<string, any>();
-                        singleParentValues = singleParentValues.set(parentCol, List<any>([parent]));
-                        for (let c = 0; c < this.numPerParent; c++) {
-                            data = data.push(singleParentValues);
-                        }
+            if (separateParents && this.creationType && this.creationType !== SampleCreationType.PooledSamples) {
+                if (parentCols.length > 0) {
+                    parentCols.forEach(parentCol => {
+                        const parents: any[] = values.get(parentCol);
+                        parents.forEach(parent => {
+                            let singleParentValues = Map<string, any>();
+                            singleParentValues = singleParentValues.set(parentCol, List<any>([parent]));
+                            for (let c = 0; c < this.numPerParent; c++) {
+                                data = data.push(singleParentValues);
+                            }
+                        });
                     });
-                });
+                } else {
+                    for (let c = 0; c < this.entityCount; c++) {
+                        data = data.push(values);
+                    }
+                }
             } else {
                 for (let c = 0; c < this.numPerParent; c++) {
                     data = data.push(values);

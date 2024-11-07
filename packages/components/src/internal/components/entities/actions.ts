@@ -525,7 +525,7 @@ export async function getEntityTypeOptions(
     containerPath?: string,
     containerFilter?: Query.ContainerFilter,
     skipFolderDataExclusion?: boolean,
-    requiredParentTypes?: string[]
+    requiredParentTypes?: string[],
 ): Promise<Map<string, List<IEntityTypeOption>>> {
     const { typeListingSchemaQuery, filterArray, instanceSchemaName } = entityDataType;
 
