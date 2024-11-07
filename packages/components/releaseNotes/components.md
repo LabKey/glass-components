@@ -7,6 +7,20 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Issue 51482: Add metric to track Help link clicks
 - Issue 51575: Limit number of samples to print labels for to 1000
 
+### version 5.22.4
+*Released*: 6 November 2024
+- QueryInfo.hasIdentifyingFieldsView() to check for identifying fields view existence and if it has more than just the default "Name" column
+
+### version 5.22.3
+*Released*: 6 November 2024
+- Issue 51495: LKSM: Grid Showing Incorrect Number Selected
+  - Fixed buildQueryParams util to allow >1 filter values per filter parameter
+
+### version 5.22.2
+*Released*: 6 November 2024
+- Merge from release24.11-SNAPSHOT to develop
+    - includes changes from 5.20.2 #1629
+
 ### version 5.22.1
 *Released*: 5 November 2024
 - Remove combineParentTypes
@@ -21,6 +35,10 @@ Components, models, actions, and utility functions for LabKey applications and p
     - include identifying fields in getSelectionLineageData()
     - EditorModel.getUpdatedData() to skip non-userEditable fields when comparing values
     - getIdentifyingFieldsEditableGridColumns() to take param for hasProductFolders to determine if Folder should be excluded
+
+### version 5.20.2
+*Released*: 4 November 2024
+- Issue 51563: LKSM: Add additional date and date/time formats
 
 ### version 5.20.1
 *Released*: 31 October 2024

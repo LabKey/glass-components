@@ -23,6 +23,52 @@ import { ExtendedMap } from './ExtendedMap';
 
 import { QueryInfo } from './QueryInfo';
 
+const columns = [
+    { fieldKey: 'name', name: 'name', jsonType: 'string' },
+    { fieldKey: 'folder', name: 'Folder', jsonType: 'string' },
+    { fieldKey: 'doubleCol', name: 'doubleCol', jsonType: 'double' },
+    { fieldKey: 'textCol', name: 'textCol', jsonType: 'string' },
+];
+const QUERY_INFO_NO_ID_VIEW = QueryInfo.fromJsonForTests(
+    {
+        columns,
+        name: 'query',
+        schemaName: 'schema',
+        views: [
+            { columns, name: ViewInfo.DEFAULT_NAME },
+            { columns, name: 'view' },
+        ],
+    },
+    true
+);
+const QUERY_INFO_WITH_ID_VIEW = QueryInfo.fromJsonForTests(
+    {
+        columns,
+        name: 'query',
+        schemaName: 'schema',
+        views: [
+            { columns, name: ViewInfo.DEFAULT_NAME },
+            { columns, name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME },
+        ],
+    },
+    true
+);
+const QUERY_INFO_WITH_ID_VIEW_NAME_ONLY = QueryInfo.fromJsonForTests(
+    {
+        columns,
+        name: 'query',
+        schemaName: 'schema',
+        views: [
+            { name: ViewInfo.DEFAULT_NAME, columns },
+            {
+                name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME,
+                columns: [{ fieldKey: 'name', name: 'name', jsonType: 'string' }],
+            },
+        ],
+    },
+    true
+);
+
 describe('getColumnFieldKeys', () => {
     test('missing params', () => {
         const queryInfo = new QueryInfo({});
@@ -424,38 +470,17 @@ describe('QueryInfo', () => {
         });
     });
 
-    describe('getIdentifyingFieldsEditableGridColumns', () => {
-        const columns = [
-            { fieldKey: 'name', name: 'name', jsonType: 'string' },
-            { fieldKey: 'folder', name: 'Folder', jsonType: 'string' },
-            { fieldKey: 'doubleCol', name: 'doubleCol', jsonType: 'double' },
-            { fieldKey: 'textCol', name: 'textCol', jsonType: 'string' },
-        ];
-        const QUERY_INFO_NO_ID_VIEW = QueryInfo.fromJsonForTests(
-            {
-                columns,
-                name: 'query',
-                schemaName: 'schema',
-                views: [
-                    { columns, name: ViewInfo.DEFAULT_NAME },
-                    { columns, name: 'view' },
-                ],
-            },
-            true
-        );
-        const QUERY_INFO_WITH_ID_VIEW = QueryInfo.fromJsonForTests(
-            {
-                columns,
-                name: 'query',
-                schemaName: 'schema',
-                views: [
-                    { columns, name: ViewInfo.DEFAULT_NAME },
-                    { columns, name: ViewInfo.IDENTIFYING_FIELDS_VIEW_NAME },
-                ],
-            },
-            true
-        );
+    describe('hasIdentifyingFieldsView', () => {
+        test('without identifying view', () => {
+            expect(QUERY_INFO_NO_ID_VIEW.hasIdentifyingFieldsView()).toBe(false);
+            expect(QUERY_INFO_WITH_ID_VIEW_NAME_ONLY.hasIdentifyingFieldsView()).toBe(false);
+        });
+        test('with identifying view', () => {
+            expect(QUERY_INFO_WITH_ID_VIEW.hasIdentifyingFieldsView()).toBe(true);
+        });
+    });
 
+    describe('getIdentifyingFieldsEditableGridColumns', () => {
         test('without identifying view', () => {
             expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns()).toStrictEqual([]);
             expect(QUERY_INFO_NO_ID_VIEW.getIdentifyingFieldsEditableGridColumns(true)).toStrictEqual([]);
