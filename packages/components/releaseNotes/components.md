@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 5.22.5
+*Released*: 7 November 2024
 - Issue 51574: Limit selection for View Assay Results
 - Issue 51482: Add metric to track Help link clicks
 - Issue 51575: Limit number of samples to print labels for to 1000
