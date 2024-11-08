@@ -25,7 +25,7 @@ export const UserResetPasswordConfirmModal: FC<UserResetPasswordConfirmModalProp
 
         try {
             const response = await resetPasswordApi(userId);
-            onComplete(response);
+            onComplete({email, ...response});
         } catch (e) {
             setError(resolveErrorMessage(e, 'user', 'users', 'update') ?? 'Failed to reset password');
         } finally {
