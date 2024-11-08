@@ -153,6 +153,7 @@ import {
     isRelativeDateFilterValue,
     parseDate,
     getNonStandardFormatWarning,
+    getDateFNSDateFormat,
     getDateTimeInputOptions,
     splitDateTimeFormat,
     DateFormatType,
@@ -429,12 +430,8 @@ import {
 import { AssayPicker, AssayPickerTabs } from './internal/components/assay/AssayPicker';
 import { AssayStateModel, AssayUploadResultModel } from './internal/components/assay/models';
 import { clearAssayDefinitionCache, getAssayDefinitions, getProtocol } from './internal/components/assay/actions';
-import { BaseBarChart } from './internal/components/chart/BaseBarChart';
-import {
-    createHorizontalBarLegendData,
-    createPercentageBarData,
-    processChartData,
-} from './internal/components/chart/utils';
+
+import { createHorizontalBarLegendData } from './internal/components/chart/utils';
 import { ReportItemModal, ReportList, ReportListItem } from './internal/components/report-list/ReportList';
 import {
     createGridModel,
@@ -559,10 +556,8 @@ import { Pagination } from './internal/components/pagination/Pagination';
 import { getQueryModelExportParams, runDetailsColumnsForQueryModel } from './public/QueryModel/utils';
 import { CONFIRM_MESSAGE, useRouteLeave } from './internal/util/RouteLeave';
 import { useRequestHandler } from './internal/util/RequestHandler';
-import { BarChartViewer } from './internal/components/chart/BarChartViewer';
 import { HorizontalBarSection } from './internal/components/chart/HorizontalBarSection';
 import { ItemsLegend } from './internal/components/chart/ItemsLegend';
-import { CHART_GROUPS } from './internal/components/chart/configs';
 import { AuditDetailsModel, TimelineEventModel } from './internal/components/auditlog/models';
 import {
     ASSAY_AUDIT_QUERY,
@@ -1476,14 +1471,9 @@ export {
     getAssayDefinitions,
     GENERAL_ASSAY_PROVIDER_NAME,
     // report / chart related items
-    BaseBarChart,
-    BarChartViewer,
-    CHART_GROUPS,
     HorizontalBarSection,
     ItemsLegend,
-    createPercentageBarData,
     createHorizontalBarLegendData,
-    processChartData,
     DataViewInfoTypes,
     loadReports,
     flattenBrowseDataTreeResponse,
@@ -1608,6 +1598,7 @@ export {
     formatDate,
     formatDateTime,
     fromDate,
+    getDateFNSDateFormat,
     fromNow,
     generateNameWithTimestamp,
     parseDate,
