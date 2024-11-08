@@ -8,14 +8,15 @@ import { resetPassword, ResetPasswordResponse } from './actions';
 
 export interface UserResetPasswordConfirmModalProps {
     email: string;
+    userId: number;
     hasLogin: boolean;
     onCancel: () => void;
     onComplete: (response: ResetPasswordResponse) => void;
-    resetPasswordApi?: (email: string) => Promise<ResetPasswordResponse>;
+    resetPasswordApi?: (userId: number) => Promise<ResetPasswordResponse>;
 }
 
 export const UserResetPasswordConfirmModal: FC<UserResetPasswordConfirmModalProps> = memo(props => {
-    const { email, hasLogin, onCancel, onComplete, resetPasswordApi = resetPassword } = props;
+    const { email, userId, hasLogin, onCancel, onComplete, resetPasswordApi = resetPassword } = props;
     const [error, setError] = useState<string>();
     const [submitting, setSubmitting] = useState<boolean>(false);
 
@@ -23,14 +24,14 @@ export const UserResetPasswordConfirmModal: FC<UserResetPasswordConfirmModalProp
         setSubmitting(true);
 
         try {
-            const response = await resetPasswordApi(email);
+            const response = await resetPasswordApi(userId);
             onComplete(response);
         } catch (e) {
             setError(resolveErrorMessage(e, 'user', 'users', 'update') ?? 'Failed to reset password');
         } finally {
             setSubmitting(false);
         }
-    }, [email, onComplete, resetPasswordApi]);
+    }, [userId, onComplete, resetPasswordApi]);
 
     return (
         <Modal

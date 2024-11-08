@@ -195,18 +195,18 @@ function updateUsersState(userIds: number[], isDelete: boolean, isActivate: bool
 }
 
 export type ResetPasswordResponse = {
-    email: string;
+    userId: number;
     resetPassword: boolean;
 };
 
-export function resetPassword(email: string): Promise<ResetPasswordResponse> {
+export function resetPassword(userId: number): Promise<ResetPasswordResponse> {
     return new Promise((resolve, reject) => {
         Ajax.request({
             url: buildURL('security', 'adminResetPassword.api'),
             method: 'POST',
-            params: { email },
+            params: { userId },
             success: Utils.getCallbackWrapper(() => {
-                resolve({ email, resetPassword: true });
+                resolve({ userId, resetPassword: true });
             }),
             failure: Utils.getCallbackWrapper(error => {
                 console.error('Failed to reset password.', error);
