@@ -197,6 +197,7 @@ function updateUsersState(userIds: number[], isDelete: boolean, isActivate: bool
 export type ResetPasswordResponse = {
     resetPassword: boolean;
     userId: number;
+    email?: string;
 };
 
 export function resetPassword(userId: number): Promise<ResetPasswordResponse> {
