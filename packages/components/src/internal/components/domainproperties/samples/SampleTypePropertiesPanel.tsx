@@ -357,7 +357,7 @@ class SampleTypePropertiesPanelImpl extends PureComponent<Props & InjectedDomain
                                             <p>Pattern used for generating unique Ids for Aliquots.</p>
                                             <p>
                                                 By default, the name of the aliquot will use the name of its parent
-                                                followed by a dash and a counter for that parent’s aliquots.
+                                                followed by a dash and a counter for that parent's aliquots.
                                             </p>
                                             <p>
                                                 For example, if the original sample is S1, aliquots of that sample will

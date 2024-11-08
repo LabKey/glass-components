@@ -29,7 +29,8 @@ export const BARTENDER_EXPORT_CONTROLLER = 'sampleManager';
 export const SAMPLE_SET_DISPLAY_TEXT = 'Sample Type';
 export const STORAGE_MAP_EXPORT_CONTROLLER = 'inventory';
 
-export const MAX_EDITABLE_GRID_ROWS = 1000;
+export const MAX_SELECTION_ACTION_ROWS = 1000;
+export const MAX_EDITABLE_GRID_ROWS = MAX_SELECTION_ACTION_ROWS;
 export const LOOKUP_DEFAULT_SIZE = 25;
 
 export enum AssayUploadTabs {

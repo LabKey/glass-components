@@ -53,7 +53,7 @@ export const SearchPanelImpl: FC<SearchPanelImplProps> = memo(props => {
                     We suggest to check your spelling or broaden your search.
                     <br />
                     <br />
-                    Can’t find what you’re looking for? Check the{' '}
+                    Can't find what you're looking for? Check the{' '}
                     <HelpLink topic={SEARCH_HELP_TOPIC}>documentation</HelpLink> for {appName}
                 </div>
             </div>

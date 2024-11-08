@@ -5,6 +5,12 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD November 2024
 - Revert recent change to genCellKey and move the sample field key prefix to the usage in updateCellValuesForSampleIds()
 
+### version 5.22.5
+*Released*: 7 November 2024
+- Issue 51574: Limit selection for View Assay Results
+- Issue 51482: Add metric to track Help link clicks
+- Issue 51575: Limit number of samples to print labels for to 1000
+
 ### version 5.22.4
 *Released*: 6 November 2024
 - QueryInfo.hasIdentifyingFieldsView() to check for identifying fields view existence and if it has more than just the default "Name" column

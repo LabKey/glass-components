@@ -52,3 +52,4 @@ export const SAMPLE_MANAGER_SECTION_METRIC = 'toSampleManagerSection';
 export const LIMS_SECTION_METRIC = 'toLimsSection';
 export const LOOK_AND_FEEL_METRIC = 'lookAndFeel';
 export const RELEASE_NOTES_METRIC = 'releaseNotes';
+export const HELP_LINK_METRIC = 'helpLink';
