@@ -3,7 +3,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 
 ### version 5.20.4
 *Released*: X November 2024
-- User userId instead of email for password related APIs
+- Use userId instead of email for password related APIs
 
 ### version 5.20.3
 *Released*: 7 November 2024

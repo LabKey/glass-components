@@ -195,8 +195,8 @@ function updateUsersState(userIds: number[], isDelete: boolean, isActivate: bool
 }
 
 export type ResetPasswordResponse = {
-    userId: number;
     resetPassword: boolean;
+    userId: number;
 };
 
 export function resetPassword(userId: number): Promise<ResetPasswordResponse> {

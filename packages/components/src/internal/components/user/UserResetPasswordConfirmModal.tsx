@@ -8,11 +8,11 @@ import { resetPassword, ResetPasswordResponse } from './actions';
 
 export interface UserResetPasswordConfirmModalProps {
     email: string;
-    userId: number;
     hasLogin: boolean;
     onCancel: () => void;
     onComplete: (response: ResetPasswordResponse) => void;
     resetPasswordApi?: (userId: number) => Promise<ResetPasswordResponse>;
+    userId: number;
 }
 
 export const UserResetPasswordConfirmModal: FC<UserResetPasswordConfirmModalProps> = memo(props => {
