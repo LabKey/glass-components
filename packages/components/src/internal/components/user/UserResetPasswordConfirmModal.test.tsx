@@ -21,12 +21,14 @@ import { UserResetPasswordConfirmModal, UserResetPasswordConfirmModalProps } fro
 
 describe('UserResetPasswordConfirmModal', () => {
     const email = 'jest@localhost.test';
+    const userId = 5002;
     const DEFAULT_PROPS: UserResetPasswordConfirmModalProps = {
         email,
         hasLogin: true,
         onCancel: jest.fn(),
         onComplete: jest.fn(),
-        resetPasswordApi: jest.fn().mockResolvedValue({ email, resetPassword: true }),
+        resetPasswordApi: jest.fn().mockResolvedValue({ userId, resetPassword: true }),
+        userId,
     };
 
     test('with login', () => {
@@ -59,7 +61,7 @@ describe('UserResetPasswordConfirmModal', () => {
 
         await userEvent.click(document.querySelector('.btn-success'));
 
-        expect(resetPasswordApi).toHaveBeenCalledWith(DEFAULT_PROPS.email);
+        expect(resetPasswordApi).toHaveBeenCalledWith(DEFAULT_PROPS.userId);
         expect(screen.getByText(errorMsg)).toBeInTheDocument();
     });
 });

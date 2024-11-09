@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.20.4
+*Released*: 9 November 2024
+- Use userId instead of email for password related APIs
+
 ### version 5.20.3
 *Released*: 7 November 2024
 - Replace some curly quotes with normal quotes
