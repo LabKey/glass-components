@@ -12,11 +12,11 @@ import { SamplesEditButtonSections } from './utils';
 import { ALIQUOT_FILTER_MODE, SampleStateType } from './constants';
 
 export enum SampleCreationType {
-    Aliquots = 'Aliquots',
-    Derivatives = 'Derivatives',
+    Aliquots = 'Aliquot',
+    Derivatives = 'Derive',
     FromSources = 'New samples from sources',
     Independents = 'New samples',
-    PooledSamples = 'Pooled Samples',
+    PooledSamples = 'Pool',
 }
 
 export interface SampleCreationTypeModel {
@@ -29,6 +29,7 @@ export interface SampleCreationTypeModel {
     quantityLabel?: string;
     selected?: boolean;
     type: SampleCreationType;
+    typeChoiceLabel?: string;
 }
 
 export const INDEPENDENT_SAMPLE_CREATION: SampleCreationTypeModel = {
@@ -40,35 +41,37 @@ export const INDEPENDENT_SAMPLE_CREATION: SampleCreationTypeModel = {
 
 export const CHILD_SAMPLE_CREATION: SampleCreationTypeModel = {
     type: SampleCreationType.FromSources,
-    description: 'Create multiple output samples per source.',
+    description: 'Create samples from each selected source.',
     minParentsPerSample: 1,
     iconSrc: 'derivatives',
-    quantityLabel: 'New Samples per Source',
+    quantityLabel: 'New Samples Per Source',
 };
 
 export const DERIVATIVE_CREATION: SampleCreationTypeModel = {
     type: SampleCreationType.Derivatives,
-    description: 'Create multiple output samples per parent.',
+    description: 'Create samples of different types from each selected sample.',
     disabledDescription: 'Only one parent sample type is allowed when creating derivative samples.',
     minParentsPerSample: 1,
     iconSrc: 'derivatives',
-    quantityLabel: 'Derivatives per Parent',
+    quantityLabel: 'Derivatives Per Parent',
+    typeChoiceLabel: 'Derivative Type',
 };
 
 export const POOLED_SAMPLE_CREATION: SampleCreationTypeModel = {
     type: SampleCreationType.PooledSamples,
-    description: 'Put multiple samples into pooled outputs.',
+    description: 'Combine selected samples to create new samples.',
     minParentsPerSample: 2,
     iconSrc: 'pooled',
-    quantityLabel: 'New Samples per Parent Group',
+    quantityLabel: 'New Samples from Pool',
+    typeChoiceLabel: 'Sample Type',
 };
 
 export const ALIQUOT_CREATION: SampleCreationTypeModel = {
     type: SampleCreationType.Aliquots,
-    description: 'Create aliquot copies from each parent sample.',
+    description: 'Create copies that inherit data from each parent sample.',
     minParentsPerSample: 1,
     iconSrc: 'aliquots',
-    quantityLabel: 'Aliquots per Parent',
+    quantityLabel: 'Aliquots Per Parent',
 };
 
 export interface GroupedSampleFields {
