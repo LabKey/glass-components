@@ -14,12 +14,11 @@ describe('ResponsiveMenuButton', () => {
     const items = <PicklistButton model={makeTestQueryModel(new SchemaQuery('s', 'q'))} user={TEST_USER_READER} />;
     const DEFAULT_PROPS = {
         className: 'test-className',
-        items,
         text: 'Test Menu',
     };
 
     test('default props', () => {
-        renderWithAppContext(<ResponsiveMenuButton {...DEFAULT_PROPS} />, {
+        renderWithAppContext(<ResponsiveMenuButton {...DEFAULT_PROPS}>{items}</ResponsiveMenuButton>, {
             serverContext: { user: TEST_USER_READER },
         });
         expect(document.querySelectorAll('button')).toHaveLength(1);
@@ -27,9 +26,14 @@ describe('ResponsiveMenuButton', () => {
     });
 
     test('asSubMenu', () => {
-        renderWithAppContext(<ResponsiveMenuButton {...DEFAULT_PROPS} asSubMenu />, {
-            serverContext: { user: TEST_USER_READER },
-        });
+        renderWithAppContext(
+            <ResponsiveMenuButton {...DEFAULT_PROPS} asSubMenu>
+                {items}
+            </ResponsiveMenuButton>,
+            {
+                serverContext: { user: TEST_USER_READER },
+            }
+        );
         expect(document.querySelectorAll('button')).toHaveLength(0);
         expect(document.querySelectorAll('.lk-dropdown-header')).toHaveLength(1);
     });

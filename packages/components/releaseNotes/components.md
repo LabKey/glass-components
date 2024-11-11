@@ -4,6 +4,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version  TBD
 *Released*: TBD
 - Move `BarChartViewer` and relatives to `ui-premium` package
+- Update `ResponsiveMenuButton` to have `children` property instead of `items`
 
 ### version 5.22.6
 *Released*: 11 November 2024
