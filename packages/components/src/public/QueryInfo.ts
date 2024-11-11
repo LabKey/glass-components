@@ -275,7 +275,8 @@ export class QueryInfo {
     getIdentifyingFieldsEditableGridColumns(
         includeNameField = false,
         hasProductFolders = false,
-        prefixFieldKey?: string
+        prefixFieldKey?: string,
+        ancestorOnly?: boolean
     ): QueryColumn[] {
         const cols: QueryColumn[] = [];
         if (this.hasIdentifyingFieldsView()) {
@@ -285,16 +286,26 @@ export class QueryInfo {
                 .filter(col => !hasProductFolders || col.fieldKey.toLowerCase() !== 'folder');
 
             identifyingCols.forEach(col => {
+                if (ancestorOnly && !col.name.startsWith("Ancestors/"))
+                    return;
                 const qCol = new QueryColumn(col);
                 qCol.readOnly = true;
                 if (prefixFieldKey) {
                     qCol.name = prefixFieldKey + '/' + qCol.name;
                     qCol.fieldKey = prefixFieldKey + '/' + qCol.fieldKey;
                 }
+                if (ancestorOnly) {
+                    qCol.shownInInsertView = true;
+                }
+
                 cols.push(qCol);
             });
         }
         return cols;
+    }
+
+    getIdentifyingFieldsForInsert(): QueryColumn[] {
+        return this.getIdentifyingFieldsEditableGridColumns(false, false, null, true);
     }
 
     getLookupViewColumns(displayColumnFieldKey?: string): QueryColumn[] {

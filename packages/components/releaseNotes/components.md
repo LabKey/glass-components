@@ -1,6 +1,14 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.X
+*Released*: X November 2024
+- Include identifying fields in editable entity grids - sample create/derive/aliquot
+  - Modify editable grid addRows, addRowsPerPivotValue and addBulkRowsToEditorModel to take custom insertColumns
+  - Support removeColumns for editable grid
+  - Add previousEditorModel to EditableGridChange param
+  - Add readOnlyGridFields to bulkAddProps
+
 ### version 5.22.6
 *Released*: 11 November 2024
 - Revert recent change to genCellKey and move the sample field key prefix to the usage in updateCellValuesForSampleIds()

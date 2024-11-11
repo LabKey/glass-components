@@ -373,15 +373,16 @@ async function prepareInsertRowDataFromBulkForm(
     };
 }
 
-export async function addRowsToEditorModel(
+async function addBulkRowsToEditorModel(
     editorModel: EditorModel,
     rowData: List<any>,
     numToAdd: number,
-    containerPath: string
+    containerPath: string,
+    columns: QueryColumn[]
 ): Promise<Partial<EditorModel>> {
     let { cellMessages, cellValues } = editorModel;
     const selectionCells: string[] = [];
-    const insertCols = editorModel.queryInfo.getInsertColumns();
+    const insertCols = columns ?? editorModel.queryInfo.getInsertColumns();
     const preparedData = await prepareInsertRowDataFromBulkForm(insertCols, rowData, 0, containerPath);
     const { values, messages } = preparedData;
     const rowCount = editorModel.rowCount + numToAdd;
@@ -408,13 +409,14 @@ export async function addRowsToEditorModel(
 export async function addRows(
     editorModel: EditorModel,
     numToAdd: number,
-    rowData: Map<string, any>,
-    containerPath: string
+    bulkData: Map<string, any>,
+    containerPath: string,
+    insertCols?: QueryColumn[]
 ): Promise<Partial<EditorModel>> {
     let editorModelChanges: Partial<EditorModel>;
 
-    if (rowData) {
-        editorModelChanges = await addRowsToEditorModel(editorModel, rowData.toList(), numToAdd, containerPath);
+    if (bulkData) {
+        editorModelChanges = await addBulkRowsToEditorModel(editorModel, bulkData.toList(), numToAdd, containerPath, insertCols);
     } else {
         editorModelChanges = { rowCount: editorModel.rowCount + numToAdd };
     }
@@ -520,24 +522,37 @@ export function changeColumn(
     };
 }
 
-export function removeColumn(editorModel: EditorModel, fieldKey: string): Partial<EditorModel> {
-    const deleteIndex = editorModel.orderedColumns.findIndex(column => Utils.caseInsensitiveEquals(column, fieldKey));
-    // nothing to do if there is no such column
-    if (deleteIndex === -1) return {};
-
+export function removeColumns(editorModel: EditorModel, fieldKeys: string[]): Partial<EditorModel> {
     let { cellMessages, cellValues, columnMap } = editorModel;
 
-    columnMap = columnMap.delete(fieldKey);
+    let orderedColumns = editorModel.orderedColumns;
+    let hasRemoved = false;
+    fieldKeys.forEach(fieldKey => {
+        const deleteIndex = orderedColumns.findIndex(column => Utils.caseInsensitiveEquals(column, fieldKey));
+        if (deleteIndex === -1) return;
+
+        orderedColumns = orderedColumns.remove(deleteIndex);
+        columnMap = columnMap.delete(fieldKey);
+        hasRemoved = true;
+    })
+
+    // nothing to do if no columns to remove
+    if (!hasRemoved)
+        return {};
 
     // Delete the existing data and initialize cells for the new column.
     for (let rowIdx = 0; rowIdx < editorModel.rowCount; rowIdx++) {
-        const cellkey = genCellKey(fieldKey, rowIdx);
-        cellValues = cellValues.delete(cellkey);
-        cellMessages = cellMessages.delete(cellkey);
+        fieldKeys.forEach(fieldKey => {
+            const cellkey = genCellKey(fieldKey, rowIdx);
+            cellValues = cellValues.delete(cellkey);
+            cellMessages = cellMessages.delete(cellkey);
+        })
     }
 
     const columns = new ExtendedMap<string, QueryColumn>(editorModel.queryInfo.columns);
-    columns.delete(fieldKey.toLowerCase());
+    fieldKeys.forEach(fieldKey => {
+        columns.delete(fieldKey.toLowerCase());
+    })
     const queryInfo = editorModel.queryInfo.mutate({ columns });
 
     return {
@@ -546,12 +561,16 @@ export function removeColumn(editorModel: EditorModel, fieldKey: string): Partia
         columnMap,
         focusColIdx: -1,
         focusRowIdx: -1,
-        orderedColumns: editorModel.orderedColumns.remove(deleteIndex),
+        orderedColumns,
         selectedColIdx: -1,
         selectedRowIdx: -1,
         selectionCells: [],
         queryInfo,
     };
+}
+
+export function removeColumn(editorModel: EditorModel, fieldKey: string): Partial<EditorModel> {
+    return removeColumns(editorModel, [fieldKey]);
 }
 
 // altColumns is used when the columns to be updated do not correspond with the insert columns on queryInfo
@@ -616,15 +635,16 @@ export async function addRowsPerPivotValue(
     numPerParent: number,
     pivotKey: string,
     pivotValues: string[],
-    rowData: Map<string, any>,
-    containerPath: string
+    bulkData: Map<string, any>,
+    containerPath: string,
+    insertColumns?: QueryColumn[]
 ): Promise<Partial<EditorModel>> {
     let updatedModel = editorModel;
 
     if (numPerParent > 0) {
         for (const value of pivotValues) {
-            rowData = rowData.set(pivotKey, value);
-            const changes = await addRowsToEditorModel(updatedModel, rowData.toList(), numPerParent, containerPath);
+            bulkData = bulkData.set(pivotKey, value);
+            const changes = await addBulkRowsToEditorModel(updatedModel, bulkData.toList(), numPerParent, containerPath, insertColumns);
             updatedModel = updatedModel.merge(changes) as EditorModel;
         }
     }
