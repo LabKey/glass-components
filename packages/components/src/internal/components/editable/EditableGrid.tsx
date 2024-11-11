@@ -68,13 +68,7 @@ import {
 } from './constants';
 import { AddRowsControl, AddRowsControlProps, PlacementType } from './Controls';
 
-import {
-    CellMessage,
-    EditableColumnMetadata,
-    EditorModel,
-    EditorModelProps,
-    ValueDescriptor
-} from './models';
+import { CellMessage, EditableColumnMetadata, EditorModel, EditorModelProps, ValueDescriptor } from './models';
 import { computeRangeChange, genCellKey, getValidatedEditableGridValue, parseCellKey } from './utils';
 
 function anyCell(values: List<ValueDescriptor>): boolean {
@@ -340,7 +334,11 @@ export interface EditableGridBtnProps {
     show?: boolean;
 }
 
-export type EditableGridChange = (event: EditableGridEvent, editorModelChanges: Partial<EditorModelProps>, previousEditorModel?: EditorModel) => void;
+export type EditableGridChange = (
+    event: EditableGridEvent,
+    editorModelChanges: Partial<EditorModelProps>,
+    previousEditorModel?: EditorModel
+) => void;
 
 export interface EditableGridProps extends SharedEditableGridProps {
     editorModel: EditorModel;
@@ -1296,9 +1294,9 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
     };
 
     getBulkToGridColumns = (): QueryColumn[] => {
-        const { bulkAddProps, editorModel} = this.props;
+        const { bulkAddProps, editorModel } = this.props;
         return editorModel.queryInfo.getInsertColumns(bulkAddProps.isIncludedColumn, bulkAddProps.readOnlyGridFields);
-    }
+    };
 
     bulkAdd = async (bulkData: OrderedMap<string, any>): Promise<void> => {
         const {

@@ -416,7 +416,13 @@ export async function addRows(
     let editorModelChanges: Partial<EditorModel>;
 
     if (bulkData) {
-        editorModelChanges = await addBulkRowsToEditorModel(editorModel, bulkData.toList(), numToAdd, containerPath, insertCols);
+        editorModelChanges = await addBulkRowsToEditorModel(
+            editorModel,
+            bulkData.toList(),
+            numToAdd,
+            containerPath,
+            insertCols
+        );
     } else {
         editorModelChanges = { rowCount: editorModel.rowCount + numToAdd };
     }
@@ -534,11 +540,10 @@ export function removeColumns(editorModel: EditorModel, fieldKeys: string[]): Pa
         orderedColumns = orderedColumns.remove(deleteIndex);
         columnMap = columnMap.delete(fieldKey);
         hasRemoved = true;
-    })
+    });
 
     // nothing to do if no columns to remove
-    if (!hasRemoved)
-        return {};
+    if (!hasRemoved) return {};
 
     // Delete the existing data and initialize cells for the new column.
     for (let rowIdx = 0; rowIdx < editorModel.rowCount; rowIdx++) {
@@ -546,13 +551,13 @@ export function removeColumns(editorModel: EditorModel, fieldKeys: string[]): Pa
             const cellkey = genCellKey(fieldKey, rowIdx);
             cellValues = cellValues.delete(cellkey);
             cellMessages = cellMessages.delete(cellkey);
-        })
+        });
     }
 
     const columns = new ExtendedMap<string, QueryColumn>(editorModel.queryInfo.columns);
     fieldKeys.forEach(fieldKey => {
         columns.delete(fieldKey.toLowerCase());
-    })
+    });
     const queryInfo = editorModel.queryInfo.mutate({ columns });
 
     return {
@@ -644,7 +649,13 @@ export async function addRowsPerPivotValue(
     if (numPerParent > 0) {
         for (const value of pivotValues) {
             bulkData = bulkData.set(pivotKey, value);
-            const changes = await addBulkRowsToEditorModel(updatedModel, bulkData.toList(), numPerParent, containerPath, insertColumns);
+            const changes = await addBulkRowsToEditorModel(
+                updatedModel,
+                bulkData.toList(),
+                numPerParent,
+                containerPath,
+                insertColumns
+            );
             updatedModel = updatedModel.merge(changes) as EditorModel;
         }
     }

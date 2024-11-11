@@ -286,8 +286,7 @@ export class QueryInfo {
                 .filter(col => !hasProductFolders || col.fieldKey.toLowerCase() !== 'folder');
 
             identifyingCols.forEach(col => {
-                if (ancestorOnly && !col.name.startsWith("Ancestors/"))
-                    return;
+                if (ancestorOnly && !col.name.startsWith('Ancestors/')) return;
                 const qCol = new QueryColumn(col);
                 qCol.readOnly = true;
                 if (prefixFieldKey) {
