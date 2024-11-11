@@ -1,6 +1,6 @@
 {
   "name": "@labkey/test",
-  "version": "1.6.3-fb_fix_authUtil.1",
+  "version": "1.6.3-fb-fix-authUtil.1",
   "description": "Configurations and utilities for JavaScript-based testing",
   "main": "dist/test.js",
   "module": "dist/test.js",
