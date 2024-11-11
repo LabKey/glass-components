@@ -2,7 +2,7 @@
 Utilities and configurations for running JavaScript tests with LabKey Server.
 
 ### version 1.6.3
-*Released* TBD
+*Released* 11 November 2024
 * Fix parseVerificationToken() helper to reflect verification URL change
 
 ### version 1.6.2
