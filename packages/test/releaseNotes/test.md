@@ -1,6 +1,10 @@
 # @labkey/test
 Utilities and configurations for running JavaScript tests with LabKey Server.
 
+### version 1.6.3
+*Released* TBD
+* Fix parseVerificationToken() helper to reflect verification URL change
+
 ### version 1.6.2
 *Released* 30 September 2024
 * Add helper util for random/shuffle and ExperimentCRUDUtils
