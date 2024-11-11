@@ -1406,6 +1406,11 @@ export function getSampleIdentifyingFieldGridData(
     });
 }
 
+// export for jest testing
+export function sampleGenCellKey(sampleFieldKey: string, fieldKey: string, rowIdx: number): string {
+    return (sampleFieldKey ? sampleFieldKey.toLowerCase() + '/' : '') + genCellKey(fieldKey, rowIdx);
+}
+
 export function updateCellValuesForSampleIds(
     editorModelChanges: Partial<EditorModel>,
     cellKeyMap: Record<string, number>,
@@ -1458,7 +1463,7 @@ export function updateCellValuesForSampleIds(
                         .filter(key => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(key.toLowerCase()) === -1)
                         .forEach(key => {
                             updates = updates.set(
-                                genCellKey(key, rowInd, sampleFieldKeyPrefix_),
+                                sampleGenCellKey(sampleFieldKeyPrefix_, key, rowInd),
                                 List<any>([
                                     {
                                         display: undefined,
@@ -1491,7 +1496,7 @@ export function updateCellValuesForSampleIds(
                                     )
                                     .forEach(key => {
                                         updates = updates.set(
-                                            genCellKey(key, rowInd, sampleFieldKeyPrefix_),
+                                            sampleGenCellKey(sampleFieldKeyPrefix_, key, rowInd),
                                             List<any>([
                                                 {
                                                     display: data[key],

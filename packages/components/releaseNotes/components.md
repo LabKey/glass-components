@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.22.6
+*Released*: 11 November 2024
+- Revert recent change to genCellKey and move the sample field key prefix to the usage in updateCellValuesForSampleIds()
+
 ### version 5.22.5
 *Released*: 7 November 2024
 - Issue 51574: Limit selection for View Assay Results

@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 
-import { extractEntityTypeOptionFromRow, getChosenParentData } from './actions';
+import { extractEntityTypeOptionFromRow, getChosenParentData, sampleGenCellKey } from './actions';
 import { EntityDataType, EntityIdCreationModel } from './models';
 import { DataClassDataType, SampleTypeDataType } from './constants';
 
@@ -69,5 +69,20 @@ describe('getChosenParentData', () => {
         expect(result.entityParents.get(SampleTypeDataType.typeListingSchemaQuery.queryName).size).toBe(0);
         expect(result.entityParents.get(DataClassDataType.typeListingSchemaQuery.queryName).size).toBe(0);
         expect(result.entityCount).toBe(0);
+    });
+});
+
+describe('sampleGenCellKey', () => {
+    test('with sample field key', () => {
+        expect(sampleGenCellKey('SampleId', 'RunDate', 0)).toBe('sampleid/rundate&&0');
+        expect(sampleGenCellKey('SampleId', 'RunDate', 1)).toBe('sampleid/rundate&&1');
+        expect(sampleGenCellKey('SampleId', 'Ancestors/Sources/Study', 0)).toBe('sampleid/ancestors/sources/study&&0');
+        expect(sampleGenCellKey('SampleId', 'Ancestors/Sources/Study', 1)).toBe('sampleid/ancestors/sources/study&&1');
+    });
+    test('without sample field key', () => {
+        expect(sampleGenCellKey(undefined, 'RunDate', 0)).toBe('rundate&&0');
+        expect(sampleGenCellKey(null, 'RunDate', 1)).toBe('rundate&&1');
+        expect(sampleGenCellKey(undefined, 'Ancestors/Sources/Study', 0)).toBe('ancestors/sources/study&&0');
+        expect(sampleGenCellKey(null, 'Ancestors/Sources/Study', 1)).toBe('ancestors/sources/study&&1');
     });
 });
