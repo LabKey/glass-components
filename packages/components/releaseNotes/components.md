@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.??.?
-*Released*: ?? November 2024
+### version 5.22.7
+*Released*: 12 November 2024
 - DataClassDataType: Update noun to match apps
 
 ### version 5.22.6
