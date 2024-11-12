@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.22.7
+*Released*: 12 November 2024
+- DataClassDataType: Update noun to match apps
+
 ### version 5.22.6
 *Released*: 11 November 2024
 - Revert recent change to genCellKey and move the sample field key prefix to the usage in updateCellValuesForSampleIds()
