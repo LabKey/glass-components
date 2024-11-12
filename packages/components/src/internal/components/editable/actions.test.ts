@@ -14,6 +14,7 @@ import {
     parseIntIfNumber,
     parsePastedLookup,
     removeColumn,
+    removeColumns,
     splitPrefixedNumber,
     validateAndInsertPastedData,
 } from './actions';
@@ -237,14 +238,13 @@ describe('column mutation actions', () => {
 
     describe('removeColumn', () => {
         test('column not found', () => {
-            const updates = removeColumn(editorModel, 'Modified'); // not an insert column, so cannot be removed
+            let updates = removeColumn(editorModel, 'Modified'); // not an insert column, so cannot be removed
+            expect(updates).toEqual({});
+            updates = removeColumns(editorModel, ['Modified']);
             expect(updates).toEqual({});
         });
 
-        test('first column', () => {
-            const firstInputColumn = queryModel.queryInfo.getInsertColumns()[0];
-            const updates = removeColumn(editorModel, firstInputColumn.fieldKey);
-
+        function verifyRemoveFirstColumnUpdates(updates: Partial<EditorModel>, fieldKeyFirst: string) {
             expect(updates.cellMessages.size).toBe(1);
             expect(updates.cellValues.has(genCellKey(firstFK, 0))).toBe(false);
             expect(updates.cellValues.has(genCellKey(firstFK, 1))).toBe(false);
@@ -254,14 +254,15 @@ describe('column mutation actions', () => {
             expect(updates.cellValues.get(genCellKey(secondFk, 2)).get(0).display).toBe('Description 3');
             expect(updates.cellValues.get(genCellKey(sixthFk, 0)).get(0).display).toBe('requirement 1');
             expect(updates.orderedColumns.size).toEqual(editorModel.orderedColumns.size - 1);
-            expect(updates.orderedColumns.find(fieldKey => fieldKey === firstInputColumn.fieldKey)).toBeUndefined();
+            expect(updates.orderedColumns.find(fieldKey => fieldKey === fieldKeyFirst)).toBeUndefined();
+        }
+        test('first column', () => {
+            const firstInputColumnFieldKey = queryModel.queryInfo.getInsertColumns()[0].fieldKey;
+            verifyRemoveFirstColumnUpdates(removeColumn(editorModel, firstInputColumnFieldKey), firstInputColumnFieldKey);
+            verifyRemoveFirstColumnUpdates(removeColumns(editorModel, [firstInputColumnFieldKey]), firstInputColumnFieldKey);
         });
 
-        test('last column', () => {
-            const insertCols = queryModel.queryInfo.getInsertColumns();
-            const lastInputColumn = insertCols[insertCols.length - 1];
-            const updates = removeColumn(editorModel, lastInputColumn.fieldKey);
-
+        function verifyRemoveLastColumnUpdates(updates: Partial<EditorModel>, fieldKeyLast: string) {
             expect(updates.cellMessages.size).toBe(1);
             expect(updates.cellValues.get(genCellKey(firstFK, 0)).get(0).display).toBe('S-1');
             expect(updates.cellValues.get(genCellKey(firstFK, 1)).get(0).display).toBe('S-2');
@@ -271,13 +272,16 @@ describe('column mutation actions', () => {
             expect(updates.cellValues.get(genCellKey(secondFk, 2)).get(0).display).toBe('Description 3');
             expect(updates.cellValues.has(genCellKey(sixthFk, 0))).toBe(false);
             expect(updates.orderedColumns.size).toEqual(editorModel.orderedColumns.size - 1);
-            expect(updates.orderedColumns.find(fieldKey => fieldKey === lastInputColumn.fieldKey)).toBeUndefined();
+            expect(updates.orderedColumns.find(fieldKey => fieldKey === fieldKeyLast)).toBeUndefined();
+        }
+        test('last column', () => {
+            const insertCols = queryModel.queryInfo.getInsertColumns();
+            const lastInputColumnFK = insertCols[insertCols.length - 1].fieldKey;
+            verifyRemoveLastColumnUpdates(removeColumn(editorModel, lastInputColumnFK), lastInputColumnFK);
+            verifyRemoveLastColumnUpdates(removeColumns(editorModel, [lastInputColumnFK]), lastInputColumnFK);
         });
 
-        test('middle column', () => {
-            const fieldKey = 'Description';
-            const updates = removeColumn(editorModel, fieldKey);
-
+        function verifyRemoveMiddleColumnUpdates(updates: Partial<EditorModel>, fieldKeyMid: string) {
             expect(updates.cellMessages.size).toBe(0);
             expect(updates.cellValues.get(genCellKey(firstFK, 0)).get(0).display).toBe('S-1');
             expect(updates.cellValues.get(genCellKey(firstFK, 1)).get(0).display).toBe('S-2');
@@ -287,7 +291,31 @@ describe('column mutation actions', () => {
             expect(updates.cellValues.has(genCellKey(secondFk, 2))).toBe(false);
             expect(updates.cellValues.get(genCellKey(sixthFk, 0)).get(0).display).toBe('requirement 1');
             expect(updates.orderedColumns.size).toEqual(editorModel.orderedColumns.size - 1);
-            expect(updates.orderedColumns.find(fk => fk === fieldKey)).toBeUndefined();
+            expect(updates.orderedColumns.find(fk => fk === fieldKeyMid)).toBeUndefined();
+        }
+        test('middle column', () => {
+            const fieldKey = 'Description';
+            verifyRemoveMiddleColumnUpdates(removeColumn(editorModel, fieldKey), fieldKey);
+            verifyRemoveMiddleColumnUpdates(removeColumns(editorModel, [fieldKey]), fieldKey);
+        });
+
+        test('remove first and second columns', () => {
+            const firstInputColumnFieldKey = queryModel.queryInfo.getInsertColumns()[0].fieldKey;
+            const secondInputColumnFieldKey = queryModel.queryInfo.getInsertColumns()[1].fieldKey;
+
+            const updates = removeColumns(editorModel, [firstInputColumnFieldKey, secondInputColumnFieldKey]);
+
+            expect(updates.cellMessages.size).toBe(0);
+            expect(updates.cellValues.has(genCellKey(firstFK, 0))).toBe(false);
+            expect(updates.cellValues.has(genCellKey(firstFK, 1))).toBe(false);
+            expect(updates.cellValues.has(genCellKey(firstFK, 2))).toBe(false);
+            expect(updates.cellValues.has(genCellKey(secondFk, 0))).toBe(false);
+            expect(updates.cellValues.has(genCellKey(secondFk, 1))).toBe(false);
+            expect(updates.cellValues.has(genCellKey(secondFk, 2))).toBe(false);
+            expect(updates.cellValues.get(genCellKey(sixthFk, 0)).get(0).display).toBe('requirement 1');
+            expect(updates.orderedColumns.size).toEqual(editorModel.orderedColumns.size - 2);
+            expect(updates.orderedColumns.find(fieldKey => fieldKey === firstInputColumnFieldKey)).toBeUndefined();
+            expect(updates.orderedColumns.find(fieldKey => fieldKey === secondInputColumnFieldKey)).toBeUndefined();
         });
     });
 });
