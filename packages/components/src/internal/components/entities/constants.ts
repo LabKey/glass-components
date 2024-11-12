@@ -14,6 +14,7 @@ import { SAMPLE_PROPERTY_ALL_SAMPLE_TYPE } from '../search/constants';
 
 import { EntityDataType } from './models';
 import { sampleDeleteDependencyText } from './utils';
+import { Query } from '@labkey/api';
 
 const DATA_OPERATION_CONFIRMATION_ACTION = 'getDataOperationConfirmationData.api';
 const SAMPLE_OPERATION_CONFIRMATION_ACTION = 'getMaterialOperationConfirmationData.api';
@@ -139,6 +140,13 @@ export const SampleTypeDataType: EntityDataType = {
     supportsCrossTypeImport: true,
     folderConfigurableDataType: 'SampleType',
     labelColorCol: 'labelcolor',
+};
+
+export const SampleParentDataType = {
+    ...SampleTypeDataType,
+    nounPlural: 'Parents',
+    nounSingular: 'Parent',
+    containerFilter: Query.containerFilter.currentPlusProjectAndShared,
 };
 
 export const DataClassDataType: EntityDataType = {

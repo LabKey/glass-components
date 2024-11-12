@@ -524,6 +524,7 @@ import {
     ParentEntityRequiredColumns,
     SAMPLE_SET_IMPORT_PREFIX,
     SamplePropertyDataType,
+    SampleParentDataType,
     SampleTypeDataType,
 } from './internal/components/entities/constants';
 import { getModuleCustomLabels } from './internal/components/labels/actions';
@@ -1364,6 +1365,7 @@ export {
     getParentTypeDataForLineage,
     getSelectedSampleIdsFromSelectionKey,
     ParentEntityLineageColumns,
+    SampleParentDataType,
     SampleTypeDataType,
     SamplePropertyDataType,
     DataClassDataType,

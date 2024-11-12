@@ -209,11 +209,12 @@ export class SampleState {
 export interface SampleGridButtonProps {
     afterSampleActionComplete?: () => void;
     afterSampleDelete?: (rowsToKeep: any[]) => void;
-    assayProviderType?: string;
     createBtnParentKey?: string;
     createBtnParentType?: string;
+    currentProductId?: string;
     excludeAddButton?: boolean;
     excludedMenuKeys?: SamplesEditButtonSections[];
+    getJobURL?: (jobId: number) => string;
     includesMedia?: boolean;
     initAliquotMode?: ALIQUOT_FILTER_MODE;
     metricFeatureArea?: string;
