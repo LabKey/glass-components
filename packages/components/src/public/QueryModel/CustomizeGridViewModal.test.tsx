@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { userEvent } from '@testing-library/user-event';
+
+import { render } from '@testing-library/react';
 
 import { ExtendedMap } from '../ExtendedMap';
 
@@ -8,7 +10,6 @@ import { SchemaQuery } from '../SchemaQuery';
 import { QueryInfo } from '../QueryInfo';
 import { ViewInfo } from '../../internal/ViewInfo';
 import { QueryColumn } from '../QueryColumn';
-import { ColumnChoice, ColumnInView } from '../../internal/components/ColumnSelectionModal';
 
 import { makeTestQueryModel } from './testUtils';
 
@@ -70,9 +71,8 @@ describe('CustomizeGridViewModal', () => {
         });
         let model = makeTestQueryModel(new SchemaQuery('test', QUERY_NAME), queryInfo);
         model = model.mutate({ title: 'Title' });
-        const wrapper = mount(<CustomizeGridViewModal model={model} onCancel={jest.fn()} onUpdate={jest.fn()} />);
-        expect(wrapper.find('.modal-title').text()).toBe('Customize Title Grid');
-        wrapper.unmount();
+        render(<CustomizeGridViewModal model={model} onCancel={jest.fn()} onUpdate={jest.fn()} />);
+        expect(document.querySelector('.modal-title').textContent).toBe('Customize Title Grid');
     });
 
     test('Without title, with view name', () => {
@@ -83,12 +83,13 @@ describe('CustomizeGridViewModal', () => {
             columns,
         });
         const model = makeTestQueryModel(new SchemaQuery('test', QUERY_NAME, viewName), queryInfo);
-        const wrapper = mount(<CustomizeGridViewModal model={model} onCancel={jest.fn()} onUpdate={jest.fn()} />);
-        expect(wrapper.find('.modal-title').text()).toBe('Customize ' + QUERY_NAME + ' Grid - ' + viewName);
-        wrapper.unmount();
+        render(<CustomizeGridViewModal model={model} onCancel={jest.fn()} onUpdate={jest.fn()} />);
+        expect(document.querySelector('.modal-title').textContent).toBe(
+            'Customize ' + QUERY_NAME + ' Grid - ' + viewName
+        );
     });
 
-    test('Columns in View and All Fields,', () => {
+    test('Columns in View and All Fields,', async () => {
         const view = ViewInfo.fromJson({
             name: ViewInfo.DEFAULT_NAME,
             columns: [FIELD_1_COL, FIELD_2_COL],
@@ -98,58 +99,75 @@ describe('CustomizeGridViewModal', () => {
             columns,
         });
         const model = makeTestQueryModel(new SchemaQuery('test', QUERY_NAME), queryInfo);
-        const wrapper = mount(<CustomizeGridViewModal model={model} onCancel={jest.fn()} onUpdate={jest.fn()} />);
-        let columnChoices = wrapper.find(ColumnChoice);
+        render(<CustomizeGridViewModal model={model} onCancel={jest.fn()} onUpdate={jest.fn()} />);
+
+        let availableColumn = document.querySelectorAll('.list-group')[0];
+        let columnChoices = availableColumn.querySelectorAll('.list-group-item');
         expect(columnChoices).toHaveLength(3);
-        expect(columnChoices.at(0).text()).toBe(FIELD_1_COL.name);
-        expect(columnChoices.at(0).prop('isInView')).toBe(true);
-        expect(columnChoices.at(1).text()).toBe(FIELD_2_COL.name);
-        expect(columnChoices.at(1).prop('isInView')).toBe(true);
-        expect(columnChoices.at(2).text()).toBe(FIELD_3_COL.name);
-        expect(columnChoices.at(2).prop('isInView')).toBe(false);
+        expect(columnChoices[0].textContent).toBe(FIELD_1_COL.name);
+        expect(columnChoices[0].querySelector('.view-field__action').getAttribute('title')).toBe(
+            'This field is included in the view.'
+        );
+        expect(columnChoices[1].textContent).toBe(FIELD_2_COL.name);
+        expect(columnChoices[1].querySelector('.view-field__action').getAttribute('title')).toBe(
+            'This field is included in the view.'
+        );
+        expect(columnChoices[2].textContent).toBe(FIELD_3_COL.name);
+        expect(columnChoices[2].querySelector('.view-field__action').getAttribute('title')).toBe(
+            'Add this field to the view.'
+        );
 
-        const columnsInView = wrapper.find(ColumnInView);
+        let inGridColumn = document.querySelectorAll('.list-group')[1];
+        const columnsInView = inGridColumn.querySelectorAll('.list-group-item');
         expect(columnsInView).toHaveLength(2);
-        expect(columnsInView.at(0).text()).toBe(FIELD_1_COL.name);
-        expect(columnsInView.at(1).text()).toBe(FIELD_2_COL.name);
+        expect(columnsInView[0].textContent).toBe(FIELD_1_COL.name);
+        expect(columnsInView[1].textContent).toBe(FIELD_2_COL.name);
 
-        const toggleAll = wrapper.find('input');
-        toggleAll.simulate('change', { target: { checked: true } });
-        columnChoices = wrapper.find(ColumnChoice);
+        const toggleAll = document.querySelector('input[type = checkbox]');
+        await userEvent.click(toggleAll);
+        availableColumn = document.querySelectorAll('.list-group')[0];
+        columnChoices = availableColumn.querySelectorAll('.list-group-item');
         expect(columnChoices).toHaveLength(5);
-        expect(columnChoices.at(0).text()).toBe(FIELD_1_COL.name);
-        expect(columnChoices.at(1).text()).toBe(FIELD_2_COL.name);
-        expect(columnChoices.at(2).text()).toBe(FIELD_3_COL.name);
-        expect(columnChoices.at(3).text()).toBe(SYSTEM_COL.name);
-        expect(columnChoices.at(3).prop('isInView')).toBe(false);
-        expect(columnChoices.at(4).text()).toBe(HIDDEN_COL.name);
-        expect(columnChoices.at(4).prop('isInView')).toBe(false);
+        expect(columnChoices[0].textContent).toBe(FIELD_1_COL.name);
+        expect(columnChoices[1].textContent).toBe(FIELD_2_COL.name);
+        expect(columnChoices[2].textContent).toBe(FIELD_3_COL.name);
+        expect(columnChoices[3].textContent).toBe(SYSTEM_COL.name);
+        expect(columnChoices[3].querySelector('.view-field__action').getAttribute('title')).toBe(
+            'Add this field to the view.'
+        );
+        expect(columnChoices[4].textContent).toBe(HIDDEN_COL.name);
+        expect(columnChoices[4].querySelector('.view-field__action').getAttribute('title')).toBe(
+            'Add this field to the view.'
+        );
 
         // no changes made yet, so update button is disabled
-        let updateButton = wrapper.find('.btn-success');
-        expect(updateButton.prop('disabled')).toBe(true);
+        let updateButton = document.querySelector('.btn-success');
+        expect(updateButton.hasAttribute('disabled')).toBe(true);
 
         // remove a field, expect button to become enabled
-        wrapper.find('.fa-times').at(0).simulate('click');
-        updateButton = wrapper.find('.btn-success');
-        expect(updateButton.prop('disabled')).toBeFalsy();
-        expect(wrapper.find(ColumnChoice).at(0).prop('isInView')).toBe(false);
-        expect(wrapper.find(ColumnInView)).toHaveLength(1);
+        await userEvent.click(document.querySelectorAll('.fa-times')[0]);
+        updateButton = document.querySelector('.btn-success');
+        expect(updateButton.hasAttribute('disabled')).toBeFalsy();
+        expect(columnChoices[0].querySelector('.view-field__action').getAttribute('title')).toBe(
+            'Add this field to the view.'
+        );
+        inGridColumn = document.querySelectorAll('.list-group')[1];
+        expect(inGridColumn.querySelectorAll('.list-group-item')).toHaveLength(1);
 
         // remove the other field in the view and expect button to become disabled again
-        wrapper.find('.fa-times').at(0).simulate('click');
-        updateButton = wrapper.find('.btn-success');
-        expect(updateButton.prop('disabled')).toBe(true);
-        expect(wrapper.find(ColumnInView)).toHaveLength(0);
+        await userEvent.click(document.querySelectorAll('.fa-times')[0]);
+        updateButton = document.querySelector('.btn-success');
+        expect(updateButton.hasAttribute('disabled')).toBe(true);
+        inGridColumn = document.querySelectorAll('.list-group')[1];
+        expect(inGridColumn.querySelectorAll('.list-group-item')).toHaveLength(0);
 
         // add back one of the hidden columns
-        wrapper.find(ColumnChoice).at(4).find('.fa-plus').simulate('click');
-        expect(wrapper.find('.btn-success').prop('disabled')).toBeFalsy();
-
-        wrapper.unmount();
+        availableColumn = document.querySelectorAll('.list-group')[0];
+        await userEvent.click(availableColumn.querySelectorAll('.list-group-item')[4].querySelector('.fa-plus'));
+        expect(document.querySelector('.btn-success').hasAttribute('disabled')).toBeFalsy();
     });
 
-    test('with selectedColumn', () => {
+    test('with selectedColumn', async () => {
         const view = ViewInfo.fromJson({
             name: ViewInfo.DEFAULT_NAME,
             columns: [FIELD_1_COL, FIELD_2_COL],
@@ -159,7 +177,7 @@ describe('CustomizeGridViewModal', () => {
             columns,
         });
         const model = makeTestQueryModel(new SchemaQuery('test', QUERY_NAME), queryInfo);
-        const wrapper = mount(
+        render(
             <CustomizeGridViewModal
                 model={model}
                 onCancel={jest.fn()}
@@ -167,22 +185,22 @@ describe('CustomizeGridViewModal', () => {
                 selectedColumn={FIELD_2_COL}
             />
         );
-        let colsInView = wrapper.find(ColumnInView);
+        let colsInView = document.querySelectorAll('.list-group')[1].querySelectorAll('.list-group-item');
         // selected column passed in should be highlighted
-        expect(colsInView.at(0).prop('selected')).toBe(false);
-        expect(colsInView.at(1).prop('selected')).toBe(true);
+        expect(colsInView[0].getAttribute('class')).not.toContain('active');
+        expect(colsInView[1].getAttribute('class')).toContain('active');
 
         // clicking a new column should change the selected index
-        colsInView.at(0).find('.field-name span').simulate('click');
-        colsInView = wrapper.find(ColumnInView);
-        expect(colsInView.at(0).prop('selected')).toBe(true);
-        expect(colsInView.at(1).prop('selected')).toBe(false);
+        await userEvent.click(colsInView[0].querySelector('.field-name span'));
+        colsInView = document.querySelectorAll('.list-group')[1].querySelectorAll('.list-group-item');
+        expect(colsInView[0].getAttribute('class')).toContain('active');
+        expect(colsInView[1].getAttribute('class')).not.toContain('active');
 
         // clicking on the same column should unselect
-        colsInView.at(0).find('.field-name span').simulate('click');
-        colsInView = wrapper.find(ColumnInView);
-        expect(colsInView.at(0).prop('selected')).toBe(false);
-        expect(colsInView.at(1).prop('selected')).toBe(false);
+        await userEvent.click(colsInView[0].querySelector('.field-name span'));
+        colsInView = document.querySelectorAll('.list-group')[1].querySelectorAll('.list-group-item');
+        expect(colsInView[0].getAttribute('class')).not.toContain('active');
+        expect(colsInView[1].getAttribute('class')).not.toContain('active');
     });
 });
 
