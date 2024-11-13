@@ -916,7 +916,15 @@ async function getParsedLookup(
     const cacheKey = `${column.fieldKey}||${containerPath}`;
     let descriptors = lookupColumnContainerCache[cacheKey];
     if (!descriptors) {
-        const response = await findLookupValues(column, undefined, display, undefined, forUpdate, containerPath);
+        const columnMetadata = editorModel.getColumnMetadata(column.fieldKey);
+        const response = await findLookupValues(
+            column,
+            undefined,
+            display,
+            columnMetadata?.lookupValueFilters,
+            forUpdate,
+            containerPath
+        );
         descriptors = response.descriptors;
         lookupColumnContainerCache[cacheKey] = descriptors;
     }
