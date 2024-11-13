@@ -1,6 +1,7 @@
 import React from 'react';
 import { List } from 'immutable';
-import { shallow } from 'enzyme';
+
+import { render } from '@testing-library/react';
 
 import { FILES_DATA, FILES_DATA_2 } from '../../../test/data/constants';
 
@@ -10,19 +11,21 @@ import { IFile } from './models';
 
 describe('<FilesListingForm/>', () => {
     test('empty files default props', () => {
-        const wrapper = shallow(<FilesListingForm files={List<IFile>()} />);
-        expect(wrapper).toMatchSnapshot();
+        const { container } = render(<FilesListingForm files={List<IFile>()} />);
+        expect(container).toMatchSnapshot();
     });
     test('empty files custom msg', () => {
-        const wrapper = shallow(<FilesListingForm files={List<IFile>()} noFilesMessage="the file list is empty" />);
-        expect(wrapper).toMatchSnapshot();
+        const { container } = render(
+            <FilesListingForm files={List<IFile>()} noFilesMessage="the file list is empty" />
+        );
+        expect(container).toMatchSnapshot();
     });
     test('with files default props', () => {
-        const wrapper = shallow(<FilesListingForm files={FILES_DATA} />);
-        expect(wrapper).toMatchSnapshot();
+        const { container } = render(<FilesListingForm files={FILES_DATA} />);
+        expect(container).toMatchSnapshot();
     });
     test('with files custom props', () => {
-        const wrapper = shallow(
+        const { container } = render(
             <FilesListingForm
                 files={FILES_DATA}
                 addFileText="add more files"
@@ -34,14 +37,16 @@ describe('<FilesListingForm/>', () => {
                 handleDownload={jest.fn()}
             />
         );
-        expect(wrapper).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
     test('with only readOnly files', () => {
-        const wrapper = shallow(<FilesListingForm readOnlyFiles={FILES_DATA} readOnlyHeaderText="Read-only files" />);
-        expect(wrapper).toMatchSnapshot();
+        const { container } = render(
+            <FilesListingForm readOnlyFiles={FILES_DATA} readOnlyHeaderText="Read-only files" />
+        );
+        expect(container).toMatchSnapshot();
     });
     test('with readOnly and editable files', () => {
-        const wrapper = shallow(
+        const { container } = render(
             <FilesListingForm
                 files={FILES_DATA}
                 readOnlyFiles={FILES_DATA_2}
@@ -57,10 +62,10 @@ describe('<FilesListingForm/>', () => {
                 handleDownload={jest.fn()}
             />
         );
-        expect(wrapper).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
     test('with readOnly and noFilesMessage', () => {
-        const wrapper = shallow(
+        const { container } = render(
             <FilesListingForm
                 readOnlyFiles={FILES_DATA_2}
                 headerText="Your files"
@@ -75,10 +80,10 @@ describe('<FilesListingForm/>', () => {
                 handleDownload={jest.fn()}
             />
         );
-        expect(wrapper).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
     test('with editable and noReadOnlyFilesMessage', () => {
-        const wrapper = shallow(
+        const { container } = render(
             <FilesListingForm
                 files={FILES_DATA}
                 headerText="Your files"
@@ -93,10 +98,10 @@ describe('<FilesListingForm/>', () => {
                 handleDownload={jest.fn()}
             />
         );
-        expect(wrapper).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
     test('with no files and both messages', () => {
-        const wrapper = shallow(
+        const { container } = render(
             <FilesListingForm
                 headerText="Your files"
                 readOnlyHeaderText={"Other files you can't remove"}
@@ -110,6 +115,6 @@ describe('<FilesListingForm/>', () => {
                 handleDownload={jest.fn()}
             />
         );
-        expect(wrapper).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
 });

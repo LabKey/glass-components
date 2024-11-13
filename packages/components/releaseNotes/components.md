@@ -7,6 +7,16 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Update `ResponsiveMenuButton` to have `children` property instead of `items`
 - Add constants and properties to allow use of a single `SampleGridButtons` component in `ui-premium`
 
+### version 5.22.8
+*Released*: 13 November 2024
+- Merge from release24.11-SNAPSHOT to develop
+  - includes changes from 5.20.3 #1635
+  - includes changes from 5.20.4 #1637
+
+### version 5.22.7
+*Released*: 12 November 2024
+- DataClassDataType: Update noun to match apps
+
 ### version 5.22.6
 *Released*: 11 November 2024
 - Revert recent change to genCellKey and move the sample field key prefix to the usage in updateCellValuesForSampleIds()
@@ -45,6 +55,18 @@ Components, models, actions, and utility functions for LabKey applications and p
     - include identifying fields in getSelectionLineageData()
     - EditorModel.getUpdatedData() to skip non-userEditable fields when comparing values
     - getIdentifyingFieldsEditableGridColumns() to take param for hasProductFolders to determine if Folder should be excluded
+
+### version 5.20.2
+*Released*: 4 November 2024
+- Issue 51563: LKSM: Add additional date and date/time formats
+
+### version 5.20.4
+*Released*: 9 November 2024
+- Use userId instead of email for password related APIs
+
+### version 5.20.3
+*Released*: 7 November 2024
+- Replace some curly quotes with normal quotes
 
 ### version 5.20.2
 *Released*: 4 November 2024
