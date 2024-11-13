@@ -25,6 +25,7 @@ export interface SamplesTabbedGridPanelComponentProps {
     asPanel?: boolean;
     autoLoad?: boolean;
     containerFilter?: Query.ContainerFilter;
+    createBtnParentEntityType?: EntityDataType;
     createBtnParentKey?: string;
     createBtnParentType?: string;
     getIsDirty?: () => boolean;

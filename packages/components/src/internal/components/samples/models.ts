@@ -6,7 +6,7 @@ import { QueryModel } from '../../../public/QueryModel/QueryModel';
 import { User } from '../base/models/User';
 import { AppURL } from '../../url/AppURL';
 
-import { OperationConfirmationData } from '../entities/models';
+import { EntityDataType, OperationConfirmationData } from '../entities/models';
 
 import { SamplesEditButtonSections } from './utils';
 import { ALIQUOT_FILTER_MODE, SampleStateType } from './constants';
@@ -209,6 +209,7 @@ export class SampleState {
 export interface SampleGridButtonProps {
     afterSampleActionComplete?: () => void;
     afterSampleDelete?: (rowsToKeep: any[]) => void;
+    createBtnParentEntityType?: EntityDataType;
     createBtnParentKey?: string;
     createBtnParentType?: string;
     currentProductId?: string;
