@@ -258,8 +258,14 @@ describe('column mutation actions', () => {
         }
         test('first column', () => {
             const firstInputColumnFieldKey = queryModel.queryInfo.getInsertColumns()[0].fieldKey;
-            verifyRemoveFirstColumnUpdates(removeColumn(editorModel, firstInputColumnFieldKey), firstInputColumnFieldKey);
-            verifyRemoveFirstColumnUpdates(removeColumns(editorModel, [firstInputColumnFieldKey]), firstInputColumnFieldKey);
+            verifyRemoveFirstColumnUpdates(
+                removeColumn(editorModel, firstInputColumnFieldKey),
+                firstInputColumnFieldKey
+            );
+            verifyRemoveFirstColumnUpdates(
+                removeColumns(editorModel, [firstInputColumnFieldKey]),
+                firstInputColumnFieldKey
+            );
         });
 
         function verifyRemoveLastColumnUpdates(updates: Partial<EditorModel>, fieldKeyLast: string) {
