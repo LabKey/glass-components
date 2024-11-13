@@ -211,7 +211,6 @@ export interface SampleGridButtonProps {
     afterSampleDelete?: (rowsToKeep: any[]) => void;
     createBtnParentEntityType?: EntityDataType;
     createBtnParentKey?: string;
-    createBtnParentType?: string;
     currentProductId?: string;
     excludeAddButton?: boolean;
     excludedMenuKeys?: SamplesEditButtonSections[];
