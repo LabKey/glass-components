@@ -66,7 +66,7 @@ export class ChangePasswordModal extends React.Component<Props, State> {
 
         this.state = {
             model: new ChangePasswordModel({
-                email: props.user.email,
+                userId: props.user.id,
             }),
             passwordRule: undefined,
             submitting: false,
