@@ -902,9 +902,11 @@ export function parsePastedLookup(
     };
 }
 
+type LookupValueCache = Record<string, Promise<ValueDescriptor[]>>;
+
 async function getParsedLookup(
     column: QueryColumn,
-    lookupColumnContainerCache: Record<string, ValueDescriptor[]>,
+    lookupValueCache: LookupValueCache,
     display: any[],
     value: string[] | string,
     cellKey: string,
@@ -914,21 +916,21 @@ async function getParsedLookup(
 ): Promise<CellData> {
     const containerPath = forUpdate ? editorModel.getFolderValueForCell(cellKey) : targetContainerPath;
     const cacheKey = `${column.fieldKey}||${containerPath}`;
-    let descriptors = lookupColumnContainerCache[cacheKey];
-    if (!descriptors) {
+
+    if (!lookupValueCache.hasOwnProperty(cacheKey)) {
         const columnMetadata = editorModel.getColumnMetadata(column.fieldKey);
-        const response = await findLookupValues(
+
+        lookupValueCache[cacheKey] = findLookupValues(
             column,
             undefined,
             display,
             columnMetadata?.lookupValueFilters,
             forUpdate,
             containerPath
-        );
-        descriptors = response.descriptors;
-        lookupColumnContainerCache[cacheKey] = descriptors;
+        ).then(response => response.descriptors);
     }
 
+    const descriptors = await lookupValueCache[cacheKey];
     return parsePastedLookup(column, descriptors, value);
 }
 
@@ -1005,7 +1007,7 @@ export async function fillColumnCells(
     });
 
     const filteredLookupValues = columnMetadata?.filteredLookupValues?.toArray();
-    const lookupColumnContainerCache = {};
+    const lookupValueCache: LookupValueCache = {};
     for (const cellKey of selectionToFill) {
         // If the column is a lookup, then we need to query for the rowIds so we can set the correct raw values,
         // otherwise insert will fail. This is most common for cross-folder sample selection (Issue 50363)
@@ -1017,7 +1019,7 @@ export async function fillColumnCells(
 
             const { message, valueDescriptors } = await getParsedLookup(
                 column,
-                lookupColumnContainerCache,
+                lookupValueCache,
                 display,
                 filteredLookupValues ?? display.join(','),
                 cellKey,
@@ -1266,7 +1268,7 @@ async function insertPastedData(
     }
 
     const byColumnValues = getPasteValuesByColumn(paste);
-    const lookupColumnContainerCache = {};
+    const lookupValueCache: LookupValueCache = {};
     const { colMin, rowMin } = paste.coordinates;
     let rowIdx = rowMin;
 
@@ -1307,7 +1309,7 @@ async function insertPastedData(
                     const display = byColumnValues.get(cn)?.toArray();
                     const { message, valueDescriptors } = await getParsedLookup(
                         col,
-                        lookupColumnContainerCache,
+                        lookupValueCache,
                         display,
                         val,
                         cellKey,
