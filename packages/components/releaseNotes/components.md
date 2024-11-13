@@ -5,6 +5,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: 13 November 2024
 - Merge from release24.11-SNAPSHOT to develop
   - includes changes from 5.20.3 #1635
+  - includes changes from 5.20.4 #1637
 
 ### version 5.22.7
 *Released*: 12 November 2024
