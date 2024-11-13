@@ -177,6 +177,10 @@
             background-color: transparent;
         }
     }
+    .responsive-menu .dropdown-menu button {
+        border-color: transparent;
+        margin-left: 8px;
+    }
 
     button {
         margin-right: 4px; // Issue 51085
