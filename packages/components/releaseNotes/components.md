@@ -48,6 +48,18 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: 4 November 2024
 - Issue 51563: LKSM: Add additional date and date/time formats
 
+### version 5.20.4
+*Released*: 9 November 2024
+- Use userId instead of email for password related APIs
+
+### version 5.20.3
+*Released*: 7 November 2024
+- Replace some curly quotes with normal quotes
+
+### version 5.20.2
+*Released*: 4 November 2024
+- Issue 51563: LKSM: Add additional date and date/time formats
+
 ### version 5.20.1
 *Released*: 31 October 2024
 - Issue 51491: DateTime field should tolerate Date and DateTime pseudo format patterns
