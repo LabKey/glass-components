@@ -361,18 +361,21 @@ const parseSessionId = (response: Response): string => {
 /**
  * Parses the verification token from the message supplied via the createNewUser.api upon creating a new user.
  * e.g. Expected to contain a link like:
- * http://localhost:8080/labkey/login-setPassword.view?verification=p9PVITQgdpiny1tI0kCPvVp8fu72Miab&amp;email=newuser@test.com
+ * http://localhost:8080/labkey/login-setPassword.view?verification=p9PVITQgdpiny1tI0kCPvVp8fu72Miab
  */
 const parseVerificationToken = (user: CreateNewUser): string => {
     const { email, message } = user;
     const tokenPrefix = 'setPassword.view?verification=';
-    const tokenSuffix = '&amp;email=';
+    const idx = message.indexOf(tokenPrefix);
 
-    if (message.indexOf(tokenPrefix) === -1 || message.indexOf(tokenSuffix) === -1) {
+    if (idx === -1) {
         throw new Error(`Failed to parse verification token. Unexpected response message for account "${email}".`);
     }
 
-    return message.split(tokenPrefix)[1].split(tokenSuffix)[0];
+    const start = idx + tokenPrefix.length;
+    const end = start + 32; // Verification token is 32 characters long
+
+    return message.substring(start, end);
 }
 
 const postRequest = (

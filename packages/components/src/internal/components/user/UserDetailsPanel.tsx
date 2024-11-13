@@ -337,6 +337,7 @@ export class UserDetailsPanel extends React.PureComponent<Props, State> {
                     {allowResetPassword && showDialog === 'reset' && (
                         <UserResetPasswordConfirmModal
                             email={caseInsensitive(userProperties, 'email')}
+                            userId={caseInsensitive(userProperties, 'userId')}
                             hasLogin={Utils.isString(caseInsensitive(userProperties, 'lastLogin'))}
                             onComplete={response => this.onUsersStateChangeComplete(response, false)}
                             onCancel={() => this.toggleDialog(undefined)}
