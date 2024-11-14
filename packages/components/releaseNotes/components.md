@@ -9,6 +9,10 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Add previousEditorModel to EditableGridChange param
   - Add readOnlyGridFields to bulkAddProps
 
+### version 5.22.9
+*Released*: 14 November 2024
+- Editable Grid: apply lookupValueFilters when pasting
+
 ### version 5.22.8
 *Released*: 13 November 2024
 - Merge from release24.11-SNAPSHOT to develop
