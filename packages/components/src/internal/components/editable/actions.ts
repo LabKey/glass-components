@@ -436,23 +436,39 @@ export async function addRows(
  * @param queryInfo
  * @param originalData
  * @param queryColumns the ordered map of columns to be added
- * @param fieldKey the fieldKey of the existing column after which the new columns should be inserted.  If undefined
+ * @param insertFieldKey the fieldKey of the existing column after which the new columns should be inserted.  If undefined
  * or the column is not found, columns will be added at the beginning.
  */
 export function addColumns(
     editorModel: EditorModel,
     queryColumns: ExtendedMap<string, QueryColumn>,
-    fieldKey?: string
+    insertFieldKey?: string
 ): Partial<EditorModel> {
     if (queryColumns.size === 0) return {};
 
-    // if fieldKey is provided, find that index and we will insert after it (or at the beginning if there is no such field)
-    const leftColIndex = fieldKey
-        ? editorModel.orderedColumns.findIndex(column => Utils.caseInsensitiveEquals(column, fieldKey))
+    // if insertFieldKey is provided, find that index and we will insert after it (or at the beginning if there is no such field)
+    let leftColIndex = insertFieldKey
+        ? editorModel.orderedColumns.findIndex(column => Utils.caseInsensitiveEquals(column, insertFieldKey))
         : -1;
 
+    let altInsertFieldKey = null; // if there are readOnly fields that comes after insertFieldKey, use the last readOnly field
+    if (leftColIndex > -1 && leftColIndex < editorModel.orderedColumns.size - 1) {
+        let readOnlyEnded = false;
+        editorModel.orderedColumns.forEach((fieldKey, ind) => {
+            if (ind <= leftColIndex || readOnlyEnded)
+                return;
+            if (!editorModel.columnMap.get(fieldKey).readOnly)
+                readOnlyEnded = true;
+            else
+                altInsertFieldKey = fieldKey;
+        });
+
+        if (altInsertFieldKey)
+            leftColIndex = editorModel.orderedColumns.findIndex(column => Utils.caseInsensitiveEquals(column, altInsertFieldKey));
+    }
+
     const editorModelIndex = leftColIndex + 1;
-    const queryColIndex = editorModel.queryInfo.getColumnIndex(fieldKey) + 1;
+    const queryColIndex = editorModel.queryInfo.getColumnIndex(altInsertFieldKey ?? insertFieldKey) + 1;
 
     let newCellValues = editorModel.cellValues;
 
