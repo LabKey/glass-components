@@ -14,6 +14,7 @@ import { ComponentsAPIWrapper, getDefaultAPIWrapper } from '../../APIWrapper';
 import { ModuleContext } from '../base/ServerContext';
 
 import { AssayStateModel } from './models';
+import { GetAssayDefinitionsOptions } from './actions';
 
 interface AssayContextModel {
     assayDefinition: AssayDefinitionModel;
@@ -99,7 +100,7 @@ export function withAssayModels<Props>(
         };
 
         loadDefinitions = async (): Promise<void> => {
-            const { assayContainerPath, excludedAssayDesigns } = this.props;
+            const { assayContainerPath, assayName, excludedAssayDesigns } = this.props;
             const { model } = this.state;
 
             if (model.definitionsLoadingState === LoadingState.LOADED) {
@@ -109,7 +110,14 @@ export function withAssayModels<Props>(
             await this.updateModel({ definitionsError: undefined, definitionsLoadingState: LoadingState.LOADING });
 
             try {
-                let definitions = await this.api.assay.getAssayDefinitions({ containerPath: assayContainerPath });
+                const params: GetAssayDefinitionsOptions = { containerPath: assayContainerPath };
+
+                // If an "assayName" prop is specified, then filter for only the related assay definition
+                if (assayName) {
+                    params.name = assayName;
+                }
+
+                let definitions = await this.api.assay.getAssayDefinitions(params);
 
                 if (excludedAssayDesigns?.length > 0) {
                     definitions = definitions.filter(def => excludedAssayDesigns.indexOf(def.id) === -1);
