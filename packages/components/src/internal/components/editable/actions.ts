@@ -452,7 +452,7 @@ export function addColumns(
         : -1;
 
     let altInsertFieldKey = null; // if there are readOnly fields that comes after insertFieldKey, use the last readOnly field
-    if (leftColIndex > -1 && leftColIndex < editorModel.orderedColumns.size - 1) {
+    if (insertFieldKey && leftColIndex < editorModel.orderedColumns.size - 1) {
         let readOnlyEnded = false;
         editorModel.orderedColumns.forEach((fieldKey, ind) => {
             if (ind <= leftColIndex || readOnlyEnded)
