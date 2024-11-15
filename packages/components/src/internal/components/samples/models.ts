@@ -39,14 +39,6 @@ export const INDEPENDENT_SAMPLE_CREATION: SampleCreationTypeModel = {
     quantityLabel: 'New Samples',
 };
 
-export const CHILD_SAMPLE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.FromSources,
-    description: 'Create samples from each selected source.',
-    minParentsPerSample: 1,
-    iconSrc: 'derivatives',
-    quantityLabel: 'New Samples Per Source',
-};
-
 export const DERIVATIVE_CREATION: SampleCreationTypeModel = {
     type: SampleCreationType.Derivatives,
     description: 'Create samples of different types from each selected sample.',
