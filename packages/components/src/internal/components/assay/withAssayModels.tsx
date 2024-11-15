@@ -31,7 +31,7 @@ export interface WithAssayModelProps {
 
 export interface InjectedAssayModel extends AssayContextModel {
     assayModel: AssayStateModel;
-    reloadAssays: () => void;
+    reloadAssays: (clearCaches?: boolean) => Promise<void>;
 }
 
 interface State {
@@ -79,7 +79,8 @@ export function withAssayModels<Props>(
         componentDidUpdate = (prevProps: WrappedProps): void => {
             const { assayContainerPath, assayName } = this.props;
             if (assayName !== prevProps.assayName || assayContainerPath !== prevProps.assayContainerPath) {
-                this.load();
+                // When reloading from prop changes do not clear caches
+                this.reload(false);
             }
         };
 
@@ -182,8 +183,10 @@ export function withAssayModels<Props>(
             }
         };
 
-        reload = async (): Promise<void> => {
-            this.api.assay.clearAssayDefinitionCache();
+        reload = async (clearCaches = true): Promise<void> => {
+            if (clearCaches) {
+                this.api.assay.clearAssayDefinitionCache();
+            }
 
             await this.update({
                 context: { assayDefinition: undefined, assayProtocol: undefined },
