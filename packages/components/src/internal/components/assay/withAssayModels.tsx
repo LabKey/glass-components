@@ -14,6 +14,7 @@ import { ComponentsAPIWrapper, getDefaultAPIWrapper } from '../../APIWrapper';
 import { ModuleContext } from '../base/ServerContext';
 
 import { AssayStateModel } from './models';
+import { GetAssayDefinitionsOptions } from './actions';
 
 interface AssayContextModel {
     assayDefinition: AssayDefinitionModel;
@@ -30,7 +31,7 @@ export interface WithAssayModelProps {
 
 export interface InjectedAssayModel extends AssayContextModel {
     assayModel: AssayStateModel;
-    reloadAssays: () => void;
+    reloadAssays: (clearCaches?: boolean) => Promise<void>;
 }
 
 interface State {
@@ -57,8 +58,6 @@ export function withAssayModels<Props>(
     type WrappedProps = Props & WithAssayModelProps;
 
     class ComponentWithAssays extends PureComponent<WrappedProps, State> {
-        static defaultProps;
-
         state: Readonly<State> = produce<State>({} as State, () => ({
             context: { assayDefinition: undefined, assayProtocol: undefined },
             model: new AssayStateModel(),
@@ -78,7 +77,8 @@ export function withAssayModels<Props>(
         componentDidUpdate = (prevProps: WrappedProps): void => {
             const { assayContainerPath, assayName } = this.props;
             if (assayName !== prevProps.assayName || assayContainerPath !== prevProps.assayContainerPath) {
-                this.load();
+                // When reloading from prop changes do not clear caches
+                this.reload(false);
             }
         };
 
@@ -99,7 +99,7 @@ export function withAssayModels<Props>(
         };
 
         loadDefinitions = async (): Promise<void> => {
-            const { assayContainerPath, excludedAssayDesigns } = this.props;
+            const { assayContainerPath, assayName, excludedAssayDesigns } = this.props;
             const { model } = this.state;
 
             if (model.definitionsLoadingState === LoadingState.LOADED) {
@@ -109,16 +109,20 @@ export function withAssayModels<Props>(
             await this.updateModel({ definitionsError: undefined, definitionsLoadingState: LoadingState.LOADING });
 
             try {
-                let definitions = await this.api.assay.getAssayDefinitions({ containerPath: assayContainerPath });
+                const params: GetAssayDefinitionsOptions = { containerPath: assayContainerPath };
+
+                // If an "assayName" prop is specified, then filter for only the related assay definition
+                if (assayName) {
+                    params.name = assayName;
+                }
+
+                let definitions = await this.api.assay.getAssayDefinitions(params);
 
                 if (excludedAssayDesigns?.length > 0) {
                     definitions = definitions.filter(def => excludedAssayDesigns.indexOf(def.id) === -1);
                 }
 
-                await this.updateModel({
-                    definitions,
-                    definitionsLoadingState: LoadingState.LOADED,
-                });
+                await this.updateModel({ definitions, definitionsLoadingState: LoadingState.LOADED });
             } catch (definitionsError) {
                 await this.updateModel({
                     definitions: [],
@@ -174,8 +178,10 @@ export function withAssayModels<Props>(
             }
         };
 
-        reload = async (): Promise<void> => {
-            this.api.assay.clearAssayDefinitionCache();
+        reload = async (clearCaches = true): Promise<void> => {
+            if (clearCaches) {
+                this.api.assay.clearAssayDefinitionCache();
+            }
 
             await this.update({
                 context: { assayDefinition: undefined, assayProtocol: undefined },
@@ -237,7 +243,6 @@ export function withAssayModels<Props>(
  * specific assay protocol.
  * @param ComponentToWrap The component definition (e.g. class, function) to wrap.
  * This will have [[InjectedAssayModel]] props injected into it when instantiated.
- * @param defaultProps Provide alternative "defaultProps" for this wrapped component.
  */
 // TODO: this component seems kind of unnecessary, it seems like every consumer should be able to just use the RR6
 //  useParams hook directly, it's not particularly complicated.
