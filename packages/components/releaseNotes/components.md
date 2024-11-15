@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.22.10
+*Released*: 15 November 2024
+- withAssayModels: filter by "assayName" prop when provided
+
 ### version 5.22.9
 *Released*: 14 November 2024
 - Editable Grid: apply lookupValueFilters when pasting
