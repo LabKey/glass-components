@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { mount } from 'enzyme';
+import { render, waitFor } from '@testing-library/react';
 
 import { TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT } from '../../productFixtures';
 import { AssayDefinitionModel } from '../../AssayDefinitionModel';
@@ -9,13 +9,11 @@ import { AssayProtocolModel } from '../domainproperties/assay/models';
 
 import { ComponentsAPIWrapper, getTestAPIWrapper } from '../../APIWrapper';
 
-import { waitForLifecycle } from '../../test/enzymeTestHelpers';
-
 import { AssayStateModel } from './models';
 import { InjectedAssayModel, withAssayModels, withAssayModelsFromLocation } from './withAssayModels';
 import { AssayAPIWrapper } from './APIWrapper';
 
-const WithAssayModelsComponentImpl: FC<InjectedAssayModel> = () => <div />;
+const WithAssayModelsComponentImpl: FC<InjectedAssayModel> = () => <div id="with-assay-models" />;
 
 const WithAssayModelsComponent = withAssayModels(WithAssayModelsComponentImpl);
 
@@ -30,19 +28,20 @@ function createAPIWrapper(overrides: Partial<AssayAPIWrapper> = {}): ComponentsA
 }
 
 describe('withAssayModels', () => {
-    test('load definitions', () => {
+    test('load definitions', async () => {
         // Arrange
         const api = createAPIWrapper();
 
         // Act
-        const wrapper = mount(
-            <WithAssayModelsComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />
-        );
+        render(<WithAssayModelsComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />);
+
+        await waitFor(() => {
+            expect(document.getElementById('with-assay-models')).toBeDefined();
+        });
 
         // Assert
         expect(api.assay.getAssayDefinitions).toHaveBeenCalledTimes(1);
         expect(api.assay.getProtocol).not.toHaveBeenCalled();
-        wrapper.unmount();
     });
     test('load definition failure', async () => {
         // Arrange
@@ -58,15 +57,14 @@ describe('withAssayModels', () => {
         });
 
         // Act
-        const wrapper = mount(<WrappedTestComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />);
+        render(<WrappedTestComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />);
 
-        // Load definitions
-        await waitForLifecycle(wrapper);
+        await waitFor(() => {
+            expect(injectedAssayModel.definitionsLoadingState).toEqual(LoadingState.LOADED);
+        });
 
         // Assert
         expect(injectedAssayModel.definitionsError).toEqual(expectedError);
-        expect(injectedAssayModel.definitionsLoadingState).toEqual(LoadingState.LOADED);
-        wrapper.unmount();
     });
     test('load protocol', async () => {
         // Arrange
@@ -81,7 +79,7 @@ describe('withAssayModels', () => {
         });
 
         // Act
-        const wrapper = mount(
+        render(
             <WithAssayModelsComponent
                 api={api}
                 assayContainerPath={expectedAssayContainerPath}
@@ -90,15 +88,15 @@ describe('withAssayModels', () => {
             />
         );
 
-        // Load definitions
-        await waitForLifecycle(wrapper);
+        await waitFor(() => {
+            expect(api.assay.getProtocol).toHaveBeenCalled();
+        });
 
         // Assert
         expect(api.assay.getProtocol).toHaveBeenCalledWith({
             containerPath: expectedAssayContainerPath,
             protocolId: expectedAssayId,
         });
-        wrapper.unmount();
     });
     test('load protocol does not exist', async () => {
         // Arrange
@@ -112,7 +110,7 @@ describe('withAssayModels', () => {
         });
 
         // Act
-        const wrapper = mount(
+        render(
             <WrappedTestComponent
                 api={api}
                 assayName={nonExistentAssayName}
@@ -120,8 +118,9 @@ describe('withAssayModels', () => {
             />
         );
 
-        // Load definitions
-        await waitForLifecycle(wrapper);
+        await waitFor(() => {
+            expect(injectedAssayModel.protocolLoadingState).toEqual(LoadingState.LOADED);
+        });
 
         // Assert
         // Should not attempt to load the protocol if it is not found in the definitions
@@ -131,10 +130,6 @@ describe('withAssayModels', () => {
         expect(injectedAssayModel.protocolError).toEqual(
             `Load protocol failed. Unable to resolve assay definition for assay name "${nonExistentAssayName}".`
         );
-
-        // Sets loading state
-        expect(injectedAssayModel.protocolLoadingState).toEqual(LoadingState.LOADED);
-        wrapper.unmount();
     });
     test('load protocol failure', async () => {
         // Arrange
@@ -154,7 +149,7 @@ describe('withAssayModels', () => {
         });
 
         // Act
-        const wrapper = mount(
+        render(
             <WrappedTestComponent
                 api={api}
                 assayName={assayName}
@@ -162,49 +157,56 @@ describe('withAssayModels', () => {
             />
         );
 
-        // Load definitions + protocols
-        await waitForLifecycle(wrapper);
+        await waitFor(() => {
+            expect(injectedAssayModel.protocolLoadingState).toEqual(LoadingState.LOADED);
+        });
 
         // Assert
         expect(injectedAssayModel.protocolError).toEqual(expectedError);
-        expect(injectedAssayModel.protocolLoadingState).toEqual(LoadingState.LOADED);
-        wrapper.unmount();
     });
     test('reload assays', async () => {
         // Arrange
         const api = createAPIWrapper();
-        let injectedReloadAssays: () => void;
+        let injectedReloadAssays: () => Promise<void>;
+        let injectedAssayModel: AssayStateModel;
 
-        const WrappedTestComponent = withAssayModels(({ reloadAssays }): ReactElement => {
+        const WrappedTestComponent = withAssayModels(({ assayModel, reloadAssays }): ReactElement => {
+            injectedAssayModel = assayModel;
             injectedReloadAssays = reloadAssays;
             return <div />;
         });
 
         // Act
-        const wrapper = mount(<WrappedTestComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />);
+        render(<WrappedTestComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />);
 
         // Load definitions
-        await waitForLifecycle(wrapper);
+        await waitFor(() => {
+            expect(injectedAssayModel.definitionsLoadingState).toEqual(LoadingState.LOADED);
+        });
         expect(api.assay.getAssayDefinitions).toHaveBeenCalledTimes(1);
         expect(injectedReloadAssays).toBeDefined();
 
         // Trigger a reload of the injected reload action
-        injectedReloadAssays();
+        await waitFor(() => {
+            injectedReloadAssays();
+        });
 
         // (Re)load definitions
-        await waitForLifecycle(wrapper);
+        await waitFor(() => {
+            expect(injectedAssayModel.definitionsLoadingState).toEqual(LoadingState.LOADED);
+        });
 
         // Assert
         expect(api.assay.clearAssayDefinitionCache).toHaveBeenCalledTimes(1);
         expect(api.assay.getAssayDefinitions).toHaveBeenCalledTimes(2);
-        wrapper.unmount();
     });
 });
 
 describe('withAssayModelsFromLocation', () => {
     test('sets "assayName" from location', async () => {
         const expectedAssayName = 'SomeAssay';
-        const rrd = require('react-router-dom') as any;
+        // @ts-ignore
+        const rrd = require('react-router-dom');
         rrd.__setParams({ protocol: expectedAssayName });
         // Arrange
         const expectedAssayDefinition = AssayDefinitionModel.create({ id: 123, name: expectedAssayName });
@@ -228,15 +230,15 @@ describe('withAssayModelsFromLocation', () => {
         );
 
         // Act
-        const wrapper = mount(<WrappedTestComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />);
+        render(<WrappedTestComponent api={api} moduleContext={TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT} />);
 
-        // Load definitions
-        await waitForLifecycle(wrapper);
+        // Load protocol
+        await waitFor(() => {
+            expect(injectedAssayModel.protocolLoadingState).toEqual(LoadingState.LOADED);
+        });
 
         // Assert
-        expect(injectedAssayModel.protocolLoadingState).toEqual(LoadingState.LOADED);
         expect(injectedAssayDefinition).toEqual(expectedAssayDefinition);
         expect(injectedAssayProtocol).toEqual(expectedAssayProtocol);
-        wrapper.unmount();
     });
 });

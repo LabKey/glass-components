@@ -58,8 +58,6 @@ export function withAssayModels<Props>(
     type WrappedProps = Props & WithAssayModelProps;
 
     class ComponentWithAssays extends PureComponent<WrappedProps, State> {
-        static defaultProps;
-
         state: Readonly<State> = produce<State>({} as State, () => ({
             context: { assayDefinition: undefined, assayProtocol: undefined },
             model: new AssayStateModel(),
@@ -124,10 +122,7 @@ export function withAssayModels<Props>(
                     definitions = definitions.filter(def => excludedAssayDesigns.indexOf(def.id) === -1);
                 }
 
-                await this.updateModel({
-                    definitions,
-                    definitionsLoadingState: LoadingState.LOADED,
-                });
+                await this.updateModel({ definitions, definitionsLoadingState: LoadingState.LOADED });
             } catch (definitionsError) {
                 await this.updateModel({
                     definitions: [],
@@ -248,7 +243,6 @@ export function withAssayModels<Props>(
  * specific assay protocol.
  * @param ComponentToWrap The component definition (e.g. class, function) to wrap.
  * This will have [[InjectedAssayModel]] props injected into it when instantiated.
- * @param defaultProps Provide alternative "defaultProps" for this wrapped component.
  */
 // TODO: this component seems kind of unnecessary, it seems like every consumer should be able to just use the RR6
 //  useParams hook directly, it's not particularly complicated.
