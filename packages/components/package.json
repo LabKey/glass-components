@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "5.22.10-entityCreateTypeChoice.7",
+  "version": "5.22.11-entityCreateTypeChoice.7",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [

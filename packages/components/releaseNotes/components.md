@@ -8,6 +8,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Add constants and properties to allow use of a single `SampleGridButtons` component in `ui-premium`
 - `SampleCreationType` -> `EntityCreationType`
 
+### version 5.22.10
+*Released*: 15 November 2024
+- withAssayModels: filter by "assayName" prop when provided
+
 ### version 5.22.9
 *Released*: 14 November 2024
 - Editable Grid: apply lookupValueFilters when pasting
