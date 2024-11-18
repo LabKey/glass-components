@@ -220,6 +220,7 @@ export class EntityIdCreationModel extends Record({
     entityDataType: undefined,
     creationType: undefined,
     numPerParent: 1,
+    identifyingFields: Array<QueryColumn>(),
 }) {
     declare errors: any[];
     declare initialEntityType: any;
@@ -236,6 +237,7 @@ export class EntityIdCreationModel extends Record({
     declare entityDataType: EntityDataType; // target entity data type
     declare creationType: EntityCreationType;
     declare numPerParent: number;
+    declare identifyingFields: QueryColumn[];
 
     static revertParentInputSchema(inputColumn: QueryColumn): SchemaQuery {
         if (inputColumn.isExpInput()) {
@@ -286,6 +288,14 @@ export class EntityIdCreationModel extends Record({
                     columns = columns.set(column.name.toLowerCase(), column);
                 }
             });
+        });
+        return columns;
+    }
+
+    getIdentifyingFields(): ExtendedMap<string, QueryColumn> {
+        let columns = new ExtendedMap<string, QueryColumn>();
+        this.identifyingFields.forEach(col => {
+            columns = columns.set(col.name.toLowerCase(), col);
         });
         return columns;
     }
