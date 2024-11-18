@@ -1,11 +1,10 @@
-import { Ajax, Utils } from '@labkey/api';
+import { ActionURL, Ajax, Utils } from '@labkey/api';
 
 import { RELEVANT_SEARCH_RESULT_TYPES } from '../../constants';
 
 import { getPrimaryAppProperties, getProjectPath, isAllProductFoldersFilteringEnabled } from '../../app/utils';
 
 import { incrementClientSideMetricCount } from '../../actions';
-import { buildURL } from '../../url/AppURL';
 import { URLResolver } from '../../url/URLResolver';
 import { handleRequestFailure } from '../../util/utils';
 
@@ -13,7 +12,7 @@ import { getContainerFilter } from '../../query/api';
 
 import { ModuleContext } from '../base/ServerContext';
 
-import { getSearchScopeFromContainerFilter } from './utils';
+import { getSearchScopeFromContainerFilter, escapeSearchQuery } from './utils';
 import { GetCardDataFn, SearchIdData, SearchResultCardData } from './models';
 import { SearchCategory, SearchField, SearchScope } from './constants';
 
@@ -47,6 +46,8 @@ export interface SearchResult {
 export interface SearchOptions {
     category?: SearchCategory | SearchCategory[];
     containerPath?: string;
+    escapeQuery?: boolean;
+    escapeQuotes?: boolean;
     experimentalCustomJson?: boolean;
     fields?: SearchField[];
     limit?: number;
@@ -66,7 +67,7 @@ export type Search = (
 
 export const search: Search = (options, moduleContext, applyURLResolver = true, request = Ajax.request) => {
     // eslint-disable-next-line prefer-const
-    let { containerPath, requestHandler, ...params } = options;
+    let { containerPath, escapeQuery = false, escapeQuotes, requestHandler, ...params } = options;
 
     let containerPath_: string;
     if (isAllProductFoldersFilteringEnabled(moduleContext)) {
@@ -90,15 +91,17 @@ export const search: Search = (options, moduleContext, applyURLResolver = true, 
         params.scope = getSearchScopeFromContainerFilter(getContainerFilter(containerPath_));
     }
 
+    if (escapeQuery) {
+        params.q = escapeSearchQuery(params.q, escapeQuotes);
+    }
+
     if (Array.isArray(params.category)) {
         (params as any).category = params.category.join('+');
     }
 
     return new Promise((resolve, reject) => {
         const request_ = request({
-            url: buildURL('search', 'json.api', undefined, {
-                container: containerPath_,
-            }),
+            url: ActionURL.buildURL('search', 'json.api', containerPath_),
             method: 'POST',
             params,
             success: Utils.getCallbackWrapper(json => {

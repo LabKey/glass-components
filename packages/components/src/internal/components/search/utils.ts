@@ -667,3 +667,31 @@ export const decodeErrorMessage = (msg: string): string => {
     if (decodedMsg.charAt(decodedMsg.length - 1) != '.') decodedMsg += '.';
     return decodedMsg;
 };
+
+// Double quotes (") can be used as part of the Lucene syntax to specify exact matches. For usages
+// that don't allow more than one word or any Lucene operators, use escapeQuotes=true, in order
+// to treat the quote character as a special character to be found during searching. Note that
+// the current implementation does not try to match quote pairs to determine which could be escaped and which not.
+export function escapeSearchQuery(q: string, escapeQuotes = false): string {
+    if (q) {
+        const hasQuotes = q.indexOf('"') > -1;
+
+        // Escape special lucene characters: + - && || ! ( ) { } [ ] ^ " ~ * ? : \
+        // https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping%20Special%20Characters
+        q = q
+            .replace(/(?<specialChar>[\+\-!\(\){}\[\]^~*?:\\])/gi, '\\$<specialChar>')
+            .replace('&&', '\\&&')
+            .replace('||', '\\||');
+        if (escapeQuotes) {
+            q = q.replace('"', '\\"');
+        }
+
+        // Append an additional wildcard search clause to include prefix matching
+        // Example: "M-" will result in a query of "M\- OR M\-*"
+        if (!hasQuotes || escapeQuotes) {
+            q = [q, `${q.trim()}*`].join(' OR ');
+        }
+    }
+
+    return q;
+}

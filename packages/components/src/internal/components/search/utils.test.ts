@@ -27,6 +27,7 @@ import {
     getUpdatedFilterSelection,
     getUpdateFilterExpressionFilter,
     isValidFilterField,
+    escapeSearchQuery,
 } from './utils';
 import { SearchCategory } from './constants';
 import { FieldFilter } from './models';
@@ -1437,5 +1438,28 @@ describe('decodeErrorMessage', () => {
         expect(decodeErrorMessage('Can&#039;t do &quot;this&quot; or &lt;that&gt;')).toBe(
             'Can\'t do "this" or <that>.'
         );
+    });
+});
+
+describe('escapeSearchQuery', () => {
+    test('empty values', () => {
+        expect(escapeSearchQuery(undefined)).toBeUndefined();
+        expect(null).toBeNull();
+        expect(escapeSearchQuery('')).toEqual('');
+    });
+    test('escapes special characters', () => {
+        // eslint-disable-next-line
+        const luceneCharacters = ['+', '-', '&&', '||', '!', '(', ')', '[', ']', '{', '}', '^', '"', '~', '*', '?', ':', '\\'];
+        luceneCharacters.forEach(char => {
+            expect(escapeSearchQuery(char, true)).toEqual(`\\${char} OR \\${char}*`);
+        });
+    });
+    test('handles UTF-8 characters', () => {
+        expect(escapeSearchQuery('(I am a little 🫖)')).toEqual('\\(I am a little 🫖\\) OR \\(I am a little 🫖\\)*');
+        expect(escapeSearchQuery('野球が大好きです')).toEqual('野球が大好きです OR 野球が大好きです*');
+    });
+    test('handles quotes well', () => {
+        expect(escapeSearchQuery('"Fresh" and "Flowers"', false)).toEqual('"Fresh" and "Flowers"');
+        expect(escapeSearchQuery('Fl"ower', true)).toEqual('Fl\\"ower OR Fl\\"ower*');
     });
 });
