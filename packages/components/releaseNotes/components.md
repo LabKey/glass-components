@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Chart builder support for Trendline option in line chart
+  - add Trendline option to ChartBuilderModal and support trendlineType in chartConfig
+
 ### version 5.23.0
 *Released*: 18 November 2024
 - Include identifying fields in editable entity grids - sample create/derive/aliquot
