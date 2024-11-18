@@ -152,20 +152,18 @@ export const DataTypeSelectorList: FC<DataTypeSelectorListProps> = memo(props =>
                 return (
                     <div className={`col-xs-12 col-md-${colWidth}`} key={ind}>
                         <ul className="nav nav-stacked labkey-wizard-pills">
-                            {subList?.map((type, index) => {
-                                return (
-                                    <DataTypeSelectorItem
-                                        key={type.rowId}
-                                        index={index}
-                                        dataType={type}
-                                        disabled={disabled}
-                                        getUncheckedEntityWarning={getUncheckedEntityWarning}
-                                        uncheckedEntities={uncheckedEntities}
-                                        onChange={onChange}
-                                        showUncheckedWarning={showUncheckedWarning}
-                                    />
-                                );
-                            })}
+                            {subList?.map((type, index) => (
+                                <DataTypeSelectorItem
+                                    index={index}
+                                    dataType={type}
+                                    disabled={disabled}
+                                    getUncheckedEntityWarning={getUncheckedEntityWarning}
+                                    key={type.lsid}
+                                    uncheckedEntities={uncheckedEntities}
+                                    onChange={onChange}
+                                    showUncheckedWarning={showUncheckedWarning}
+                                />
+                            ))}
                         </ul>
                     </div>
                 );
