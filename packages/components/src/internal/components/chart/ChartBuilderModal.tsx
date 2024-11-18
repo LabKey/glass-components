@@ -82,6 +82,17 @@ const ICONS = {
     line_plot: 'xy_line',
 };
 
+const TRENDLINE_OPTIONS = [
+    { label: 'Point-to-Point', value: '' },
+    { label: 'Linear Regression', value: 'Linear' },
+    { label: 'Polynomial', value: 'Polynomial' },
+    { label: 'Nonlinear 3PL', value: '3 Parameter' },
+    { label: 'Nonlinear 4PL', value: '4 Parameter' },
+    { label: 'Three Parameter', value: 'Three Parameter' },
+    { label: 'Four Parameter', value: 'Four Parameter' },
+    { label: 'Five Parameter', value: 'Five Parameter' },
+];
+
 export const getChartRenderMsg = (chartConfig: ChartConfig, rowCount: number, isPreview: boolean): string => {
     const msg = [];
     if (isPreview && rowCount === MAX_ROWS_PREVIEW) {
@@ -195,6 +206,9 @@ export const getChartBuilderChartConfig = (
             position: chartType.name === 'box_plot' ? 'jitter' : null,
             showOutliers: true,
             showPiePercentages: true,
+            trendlineType: undefined,
+            trendlineAsypmtoteMin: undefined,
+            trendlineAsypmtoteMax: undefined,
             ...savedConfig?.geomOptions,
         },
     } as ChartConfig;
@@ -228,6 +242,13 @@ export const getChartBuilderChartConfig = (
             }
         }
     });
+
+    if (chartType.name === 'line_plot' && fieldValues.trendlineType) {
+        const type = fieldValues.trendlineType?.value ?? '';
+        config.geomOptions.trendlineType = type === '' ? undefined : type;
+        config.geomOptions.trendlineAsypmtoteMin = fieldValues.trendlineAsypmtoteMin;
+        config.geomOptions.trendlineAsypmtoteMax = fieldValues.trendlineAsypmtoteMax;
+    }
 
     if (
         chartType.name === 'bar_chart' &&
@@ -405,6 +426,24 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                         options={BAR_CHART_AGGREGATE_METHODS}
                                         onChange={onSelectFieldChange}
                                         value={fieldValues[BAR_CHART_AGGREGATE_NAME]?.value ?? 'SUM'}
+                                    />
+                                </div>
+                            )}
+                            {selectedType.name === 'line_plot' && (
+                                <div>
+                                    <label>
+                                        Trendline{' '}
+                                        <LabelOverlay placement="bottom">TODO ...</LabelOverlay>
+                                    </label>
+                                    <SelectInput
+                                        showLabel={false}
+                                        clearable={false}
+                                        inputClass="col-xs-12"
+                                        placeholder="Select trendline option"
+                                        name="trendlineType"
+                                        options={TRENDLINE_OPTIONS}
+                                        onChange={onSelectFieldChange}
+                                        value={fieldValues.trendlineType?.value ?? ''}
                                     />
                                 </div>
                             )}
@@ -668,6 +707,12 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                 // special case for the bar chart aggregate method
                 if (measures.y?.aggregate) {
                     fieldValues_[BAR_CHART_AGGREGATE_NAME] = { ...measures.y.aggregate };
+                }
+
+                // special case for trendline options
+                const geomOptions = savedChartModel.visualizationConfig?.chartConfig?.geomOptions;
+                if (geomOptions?.trendlineType) {
+                    fieldValues_['trendlineType'] = { value: geomOptions.trendlineType };
                 }
 
                 setFieldValues(fieldValues_);
