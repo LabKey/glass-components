@@ -286,6 +286,10 @@ export interface BulkUpdateQueryInfoFormProps extends QueryInfoFormProps {
     warning?: string;
 }
 
+export interface BulkAddQueryInfoFormProps extends QueryInfoFormProps {
+    readOnlyGridFields?: string[];
+}
+
 export interface SharedEditableGridProps {
     activeEditTab?: EditableGridTabs;
     addControlProps?: Partial<AddRowsControlProps>;
@@ -294,7 +298,7 @@ export interface SharedEditableGridProps {
     allowBulkRemove?: boolean;
     allowBulkUpdate?: boolean;
     allowSelection?: boolean;
-    bulkAddProps?: Partial<QueryInfoFormProps>;
+    bulkAddProps?: Partial<BulkAddQueryInfoFormProps>;
     bulkAddText?: string;
     bulkRemoveText?: string;
     bulkUpdateProps?: Partial<BulkUpdateQueryInfoFormProps>;
@@ -330,7 +334,11 @@ export interface EditableGridBtnProps {
     show?: boolean;
 }
 
-export type EditableGridChange = (event: EditableGridEvent, editorModelChanges: Partial<EditorModelProps>) => void;
+export type EditableGridChange = (
+    event: EditableGridEvent,
+    editorModelChanges: Partial<EditorModelProps>,
+    previousEditorModel?: EditorModel
+) => void;
 
 export interface EditableGridProps extends SharedEditableGridProps {
     editorModel: EditorModel;
@@ -785,7 +793,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
             }
         }
 
-        if (changesMade) onChange(EditableGridEvent.MODIFY_CELL, changes);
+        if (changesMade) onChange(EditableGridEvent.MODIFY_CELL, changes, editorModel);
     };
 
     removeRows = (rowIndicesToDelete: Set<number>): void => {
@@ -1160,7 +1168,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                 forUpdate,
                 containerPath
             );
-            onChange(EditableGridEvent.DRAG_FILL, { cellMessages, cellValues });
+            onChange(EditableGridEvent.DRAG_FILL, { cellMessages, cellValues }, editorModel);
             this.setState({ initialSelection: undefined });
         }
     };
@@ -1206,7 +1214,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
         );
         this.hideMask();
 
-        onChange(EditableGridEvent.FILL_TEXT, changes);
+        onChange(EditableGridEvent.FILL_TEXT, changes, editorModel);
     };
 
     onPaste = async (event: ClipboardEvent): Promise<void> => {
@@ -1220,7 +1228,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
 
         if (changes === undefined) return;
 
-        onChange(EditableGridEvent.PASTE, changes);
+        onChange(EditableGridEvent.PASTE, changes, editorModel);
     };
 
     showMask = (): void => {
@@ -1281,10 +1289,13 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
 
     restoreBulkInsertData = (data: Map<string, any>): Map<string, any> => {
         const insertData = OrderedMap<string, any>().asMutable();
-        this.props.editorModel.queryInfo
-            .getInsertColumns(this.props.bulkAddProps.isIncludedColumn)
-            .forEach(col => insertData.set(col.name, undefined));
+        this.getBulkToGridColumns().forEach(col => insertData.set(col.name, undefined));
         return insertData.merge(data).asImmutable();
+    };
+
+    getBulkToGridColumns = (): QueryColumn[] => {
+        const { bulkAddProps, editorModel } = this.props;
+        return editorModel.queryInfo.getInsertColumns(bulkAddProps.isIncludedColumn, bulkAddProps.readOnlyGridFields);
     };
 
     bulkAdd = async (bulkData: OrderedMap<string, any>): Promise<void> => {
@@ -1323,7 +1334,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
         if (bulkAddProps.columnFilter) {
             bulkData = this.restoreBulkInsertData(bulkData);
         }
-
+        const gridColumns = this.getBulkToGridColumns();
         if (pivotKey && pivotValues?.length > 0) {
             const changes = await addRowsPerPivotValue(
                 editorModel,
@@ -1331,12 +1342,13 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                 pivotKey,
                 pivotValues,
                 bulkData,
-                containerPath
+                containerPath,
+                gridColumns
             );
-            onChange(EditableGridEvent.BULK_ADD, changes);
+            onChange(EditableGridEvent.BULK_ADD, changes, editorModel);
         } else {
-            const changes = await addRows(editorModel, numItems, bulkData, containerPath);
-            onChange(EditableGridEvent.BULK_ADD, changes);
+            const changes = await addRows(editorModel, numItems, bulkData, containerPath, gridColumns);
+            onChange(EditableGridEvent.BULK_ADD, changes, editorModel);
         }
 
         if (metricFeatureArea) {
@@ -1360,7 +1372,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
             bulkUpdateProps?.isIncludedColumn,
             containerPath
         );
-        onChange(EditableGridEvent.BULK_UPDATE, editorModelChanges);
+        onChange(EditableGridEvent.BULK_UPDATE, editorModelChanges, editorModel);
 
         if (metricFeatureArea) {
             incrementClientSideMetricCount(metricFeatureArea, 'bulkUpdate');

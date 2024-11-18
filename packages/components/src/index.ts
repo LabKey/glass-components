@@ -190,6 +190,7 @@ import {
     changeColumn,
     initEditorModel,
     removeColumn,
+    removeColumns,
     updateGridFromBulkForm,
 } from './internal/components/editable/actions';
 import {
@@ -1134,6 +1135,7 @@ export {
     addColumns,
     changeColumn,
     removeColumn,
+    removeColumns,
     // query related items
     QueryCommandResponse,
     InsertFormats,
