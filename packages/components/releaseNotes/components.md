@@ -1,13 +1,17 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.X
-*Released*: X November 2024
+### version 5.23.0
+*Released*: 18 November 2024
 - Include identifying fields in editable entity grids - sample create/derive/aliquot
   - Modify editable grid addRows, addRowsPerPivotValue and addBulkRowsToEditorModel to take custom insertColumns
   - Support removeColumns for editable grid
   - Add previousEditorModel to EditableGridChange param
   - Add readOnlyGridFields to bulkAddProps
+
+### version 5.22.10
+*Released*: 15 November 2024
+- withAssayModels: filter by "assayName" prop when provided
 
 ### version 5.22.9
 *Released*: 14 November 2024
