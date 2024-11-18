@@ -6,6 +6,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Move `BarChartViewer` and relatives to `ui-premium` package
 - Update `ResponsiveMenuButton` to have `children` property instead of `items`
 - Add constants and properties to allow use of a single `SampleGridButtons` component in `ui-premium`
+- `SampleCreationType` -> `EntityCreationType`
 
 ### version 5.22.9
 *Released*: 14 November 2024

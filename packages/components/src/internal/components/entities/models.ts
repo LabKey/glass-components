@@ -26,8 +26,7 @@ import { SelectInputOption } from '../forms/input/SelectInput';
 import { capitalizeFirstChar, caseInsensitive, generateId } from '../../util/utils';
 import { QueryColumn, QueryLookup } from '../../../public/QueryColumn';
 import { SCHEMAS } from '../../schemas';
-import { SampleCreationType } from '../samples/models';
-import { QueryModel } from '../../../public/QueryModel/QueryModel';
+import { EntityCreationType } from '../samples/models';
 import { EditorModel } from '../editable/models';
 import { QueryCommandResponse } from '../../query/api';
 import { QueryInfo } from '../../../public/QueryInfo';
@@ -235,7 +234,7 @@ export class EntityIdCreationModel extends Record({
     declare targetEntityType: EntityTypeOption; // the target entity Type
     declare entityCount: number; // how many rows are in the grid
     declare entityDataType: EntityDataType; // target entity data type
-    declare creationType: SampleCreationType;
+    declare creationType: EntityCreationType;
     declare numPerParent: number;
 
     static revertParentInputSchema(inputColumn: QueryColumn): SchemaQuery {
@@ -408,7 +407,7 @@ export class EntityIdCreationModel extends Record({
             queryInfo.getInsertColumns().forEach(col => {
                 const colName = col.name;
                 let selected;
-                if (col.isExpInput() && this.creationType !== SampleCreationType.Aliquots) {
+                if (col.isExpInput() && this.creationType !== EntityCreationType.Aliquots) {
                     // Convert parent values into appropriate column names
                     const sq = EntityIdCreationModel.revertParentInputSchema(col);
 
@@ -419,7 +418,7 @@ export class EntityIdCreationModel extends Record({
                             parentList.find(parent => parent.schema === sq.schemaName && parent.query === sq.queryName)
                         );
                     }, undefined);
-                } else if (col.isAliquotParent() && this.creationType === SampleCreationType.Aliquots) {
+                } else if (col.isAliquotParent() && this.creationType === EntityCreationType.Aliquots) {
                     selected = this.entityParents.reduce((found, parentList) => {
                         return found || parentList.find(parent => parent.isAliquotParent);
                     }, undefined);
@@ -431,7 +430,7 @@ export class EntityIdCreationModel extends Record({
                 }
             });
 
-            if (separateParents && this.creationType && this.creationType !== SampleCreationType.PooledSamples) {
+            if (separateParents && this.creationType && this.creationType !== EntityCreationType.PooledSamples) {
                 if (parentCols.length > 0) {
                     parentCols.forEach(parentCol => {
                         const parents: any[] = values.get(parentCol);

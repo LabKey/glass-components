@@ -547,7 +547,7 @@ import {
     DERIVATIVE_CREATION,
     INDEPENDENT_SAMPLE_CREATION,
     POOLED_SAMPLE_CREATION,
-    SampleCreationType,
+    EntityCreationType,
 } from './internal/components/samples/models';
 import { DEFAULT_ALIQUOT_NAMING_PATTERN, SampleTypeModel } from './internal/components/domainproperties/samples/models';
 
@@ -1345,7 +1345,7 @@ export {
     SAMPLE_INSERT_EXTRA_COLUMNS,
     SAMPLE_ALL_PROJECT_LOOKUP_FIELDS,
     IS_ALIQUOT_COL,
-    SampleCreationType,
+    EntityCreationType,
     ALIQUOT_CREATION,
     INDEPENDENT_SAMPLE_CREATION,
     DERIVATIVE_CREATION,
@@ -1908,7 +1908,7 @@ export type {
 export type { ISelectInitData } from './internal/components/forms/model';
 export type { QuerySelectChange, QuerySelectOwnProps } from './internal/components/forms/QuerySelect';
 export type {
-    SampleCreationTypeModel,
+    EntityCreationTypeModel,
     SampleStatus,
     SampleGridButtonProps,
     GroupedSampleFields,

@@ -11,15 +11,15 @@ import { EntityDataType, OperationConfirmationData } from '../entities/models';
 import { SamplesEditButtonSections } from './utils';
 import { ALIQUOT_FILTER_MODE, SampleStateType } from './constants';
 
-export enum SampleCreationType {
+export enum EntityCreationType {
     Aliquots = 'Aliquot',
     Derivatives = 'Derive',
-    FromSources = 'New samples from sources',
+    FromSources = 'From sources',
     Independents = 'New samples',
     PooledSamples = 'Pool',
 }
 
-export interface SampleCreationTypeModel {
+export interface EntityCreationTypeModel {
     description?: string;
     disabled?: boolean;
     disabledDescription?: string;
@@ -28,19 +28,19 @@ export interface SampleCreationTypeModel {
     minParentsPerSample: number;
     quantityLabel?: string;
     selected?: boolean;
-    type: SampleCreationType;
+    type: EntityCreationType;
     typeChoiceLabel?: string;
 }
 
-export const INDEPENDENT_SAMPLE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.Independents,
+export const INDEPENDENT_SAMPLE_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.Independents,
     description: 'Create samples.',
     minParentsPerSample: 0,
     quantityLabel: 'New Samples',
 };
 
-export const DERIVATIVE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.Derivatives,
+export const DERIVATIVE_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.Derivatives,
     description: 'Create samples of different types from each selected sample.',
     disabledDescription: 'Only one parent sample type is allowed when creating derivative samples.',
     minParentsPerSample: 1,
@@ -49,8 +49,8 @@ export const DERIVATIVE_CREATION: SampleCreationTypeModel = {
     typeChoiceLabel: 'Derivative Type',
 };
 
-export const POOLED_SAMPLE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.PooledSamples,
+export const POOLED_SAMPLE_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.PooledSamples,
     description: 'Combine selected samples to create new samples.',
     minParentsPerSample: 2,
     iconSrc: 'pooled',
@@ -58,8 +58,8 @@ export const POOLED_SAMPLE_CREATION: SampleCreationTypeModel = {
     typeChoiceLabel: 'Sample Type',
 };
 
-export const ALIQUOT_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.Aliquots,
+export const ALIQUOT_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.Aliquots,
     description: 'Create copies that inherit data from each parent sample.',
     minParentsPerSample: 1,
     iconSrc: 'aliquots',

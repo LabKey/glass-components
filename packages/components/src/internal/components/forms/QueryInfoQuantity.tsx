@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { SampleCreationType, SampleCreationTypeModel } from '../samples/models';
+import { EntityCreationType, EntityCreationTypeModel } from '../samples/models';
 
 import { addFormsyRule } from './formsy';
 import { FormsyInput } from './input/FormsyReactComponents';
@@ -8,7 +8,7 @@ import { RadioGroupInput } from './input/RadioGroupInput';
 
 interface Props {
     countText: string;
-    creationTypeOptions: SampleCreationTypeModel[];
+    creationTypeOptions: EntityCreationTypeModel[];
     includeCountField: boolean;
     maxCount: number;
     onCountChange?: (count: number) => void;
@@ -16,7 +16,7 @@ interface Props {
 
 interface State {
     count: number;
-    selectedCreationType: SampleCreationType;
+    selectedCreationType: EntityCreationType;
 }
 
 addFormsyRule<string>('isPositiveLt', (_, v, smax) => {
