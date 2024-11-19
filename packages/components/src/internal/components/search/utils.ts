@@ -199,7 +199,7 @@ export function getFieldFiltersValidationResult(
 
     let msg = '';
     if (maxMatchAllErrorField) {
-        msg += `At most 10 values can be selected for 'Equals All Of' filter type for "${maxMatchAllErrorField}". `;
+        msg += `At most 10 values can be selected for 'Equals All Of' filter type for '${maxMatchAllErrorField}'. `;
     }
 
     if (multiValueErrorFields.size > 0) {

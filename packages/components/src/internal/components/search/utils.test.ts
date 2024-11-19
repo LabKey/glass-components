@@ -1416,7 +1416,7 @@ describe('getSearchResultCardData', () => {
 });
 
 describe('decodeErrorMessage', () => {
-    test('emtpy string', () => {
+    test('empty string', () => {
         expect(decodeErrorMessage('')).toBe('');
     });
     test('undefined', () => {
