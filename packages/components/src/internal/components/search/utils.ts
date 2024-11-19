@@ -18,9 +18,10 @@ import { isOntologyEnabled } from '../../app/utils';
 
 import { REGISTRY_KEY } from '../../app/constants';
 
+import { makeCommaSeparatedString } from '../../util/utils';
+
 import { SearchCategory, SearchScope } from './constants';
 import { FieldFilter, FieldFilterOption, FilterSelection, SearchResultCardData } from './models';
-import { makeCommaSeparatedString } from '../../util/utils';
 
 export const SAMPLE_FILTER_METRIC_AREA = 'sampleFinder';
 
@@ -45,11 +46,11 @@ export function getFilterOptionsForType(field: QueryColumn, isAncestor: boolean)
 
     const useConceptFilters = field.isConceptCodeColumn && isOntologyEnabled();
 
-    let filterList = (
-        useConceptFilters ? CONCEPT_COLUMN_FILTER_TYPES : Filter.getFilterTypesForType(jsonType)
-    ).filter(function (result) {
-        return Filter.Types.HAS_ANY_VALUE.getURLSuffix() !== result.getURLSuffix();
-    });
+    let filterList = (useConceptFilters ? CONCEPT_COLUMN_FILTER_TYPES : Filter.getFilterTypesForType(jsonType)).filter(
+        function (result) {
+            return Filter.Types.HAS_ANY_VALUE.getURLSuffix() !== result.getURLSuffix();
+        }
+    );
 
     if (jsonType === 'date') {
         filterList.push(Filter.Types.BETWEEN);
@@ -62,11 +63,11 @@ export function getFilterOptionsForType(field: QueryColumn, isAncestor: boolean)
             filterList = [
                 ...filterList.slice(0, equalsOneOfInd),
                 ANCESTOR_MATCHES_ALL_OF_FILTER_TYPE,
-                ...filterList.slice(equalsOneOfInd)
+                ...filterList.slice(equalsOneOfInd),
             ];
-        }
-        else
+        } else {
             filterList.push(ANCESTOR_MATCHES_ALL_OF_FILTER_TYPE);
+        }
     }
 
     return filterList.map(filter => {
@@ -95,10 +96,7 @@ const MAX_MULTI_VALUE_FILTER_VALUES = 200;
 
 export function getFilterTypePlaceHolder(suffix: string): string {
     if (suffix === 'in' || suffix === 'notin' || suffix === 'containsoneof' || suffix === 'containsnoneof') {
-        return (
-            'Use new line or semicolon to separate entries. ' +
-            ' Max of ' + MAX_MULTI_VALUE_FILTER_VALUES + ' values.'
-        );
+        return `Use new line or semicolon to separate entries.  Max of ${MAX_MULTI_VALUE_FILTER_VALUES} values.`;
     }
 
     return null;
@@ -200,8 +198,9 @@ export function getFieldFiltersValidationResult(
     }
 
     let msg = '';
-    if (maxMatchAllErrorField)
-        msg += "At most 10 values can be selected for 'Equals All Of' filter type for '" + maxMatchAllErrorField + "'. ";
+    if (maxMatchAllErrorField) {
+        msg += `At most 10 values can be selected for 'Equals All Of' filter type for "${maxMatchAllErrorField}". `;
+    }
 
     if (multiValueErrorFields.size > 0) {
         msg +=
