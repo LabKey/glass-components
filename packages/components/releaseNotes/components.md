@@ -1,6 +1,12 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.24.0
+*Released*: 19 November 2024
+- Issue 51645: Escape advanced search characters
+- Migrate `sanitizeSearchQuery()` implementation to this package and rename to `escapeSearchQuery()`.
+- Add `escapeQuery = false` and `escapeQuotes = false` as optional properties on the search API wrapper.
+
 ### version 5.23.0
 *Released*: 18 November 2024
 - Include identifying fields in editable entity grids - sample create/derive/aliquot
