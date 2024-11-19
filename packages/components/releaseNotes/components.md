@@ -7,6 +7,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Update `ResponsiveMenuButton` to have `children` property instead of `items`
 - Add constants and properties to allow use of a single `SampleGridButtons` component in `ui-premium`
 - `SampleCreationType` -> `EntityCreationType`
+- Export `parseScientificInt` utility
 
 ### version 5.23.0
 *Released*: 18 November 2024
