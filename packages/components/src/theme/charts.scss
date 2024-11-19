@@ -229,13 +229,30 @@
     border-left: solid 1px $gray-border-light;
 }
 
-.chart-builder-modal .checkbox-input {
-    padding-top: 15px;
+.chart-builder-modal .checkbox-input,
+.chart-builder-modal .checkbox-footer-input {
     cursor: pointer;
 
     input {
         margin-right: 5px;
     }
+}
+.chart-builder-modal .checkbox-input {
+    padding-top: 15px;
+}
+.chart-builder-modal .checkbox-footer-input {
+    padding-bottom: 15px;
+}
+
+.chart-builder-modal .select-input-with-footer {
+    margin-bottom: 0;
+}
+
+.chart-builder-modal .trendline-asymptote {
+    width: 80px;
+    height: 24px;
+    display: inline;
+    margin: 5px;
 }
 
 .chart-builder-preview-body {

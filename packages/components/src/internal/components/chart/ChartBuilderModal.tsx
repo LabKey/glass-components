@@ -92,6 +92,14 @@ const TRENDLINE_OPTIONS = [
     { label: 'Four Parameter', value: 'Four Parameter' },
     { label: 'Five Parameter', value: 'Five Parameter' },
 ];
+const TRENDLINE_ASYMPTOTE_OPTIONS = {
+    '3 Parameter': { min: false, max: true },
+    'Three Parameter': { min: false, max: true },
+    'Four Parameter': { min: true, max: true },
+    'Five Parameter': { min: true, max: true },
+};
+
+const toggleScaleValue = (value: string): string => (value === 'linear' ? 'log' : 'linear');
 
 export const getChartRenderMsg = (chartConfig: ChartConfig, rowCount: number, isPreview: boolean): string => {
     const msg = [];
@@ -207,25 +215,29 @@ export const getChartBuilderChartConfig = (
             showOutliers: true,
             showPiePercentages: true,
             trendlineType: undefined,
-            trendlineAsypmtoteMin: undefined,
-            trendlineAsypmtoteMax: undefined,
+            trendlineAsymptoteMin: undefined,
+            trendlineAsymptoteMax: undefined,
             ...savedConfig?.geomOptions,
         },
     } as ChartConfig;
 
     chartType.fields.forEach(field => {
-        if (fieldValues[field.name]?.value) {
+        const fieldConfig = fieldValues[field.name];
+        if (fieldConfig?.value) {
             config.measures[field.name] = {
-                fieldKey: fieldValues[field.name].data.fieldKey,
-                name: fieldValues[field.name].value,
-                label: fieldValues[field.name].label,
-                queryName: fieldValues[field.name].data.queryName,
-                schemaName: fieldValues[field.name].data.schemaName,
-                type:
-                    fieldValues[field.name].data.displayFieldJsonType ||
-                    fieldValues[field.name].data.jsonType ||
-                    fieldValues[field.name].data.type,
+                fieldKey: fieldConfig.data.fieldKey,
+                name: fieldConfig.value,
+                label: fieldConfig.label,
+                queryName: fieldConfig.data.queryName,
+                schemaName: fieldConfig.data.schemaName,
+                type: fieldConfig.data.displayFieldJsonType || fieldConfig.data.jsonType || fieldConfig.data.type,
             };
+
+            // if (fieldConfig['scale'] && config.scales[field.name]) {
+            //     config.scales[field.name].trans = fieldConfig['scale'];
+            // config.scales[field.name].min = undefined;
+            // config.scales[field.name].max = undefined;
+            // }
 
             // check if the field has an aggregate method (bar chart y-axis only)
             if (fieldValues[BAR_CHART_AGGREGATE_NAME] && field.name === 'y') {
@@ -246,8 +258,8 @@ export const getChartBuilderChartConfig = (
     if (chartType.name === 'line_plot' && fieldValues.trendlineType) {
         const type = fieldValues.trendlineType?.value ?? '';
         config.geomOptions.trendlineType = type === '' ? undefined : type;
-        config.geomOptions.trendlineAsypmtoteMin = fieldValues.trendlineAsypmtoteMin;
-        config.geomOptions.trendlineAsypmtoteMax = fieldValues.trendlineAsypmtoteMax;
+        config.geomOptions.trendlineAsymptoteMin = fieldValues.trendlineAsymptoteMin;
+        config.geomOptions.trendlineAsymptoteMax = fieldValues.trendlineAsymptoteMax;
     }
 
     if (
@@ -303,12 +315,13 @@ const ChartTypeSideBar: FC<ChartTypeSideBarProps> = memo(props => {
 interface ChartTypeQueryFormProps {
     allowInherit: boolean;
     canShare: boolean;
-    fieldValues: Record<string, SelectInputOption>;
+    fieldValues: Record<string, any>;
     inheritable: boolean;
     model: QueryModel;
     name: string;
+    // onToggleScale: (axis: string) => void;
+    onFieldChange: (key: string, value: any) => void;
     onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onSelectFieldChange: (key: string, _: any, selectedOption: SelectInputOption) => void;
     onToggleInheritable: () => void;
     onToggleShared: () => void;
     savedChartModel: GenericChartModel;
@@ -329,8 +342,20 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
         selectedType,
         fieldValues,
         model,
-        onSelectFieldChange,
+        onFieldChange,
+        // onToggleScale,
     } = props;
+
+    const [asymptoteMin, setAsymptoteMin] = useState<string>('');
+    const [asymptoteMax, setAsymptoteMax] = useState<string>('');
+    useEffect(() => {
+        if (asymptoteMin === '' && fieldValues.trendlineAsymptoteMin !== undefined) {
+            setAsymptoteMin(fieldValues.trendlineAsymptoteMin);
+        }
+        if (asymptoteMax === '' && fieldValues.trendlineAsymptoteMax !== undefined) {
+            setAsymptoteMax(fieldValues.trendlineAsymptoteMax);
+        }
+    }, [fieldValues, asymptoteMin, asymptoteMax]);
 
     const leftColFields = useMemo(() => {
         return selectedType.fields.filter(
@@ -342,6 +367,41 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
             field => RIGHT_COL_FIELDS.includes(field.name) || (selectedType.name === 'bar_chart' && field.name === 'y')
         );
     }, [selectedType]);
+
+    // const onAxisToggleScale = useCallback((event: any) => {
+    //     onToggleScale(event.target.getAttribute('data-axis'));
+    // }, []);
+
+    const onTrendlineAsymptoteMin = useCallback((event: any) => {
+        setAsymptoteMin(event.target.value);
+    }, []);
+
+    const onTrendlineAsymptoteMax = useCallback((event: any) => {
+        setAsymptoteMax(event.target.value);
+    }, []);
+
+    const applyTrendlineAsymptote = useCallback(() => {
+        onFieldChange('trendlineAsymptoteMin', asymptoteMin);
+        onFieldChange('trendlineAsymptoteMax', asymptoteMax);
+    }, [onFieldChange, asymptoteMin, asymptoteMax]);
+
+    const onSelectFieldChange = useCallback(
+        (key: string, _: any, selectedOption: SelectInputOption) => {
+            onFieldChange(key, selectedOption);
+        },
+        [onFieldChange]
+    );
+
+    const onTrendlineFieldChange = useCallback(
+        (key: string, _: any, selectedOption: SelectInputOption) => {
+            setAsymptoteMin('');
+            onFieldChange('trendlineAsymptoteMin', undefined);
+            setAsymptoteMax('');
+            onFieldChange('trendlineAsymptoteMax', undefined);
+            onFieldChange(key, selectedOption);
+        },
+        [onFieldChange]
+    );
 
     return (
         <div className="chart-builder-type-inputs">
@@ -383,6 +443,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                             </label>
                             <SelectInput
                                 showLabel={false}
+                                // containerClass={"form-group row " + (fieldValues[field.name]?.scale ? 'select-input-with-footer' : '')}
                                 inputClass="col-xs-12"
                                 placeholder="Select a field"
                                 name={field.name}
@@ -390,6 +451,12 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                 onChange={onSelectFieldChange}
                                 value={fieldValues[field.name]?.value}
                             />
+                            {/* {fieldValues[field.name]?.scale && (*/}
+                            {/*    <div className="checkbox-footer-input">*/}
+                            {/*        <input data-axis={field.name} type="checkbox" checked={fieldValues[field.name].scale === 'log'} onChange={onAxisToggleScale}/>*/}
+                            {/*        <span data-axis={field.name} onClick={onAxisToggleScale}>log scale</span>*/}
+                            {/*    </div>*/}
+                            {/* )}*/}
                         </div>
                     ))}
                 </div>
@@ -438,13 +505,41 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                     <SelectInput
                                         showLabel={false}
                                         clearable={false}
+                                        containerClass="form-group row select-input-with-footer"
                                         inputClass="col-xs-12"
                                         placeholder="Select trendline option"
                                         name="trendlineType"
                                         options={TRENDLINE_OPTIONS}
-                                        onChange={onSelectFieldChange}
+                                        onChange={onTrendlineFieldChange}
                                         value={fieldValues.trendlineType?.value ?? ''}
                                     />
+                                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value] && (
+                                        <div>
+                                            Asymptote:
+                                            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].min && (
+                                                <input
+                                                    name="trendlineAsymptoteMin"
+                                                    type="number"
+                                                    className="trendline-asymptote"
+                                                    placeholder="Min"
+                                                    onBlur={applyTrendlineAsymptote}
+                                                    onChange={onTrendlineAsymptoteMin}
+                                                    value={asymptoteMin}
+                                                />
+                                            )}
+                                            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].max && (
+                                                <input
+                                                    name="trendlineAsymptoteMax"
+                                                    type="number"
+                                                    className="trendline-asymptote"
+                                                    placeholder="Max"
+                                                    onBlur={applyTrendlineAsymptote}
+                                                    onChange={onTrendlineAsymptoteMax}
+                                                    value={asymptoteMax}
+                                                />
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </Fragment>
@@ -686,14 +781,13 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
     useEffect(
         () => {
             if (savedChartModel) {
-                setSelectedChartType(
-                    chartTypes.find(c => savedChartModel?.visualizationConfig.chartConfig.renderType === c.name)
-                );
+                const chartConfig = savedChartModel.visualizationConfig?.chartConfig;
+                setSelectedChartType(chartTypes.find(c => chartConfig?.renderType === c.name));
                 setName(savedChartModel.name);
                 setShared(savedChartModel.shared);
                 setInheritable(savedChartModel.inheritable);
 
-                const measures = savedChartModel.visualizationConfig?.chartConfig?.measures || {};
+                const measures = chartConfig?.measures || {};
                 const fieldValues_ = Object.keys(measures).reduce((result, key) => {
                     let measure = measures[key];
                     if (measure) {
@@ -704,15 +798,24 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                     return result;
                 }, {});
 
-                // special case for the bar chart aggregate method
+                // handle bar chart aggregate method
                 if (measures.y?.aggregate) {
                     fieldValues_[BAR_CHART_AGGREGATE_NAME] = { ...measures.y.aggregate };
                 }
 
-                // special case for trendline options
-                const geomOptions = savedChartModel.visualizationConfig?.chartConfig?.geomOptions;
-                if (geomOptions?.trendlineType) {
-                    fieldValues_['trendlineType'] = { value: geomOptions.trendlineType };
+                // handle trendline options
+                if (chartConfig?.geomOptions?.trendlineType) {
+                    fieldValues_['trendlineType'] = { value: chartConfig.geomOptions.trendlineType };
+                    fieldValues_['trendlineAsymptoteMin'] = chartConfig.geomOptions.trendlineAsymptoteMin;
+                    fieldValues_['trendlineAsymptoteMax'] = chartConfig.geomOptions.trendlineAsymptoteMax;
+                }
+
+                // handle axis scale options
+                if (chartConfig?.scales?.x) {
+                    fieldValues_['x'].scale = chartConfig.scales.x.trans;
+                }
+                if (chartConfig?.scales?.y) {
+                    fieldValues_['y'].scale = chartConfig.scales.y.trans;
                 }
 
                 setFieldValues(fieldValues_);
@@ -752,9 +855,13 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
         setInheritable(prev => !prev);
     }, []);
 
-    const onSelectFieldChange = useCallback((key: string, _, selectedOption: SelectInputOption) => {
+    // const onToggleScale = useCallback((axis: string) => {
+    //     setFieldValues(prev => ({ ...prev, [axis]: { ...prev[axis], scale: toggleScaleValue(prev[axis]['scale']) } }));
+    // }, []);
+
+    const onFieldChange = useCallback((key: string, value: any) => {
         setReportConfig(undefined); // clear report config state, it will be reset after the preview loads
-        setFieldValues(prev => ({ ...prev, [key]: selectedOption }));
+        setFieldValues(prev => ({ ...prev, [key]: value }));
     }, []);
 
     const onSaveChart = useCallback(async () => {
@@ -831,7 +938,8 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                         model={model}
                         name={name}
                         onNameChange={onNameChange}
-                        onSelectFieldChange={onSelectFieldChange}
+                        // onToggleScale={onToggleScale}
+                        onFieldChange={onFieldChange}
                         onToggleInheritable={onToggleInheritable}
                         onToggleShared={onToggleShared}
                         savedChartModel={savedChartModel}
