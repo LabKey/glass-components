@@ -14,6 +14,7 @@ export enum SearchCategory {
     Notebook = 'notebook',
     NotebookTemplate = 'notebookTemplate',
     Plate = 'plate',
+    PlateSet = 'plateSet',
     StorageLocation = 'storageLocation',
     TerminalStorageLocation = 'terminalStorageLocation',
     WorkflowJob = 'workflowJob',
