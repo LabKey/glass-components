@@ -18,9 +18,10 @@ import { isOntologyEnabled } from '../../app/utils';
 
 import { REGISTRY_KEY } from '../../app/constants';
 
+import { makeCommaSeparatedString } from '../../util/utils';
+
 import { SearchCategory, SearchScope } from './constants';
 import { FieldFilter, FieldFilterOption, FilterSelection, SearchResultCardData } from './models';
-import { makeCommaSeparatedString } from '../../util/utils';
 
 export const SAMPLE_FILTER_METRIC_AREA = 'sampleFinder';
 
@@ -45,11 +46,11 @@ export function getFilterOptionsForType(field: QueryColumn, isAncestor: boolean)
 
     const useConceptFilters = field.isConceptCodeColumn && isOntologyEnabled();
 
-    let filterList = (
-        useConceptFilters ? CONCEPT_COLUMN_FILTER_TYPES : Filter.getFilterTypesForType(jsonType)
-    ).filter(function (result) {
-        return Filter.Types.HAS_ANY_VALUE.getURLSuffix() !== result.getURLSuffix();
-    });
+    let filterList = (useConceptFilters ? CONCEPT_COLUMN_FILTER_TYPES : Filter.getFilterTypesForType(jsonType)).filter(
+        function (result) {
+            return Filter.Types.HAS_ANY_VALUE.getURLSuffix() !== result.getURLSuffix();
+        }
+    );
 
     if (jsonType === 'date') {
         filterList.push(Filter.Types.BETWEEN);
@@ -62,11 +63,11 @@ export function getFilterOptionsForType(field: QueryColumn, isAncestor: boolean)
             filterList = [
                 ...filterList.slice(0, equalsOneOfInd),
                 ANCESTOR_MATCHES_ALL_OF_FILTER_TYPE,
-                ...filterList.slice(equalsOneOfInd)
+                ...filterList.slice(equalsOneOfInd),
             ];
-        }
-        else
+        } else {
             filterList.push(ANCESTOR_MATCHES_ALL_OF_FILTER_TYPE);
+        }
     }
 
     return filterList.map(filter => {
@@ -95,10 +96,7 @@ const MAX_MULTI_VALUE_FILTER_VALUES = 200;
 
 export function getFilterTypePlaceHolder(suffix: string): string {
     if (suffix === 'in' || suffix === 'notin' || suffix === 'containsoneof' || suffix === 'containsnoneof') {
-        return (
-            'Use new line or semicolon to separate entries. ' +
-            ' Max of ' + MAX_MULTI_VALUE_FILTER_VALUES + ' values.'
-        );
+        return `Use new line or semicolon to separate entries.  Max of ${MAX_MULTI_VALUE_FILTER_VALUES} values.`;
     }
 
     return null;
@@ -200,8 +198,9 @@ export function getFieldFiltersValidationResult(
     }
 
     let msg = '';
-    if (maxMatchAllErrorField)
-        msg += "At most 10 values can be selected for 'Equals All Of' filter type for '" + maxMatchAllErrorField + "'. ";
+    if (maxMatchAllErrorField) {
+        msg += `At most 10 values can be selected for 'Equals All Of' filter type for '${maxMatchAllErrorField}'. `;
+    }
 
     if (multiValueErrorFields.size > 0) {
         msg +=
@@ -667,3 +666,31 @@ export const decodeErrorMessage = (msg: string): string => {
     if (decodedMsg.charAt(decodedMsg.length - 1) != '.') decodedMsg += '.';
     return decodedMsg;
 };
+
+// Double quotes (") can be used as part of the Lucene syntax to specify exact matches. For usages
+// that don't allow more than one word or any Lucene operators, use escapeQuotes=true, in order
+// to treat the quote character as a special character to be found during searching. Note that
+// the current implementation does not try to match quote pairs to determine which could be escaped and which not.
+export function escapeSearchQuery(q: string, escapeQuotes = false): string {
+    if (q) {
+        const hasQuotes = q.indexOf('"') > -1;
+
+        // Escape special lucene characters: + - && || ! ( ) { } [ ] ^ " ~ * ? : \
+        // https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping%20Special%20Characters
+        q = q
+            .replace(/(?<specialChar>[\+\-!\(\){}\[\]^~*?:\\])/gi, '\\$<specialChar>')
+            .replace('&&', '\\&&')
+            .replace('||', '\\||');
+        if (escapeQuotes) {
+            q = q.replace('"', '\\"');
+        }
+
+        // Append an additional wildcard search clause to include prefix matching
+        // Example: "M-" will result in a query of "M\- OR M\-*"
+        if (!hasQuotes || escapeQuotes) {
+            q = [q, `${q.trim()}*`].join(' OR ');
+        }
+    }
+
+    return q;
+}
