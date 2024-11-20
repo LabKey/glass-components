@@ -616,35 +616,40 @@ const ChartPreview: FC<ChartPreviewProps> = memo(props => {
 
         setLoadingData(true);
 
-        LABKEY_VIS.GenericChartHelper.queryChartData(divId, queryConfig_, measureStore => {
-            const rowCount = LABKEY_VIS.GenericChartHelper.getMeasureStoreRecords(measureStore).length;
-            const _previewMsg = getChartRenderMsg(chartConfig, rowCount, true);
+        LABKEY_VIS.GenericChartHelper.queryChartData(
+            divId,
+            queryConfig_,
+            chartConfig,
+            (measureStore, trendlineData) => {
+                const rowCount = LABKEY_VIS.GenericChartHelper.getMeasureStoreRecords(measureStore).length;
+                const _previewMsg = getChartRenderMsg(chartConfig, rowCount, true);
 
-            if (rowCount > MAX_POINT_DISPLAY) {
-                if (chartConfig.renderType === 'box_plot') {
-                    chartConfig.pointType = 'outliers';
-                    chartConfig.geomOptions.boxFillColor = BLUE_HEX_COLOR;
-                } else if (chartConfig.renderType === 'line_plot') {
-                    chartConfig.geomOptions.hideDataPoints = true;
+                if (rowCount > MAX_POINT_DISPLAY) {
+                    if (chartConfig.renderType === 'box_plot') {
+                        chartConfig.pointType = 'outliers';
+                        chartConfig.geomOptions.boxFillColor = BLUE_HEX_COLOR;
+                    } else if (chartConfig.renderType === 'line_plot') {
+                        chartConfig.geomOptions.hideDataPoints = true;
+                    }
                 }
+
+                // adjust height, width, and marginTop for the chart config for the preview, but not to save with the chart
+                var chartConfig_ = {
+                    ...chartConfig,
+                    height: 350,
+                    width,
+                };
+                if (!savedChartModel || savedChartModel.visualizationConfig.chartConfig.geomOptions.marginTop === 20) {
+                    chartConfig_.geomOptions.marginTop = 15;
+                }
+
+                if (ref?.current) ref.current.innerHTML = ''; // clear again, right before render
+                LABKEY_VIS.GenericChartHelper.generateChartSVG(divId, chartConfig_, measureStore, trendlineData);
+
+                setPreviewMsg(_previewMsg);
+                setLoadingData(false);
             }
-
-            // adjust height, width, and marginTop for the chart config for the preview, but not to save with the chart
-            var chartConfig_ = {
-                ...chartConfig,
-                height: 350,
-                width,
-            };
-            if (!savedChartModel || savedChartModel.visualizationConfig.chartConfig.geomOptions.marginTop === 20) {
-                chartConfig_.geomOptions.marginTop = 15;
-            }
-
-            if (ref?.current) ref.current.innerHTML = ''; // clear again, right before render
-            LABKEY_VIS.GenericChartHelper.generateChartSVG(divId, chartConfig_, measureStore);
-
-            setPreviewMsg(_previewMsg);
-            setLoadingData(false);
-        });
+        );
     }, [divId, model, hasRequiredValues, selectedType, fieldValues, savedChartModel, containerFilter, setReportConfig]);
 
     return (
