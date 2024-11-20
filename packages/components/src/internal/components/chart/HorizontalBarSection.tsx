@@ -3,18 +3,18 @@ import classNames from 'classnames';
 
 import { Popover } from '../../Popover';
 import { OverlayTrigger } from '../../OverlayTrigger';
+
 import { createHorizontalBarCountLegendData, HorizontalBarData } from './utils';
 import { ItemsLegend } from './ItemsLegend';
 
 const DEFAULT_EMPTY_TEXT = 'No data available.';
 
-
 interface Props {
     data: HorizontalBarData[];
     emptyText?: string;
+    showSummaryTooltip?: boolean;
     subtitle?: React.ReactNode;
     title?: string;
-    showSummaryTooltip?: boolean;
 }
 
 export const HorizontalBarSection: FC<Props> = memo(props => {
@@ -49,7 +49,11 @@ export const HorizontalBarSection: FC<Props> = memo(props => {
 
                 const overlay = (
                     <Popover id="grid-cell-popover" placement="top">
-                        {showSummaryTooltip ? <ItemsLegend legendData={summaryLegendData} activeIndex={index}/> : row.title}
+                        {showSummaryTooltip ? (
+                            <ItemsLegend legendData={summaryLegendData} activeIndex={index} />
+                        ) : (
+                            row.title
+                        )}
                     </Popover>
                 );
 

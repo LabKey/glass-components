@@ -61,8 +61,8 @@ interface TabsProps {
     activeKey?: string;
     children: ReactElement<TabProps> | Array<ReactElement<TabProps>>;
     className?: string;
-    onSelect?: (eventKey: string) => void;
     contentCls?: string;
+    onSelect?: (eventKey: string) => void;
 }
 
 export const Tabs: FC<TabsProps> = props => {

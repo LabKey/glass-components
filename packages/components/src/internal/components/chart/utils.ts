@@ -134,23 +134,23 @@ export interface HorizontalBarData {
     backgroundColor?: string;
     className?: string;
     count: number;
+    dataLink?: string;
     filled: boolean;
     href?: string;
     name?: string;
     percent: number;
     title: string;
     totalCount: number;
-    dataLink?: string;
 }
 
 export interface HorizontalBarLegendData {
     backgroundColor: string;
     borderColor?: string;
     circleColor: string;
+    data?: Map<any, any>;
     expired?: boolean;
     legendLabel: string;
     locked?: boolean;
-    data?: Map<any, any>;
 }
 
 export function createHorizontalBarLegendData(data: HorizontalBarData[]): HorizontalBarLegendData[] {
@@ -175,7 +175,11 @@ export function createHorizontalBarLegendData(data: HorizontalBarData[]): Horizo
     return legendData;
 }
 
-export function createHorizontalBarCountLegendData(data: HorizontalBarData[], emptyTextSingular: string, emptyTextPlural: string): HorizontalBarLegendData[] {
+export function createHorizontalBarCountLegendData(
+    data: HorizontalBarData[],
+    emptyTextSingular: string,
+    emptyTextPlural: string
+): HorizontalBarLegendData[] {
     const legendData = [];
     data.forEach(row => {
         if (row.count > 0) {
@@ -189,7 +193,7 @@ export function createHorizontalBarCountLegendData(data: HorizontalBarData[], em
                 circleColor: row.backgroundColor ?? 'fff',
                 backgroundColor: 'none',
                 legendLabel,
-                data
+                data,
             });
         }
     });
