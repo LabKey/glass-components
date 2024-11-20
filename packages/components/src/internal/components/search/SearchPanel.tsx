@@ -189,6 +189,7 @@ export const SearchPanel: FC<SearchPanelProps> = memo(props => {
                 const entities = await searchUsingIndex(
                     {
                         category,
+                        escapeQuery: true,
                         q: searchTerm,
                         limit: pageSize,
                         offset,
