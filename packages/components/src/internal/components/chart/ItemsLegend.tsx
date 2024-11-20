@@ -2,12 +2,14 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { HorizontalBarLegendData } from './utils';
+import { DefaultRenderer } from '../../renderers/DefaultRenderer';
 
 const CELL_EMPTY_COLOR = 'FFFFFF';
 
 interface Props {
     emptyColor?: string;
     legendData: HorizontalBarLegendData[];
+    activeIndex?: number;
 }
 
 export class ItemsLegend extends React.PureComponent<Props> {
@@ -18,7 +20,7 @@ export class ItemsLegend extends React.PureComponent<Props> {
     };
 
     render() {
-        const { legendData, emptyColor } = this.props;
+        const { legendData, emptyColor, activeIndex } = this.props;
 
         const legendsDisplay = [];
         legendData.forEach((legend, index) => {
@@ -59,10 +61,16 @@ export class ItemsLegend extends React.PureComponent<Props> {
                         </span>
                     </td>
                     <td>
-                        <span className="cell-legend-label">{legend.legendLabel}</span>
+                        <span className={classNames('cell-legend-label', {
+                            'bold-text': activeIndex === index
+                        })}>{legend.legendLabel}</span>
                     </td>
-                </tr>
-            );
+                    {legend.data && (
+                        <td>
+                            <span className="cell-legend-label"><DefaultRenderer data={legend.data} /></span>
+                        </td>
+                    )}
+                </tr>);
 
             legendsDisplay.push(legendDisplay);
         });

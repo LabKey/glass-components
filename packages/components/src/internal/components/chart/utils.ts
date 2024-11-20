@@ -1,3 +1,5 @@
+import { Map } from 'immutable';
+
 import { Filter, getServerContext } from '@labkey/api';
 
 import { naturalSort } from '../../../public/sort';
@@ -7,7 +9,6 @@ import { caseInsensitive } from '../../util/utils';
 import { Row } from '../../query/selectRows';
 
 import { BarChartData } from './models';
-import { HorizontalBarData } from './HorizontalBarSection';
 
 interface ChartDataProps {
     barFillColors: Record<string, string>;
@@ -129,6 +130,19 @@ export function createPercentageBarData(
     return { data, subtitle };
 }
 
+export interface HorizontalBarData {
+    backgroundColor?: string;
+    className?: string;
+    count: number;
+    filled: boolean;
+    href?: string;
+    name?: string;
+    percent: number;
+    title: string;
+    totalCount: number;
+    dataLink?: string;
+}
+
 export interface HorizontalBarLegendData {
     backgroundColor: string;
     borderColor?: string;
@@ -136,6 +150,7 @@ export interface HorizontalBarLegendData {
     expired?: boolean;
     legendLabel: string;
     locked?: boolean;
+    data?: Map<any, any>;
 }
 
 export function createHorizontalBarLegendData(data: HorizontalBarData[]): HorizontalBarLegendData[] {
@@ -156,6 +171,27 @@ export function createHorizontalBarLegendData(data: HorizontalBarData[]): Horizo
             backgroundColor: 'none',
             legendLabel: legendMap[key].join(', '),
         });
+    });
+    return legendData;
+}
+
+export function createHorizontalBarCountLegendData(data: HorizontalBarData[], emptyTextSingular: string, emptyTextPlural: string): HorizontalBarLegendData[] {
+    const legendData = [];
+    data.forEach(row => {
+        if (row.count > 0) {
+            let data = Map.of('value', row.count, 'url', row.href);
+            let legendLabel = row.name;
+            if (!row.filled) {
+                data = Map.of('value', row.count);
+                legendLabel = row.count > 1 ? emptyTextPlural : emptyTextSingular;
+            }
+            legendData.push({
+                circleColor: row.backgroundColor ?? 'fff',
+                backgroundColor: 'none',
+                legendLabel,
+                data
+            });
+        }
     });
     return legendData;
 }

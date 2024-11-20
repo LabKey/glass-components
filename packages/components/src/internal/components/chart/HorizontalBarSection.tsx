@@ -3,57 +3,59 @@ import classNames from 'classnames';
 
 import { Popover } from '../../Popover';
 import { OverlayTrigger } from '../../OverlayTrigger';
+import { createHorizontalBarCountLegendData, HorizontalBarData } from './utils';
+import { ItemsLegend } from './ItemsLegend';
 
 const DEFAULT_EMPTY_TEXT = 'No data available.';
 
-export interface HorizontalBarData {
-    backgroundColor?: string;
-    className?: string;
-    count: number;
-    filled: boolean;
-    href?: string;
-    name?: string;
-    percent: number;
-    title: string;
-    totalCount: number;
-}
 
 interface Props {
     data: HorizontalBarData[];
     emptyText?: string;
     subtitle?: React.ReactNode;
     title?: string;
+    showSummaryTooltip?: boolean;
 }
 
 export const HorizontalBarSection: FC<Props> = memo(props => {
-    const { subtitle, title, data, emptyText } = props;
+    const { subtitle, title, data, emptyText, showSummaryTooltip } = props;
     let horizontalBars: ReactNode = <div className="horizontal-bar--empty-text">{emptyText ?? DEFAULT_EMPTY_TEXT}</div>;
 
     if (data?.length) {
+        let summaryLegendData = null;
+        if (showSummaryTooltip) {
+            summaryLegendData = createHorizontalBarCountLegendData(data, 'Space Available', 'Spaces Available');
+        }
+
         horizontalBars = data
             .filter(row => row.percent > 0)
             .map((row, index) => {
                 const style: CSSProperties = { width: row.percent + '%', background: row.backgroundColor };
+                const section = (
+                    <div
+                        data-title={row.title}
+                        className={classNames('horizontal-bar-part', row.className, {
+                            'horizontal-bar--linked': !!row.href,
+                            'horizontal-bar--open': !row.filled || !row.backgroundColor,
+                        })}
+                    >
+                        {row.href && (
+                            <a href={row.href} className="horizontal-bar--link">
+                                &nbsp;
+                            </a>
+                        )}
+                    </div>
+                );
+
                 const overlay = (
                     <Popover id="grid-cell-popover" placement="top">
-                        {row.title}
+                        {showSummaryTooltip ? <ItemsLegend legendData={summaryLegendData} activeIndex={index}/> : row.title}
                     </Popover>
                 );
+
                 return (
                     <OverlayTrigger key={index} id={index.toString()} overlay={overlay} style={style}>
-                        <div
-                            data-title={row.title}
-                            className={classNames('horizontal-bar-part', row.className, {
-                                'horizontal-bar--linked': !!row.href,
-                                'horizontal-bar--open': !row.filled || !row.backgroundColor,
-                            })}
-                        >
-                            {row.href && (
-                                <a href={row.href} className="horizontal-bar--link">
-                                    &nbsp;
-                                </a>
-                            )}
-                        </div>
+                        {section}
                     </OverlayTrigger>
                 );
             });

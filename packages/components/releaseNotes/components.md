@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.X
+*Released*: X November 2024
+- Incorporate Recent Storage Dashboard Widget
+
 ### version 5.24.0
 *Released*: 19 November 2024
 - Issue 51645: Escape advanced search characters
