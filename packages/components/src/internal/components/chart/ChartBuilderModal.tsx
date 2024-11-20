@@ -345,17 +345,16 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
         onFieldChange,
         // onToggleScale,
     } = props;
-
+    const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
     const [asymptoteMin, setAsymptoteMin] = useState<string>('');
     const [asymptoteMax, setAsymptoteMax] = useState<string>('');
     useEffect(() => {
-        if (asymptoteMin === '' && fieldValues.trendlineAsymptoteMin !== undefined) {
+        if (loadingTrendlineOptions && (!!fieldValues.trendlineAsymptoteMin || !!fieldValues.trendlineAsymptoteMax)) {
             setAsymptoteMin(fieldValues.trendlineAsymptoteMin);
-        }
-        if (asymptoteMax === '' && fieldValues.trendlineAsymptoteMax !== undefined) {
             setAsymptoteMax(fieldValues.trendlineAsymptoteMax);
+            setLoadingTrendlineOptions(false);
         }
-    }, [fieldValues, asymptoteMin, asymptoteMax]);
+    }, [fieldValues, loadingTrendlineOptions]);
 
     const leftColFields = useMemo(() => {
         return selectedType.fields.filter(
