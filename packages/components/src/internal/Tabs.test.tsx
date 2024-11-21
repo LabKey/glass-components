@@ -114,10 +114,11 @@ describe('Tabs', () => {
         expect(tabContents).toHaveLength(2);
         expect(tabContents[0].textContent).toEqual('');
         expect(tabContents[1].textContent).toEqual('');
+        expect(document.querySelectorAll('.tab-content')).toHaveLength(1);
     });
     test('ReactNode for title', () => {
         render(
-            <Tabs>
+            <Tabs contentCls="override-cls">
                 <Tab eventKey="one" title="Tab One">
                     <p>One</p>
                 </Tab>
@@ -135,5 +136,7 @@ describe('Tabs', () => {
         );
         const tab = document.querySelector('li span.fa-check-circle');
         expect(tab).not.toBeNull();
+        expect(document.querySelectorAll('.tab-content')).toHaveLength(0);
+        expect(document.querySelectorAll('.override-cls')).toHaveLength(1);
     });
 });
