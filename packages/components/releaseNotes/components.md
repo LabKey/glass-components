@@ -1,6 +1,16 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version ?.??.?
+*Released*: ?? December 2024
+- Add FilterCriteriaRenderer
+- Add FilterCriteriaModal
+- Add useLoadableState
+    - Helper hook that takes a loader method and returns loadingState, value, and error
+- DomainField: Add filterCriteria
+- Render Filter Criteria components in AssayDesignerPanels
+- Add `request` an async wrapper for Ajax.request
+
 ### version 6.7.0
 *Released*: 18 December 2024
 - Parent type selector updates for adding and removing from EditableGrid
