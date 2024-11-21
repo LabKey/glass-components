@@ -41,11 +41,13 @@ interface AggregateFieldInfo {
 
 export interface ChartFieldInfo {
     aggregate?: AggregateFieldInfo;
+    altSelectionOnly?: boolean;
     // allowMultiple?: boolean; // not yet supported, will be part of a future dev story
     label: string;
     name: string;
     nonNumericOnly?: boolean;
     numericOnly?: boolean;
+    numericOrDateOnly?: boolean;
     required: boolean;
 }
 
@@ -58,7 +60,7 @@ export interface ChartTypeInfo {
 }
 
 const HIDDEN_CHART_TYPES = ['time_chart'];
-const RIGHT_COL_FIELDS = ['color', 'shape', 'series'];
+const RIGHT_COL_FIELDS = ['color', 'shape', 'series', 'trendline'];
 export const MAX_ROWS_PREVIEW = 10000;
 export const MAX_POINT_DISPLAY = 10000;
 const BLUE_HEX_COLOR = '3366FF';
@@ -337,6 +339,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
         model,
         onFieldChange,
     } = props;
+
     const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
     const [asymptoteMin, setAsymptoteMin] = useState<string>('');
     const [asymptoteMax, setAsymptoteMax] = useState<string>('');
@@ -355,9 +358,11 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
     }, [selectedType]);
     const rightColFields = useMemo(() => {
         return selectedType.fields.filter(
-            field => RIGHT_COL_FIELDS.includes(field.name) || (selectedType.name === 'bar_chart' && field.name === 'y')
+            field => (RIGHT_COL_FIELDS.includes(field.name) && !field.altSelectionOnly) || (selectedType.name === 'bar_chart' && field.name === 'y')
         );
     }, [selectedType]);
+
+    const hasTrendlineOption = useMemo(() => selectedType.fields.filter(field => field.name === 'trendline').length > 0, [selectedType]);
 
     const onTrendlineAsymptoteMin = useCallback((event: any) => {
         setAsymptoteMin(event.target.value);
@@ -476,54 +481,54 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                     />
                                 </div>
                             )}
-                            {selectedType.name === 'line_plot' && (
-                                <div>
-                                    <label>
-                                        Trendline{' '}
-                                        <LabelOverlay placement="bottom">TODO ...</LabelOverlay>
-                                    </label>
-                                    <SelectInput
-                                        showLabel={false}
-                                        clearable={false}
-                                        containerClass="form-group row select-input-with-footer"
-                                        inputClass="col-xs-12"
-                                        placeholder="Select trendline option"
-                                        name="trendlineType"
-                                        options={TRENDLINE_OPTIONS}
-                                        onChange={onTrendlineFieldChange}
-                                        value={fieldValues.trendlineType?.value ?? ''}
-                                    />
-                                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value] && (
-                                        <div className="field-footer-section">
-                                            Asymptote:
-                                            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].min && (
-                                                <input
-                                                    name="trendlineAsymptoteMin"
-                                                    type="number"
-                                                    className="field-footer-input"
-                                                    placeholder="Min"
-                                                    onBlur={applyTrendlineAsymptote}
-                                                    onChange={onTrendlineAsymptoteMin}
-                                                    value={asymptoteMin}
-                                                />
-                                            )}
-                                            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].max && (
-                                                <input
-                                                    name="trendlineAsymptoteMax"
-                                                    type="number"
-                                                    className="field-footer-input"
-                                                    placeholder="Max"
-                                                    onBlur={applyTrendlineAsymptote}
-                                                    onChange={onTrendlineAsymptoteMax}
-                                                    value={asymptoteMax}
-                                                />
-                                            )}
-                                        </div>
+                        </Fragment>
+                    ))}
+                    {/* TODO LIMS feature flag */}
+                    {hasTrendlineOption && (
+                        <div>
+                            <label>
+                                Trendline <LabelOverlay placement="bottom">TODO ...</LabelOverlay>
+                            </label>
+                            <SelectInput
+                                showLabel={false}
+                                clearable={false}
+                                containerClass="form-group row select-input-with-footer"
+                                inputClass="col-xs-12"
+                                placeholder="Select trendline option"
+                                name="trendlineType"
+                                options={TRENDLINE_OPTIONS}
+                                onChange={onTrendlineFieldChange}
+                                value={fieldValues.trendlineType?.value ?? ''}
+                            />
+                            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value] && (
+                                <div className="field-footer-section">
+                                    Asymptote:
+                                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].min && (
+                                        <input
+                                            name="trendlineAsymptoteMin"
+                                            type="number"
+                                            className="field-footer-input"
+                                            placeholder="Min"
+                                            onBlur={applyTrendlineAsymptote}
+                                            onChange={onTrendlineAsymptoteMin}
+                                            value={asymptoteMin}
+                                        />
+                                    )}
+                                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].max && (
+                                        <input
+                                            name="trendlineAsymptoteMax"
+                                            type="number"
+                                            className="field-footer-input"
+                                            placeholder="Max"
+                                            onBlur={applyTrendlineAsymptote}
+                                            onChange={onTrendlineAsymptoteMax}
+                                            value={asymptoteMax}
+                                        />
                                     )}
                                 </div>
                             )}
-                        </Fragment>
-                    ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
