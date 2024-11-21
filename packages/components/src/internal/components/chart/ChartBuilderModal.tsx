@@ -233,12 +233,6 @@ export const getChartBuilderChartConfig = (
                 type: fieldConfig.data.displayFieldJsonType || fieldConfig.data.jsonType || fieldConfig.data.type,
             };
 
-            // if (fieldConfig['scale'] && config.scales[field.name]) {
-            //     config.scales[field.name].trans = fieldConfig['scale'];
-            // config.scales[field.name].min = undefined;
-            // config.scales[field.name].max = undefined;
-            // }
-
             // check if the field has an aggregate method (bar chart y-axis only)
             if (fieldValues[BAR_CHART_AGGREGATE_NAME] && field.name === 'y') {
                 config.measures[field.name].aggregate = { ...fieldValues[BAR_CHART_AGGREGATE_NAME] };
@@ -319,7 +313,6 @@ interface ChartTypeQueryFormProps {
     inheritable: boolean;
     model: QueryModel;
     name: string;
-    // onToggleScale: (axis: string) => void;
     onFieldChange: (key: string, value: any) => void;
     onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onToggleInheritable: () => void;
@@ -343,7 +336,6 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
         fieldValues,
         model,
         onFieldChange,
-        // onToggleScale,
     } = props;
     const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
     const [asymptoteMin, setAsymptoteMin] = useState<string>('');
@@ -366,10 +358,6 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
             field => RIGHT_COL_FIELDS.includes(field.name) || (selectedType.name === 'bar_chart' && field.name === 'y')
         );
     }, [selectedType]);
-
-    // const onAxisToggleScale = useCallback((event: any) => {
-    //     onToggleScale(event.target.getAttribute('data-axis'));
-    // }, []);
 
     const onTrendlineAsymptoteMin = useCallback((event: any) => {
         setAsymptoteMin(event.target.value);
@@ -442,7 +430,6 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                             </label>
                             <SelectInput
                                 showLabel={false}
-                                // containerClass={"form-group row " + (fieldValues[field.name]?.scale ? 'select-input-with-footer' : '')}
                                 inputClass="col-xs-12"
                                 placeholder="Select a field"
                                 name={field.name}
@@ -450,12 +437,6 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                 onChange={onSelectFieldChange}
                                 value={fieldValues[field.name]?.value}
                             />
-                            {/* {fieldValues[field.name]?.scale && (*/}
-                            {/*    <div className="checkbox-footer-input">*/}
-                            {/*        <input data-axis={field.name} type="checkbox" checked={fieldValues[field.name].scale === 'log'} onChange={onAxisToggleScale}/>*/}
-                            {/*        <span data-axis={field.name} onClick={onAxisToggleScale}>log scale</span>*/}
-                            {/*    </div>*/}
-                            {/* )}*/}
                         </div>
                     ))}
                 </div>
@@ -814,14 +795,6 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                     fieldValues_['trendlineAsymptoteMax'] = chartConfig.geomOptions.trendlineAsymptoteMax;
                 }
 
-                // handle axis scale options
-                if (chartConfig?.scales?.x) {
-                    fieldValues_['x'].scale = chartConfig.scales.x.trans;
-                }
-                if (chartConfig?.scales?.y) {
-                    fieldValues_['y'].scale = chartConfig.scales.y.trans;
-                }
-
                 setFieldValues(fieldValues_);
             }
         },
@@ -858,10 +831,6 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
     const onToggleInheritable = useCallback(() => {
         setInheritable(prev => !prev);
     }, []);
-
-    // const onToggleScale = useCallback((axis: string) => {
-    //     setFieldValues(prev => ({ ...prev, [axis]: { ...prev[axis], scale: toggleScaleValue(prev[axis]['scale']) } }));
-    // }, []);
 
     const onFieldChange = useCallback((key: string, value: any) => {
         setReportConfig(undefined); // clear report config state, it will be reset after the preview loads
@@ -942,7 +911,6 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                         model={model}
                         name={name}
                         onNameChange={onNameChange}
-                        // onToggleScale={onToggleScale}
                         onFieldChange={onFieldChange}
                         onToggleInheritable={onToggleInheritable}
                         onToggleShared={onToggleShared}
