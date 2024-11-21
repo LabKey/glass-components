@@ -248,11 +248,22 @@
     margin-bottom: 0;
 }
 
-.chart-builder-modal .trendline-asymptote {
-    width: 80px;
+.chart-builder-modal .field-footer-section {
+    color: $text-muted;
+    margin-bottom: 15px;
+    input {
+        color: $text-color;
+    }
+}
+.chart-builder-modal .field-footer-input {
+    width: 60px;
     height: 24px;
     display: inline;
-    margin: 5px;
+    margin: 5px 0 0 5px;
+}
+.chart-builder-modal .field-footer-checkbox {
+    display: inline;
+    margin: 5px 15px 0 5px;
 }
 
 .chart-builder-preview-body {

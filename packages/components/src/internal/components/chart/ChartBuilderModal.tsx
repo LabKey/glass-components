@@ -513,13 +513,13 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                         value={fieldValues.trendlineType?.value ?? ''}
                                     />
                                     {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value] && (
-                                        <div>
+                                        <div className="field-footer-section">
                                             Asymptote:
                                             {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].min && (
                                                 <input
                                                     name="trendlineAsymptoteMin"
                                                     type="number"
-                                                    className="trendline-asymptote"
+                                                    className="field-footer-input"
                                                     placeholder="Min"
                                                     onBlur={applyTrendlineAsymptote}
                                                     onChange={onTrendlineAsymptoteMin}
@@ -530,7 +530,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                                 <input
                                                     name="trendlineAsymptoteMax"
                                                     type="number"
-                                                    className="trendline-asymptote"
+                                                    className="field-footer-input"
                                                     placeholder="Max"
                                                     onBlur={applyTrendlineAsymptote}
                                                     onChange={onTrendlineAsymptoteMax}
