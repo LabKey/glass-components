@@ -85,21 +85,7 @@
     }
 
     .field-modal__col {
-        padding-right: 0;
-        padding-left: 8px;
-    }
-
-    .field-modal__col-2 {
-        padding-right: 0;
-        padding-left: 15px;
-    }
-
-    .field-modal__col.col-sm-6, .field-modal__col.col-xs-6, .field-modal__col.col-xs-12 {
-        padding-right: 8px;
-    }
-
-    .field-modal__col-2.col-sm-6, .field-modal__col-2.col-xs-6, .field-modal__col-2.col-xs-12 {
-        padding-right: 15px;
+        padding: 0 8px;
     }
 
     .col-xs-12 .field-modal__footer {
@@ -114,7 +100,6 @@
 
         overflow: auto;
         border: 1px solid $light-gray;
-        margin-bottom: 20px;
 
         .loading-spinner {
             display: inline-block;
@@ -123,10 +108,6 @@
 
         .list-group-item {
             border: none;
-        }
-
-        .field-modal__tabs {
-            padding: 8px 15px;
         }
 
         .field-modal__tabs.content-tabs {
@@ -144,6 +125,7 @@
 
         &.field-modal__values {
             overflow: visible;
+            padding: 8px 16px;
         }
     }
 
@@ -174,17 +156,14 @@
 }
 
 .filter-expression__input {
-    width: 75%;
     padding-left: 15px;
 }
 
 .filter-expression__textarea {
-    width: 75%;
     resize: none !important;
 }
 
 .filter-expression__input-select {
-    width: 75%;
 
     // Issue 45139
     .select-input__menu-portal {
@@ -289,6 +268,8 @@
 
 .field-modal__col-content-disabled {
     opacity: 0.5;
-
 }
 
+.field-modal__container .list-group {
+    margin-bottom: 0;
+}
