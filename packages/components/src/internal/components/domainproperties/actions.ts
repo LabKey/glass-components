@@ -622,7 +622,8 @@ export function validateDomainNameExpressions(
 }
 
 export function createNewDomainField(domain: DomainDesign, fieldConfig: Partial<IDomainField> = {}): DomainField {
-    // Issue 38771: if the domain has a defaultDefaultValueType and the fieldConfig doesn't include its own, use the defaultDefaultValueType
+    // Issue 38771: if the domain has a defaultDefaultValueType and the fieldConfig doesn't include its own, use the
+    // defaultDefaultValueType
     if (domain.defaultDefaultValueType && !fieldConfig.defaultValueType) {
         fieldConfig.defaultValueType = domain.defaultDefaultValueType;
     }
@@ -636,7 +637,8 @@ export async function mergeDomainFields(domain: DomainDesign, newFields: List<Do
         const field = newFields.get(i);
         if (field.lookupQuery) {
             try {
-                // Issue 48240: lookupIsValid during JSON fields import if we can find the queryDetails, otherwise set to false in catch
+                // Issue 48240: lookupIsValid during JSON fields import if we can find the queryDetails, otherwise set
+                // to false in catch
                 await getQueryDetails({
                     containerPath: field.lookupContainer,
                     schemaQuery: new SchemaQuery(field.lookupSchema, field.lookupQuery),

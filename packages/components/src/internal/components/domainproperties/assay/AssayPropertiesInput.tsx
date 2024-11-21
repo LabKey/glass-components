@@ -1,4 +1,4 @@
-import React, { FC, memo, PropsWithChildren, ReactNode } from 'react';
+import React, { FC, memo, PropsWithChildren, ReactNode, useCallback, useMemo } from 'react';
 import { List, Map } from 'immutable';
 
 import classNames from 'classnames';
@@ -37,6 +37,8 @@ import { resolveErrorMessage } from '../../../util/messaging';
 import { AssayProtocolModel } from './models';
 import { FORM_IDS, SCRIPTS_DIR } from './constants';
 import { getScriptEngineForExtension, getValidPublishTargets } from './actions';
+import { useHitCriteriaContext } from './HitCriteriaContext';
+import { HitCriteriaRenderer } from '../../../HitCriteriaRenderer';
 
 interface AssayPropertiesInputProps extends DomainFieldLabelProps, PropsWithChildren {
     colSize?: number;
@@ -78,232 +80,212 @@ interface InputProps {
     onChange: (evt) => void;
 }
 
-export function NameInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput label="Name" required={true} hideAdvancedProperties={props.hideAdvancedProperties}>
-            <input
-                className="form-control"
-                id={FORM_IDS.ASSAY_NAME}
-                type="text"
-                placeholder="Enter a name for this assay"
-                value={props.model.name || ''}
-                onChange={props.onChange}
-                disabled={!props.model.isNew() && !props.canRename}
-            />
-        </AssayPropertiesInput>
-    );
-}
+export const NameInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput label="Name" required={true} hideAdvancedProperties={props.hideAdvancedProperties}>
+        <input
+            className="form-control"
+            id={FORM_IDS.ASSAY_NAME}
+            type="text"
+            placeholder="Enter a name for this assay"
+            value={props.model.name || ''}
+            onChange={props.onChange}
+            disabled={!props.model.isNew() && !props.canRename}
+        />
+    </AssayPropertiesInput>
+));
 
-export function DescriptionInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Description"
-            hideAdvancedProperties={props.hideAdvancedProperties}
-            helpTipBody={<p>A short description for this assay design.</p>}
+export const DescriptionInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Description"
+        hideAdvancedProperties={props.hideAdvancedProperties}
+        helpTipBody={<p>A short description for this assay design.</p>}
+    >
+        <textarea
+            className="form-control"
+            id={FORM_IDS.ASSAY_DESCRIPTION}
+            value={props.model.description || ''}
+            onChange={props.onChange}
+        />
+    </AssayPropertiesInput>
+));
+
+export const QCStatesInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="QC States"
+        helpTipBody={
+            <p>
+                If enabled, QC states can be configured and assigned on a per run basis to control the visibility of
+                imported run data. Users not in the QC Analyst role will not be able to view non-public data.
+            </p>
+        }
+    >
+        <input type="checkbox" id={FORM_IDS.QC_ENABLED} checked={props.model.qcEnabled} onChange={props.onChange} />
+    </AssayPropertiesInput>
+));
+
+export const PlateTemplatesInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Plate Template"
+        required={true}
+        colSize={6}
+        hideAdvancedProperties={props.hideAdvancedProperties}
+        helpTipBody={
+            <p>
+                Specify the plate template definition used to map spots or wells on the plate to data fields in this
+                assay design. <HelpLink topic={ASSAY_EDIT_PLATE_TEMPLATE_TOPIC}>More info</HelpLink>
+            </p>
+        }
+    >
+        <select
+            className="form-control"
+            id={FORM_IDS.PLATE_TEMPLATE}
+            onChange={props.onChange}
+            value={props.model.selectedPlateTemplate}
         >
-            <textarea
-                className="form-control"
-                id={FORM_IDS.ASSAY_DESCRIPTION}
-                value={props.model.description || ''}
-                onChange={props.onChange}
-            />
-        </AssayPropertiesInput>
-    );
-}
+            <option key="_empty" value={null} />
+            {props.model.availablePlateTemplates.map((type, i) => (
+                <option key={i} value={type}>
+                    {type}
+                </option>
+            ))}
+        </select>
+        <a className="labkey-text-link" href={buildURL('plate', 'plateTemplateList')}>
+            Configure Templates
+        </a>
+    </AssayPropertiesInput>
+));
 
-export const QCStatesInput: FC<InputProps> = props => {
-    return (
-        <AssayPropertiesInput
-            label="QC States"
-            helpTipBody={
+export const DetectionMethodsInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Detection Method"
+        required
+        colSize={6}
+        hideAdvancedProperties={props.hideAdvancedProperties}
+    >
+        <select
+            className="form-control"
+            id={FORM_IDS.DETECTION_METHOD}
+            onChange={props.onChange}
+            value={props.model.selectedDetectionMethod}
+        >
+            <option key="_empty" value={null} />
+            {props.model.availableDetectionMethods.map(method => (
+                <option key={method} value={method}>
+                    {method}
+                </option>
+            ))}
+        </select>
+    </AssayPropertiesInput>
+));
+
+export const MetadataInputFormatsInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Metadata Input Format"
+        required={true}
+        colSize={6}
+        hideAdvancedProperties={props.hideAdvancedProperties}
+        helpTipBody={
+            <>
                 <p>
-                    If enabled, QC states can be configured and assigned on a per run basis to control the visibility of
-                    imported run data. Users not in the QC Analyst role will not be able to view non-public data.
+                    <strong>Manual: </strong> Metadata is provided as form based manual entry.
                 </p>
-            }
-        >
-            <input type="checkbox" id={FORM_IDS.QC_ENABLED} checked={props.model.qcEnabled} onChange={props.onChange} />
-        </AssayPropertiesInput>
-    );
-};
-
-export function PlateTemplatesInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Plate Template"
-            required={true}
-            colSize={6}
-            hideAdvancedProperties={props.hideAdvancedProperties}
-            helpTipBody={
                 <p>
-                    Specify the plate template definition used to map spots or wells on the plate to data fields in this
-                    assay design. <HelpLink topic={ASSAY_EDIT_PLATE_TEMPLATE_TOPIC}>More info</HelpLink>
+                    <strong>File Upload (metadata only): </strong> Metadata is provided from a file upload (separate
+                    from the run data file).
                 </p>
-            }
-        >
-            <select
-                className="form-control"
-                id={FORM_IDS.PLATE_TEMPLATE}
-                onChange={props.onChange}
-                value={props.model.selectedPlateTemplate}
-            >
-                <option key="_empty" value={null} />
-                {props.model.availablePlateTemplates.map((type, i) => (
-                    <option key={i} value={type}>
-                        {type}
-                    </option>
-                ))}
-            </select>
-            <a className="labkey-text-link" href={buildURL('plate', 'plateTemplateList')}>
-                Configure Templates
-            </a>
-        </AssayPropertiesInput>
-    );
-}
-
-export function DetectionMethodsInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Detection Method"
-            required={true}
-            colSize={6}
-            hideAdvancedProperties={props.hideAdvancedProperties}
-        >
-            <select
-                className="form-control"
-                id={FORM_IDS.DETECTION_METHOD}
-                onChange={props.onChange}
-                value={props.model.selectedDetectionMethod}
-            >
-                <option key="_empty" value={null} />
-                {props.model.availableDetectionMethods.map((method, i) => (
-                    <option key={i} value={method}>
-                        {method}
-                    </option>
-                ))}
-            </select>
-        </AssayPropertiesInput>
-    );
-}
-
-export function MetadataInputFormatsInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Metadata Input Format"
-            required={true}
-            colSize={6}
-            hideAdvancedProperties={props.hideAdvancedProperties}
-            helpTipBody={
-                <>
-                    <p>
-                        <strong>Manual: </strong> Metadata is provided as form based manual entry.
-                    </p>
-                    <p>
-                        <strong>File Upload (metadata only): </strong> Metadata is provided from a file upload (separate
-                        from the run data file).
-                    </p>
-                    <p>
-                        <strong>Combined File Upload (metadata & run data): </strong> Metadata and run data are combined
-                        into a single file upload.
-                    </p>
-                </>
-            }
-        >
-            <select
-                className="form-control"
-                id={FORM_IDS.METADATA_INPUT_FORMAT}
-                onChange={props.onChange}
-                value={props.model.selectedMetadataInputFormat}
-            >
-                {Object.keys(props.model.availableMetadataInputFormats).map((key, i) => (
-                    <option key={i} value={key}>
-                        {props.model.availableMetadataInputFormats[key]}
-                    </option>
-                ))}
-            </select>
-        </AssayPropertiesInput>
-    );
-}
-
-export const AssayStatusInput = props => {
-    return (
-        <AssayPropertiesInput
-            label="Active"
-            hideAdvancedProperties={props.hideAdvancedProperties}
-            helpTipBody={
-                <p>If disabled, this assay design will be considered archived, and will be hidden in certain views.</p>
-            }
-        >
-            <input type="checkbox" id={FORM_IDS.STATUS} checked={props.model.isActive()} onChange={props.onChange} />
-        </AssayPropertiesInput>
-    );
-};
-
-export function EditableRunsInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Editable Runs"
-            hideAdvancedProperties={props.hideAdvancedProperties}
-            helpTipBody={
                 <p>
-                    If enabled, users with sufficient permissions can edit values at the run level after the initial
-                    import is complete. These changes will be audited.
+                    <strong>Combined File Upload (metadata & run data): </strong> Metadata and run data are combined
+                    into a single file upload.
                 </p>
-            }
+            </>
+        }
+    >
+        <select
+            className="form-control"
+            id={FORM_IDS.METADATA_INPUT_FORMAT}
+            onChange={props.onChange}
+            value={props.model.selectedMetadataInputFormat}
         >
-            <input
-                type="checkbox"
-                id={FORM_IDS.EDITABLE_RUNS}
-                checked={props.model.editableRuns}
-                onChange={props.onChange}
-            />
-        </AssayPropertiesInput>
-    );
-}
+            {Object.keys(props.model.availableMetadataInputFormats).map((key, i) => (
+                <option key={i} value={key}>
+                    {props.model.availableMetadataInputFormats[key]}
+                </option>
+            ))}
+        </select>
+    </AssayPropertiesInput>
+));
 
-export function EditableResultsInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Editable Results"
-            hideAdvancedProperties={props.hideAdvancedProperties}
-            helpTipBody={
-                <p>
-                    If enabled, users with sufficient permissions can edit and delete at the individual results row
-                    level after the initial import is complete. New result rows cannot be added to existing runs. These
-                    changes will be audited.
-                </p>
-            }
-        >
-            <input
-                type="checkbox"
-                id={FORM_IDS.EDITABLE_RESULTS}
-                checked={props.model.editableResults}
-                onChange={props.onChange}
-            />
-        </AssayPropertiesInput>
-    );
-}
+export const AssayStatusInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Active"
+        hideAdvancedProperties={props.hideAdvancedProperties}
+        helpTipBody={
+            <p>If disabled, this assay design will be considered archived, and will be hidden in certain views.</p>
+        }
+    >
+        <input type="checkbox" id={FORM_IDS.STATUS} checked={props.model.isActive()} onChange={props.onChange} />
+    </AssayPropertiesInput>
+));
 
-export function BackgroundUploadInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Import in Background"
-            helpTipBody={
-                <p>
-                    If enabled, assay imports will be processed as jobs in the data pipeline. If there are any errors
-                    during the import, they can be viewed from the log file for that job.
-                </p>
-            }
-        >
-            <input
-                type="checkbox"
-                id={FORM_IDS.BACKGROUND_UPLOAD}
-                checked={props.model.backgroundUpload}
-                onChange={props.onChange}
-            />
-        </AssayPropertiesInput>
-    );
-}
+export const EditableRunsInput: FC<InputProps> = memo((props: InputProps) => (
+    <AssayPropertiesInput
+        label="Editable Runs"
+        hideAdvancedProperties={props.hideAdvancedProperties}
+        helpTipBody={
+            <p>
+                If enabled, users with sufficient permissions can edit values at the run level after the initial import
+                is complete. These changes will be audited.
+            </p>
+        }
+    >
+        <input
+            type="checkbox"
+            id={FORM_IDS.EDITABLE_RUNS}
+            checked={props.model.editableRuns}
+            onChange={props.onChange}
+        />
+    </AssayPropertiesInput>
+));
+
+export const EditableResultsInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Editable Results"
+        hideAdvancedProperties={props.hideAdvancedProperties}
+        helpTipBody={
+            <p>
+                If enabled, users with sufficient permissions can edit and delete at the individual results row level
+                after the initial import is complete. New result rows cannot be added to existing runs. These changes
+                will be audited.
+            </p>
+        }
+    >
+        <input
+            type="checkbox"
+            id={FORM_IDS.EDITABLE_RESULTS}
+            checked={props.model.editableResults}
+            onChange={props.onChange}
+        />
+    </AssayPropertiesInput>
+));
+
+export const BackgroundUploadInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Import in Background"
+        helpTipBody={
+            <p>
+                If enabled, assay imports will be processed as jobs in the data pipeline. If there are any errors during
+                the import, they can be viewed from the log file for that job.
+            </p>
+        }
+    >
+        <input
+            type="checkbox"
+            id={FORM_IDS.BACKGROUND_UPLOAD}
+            checked={props.model.backgroundUpload}
+            onChange={props.onChange}
+        />
+    </AssayPropertiesInput>
+));
 
 interface AutoLinkDataInputState {
     containers: Container[];
@@ -359,70 +341,63 @@ export class AutoLinkDataInput extends React.PureComponent<InputProps, AutoLinkD
     }
 }
 
-export const AutoLinkCategoryInput: FC<InputProps> = memo(props => {
-    const { model, onChange } = props;
-
-    return (
-        <AssayPropertiesInput
-            label="Linked Dataset Category"
-            helpTipBody={
-                <>
-                    <p>
-                        Specify the desired category for the Assay Dataset that will be created (or appended to) in the
-                        target study when rows are linked. If the category you specify does not exist, it will be
-                        created.
-                    </p>
-                    <p>
-                        If the Assay Dataset already exists, this setting will not overwrite a previously assigned
-                        category. Leave blank to use the default category of "Uncategorized".
-                    </p>
-                </>
-            }
-        >
-            <input
-                className="form-control"
-                id={FORM_IDS.AUTO_LINK_CATEGORY}
-                type="text"
-                value={model.autoLinkCategory}
-                onChange={onChange}
-            />
-        </AssayPropertiesInput>
-    );
-});
+export const AutoLinkCategoryInput: FC<InputProps> = memo(({ model, onChange }) => (
+    <AssayPropertiesInput
+        label="Linked Dataset Category"
+        helpTipBody={
+            <>
+                <p>
+                    Specify the desired category for the Assay Dataset that will be created (or appended to) in the
+                    target study when rows are linked. If the category you specify does not exist, it will be created.
+                </p>
+                <p>
+                    If the Assay Dataset already exists, this setting will not overwrite a previously assigned category.
+                    Leave blank to use the default category of "Uncategorized".
+                </p>
+            </>
+        }
+    >
+        <input
+            className="form-control"
+            id={FORM_IDS.AUTO_LINK_CATEGORY}
+            type="text"
+            value={model.autoLinkCategory}
+            onChange={onChange}
+        />
+    </AssayPropertiesInput>
+));
 
 interface ModuleProvidedScriptsInputProps {
     model: AssayProtocolModel;
 }
 
-export function ModuleProvidedScriptsInput(props: ModuleProvidedScriptsInputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Module-Provided Scripts"
-            helpTipBody={
-                <>
-                    <p>
-                        These scripts are part of the assay type and cannot be removed. They will run after any custom
-                        scripts configured above.
-                    </p>
-                    <p>
-                        The extension of the script file identifies the scripting engine that will be used to run the
-                        validation script. For example, a script named test.pl will be run with the Perl scripting
-                        engine. The scripting engine must be configured on the Views and Scripting page in the Admin
-                        Console. <HelpLink topic={CONFIGURE_SCRIPTING_TOPIC}>More info</HelpLink>
-                    </p>
-                </>
-            }
-        >
-            {props.model.moduleTransformScripts
-                .map((script, i) => (
-                    <div key={i} className="module-transform-script" style={{ overflowWrap: 'break-word' }}>
-                        {script}
-                    </div>
-                ))
-                .toArray()}
-        </AssayPropertiesInput>
-    );
-}
+export const ModuleProvidedScriptsInput: FC<ModuleProvidedScriptsInputProps> = props => (
+    <AssayPropertiesInput
+        label="Module-Provided Scripts"
+        helpTipBody={
+            <>
+                <p>
+                    These scripts are part of the assay type and cannot be removed. They will run after any custom
+                    scripts configured above.
+                </p>
+                <p>
+                    The extension of the script file identifies the scripting engine that will be used to run the
+                    validation script. For example, a script named test.pl will be run with the Perl scripting engine.
+                    The scripting engine must be configured on the Views and Scripting page in the Admin Console.{' '}
+                    <HelpLink topic={CONFIGURE_SCRIPTING_TOPIC}>More info</HelpLink>
+                </p>
+            </>
+        }
+    >
+        {props.model.moduleTransformScripts
+            .map((script, i) => (
+                <div key={i} className="module-transform-script" style={{ overflowWrap: 'break-word' }}>
+                    {script}
+                </div>
+            ))
+            .toArray()}
+    </AssayPropertiesInput>
+);
 
 enum AddingScriptType {
     file,
@@ -689,75 +664,89 @@ export class TransformScriptsInput extends React.PureComponent<TransformScriptsI
     }
 }
 
-export function SaveScriptDataInput(props: InputProps) {
-    const { model } = props;
-
-    return (
-        <AssayPropertiesInput
-            label="Save Script Data for Debugging"
-            helpTipBody={
-                <>
-                    <p>
-                        Typically transform and validation script data files are deleted on script completion. For debug
-                        purposes, it can be helpful to be able to view the files generated by the server that are passed
-                        to the script.
-                    </p>
-                    <p>
-                        If this checkbox is checked, files will be saved to a subfolder named:
-                        "TransformAndValidationFiles", located in the same folder that the original script is located.
-                    </p>
-                    {!model.isNew() && (
-                        <p>
-                            Use the "Download template files" link to get example files for your assay design.{' '}
-                            <HelpLink topic={RUN_PROPERTIES_TOPIC} useDefaultUrl>
-                                More info
-                            </HelpLink>
-                        </p>
-                    )}
-                </>
-            }
-        >
-            <input
-                type="checkbox"
-                id={FORM_IDS.SAVE_SCRIPT_FILES}
-                checked={props.model.saveScriptFiles}
-                onChange={props.onChange}
-            />
-            {!model.isNew() && (
-                <div className="transform-script--download-link">
-                    <a
-                        href={buildURL('assay', 'downloadSampleQCData', {
-                            rowId: model.protocolId,
-                        })}
-                        target="_blank"
-                        className="labkey-text-link"
-                        rel="noopener noreferrer"
-                    >
-                        Download template files
-                    </a>
-                </div>
-            )}
-        </AssayPropertiesInput>
-    );
-}
-
-export function PlateMetadataInput(props: InputProps) {
-    return (
-        <AssayPropertiesInput
-            label="Plate Metadata"
-            helpTipBody={
+export const SaveScriptDataInput: FC<InputProps> = memo(({ model, onChange }) => (
+    <AssayPropertiesInput
+        label="Save Script Data for Debugging"
+        helpTipBody={
+            <>
                 <p>
-                    If enabled, plate template metadata can be added on a per run basis to combine tabular data that has
-                    well location information with plate based data.
+                    Typically transform and validation script data files are deleted on script completion. For debug
+                    purposes, it can be helpful to be able to view the files generated by the server that are passed to
+                    the script.
                 </p>
-            }
-        >
-            <input
-                type="checkbox"
-                id={FORM_IDS.PLATE_METADATA}
-                checked={props.model.plateMetadata}
-                onChange={props.onChange}
-            />
+                <p>
+                    If this checkbox is checked, files will be saved to a subfolder named:
+                    "TransformAndValidationFiles", located in the same folder that the original script is located.
+                </p>
+                {!model.isNew() && (
+                    <p>
+                        Use the "Download template files" link to get example files for your assay design.{' '}
+                        <HelpLink topic={RUN_PROPERTIES_TOPIC} useDefaultUrl>
+                            More info
+                        </HelpLink>
+                    </p>
+                )}
+            </>
+        }
+    >
+        <input type="checkbox" id={FORM_IDS.SAVE_SCRIPT_FILES} checked={model.saveScriptFiles} onChange={onChange} />
+        {!model.isNew() && (
+            <div className="transform-script--download-link">
+                <a
+                    href={buildURL('assay', 'downloadSampleQCData', {
+                        rowId: model.protocolId,
+                    })}
+                    target="_blank"
+                    className="labkey-text-link"
+                    rel="noopener noreferrer"
+                >
+                    Download template files
+                </a>
+            </div>
+        )}
+    </AssayPropertiesInput>
+));
+
+export const PlateMetadataInput: FC<InputProps> = memo(props => (
+    <AssayPropertiesInput
+        label="Plate Metadata"
+        helpTipBody={
+            <p>
+                If enabled, plate template metadata can be added on a per run basis to combine tabular data that has
+                well location information with plate based data.
+            </p>
+        }
+    >
+        <input
+            type="checkbox"
+            id={FORM_IDS.PLATE_METADATA}
+            checked={props.model.plateMetadata}
+            onChange={props.onChange}
+        />
+    </AssayPropertiesInput>
+));
+
+export const HitCriteriaInput: FC<InputProps> = memo(({ model }) => {
+    const context = useHitCriteriaContext();
+
+    if (!context) return null;
+
+    const { openModal } = context;
+    const onClick = useCallback(() => openModal(), [openModal]);
+    const domain = useMemo(() => model.domains.find(domain => domain.isNameSuffixMatch('Data')), [model.domains]);
+
+    return (
+        <AssayPropertiesInput label="Hit Selection Criteria">
+            <div className="hit-selection-criteria-input">
+                <div className="hit-selection-criteria-input__button">
+                    <button className="btn btn-default" onClick={onClick} type="button">
+                        Edit Criteria
+                    </button>
+                </div>
+                <div className="hit-selection-criteria-input__criteria">
+                    <HitCriteriaRenderer criteria={context.hitCriteria} fields={domain.fields.toArray()} />
+                </div>
+            </div>
         </AssayPropertiesInput>
     );
-}
+});

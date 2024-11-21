@@ -13,14 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { List, Record } from 'immutable';
+import { List, Record as ImmutableRecord } from 'immutable';
+import { Filter } from '@labkey/api';
 
 import { getServerContext, Utils } from '@labkey/api';
 
-import { DomainDesign, FieldErrors } from '../models';
+import { DomainDesign, DomainField, FieldErrors } from '../models';
 import { AppURL } from '../../../url/AppURL';
 import { getAppHomeFolderPath } from '../../../app/utils';
 import { Container } from '../../base/models/Container';
+
+// HitCriteria should be stored as a Record, where the key is in the form of: propertyId:<number> or fieldKey:<string>
+// We use propertyId:<number> to reference existing fields, and fieldKey:<string> to reference new fields when sending
+// to the server. However, when working locally we always use propertyId:<number> and use fake (negative indexed)
+// propertyIds in order to prevent issues when users re-name new fields.
+export type HitCriteria = Record<string, Filter.IFilter[]>;
+
+// Locally we always want to use the propertyId to handle changes to the field name, but during upload we have to use
+// the field name for new fields.
+export function hitCriteriaKey(field: DomainField, forUpload?: false): string {
+    const useFieldKey = forUpload && field.propertyId < 0;
+    const prefix = useFieldKey ? 'fieldKey' : 'propertyId';
+    const value = useFieldKey ? field.name : field.propertyId;
+    return `${prefix}:${value}`;
+}
 
 // See ExpProtocol.Status in 'platform' repository.
 export enum Status {
@@ -28,7 +44,7 @@ export enum Status {
     Archived = 'Archived',
 }
 
-export class AssayProtocolModel extends Record({
+export class AssayProtocolModel extends ImmutableRecord({
     allowBackgroundUpload: false,
     allowEditableResults: false,
     allowQCStates: false,
@@ -41,6 +57,7 @@ export class AssayProtocolModel extends Record({
     availableMetadataInputFormats: undefined,
     availablePlateTemplates: undefined,
     backgroundUpload: false,
+    hitCriteria: {},
     description: undefined,
     domains: undefined,
     editableResults: false,
@@ -74,6 +91,7 @@ export class AssayProtocolModel extends Record({
     declare availableMetadataInputFormats: {};
     declare availablePlateTemplates: [];
     declare backgroundUpload: boolean;
+    declare hitCriteria: HitCriteria;
     declare description: string;
     declare domains: List<DomainDesign>;
     declare editableResults: boolean;

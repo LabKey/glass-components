@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC, memo, useCallback, useMemo } from 'react';
 import { List, Map } from 'immutable';
 
 import { getDefaultAPIWrapper } from '../../../APIWrapper';
@@ -27,12 +27,123 @@ import { AssayRunDataType } from '../../entities/constants';
 
 import { FolderConfigurableDataType } from '../../entities/models';
 
+import { HitCriteriaModal } from '../../../HitCriteriaModal';
+
 import { saveAssayDesign } from './actions';
-import { AssayProtocolModel } from './models';
+import { AssayProtocolModel, HitCriteria } from './models';
 import { AssayPropertiesPanel } from './AssayPropertiesPanel';
+import { HitCriteriaContext } from './HitCriteriaContext';
 
 const PROPERTIES_PANEL_INDEX = 0;
 const DOMAIN_PANEL_INDEX = 1;
+
+interface AssayDomainFormProps
+    extends Omit<InjectedBaseDomainDesignerProps, 'onFinish' | 'setSubmitting' | 'submitting'> {
+    api: DomainPropertiesAPIWrapper;
+    appDomainHeaders?: Map<string, HeaderRenderer>;
+    domain: DomainDesign;
+    domainFormDisplayOptions: IDomainFormDisplayOptions;
+    hideAdvancedProperties?: boolean;
+    index: number;
+    onDomainChange: (
+        index: number,
+        updatedDomain: DomainDesign,
+        dirty: boolean,
+        rowIndexChange?: DomainFieldIndexChange[],
+        changes?: List<IFieldChange>
+    ) => void;
+    protocolModel: AssayProtocolModel;
+}
+
+const AssayDomainForm: FC<AssayDomainFormProps> = memo(props => {
+    const {
+        api,
+        appDomainHeaders,
+        currentPanelIndex,
+        domain,
+        domainFormDisplayOptions,
+        firstState,
+        hideAdvancedProperties,
+        index,
+        onDomainChange,
+        onTogglePanel,
+        protocolModel,
+        validatePanel,
+        visitedPanels,
+    } = props;
+    const onChange = useCallback(
+        (updatedDomain, dirty, rowIndexChange, changes) => {
+            onDomainChange(index, updatedDomain, dirty, rowIndexChange, changes);
+        },
+        [index, onDomainChange]
+    );
+    const onToggle = useCallback(
+        (collapsed: boolean, callback: () => void) => {
+            onTogglePanel(index + DOMAIN_PANEL_INDEX, collapsed, callback);
+        },
+        [index, onTogglePanel]
+    );
+    const appDomainHeaderRenderer = useMemo(() => {
+        if (!appDomainHeaders) return;
+
+        const headerKey = appDomainHeaders.keySeq().find(key => domain.isNameSuffixMatch(key));
+
+        return appDomainHeaders.get(headerKey);
+    }, [appDomainHeaders, domain]);
+    const displayOptions = useMemo(() => {
+        const isGpat = protocolModel.providerName === GENERAL_ASSAY_PROVIDER_NAME;
+        const isResultsDomain = domain.isNameSuffixMatch('Data');
+        const isRunDomain = domain.isNameSuffixMatch('Run');
+        const hideFilePropertyType =
+            domainFormDisplayOptions.hideFilePropertyType && !domain.isNameSuffixMatch('Batch') && !isRunDomain;
+        const hideInferFromFile = !isGpat || !isResultsDomain;
+        const textChoiceLockedForDomain = !(
+            (isRunDomain && protocolModel.editableRuns) ||
+            (isResultsDomain && protocolModel.editableResults)
+        );
+        return {
+            ...domainFormDisplayOptions,
+            domainKindDisplayName: 'assay design',
+            hideFilePropertyType,
+            hideInferFromFile,
+            textChoiceLockedForDomain,
+            showHitCriteria: isResultsDomain,
+        };
+    }, [
+        domain,
+        domainFormDisplayOptions,
+        protocolModel.editableResults,
+        protocolModel.editableRuns,
+        protocolModel.providerName,
+    ]);
+    return (
+        <DomainForm
+            key={domain.domainId || index}
+            api={api}
+            index={domain.domainId || index}
+            domainIndex={index}
+            domain={domain}
+            headerPrefix={protocolModel?.name}
+            controlledCollapse
+            initCollapsed={currentPanelIndex !== index + DOMAIN_PANEL_INDEX}
+            validate={validatePanel === index + DOMAIN_PANEL_INDEX}
+            panelStatus={
+                protocolModel.isNew()
+                    ? getDomainPanelStatus(index + DOMAIN_PANEL_INDEX, currentPanelIndex, visitedPanels, firstState)
+                    : 'COMPLETE'
+            }
+            helpTopic={null} // null so that we don't show the "learn more about this tool" link for these domains
+            onChange={onChange}
+            onToggle={onToggle}
+            appDomainHeaderRenderer={appDomainHeaderRenderer}
+            modelDomains={protocolModel.domains}
+            appPropertiesOnly={hideAdvancedProperties}
+            domainFormDisplayOptions={displayOptions}
+        >
+            <div>{domain.description}</div>
+        </DomainForm>
+    );
+});
 
 export interface AssayDesignerPanelsProps {
     allowFolderExclusion?: boolean;
@@ -55,13 +166,13 @@ export interface AssayDesignerPanelsProps {
 type Props = AssayDesignerPanelsProps & InjectedBaseDomainDesignerProps;
 
 interface State {
+    modalOpen: boolean;
+    openTo?: number;
     protocolModel: AssayProtocolModel;
 }
 
 // Exported for testing
 export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
-    panelCount = 1; // start at 1 for the AssayPropertiesPanel, will updated count after domains are defined in constructor
-
     static defaultProps = {
         api: getDefaultAPIWrapper().domain,
         domainFormDisplayOptions: DEFAULT_DOMAIN_FORM_DISPLAY_OPTIONS,
@@ -70,9 +181,9 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.panelCount = this.panelCount + props.initModel.domains.size;
-
         this.state = {
+            modalOpen: false,
+            openTo: undefined,
             protocolModel: props.initModel,
         };
     }
@@ -204,24 +315,38 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
         });
     };
 
-    getAppDomainHeaderRenderer = (domain: DomainDesign): HeaderRenderer => {
-        const { appDomainHeaders } = this.props;
-
-        if (!appDomainHeaders) return undefined;
-
-        return appDomainHeaders.filter((v, k) => domain.isNameSuffixMatch(k)).first();
-    };
-
     onUpdateExcludedFolders = (_: FolderConfigurableDataType, excludedContainerIds: string[]): void => {
         const { protocolModel } = this.state;
         const newModel = protocolModel.merge({ excludedContainerIds }) as AssayProtocolModel;
         this.onAssayPropertiesChange(newModel);
     };
 
+    openModal = (openTo?: number): void => {
+        this.setState({ modalOpen: true, openTo });
+    };
+
+    closeModal = (): void => {
+        this.setState({ modalOpen: false, openTo: undefined });
+    };
+
+    saveHitCriteria = (hitCriteria: HitCriteria) => {
+        this.setState(current => {
+            // Note: use protocolModel.set instead of merge so hitCriteria doesn't get converted to an immutable object
+            return {
+                modalOpen: false,
+                openTo: undefined,
+                protocolModel: current.protocolModel.set('hitCriteria', hitCriteria) as AssayProtocolModel,
+            };
+        });
+    };
+
+    togglePropertiesPanel = (collapsed, callback): void => {
+        this.props.onTogglePanel(PROPERTIES_PANEL_INDEX, collapsed, callback);
+    };
+
     render() {
         const {
             allowFolderExclusion,
-            initModel,
             api,
             appPropertiesOnly,
             hideAdvancedProperties,
@@ -235,9 +360,17 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
             onCancel,
             saveBtnText,
         } = this.props;
-        const { protocolModel } = this.state;
-
+        const { modalOpen, openTo, protocolModel } = this.state;
         const isGpat = protocolModel.providerName === GENERAL_ASSAY_PROVIDER_NAME;
+
+        const hitCriteriaState = {
+            openModal: this.openModal,
+            hitCriteria: protocolModel.hitCriteria,
+        };
+        const panelStatus = protocolModel.isNew()
+            ? getDomainPanelStatus(PROPERTIES_PANEL_INDEX, currentPanelIndex, visitedPanels, firstState)
+            : 'COMPLETE';
+
         return (
             <BaseDomainDesigner
                 name={protocolModel.name}
@@ -250,90 +383,57 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                 onFinish={this.onFinish}
                 saveBtnText={saveBtnText}
             >
-                <AssayPropertiesPanel
-                    model={protocolModel}
-                    onChange={this.onAssayPropertiesChange}
-                    controlledCollapse
-                    initCollapsed={currentPanelIndex !== PROPERTIES_PANEL_INDEX}
-                    panelStatus={
-                        protocolModel.isNew()
-                            ? getDomainPanelStatus(PROPERTIES_PANEL_INDEX, currentPanelIndex, visitedPanels, firstState)
-                            : 'COMPLETE'
-                    }
-                    validate={validatePanel === PROPERTIES_PANEL_INDEX}
-                    appPropertiesOnly={appPropertiesOnly}
-                    hideAdvancedProperties={hideAdvancedProperties}
-                    hideStudyProperties={!!domainFormDisplayOptions && domainFormDisplayOptions.hideStudyPropertyTypes}
-                    onToggle={(collapsed, callback) => {
-                        onTogglePanel(PROPERTIES_PANEL_INDEX, collapsed, callback);
-                    }}
-                    canRename={isGpat}
-                />
-                {protocolModel.domains
-                    .map((domain, i) => {
-                        // optionally hide the Batch Fields domain from the UI
-                        if (this.shouldSkipBatchDomain(domain)) {
-                            return;
+                <HitCriteriaContext.Provider value={hitCriteriaState}>
+                    <AssayPropertiesPanel
+                        model={protocolModel}
+                        onChange={this.onAssayPropertiesChange}
+                        controlledCollapse
+                        initCollapsed={currentPanelIndex !== PROPERTIES_PANEL_INDEX}
+                        panelStatus={panelStatus}
+                        validate={validatePanel === PROPERTIES_PANEL_INDEX}
+                        appPropertiesOnly={appPropertiesOnly}
+                        hideAdvancedProperties={hideAdvancedProperties}
+                        hideStudyProperties={
+                            !!domainFormDisplayOptions && domainFormDisplayOptions.hideStudyPropertyTypes
                         }
+                        onToggle={this.togglePropertiesPanel}
+                        canRename={isGpat}
+                    />
+                    {protocolModel.domains
+                        .toArray()
+                        // FIXME: For some reason if you filter here it forces the results domain to render twice. Even
+                        // if you keep the shouldSkipBatchDomain check in the map method below.
+                        // .filter(domain => !this.shouldSkipBatchDomain(domain))
+                        .map((domain, i) => {
+                            // optionally hide the Batch Fields domain from the UI
+                            if (this.shouldSkipBatchDomain(domain)) return;
 
-                        // allow empty domain to be inferred from a file for Data Fields in General assay
-                        const hideInferFromFile = !isGpat || !domain.isNameSuffixMatch('Data');
-                        // The File property type should be hidden for Data domains if the display options indicate this.
-                        // We will always allow file property types for the Batch and Run domains.
-                        const hideFilePropertyType =
-                            domainFormDisplayOptions.hideFilePropertyType &&
-                            !domain.isNameSuffixMatch('Batch') &&
-                            !domain.isNameSuffixMatch('Run');
-                        const appDomainHeaderRenderer = this.getAppDomainHeaderRenderer(domain);
-                        const textChoiceLockedForDomain = !(
-                            (domain.isNameSuffixMatch('Run') && protocolModel.editableRuns) ||
-                            (domain.isNameSuffixMatch('Data') && protocolModel.editableResults)
-                        );
-
-                        return (
-                            <DomainForm
-                                key={domain.domainId || i}
-                                api={api}
-                                index={domain.domainId || i}
-                                domainIndex={i}
-                                domain={domain}
-                                headerPrefix={initModel?.name}
-                                controlledCollapse
-                                initCollapsed={currentPanelIndex !== i + DOMAIN_PANEL_INDEX}
-                                validate={validatePanel === i + DOMAIN_PANEL_INDEX}
-                                panelStatus={
-                                    protocolModel.isNew()
-                                        ? getDomainPanelStatus(
-                                              i + DOMAIN_PANEL_INDEX,
-                                              currentPanelIndex,
-                                              visitedPanels,
-                                              firstState
-                                          )
-                                        : 'COMPLETE'
-                                }
-                                helpTopic={null} // null so that we don't show the "learn more about this tool" link for these domains
-                                onChange={(updatedDomain, dirty, rowIndexChange, changes) => {
-                                    this.onDomainChange(i, updatedDomain, dirty, rowIndexChange, changes);
-                                }}
-                                onToggle={(collapsed, callback) => {
-                                    onTogglePanel(i + DOMAIN_PANEL_INDEX, collapsed, callback);
-                                }}
-                                appDomainHeaderRenderer={appDomainHeaderRenderer}
-                                modelDomains={protocolModel.domains}
-                                appPropertiesOnly={hideAdvancedProperties}
-                                domainFormDisplayOptions={{
-                                    ...domainFormDisplayOptions,
-                                    domainKindDisplayName: 'assay design',
-                                    hideFilePropertyType,
-                                    hideInferFromFile,
-                                    textChoiceLockedForDomain,
-                                }}
-                            >
-                                <div>{domain.description}</div>
-                            </DomainForm>
-                        );
-                    })
-                    .toArray()}
+                            return (
+                                <AssayDomainForm
+                                    api={api}
+                                    domain={domain}
+                                    domainFormDisplayOptions={domainFormDisplayOptions}
+                                    index={i}
+                                    key={domain.name}
+                                    onDomainChange={this.onDomainChange}
+                                    protocolModel={protocolModel}
+                                    currentPanelIndex={currentPanelIndex}
+                                    firstState={firstState}
+                                    onTogglePanel={onTogglePanel}
+                                    validatePanel={validatePanel}
+                                    visitedPanels={visitedPanels}
+                                />
+                            );
+                        })}
+                    {modalOpen && (
+                        <HitCriteriaModal
+                            model={protocolModel}
+                            onClose={this.closeModal}
+                            openTo={openTo}
+                            onSave={this.saveHitCriteria}
+                        />
+                    )}
+                </HitCriteriaContext.Provider>
                 {appPropertiesOnly && allowFolderExclusion && (
                     <DataTypeFoldersPanel
                         controlledCollapse
@@ -353,4 +453,4 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
 }
 
 export const AssayDesignerPanels = withBaseDomainDesigner<AssayDesignerPanelsProps>(AssayDesignerPanelsImpl);
-AssayDesignerPanels.displayName = 'AssayDesignerPanels'
+AssayDesignerPanels.displayName = 'AssayDesignerPanels';

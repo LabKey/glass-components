@@ -189,6 +189,9 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
         domainFormDisplayOptions: DEFAULT_DOMAIN_FORM_DISPLAY_OPTIONS, // add configurations options to DomainForm through this object
     };
 
+    // Negative index new propertyIds so we can easily differentiate between new and existing fields
+    propertyIdCounter = -1;
+
     constructor(props: DomainFormProps) {
         super(props);
 
@@ -591,7 +594,7 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
 
     applyAddField = (config?: Partial<IDomainField>): void => {
         const { newFieldConfig } = this.props;
-        const newConfig = config ? { ...config } : newFieldConfig;
+        const newConfig = Object.assign({}, config ? config : newFieldConfig, { propertyId: this.propertyIdCounter-- });
         const newDomain = addDomainField(this.props.domain, newConfig);
         this.onDomainChange(newDomain, true);
         this.setState({ selectAll: false, visibleFieldsCount: getVisibleFieldCount(newDomain) }, this.collapseRow);

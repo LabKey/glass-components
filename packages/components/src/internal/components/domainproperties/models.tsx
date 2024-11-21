@@ -1486,7 +1486,7 @@ export function updateSampleField(field: Partial<DomainField>, sampleQueryValue?
 }
 
 function isFieldNew(field: Partial<IDomainField>): boolean {
-    return field.propertyId === undefined;
+    return field.propertyId === undefined || field.propertyId < 0;
 }
 
 function isFieldSaved(field: Partial<IDomainField>): boolean {
@@ -2065,6 +2065,7 @@ export interface IDomainFormDisplayOptions {
     phiLevelDisabled?: boolean;
     retainReservedFields?: boolean;
     showScannableOption?: boolean;
+    showHitCriteria?: boolean;
     textChoiceLockedForDomain?: boolean;
     textChoiceLockedSqlFragment?: string;
 }

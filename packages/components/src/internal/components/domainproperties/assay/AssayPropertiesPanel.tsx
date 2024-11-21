@@ -30,6 +30,7 @@ import {
     DetectionMethodsInput,
     EditableResultsInput,
     EditableRunsInput,
+    HitCriteriaInput,
     MetadataInputFormatsInput,
     ModuleProvidedScriptsInput,
     NameInput,
@@ -122,13 +123,6 @@ const AssayPropertiesForm: FC<AssayPropertiesFormProps> = memo(props => {
                         onChange={onInputChange}
                         hideAdvancedProperties={hideAdvancedProperties}
                     />
-                    {model.allowPlateTemplateSelection() && (
-                        <PlateTemplatesInput
-                            model={model}
-                            onChange={onInputChange}
-                            hideAdvancedProperties={hideAdvancedProperties}
-                        />
-                    )}
                     {model.allowDetectionMethodSelection() && (
                         <DetectionMethodsInput
                             model={model}
@@ -145,9 +139,6 @@ const AssayPropertiesForm: FC<AssayPropertiesFormProps> = memo(props => {
                     )}
                     {!hideAdvancedProperties && model.allowQCStates && isAssayQCEnabled(moduleContext) && (
                         <QCStatesInput model={model} onChange={onInputChange} />
-                    )}
-                    {(!appPropertiesOnly || isPlatesEnabled(moduleContext)) && model.allowPlateMetadata && (
-                        <PlateMetadataInput model={model} onChange={onInputChange} />
                     )}
                     {isPremiumProductEnabled(moduleContext) && (
                         <AssayStatusInput
@@ -188,6 +179,24 @@ const AssayPropertiesForm: FC<AssayPropertiesFormProps> = memo(props => {
                             <SaveScriptDataInput model={model} onChange={onInputChange} />
                         )}
                         {model.moduleTransformScripts?.size > 0 && <ModuleProvidedScriptsInput model={model} />}
+                    </div>
+                </div>
+            )}
+
+            {(!appPropertiesOnly || isPlatesEnabled(moduleContext)) && (
+                <div className="col-xs-12 col-lg-6">
+                    <div className="domain-field-padding-bottom">
+                        <SectionHeading title="Plate Settings" />
+                        {model.allowPlateTemplateSelection() && (
+                            <PlateTemplatesInput
+                                model={model}
+                                onChange={onInputChange}
+                                hideAdvancedProperties={hideAdvancedProperties}
+                            />
+                        )}
+                        {model.allowPlateMetadata && <PlateMetadataInput model={model} onChange={onInputChange} />}
+
+                        <HitCriteriaInput model={model} onChange={onInputChange} />
                     </div>
                 </div>
             )}

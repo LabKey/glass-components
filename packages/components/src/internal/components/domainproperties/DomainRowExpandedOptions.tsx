@@ -34,6 +34,7 @@ import { TextChoiceOptions } from './TextChoiceOptions';
 import { FileAttachmentOptions } from './FileAttachmentOptions';
 import { CalculatedFieldOptions } from './CalculatedFieldOptions';
 import { CALCULATED_TYPE } from './PropDescType';
+import { FieldHitCriteria } from './FieldHitCriteria';
 
 interface Props {
     appPropertiesOnly?: boolean;
@@ -324,6 +325,7 @@ export class DomainRowExpandedOptions extends React.Component<Props> {
                             />
                         </div>
                     )}
+                    {domainFormDisplayOptions.showHitCriteria && <FieldHitCriteria field={field} />}
                 </div>
             </div>
         );
