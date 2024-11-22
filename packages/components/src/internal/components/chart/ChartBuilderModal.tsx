@@ -82,11 +82,11 @@ const TRENDLINE_OPTIONS: TrendlineType[] = [
     { label: 'Point-to-Point', value: '' },
     { label: 'Linear Regression', value: 'Linear' },
     { label: 'Polynomial', value: 'Polynomial' },
-    { label: 'Nonlinear 3PL', value: '3 Parameter', showMax: true, schemaPrefix: 'assay' },
-    { label: 'Nonlinear 4PL', value: '4 Parameter', schemaPrefix: 'assay' },
-    { label: 'Three Parameter', value: 'Three Parameter', showMax: true, schemaPrefix: 'assay' },
-    { label: 'Four Parameter', value: 'Four Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
-    { label: 'Five Parameter', value: 'Five Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
+    { label: 'Nonlinear 3PL', value: 'Three Parameter', showMax: true, schemaPrefix: 'assay' },
+    { label: 'Nonlinear 3PL (Alternate)', value: '3 Parameter', showMax: true, schemaPrefix: 'assay' },
+    { label: 'Nonlinear 4PL', value: 'Four Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
+    { label: 'Nonlinear 4PL (Simplex)', value: '4 Parameter', schemaPrefix: 'assay' },
+    { label: 'Nonlinear 5PL', value: 'Five Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
 ];
 const ICONS = {
     bar_chart: 'bar_chart',
