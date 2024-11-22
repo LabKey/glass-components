@@ -73,3 +73,11 @@ export interface VisualizationConfigModel {
 export interface GenericChartModel extends Visualization.VisualizationGetResponse {
     visualizationConfig: VisualizationConfigModel;
 }
+
+export interface TrendlineType {
+    label: string;
+    schemaPrefix?: string;
+    showMax?: boolean;
+    showMin?: boolean;
+    value: string;
+}

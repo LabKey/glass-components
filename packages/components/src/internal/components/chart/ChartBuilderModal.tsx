@@ -30,9 +30,12 @@ import { LabelOverlay } from '../forms/LabelOverlay';
 
 import { isAppHomeFolder } from '../../app/utils';
 
+import { SchemaQuery } from '../../../public/SchemaQuery';
+
 import { deleteChart, saveChart, SaveReportConfig } from './actions';
 
-import { ChartConfig, ChartQueryConfig, GenericChartModel } from './models';
+import { ChartConfig, ChartQueryConfig, GenericChartModel, TrendlineType } from './models';
+import {PropDescType} from "../domainproperties/PropDescType";
 
 interface AggregateFieldInfo {
     name: string;
@@ -75,16 +78,15 @@ const BAR_CHART_AGGREGATE_METHODS = [
 ];
 const BAR_CHART_AGGREGATE_METHOD_TIP =
     'The aggregate method that will be used to determine the bar height for a given x-axis category / dimension. Field values that are blank are not included in calculated aggregate values.';
-// TODO should we move these to chartType definitions to be shared with LKS?
-const TRENDLINE_OPTIONS = [
+const TRENDLINE_OPTIONS: TrendlineType[] = [
     { label: 'Point-to-Point', value: '' },
     { label: 'Linear Regression', value: 'Linear' },
     { label: 'Polynomial', value: 'Polynomial' },
-    { label: 'Nonlinear 3PL', value: '3 Parameter', showMax: true },
-    { label: 'Nonlinear 4PL', value: '4 Parameter' },
-    { label: 'Three Parameter', value: 'Three Parameter', showMax: true },
-    { label: 'Four Parameter', value: 'Four Parameter', showMin: true, showMax: true },
-    { label: 'Five Parameter', value: 'Five Parameter', showMin: true, showMax: true },
+    { label: 'Nonlinear 3PL', value: '3 Parameter', showMax: true, schemaPrefix: 'assay' },
+    { label: 'Nonlinear 4PL', value: '4 Parameter', schemaPrefix: 'assay' },
+    { label: 'Three Parameter', value: 'Three Parameter', showMax: true, schemaPrefix: 'assay' },
+    { label: 'Four Parameter', value: 'Four Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
+    { label: 'Five Parameter', value: 'Five Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
 ];
 const ICONS = {
     bar_chart: 'bar_chart',
@@ -447,7 +449,14 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                         </Fragment>
                     ))}
                     {/* TODO LIMS feature flag */}
-                    {hasTrendlineOption && <TrendlineOption fieldValues={fieldValues} onFieldChange={onFieldChange} />}
+                    {hasTrendlineOption && (
+                        <TrendlineOption
+                            fieldRangeURI={fieldValues.x?.data.rangeURI}
+                            fieldValues={fieldValues}
+                            onFieldChange={onFieldChange}
+                            schemaQuery={model.schemaQuery}
+                        />
+                    )}
                 </div>
             </div>
         </div>
@@ -863,12 +872,15 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
 });
 
 interface TrendlineOptionProps {
+    fieldRangeURI: string;
     fieldValues: Record<string, any>;
     onFieldChange: (key: string, value: any) => void;
+    schemaQuery: SchemaQuery;
 }
 
 const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
-    const { fieldValues, onFieldChange } = props;
+    const { fieldValues, onFieldChange, schemaQuery, fieldRangeURI } = props;
+    const disabled = useMemo(() => !!fieldRangeURI && !PropDescType.isNumeric(fieldRangeURI), [fieldRangeURI]);
 
     const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
     const [asymptoteMin, setAsymptoteMin] = useState<string>('');
@@ -905,6 +917,19 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
         [onFieldChange]
     );
 
+    useEffect(() => {
+        // if the option is disabled (i.e. x field is a date), clear the trendline type
+        if (disabled && fieldValues.trendlineType?.value) {
+            onTrendlineFieldChange('trendlineType', undefined, undefined);
+        }
+    }, [disabled, fieldValues, onTrendlineFieldChange]);
+
+    const trendlineOptions = useMemo(() => {
+        return TRENDLINE_OPTIONS.filter(option => {
+            return !option.schemaPrefix || schemaQuery.schemaName.startsWith(option.schemaPrefix);
+        });
+    }, [schemaQuery]);
+
     return (
         <div>
             <label>
@@ -913,11 +938,12 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
             <SelectInput
                 showLabel={false}
                 clearable={false}
+                disabled={disabled}
                 containerClass="form-group row select-input-with-footer"
                 inputClass="col-xs-12"
                 placeholder="Select trendline option"
                 name="trendlineType"
-                options={TRENDLINE_OPTIONS}
+                options={trendlineOptions}
                 onChange={onTrendlineFieldChange}
                 value={fieldValues.trendlineType?.value ?? ''}
             />
