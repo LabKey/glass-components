@@ -187,12 +187,12 @@
     min-width: 850px;
 }
 .chart-builder-modal .col-left {
-    height: 560px;
+    height: 575px;
     width: 116px;
     border-right: solid 1px $gray-border-light;
 }
 .chart-builder-modal .col-right {
-    height: 560px;
+    height: 575px;
     width: calc(100% - 116px)
 }
 
@@ -225,7 +225,7 @@
 }
 
 .chart-builder-modal .fields-col {
-    min-height: 160px;
+    min-height: 185px;
     border-left: solid 1px $gray-border-light;
 }
 

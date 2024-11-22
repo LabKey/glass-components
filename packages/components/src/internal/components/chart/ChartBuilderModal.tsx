@@ -84,23 +84,6 @@ const ICONS = {
     line_plot: 'xy_line',
 };
 
-const TRENDLINE_OPTIONS = [
-    { label: 'Point-to-Point', value: '' },
-    { label: 'Linear Regression', value: 'Linear' },
-    { label: 'Polynomial', value: 'Polynomial' },
-    { label: 'Nonlinear 3PL', value: '3 Parameter' },
-    { label: 'Nonlinear 4PL', value: '4 Parameter' },
-    { label: 'Three Parameter', value: 'Three Parameter' },
-    { label: 'Four Parameter', value: 'Four Parameter' },
-    { label: 'Five Parameter', value: 'Five Parameter' },
-];
-const TRENDLINE_ASYMPTOTE_OPTIONS = {
-    '3 Parameter': { min: false, max: true },
-    'Three Parameter': { min: false, max: true },
-    'Four Parameter': { min: true, max: true },
-    'Five Parameter': { min: true, max: true },
-};
-
 const toggleScaleValue = (value: string): string => (value === 'linear' ? 'log' : 'linear');
 
 export const getChartRenderMsg = (chartConfig: ChartConfig, rowCount: number, isPreview: boolean): string => {
@@ -144,7 +127,7 @@ export const getSelectOptions = (
 
 export const getChartBuilderQueryConfig = (
     model: QueryModel,
-    fieldValues: Record<string, SelectInputOption>,
+    fieldValues: Record<string, any>,
     chartConfig: ChartConfig,
     savedConfig: ChartQueryConfig
 ): ChartQueryConfig => {
@@ -168,7 +151,7 @@ export const getChartBuilderQueryConfig = (
 
 export const getChartBuilderChartConfig = (
     chartType: ChartTypeInfo,
-    fieldValues: Record<string, SelectInputOption>,
+    fieldValues: Record<string, any>,
     savedConfig: ChartConfig
 ): ChartConfig => {
     const config = {
@@ -340,17 +323,6 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
         onFieldChange,
     } = props;
 
-    const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
-    const [asymptoteMin, setAsymptoteMin] = useState<string>('');
-    const [asymptoteMax, setAsymptoteMax] = useState<string>('');
-    useEffect(() => {
-        if (loadingTrendlineOptions && (!!fieldValues.trendlineAsymptoteMin || !!fieldValues.trendlineAsymptoteMax)) {
-            setAsymptoteMin(fieldValues.trendlineAsymptoteMin);
-            setAsymptoteMax(fieldValues.trendlineAsymptoteMax);
-            setLoadingTrendlineOptions(false);
-        }
-    }, [fieldValues, loadingTrendlineOptions]);
-
     const leftColFields = useMemo(() => {
         return selectedType.fields.filter(
             field => !RIGHT_COL_FIELDS.includes(field.name) && (selectedType.name !== 'bar_chart' || field.name !== 'y')
@@ -358,38 +330,19 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
     }, [selectedType]);
     const rightColFields = useMemo(() => {
         return selectedType.fields.filter(
-            field => (RIGHT_COL_FIELDS.includes(field.name) && !field.altSelectionOnly) || (selectedType.name === 'bar_chart' && field.name === 'y')
+            field =>
+                (RIGHT_COL_FIELDS.includes(field.name) && !field.altSelectionOnly) ||
+                (selectedType.name === 'bar_chart' && field.name === 'y')
         );
     }, [selectedType]);
 
-    const hasTrendlineOption = useMemo(() => selectedType.fields.filter(field => field.name === 'trendline').length > 0, [selectedType]);
-
-    const onTrendlineAsymptoteMin = useCallback((event: any) => {
-        setAsymptoteMin(event.target.value);
-    }, []);
-
-    const onTrendlineAsymptoteMax = useCallback((event: any) => {
-        setAsymptoteMax(event.target.value);
-    }, []);
-
-    const applyTrendlineAsymptote = useCallback(() => {
-        onFieldChange('trendlineAsymptoteMin', asymptoteMin);
-        onFieldChange('trendlineAsymptoteMax', asymptoteMax);
-    }, [onFieldChange, asymptoteMin, asymptoteMax]);
+    const hasTrendlineOption = useMemo(
+        () => selectedType.fields.filter(field => field.name === 'trendline').length > 0,
+        [selectedType]
+    );
 
     const onSelectFieldChange = useCallback(
         (key: string, _: any, selectedOption: SelectInputOption) => {
-            onFieldChange(key, selectedOption);
-        },
-        [onFieldChange]
-    );
-
-    const onTrendlineFieldChange = useCallback(
-        (key: string, _: any, selectedOption: SelectInputOption) => {
-            setAsymptoteMin('');
-            onFieldChange('trendlineAsymptoteMin', undefined);
-            setAsymptoteMax('');
-            onFieldChange('trendlineAsymptoteMax', undefined);
             onFieldChange(key, selectedOption);
         },
         [onFieldChange]
@@ -484,51 +437,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                         </Fragment>
                     ))}
                     {/* TODO LIMS feature flag */}
-                    {hasTrendlineOption && (
-                        <div>
-                            <label>
-                                Trendline <LabelOverlay placement="bottom">TODO ...</LabelOverlay>
-                            </label>
-                            <SelectInput
-                                showLabel={false}
-                                clearable={false}
-                                containerClass="form-group row select-input-with-footer"
-                                inputClass="col-xs-12"
-                                placeholder="Select trendline option"
-                                name="trendlineType"
-                                options={TRENDLINE_OPTIONS}
-                                onChange={onTrendlineFieldChange}
-                                value={fieldValues.trendlineType?.value ?? ''}
-                            />
-                            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value] && (
-                                <div className="field-footer-section">
-                                    Asymptote:
-                                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].min && (
-                                        <input
-                                            name="trendlineAsymptoteMin"
-                                            type="number"
-                                            className="field-footer-input"
-                                            placeholder="Min"
-                                            onBlur={applyTrendlineAsymptote}
-                                            onChange={onTrendlineAsymptoteMin}
-                                            value={asymptoteMin}
-                                        />
-                                    )}
-                                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].max && (
-                                        <input
-                                            name="trendlineAsymptoteMax"
-                                            type="number"
-                                            className="field-footer-input"
-                                            placeholder="Max"
-                                            onBlur={applyTrendlineAsymptote}
-                                            onChange={onTrendlineAsymptoteMax}
-                                            value={asymptoteMax}
-                                        />
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    {hasTrendlineOption && <TrendlineOption fieldValues={fieldValues} onFieldChange={onFieldChange} />}
                 </div>
             </div>
         </div>
@@ -536,7 +445,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
 });
 
 interface ChartPreviewProps {
-    fieldValues: Record<string, SelectInputOption>;
+    fieldValues: Record<string, any>;
     hasRequiredValues: boolean;
     model: QueryModel;
     savedChartModel: GenericChartModel;
@@ -938,5 +847,113 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                 </div>
             </div>
         </Modal>
+    );
+});
+
+// TODO move these to chart type field definitions?
+const TRENDLINE_OPTIONS = [
+    { label: 'Point-to-Point', value: '' },
+    { label: 'Linear Regression', value: 'Linear' },
+    { label: 'Polynomial', value: 'Polynomial' },
+    { label: 'Nonlinear 3PL', value: '3 Parameter' },
+    { label: 'Nonlinear 4PL', value: '4 Parameter' },
+    { label: 'Three Parameter', value: 'Three Parameter' },
+    { label: 'Four Parameter', value: 'Four Parameter' },
+    { label: 'Five Parameter', value: 'Five Parameter' },
+];
+const TRENDLINE_ASYMPTOTE_OPTIONS = {
+    '3 Parameter': { min: false, max: true },
+    'Three Parameter': { min: false, max: true },
+    'Four Parameter': { min: true, max: true },
+    'Five Parameter': { min: true, max: true },
+};
+
+interface TrendlineOptionProps {
+    fieldValues: Record<string, any>;
+    onFieldChange: (key: string, value: any) => void;
+}
+
+const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
+    const { fieldValues, onFieldChange } = props;
+
+    const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
+    const [asymptoteMin, setAsymptoteMin] = useState<string>('');
+    const [asymptoteMax, setAsymptoteMax] = useState<string>('');
+    useEffect(() => {
+        if (loadingTrendlineOptions && (!!fieldValues.trendlineAsymptoteMin || !!fieldValues.trendlineAsymptoteMax)) {
+            setAsymptoteMin(fieldValues.trendlineAsymptoteMin);
+            setAsymptoteMax(fieldValues.trendlineAsymptoteMax);
+            setLoadingTrendlineOptions(false);
+        }
+    }, [fieldValues, loadingTrendlineOptions]);
+
+    const onTrendlineAsymptoteMin = useCallback((event: any) => {
+        setAsymptoteMin(event.target.value);
+    }, []);
+
+    const onTrendlineAsymptoteMax = useCallback((event: any) => {
+        setAsymptoteMax(event.target.value);
+    }, []);
+
+    const applyTrendlineAsymptote = useCallback(() => {
+        onFieldChange('trendlineAsymptoteMin', asymptoteMin);
+        onFieldChange('trendlineAsymptoteMax', asymptoteMax);
+    }, [onFieldChange, asymptoteMin, asymptoteMax]);
+
+    const onTrendlineFieldChange = useCallback(
+        (key: string, _: any, selectedOption: SelectInputOption) => {
+            setAsymptoteMin('');
+            onFieldChange('trendlineAsymptoteMin', undefined);
+            setAsymptoteMax('');
+            onFieldChange('trendlineAsymptoteMax', undefined);
+            onFieldChange(key, selectedOption);
+        },
+        [onFieldChange]
+    );
+
+    return (
+        <div>
+            <label>
+                Trendline <LabelOverlay placement="bottom">TODO ...</LabelOverlay>
+            </label>
+            <SelectInput
+                showLabel={false}
+                clearable={false}
+                containerClass="form-group row select-input-with-footer"
+                inputClass="col-xs-12"
+                placeholder="Select trendline option"
+                name="trendlineType"
+                options={TRENDLINE_OPTIONS}
+                onChange={onTrendlineFieldChange}
+                value={fieldValues.trendlineType?.value ?? ''}
+            />
+            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value] && (
+                <div className="field-footer-section">
+                    Asymptote:
+                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].min && (
+                        <input
+                            name="trendlineAsymptoteMin"
+                            type="number"
+                            className="field-footer-input"
+                            placeholder="Min"
+                            onBlur={applyTrendlineAsymptote}
+                            onChange={onTrendlineAsymptoteMin}
+                            value={asymptoteMin}
+                        />
+                    )}
+                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].max && (
+                        <input
+                            name="trendlineAsymptoteMax"
+                            type="number"
+                            className="field-footer-input"
+                            placeholder="Max"
+                            onBlur={applyTrendlineAsymptote}
+                            onChange={onTrendlineAsymptoteMax}
+                            value={asymptoteMax}
+                        />
+                    )}
+                </div>
+            )}
+        </div>
     );
 });
