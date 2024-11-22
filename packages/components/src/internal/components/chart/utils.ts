@@ -183,10 +183,10 @@ export function createHorizontalBarCountLegendData(
     const legendData = [];
     data.forEach(row => {
         if (row.count > 0) {
-            let data = Map.of('value', row.count, 'url', row.href);
+            const countDisplay = row.count.toLocaleString();
+            const data = row.href ? Map.of('value', countDisplay, 'url', row.href) : Map.of('value', countDisplay);
             let legendLabel = row.name;
             if (!row.filled) {
-                data = Map.of('value', row.count);
                 legendLabel = row.count > 1 ? emptyTextPlural : emptyTextSingular;
             }
             legendData.push({

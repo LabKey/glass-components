@@ -15,16 +15,18 @@ interface Props {
     showSummaryTooltip?: boolean;
     subtitle?: React.ReactNode;
     title?: string;
+    emptySectionTextSingular?: string;
+    emptySectionTextPlural?: string;
 }
 
 export const HorizontalBarSection: FC<Props> = memo(props => {
-    const { subtitle, title, data, emptyText, showSummaryTooltip } = props;
+    const { subtitle, title, data, emptyText, showSummaryTooltip, emptySectionTextSingular = 'Space Available', emptySectionTextPlural = 'Spaces Available' } = props;
     let horizontalBars: ReactNode = <div className="horizontal-bar--empty-text">{emptyText ?? DEFAULT_EMPTY_TEXT}</div>;
 
     if (data?.length) {
         let summaryLegendData = null;
         if (showSummaryTooltip) {
-            summaryLegendData = createHorizontalBarCountLegendData(data, 'Space Available', 'Spaces Available');
+            summaryLegendData = createHorizontalBarCountLegendData(data, emptySectionTextSingular, emptySectionTextPlural);
         }
 
         horizontalBars = data
@@ -48,7 +50,7 @@ export const HorizontalBarSection: FC<Props> = memo(props => {
                 );
 
                 const overlay = (
-                    <Popover id="grid-cell-popover" placement="top">
+                    <Popover id="grid-cell-popover" placement="top" isFlexPlacement>
                         {showSummaryTooltip ? (
                             <ItemsLegend legendData={summaryLegendData} activeIndex={index} />
                         ) : (
