@@ -75,7 +75,17 @@ const BAR_CHART_AGGREGATE_METHODS = [
 ];
 const BAR_CHART_AGGREGATE_METHOD_TIP =
     'The aggregate method that will be used to determine the bar height for a given x-axis category / dimension. Field values that are blank are not included in calculated aggregate values.';
-
+// TODO should we move these to chartType definitions to be shared with LKS?
+const TRENDLINE_OPTIONS = [
+    { label: 'Point-to-Point', value: '' },
+    { label: 'Linear Regression', value: 'Linear' },
+    { label: 'Polynomial', value: 'Polynomial' },
+    { label: 'Nonlinear 3PL', value: '3 Parameter', showMax: true },
+    { label: 'Nonlinear 4PL', value: '4 Parameter' },
+    { label: 'Three Parameter', value: 'Three Parameter', showMax: true },
+    { label: 'Four Parameter', value: 'Four Parameter', showMin: true, showMax: true },
+    { label: 'Five Parameter', value: 'Five Parameter', showMin: true, showMax: true },
+];
 const ICONS = {
     bar_chart: 'bar_chart',
     box_plot: 'box_plot',
@@ -704,7 +714,9 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
 
                 // handle trendline options
                 if (chartConfig?.geomOptions?.trendlineType) {
-                    fieldValues_['trendlineType'] = { value: chartConfig.geomOptions.trendlineType };
+                    fieldValues_['trendlineType'] = TRENDLINE_OPTIONS.find(
+                        option => option.value === chartConfig.geomOptions.trendlineType
+                    );
                     fieldValues_['trendlineAsymptoteMin'] = chartConfig.geomOptions.trendlineAsymptoteMin;
                     fieldValues_['trendlineAsymptoteMax'] = chartConfig.geomOptions.trendlineAsymptoteMax;
                 }
@@ -850,24 +862,6 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
     );
 });
 
-// TODO move these to chart type field definitions?
-const TRENDLINE_OPTIONS = [
-    { label: 'Point-to-Point', value: '' },
-    { label: 'Linear Regression', value: 'Linear' },
-    { label: 'Polynomial', value: 'Polynomial' },
-    { label: 'Nonlinear 3PL', value: '3 Parameter' },
-    { label: 'Nonlinear 4PL', value: '4 Parameter' },
-    { label: 'Three Parameter', value: 'Three Parameter' },
-    { label: 'Four Parameter', value: 'Four Parameter' },
-    { label: 'Five Parameter', value: 'Five Parameter' },
-];
-const TRENDLINE_ASYMPTOTE_OPTIONS = {
-    '3 Parameter': { min: false, max: true },
-    'Three Parameter': { min: false, max: true },
-    'Four Parameter': { min: true, max: true },
-    'Five Parameter': { min: true, max: true },
-};
-
 interface TrendlineOptionProps {
     fieldValues: Record<string, any>;
     onFieldChange: (key: string, value: any) => void;
@@ -927,10 +921,10 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
                 onChange={onTrendlineFieldChange}
                 value={fieldValues.trendlineType?.value ?? ''}
             />
-            {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value] && (
+            {(fieldValues.trendlineType?.showMin || fieldValues.trendlineType?.showMax) && (
                 <div className="field-footer-section">
                     Asymptote:
-                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].min && (
+                    {fieldValues.trendlineType?.showMin && (
                         <input
                             name="trendlineAsymptoteMin"
                             type="number"
@@ -941,7 +935,7 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
                             value={asymptoteMin}
                         />
                     )}
-                    {TRENDLINE_ASYMPTOTE_OPTIONS[fieldValues.trendlineType?.value].max && (
+                    {fieldValues.trendlineType?.showMax && (
                         <input
                             name="trendlineAsymptoteMax"
                             type="number"
