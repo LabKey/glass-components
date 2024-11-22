@@ -769,7 +769,12 @@ export class URLResolver {
                         if (plateRowId) {
                             return row.set('url', this.mapURL({ url, row, query: plateRowId }));
                         }
-                    }
+} else if (url.indexOf('query-queryDetailsRow') && url.indexOf('.queryName=PlateSet&')) {
+    const plateSetRowId = row.getIn(['data', 'rowId']);
+    if (plateSetRowId) {
+        return row.set('url', this.mapURL({ url, row, query: plateSetRowId }));
+    }
+}
                 }
                 return row;
             });
