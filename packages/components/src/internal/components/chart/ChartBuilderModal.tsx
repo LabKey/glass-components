@@ -35,7 +35,6 @@ import { SchemaQuery } from '../../../public/SchemaQuery';
 import { deleteChart, saveChart, SaveReportConfig } from './actions';
 
 import { ChartConfig, ChartQueryConfig, GenericChartModel, TrendlineType } from './models';
-import {PropDescType} from "../domainproperties/PropDescType";
 
 interface AggregateFieldInfo {
     name: string;
@@ -78,7 +77,16 @@ const BAR_CHART_AGGREGATE_METHODS = [
 ];
 const BAR_CHART_AGGREGATE_METHOD_TIP =
     'The aggregate method that will be used to determine the bar height for a given x-axis category / dimension. Field values that are blank are not included in calculated aggregate values.';
-const TRENDLINE_VALUES = ['', 'Linear', 'Polynomial', 'Three Parameter', '3 Parameter', 'Four Parameter', '4 Parameter', 'Five Parameter'];
+const TRENDLINE_VALUES = [
+    '',
+    'Linear',
+    'Polynomial',
+    'Three Parameter',
+    '3 Parameter',
+    'Four Parameter',
+    '4 Parameter',
+    'Five Parameter',
+];
 const ICONS = {
     bar_chart: 'bar_chart',
     box_plot: 'box_plot',
@@ -439,10 +447,8 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                             )}
                         </Fragment>
                     ))}
-                    {/* TODO LIMS feature flag */}
                     {hasTrendlineOption && (
                         <TrendlineOption
-                            fieldRangeURI={fieldValues.x?.data.rangeURI}
                             fieldValues={fieldValues}
                             onFieldChange={onFieldChange}
                             schemaQuery={model.schemaQuery}
@@ -664,7 +670,10 @@ interface ChartBuilderModalProps extends RequiresModelAndActions {
 
 export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, model, onHide, savedChartModel }) => {
     const CHART_TYPES = LABKEY_VIS?.GenericChartHelper.getRenderTypes();
-    const TRENDLINE_OPTIONS = useMemo(() => TRENDLINE_VALUES.map(value => LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[value]), []);
+    const TRENDLINE_OPTIONS: TrendlineType[] = useMemo(
+        () => TRENDLINE_VALUES.map(value => LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[value]),
+        []
+    );
 
     const { user, container, moduleContext } = useServerContext();
     const canShare = useMemo(
@@ -865,16 +874,23 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
 });
 
 interface TrendlineOptionProps {
-    fieldRangeURI: string;
     fieldValues: Record<string, any>;
     onFieldChange: (key: string, value: any) => void;
     schemaQuery: SchemaQuery;
 }
 
 const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
-    const TRENDLINE_OPTIONS = useMemo(() => TRENDLINE_VALUES.map(value => LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[value]), []);
+    const TRENDLINE_OPTIONS: TrendlineType[] = useMemo(
+        () => TRENDLINE_VALUES.map(value => LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[value]),
+        []
+    );
     const { fieldValues, onFieldChange, schemaQuery } = props;
-    // const disabled = useMemo(() => !!fieldRangeURI && !PropDescType.isNumeric(fieldRangeURI), [fieldRangeURI]);
+
+    // hide the trendline option if no x-axis value selected and for date field selection on x-axis
+    const hidden = useMemo(() => {
+        const jsonType = fieldValues.x?.data?.jsonType || fieldValues.x?.data?.type;
+        return !fieldValues.x?.value || jsonType === 'date' || jsonType === 'time';
+    }, [fieldValues.x]);
 
     const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
     const [asymptoteMin, setAsymptoteMin] = useState<string>('');
@@ -912,30 +928,34 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
     );
 
     useEffect(() => {
-        // if the option is disabled (i.e. x field is a date), clear the trendline type
-        if (disabled && fieldValues.trendlineType?.value) {
+        // if the x-axis measure has been removed or the option is hidden, clear the trendline type
+        if (hidden && fieldValues.trendlineType?.value) {
             onTrendlineFieldChange('trendlineType', undefined, undefined);
         }
-    }, [disabled, fieldValues, onTrendlineFieldChange]);
+    }, [hidden, fieldValues, onTrendlineFieldChange]);
 
     const trendlineOptions = useMemo(() => {
         return TRENDLINE_OPTIONS.filter(option => {
             return !option.schemaPrefix || schemaQuery.schemaName.startsWith(option.schemaPrefix);
         });
-    }, [schemaQuery]);
+    }, [TRENDLINE_OPTIONS, schemaQuery.schemaName]);
+
+    if (hidden) return null;
 
     return (
         <div>
             <label>
                 Trendline{' '}
-                <LabelOverlay placement="bottom">
+                <LabelOverlay placement="bottom" >
                     <table>
                         <tbody>
                             {trendlineOptions
                                 .filter(option => option.equation)
                                 .map(option => (
                                     <tr key={option.value}>
-                                        <td><b>{option.label}</b></td>
+                                        <td>
+                                            <b>{option.label}</b>
+                                        </td>
                                         <td className="equation">{option.equation}</td>
                                     </tr>
                                 ))}
@@ -946,7 +966,6 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
             <SelectInput
                 showLabel={false}
                 clearable={false}
-                disabled={disabled}
                 containerClass="form-group row select-input-with-footer"
                 inputClass="col-xs-12"
                 placeholder="Select trendline option"
