@@ -405,33 +405,29 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                         onToggle={this.togglePropertiesPanel}
                         canRename={isGpat}
                     />
-                    {protocolModel.domains
-                        .toArray()
-                        // FIXME: For some reason if you filter here it forces the results domain to render twice. Even
-                        // if you keep the shouldSkipBatchDomain check in the map method below.
-                        // .filter(domain => !this.shouldSkipBatchDomain(domain))
-                        .map((domain, i) => {
-                            // optionally hide the Batch Fields domain from the UI
-                            if (this.shouldSkipBatchDomain(domain)) return;
+                    {/* Note: We cannot filter this array because onChange needs the correct index for each domain */}
+                    {protocolModel.domains.toArray().map((domain, i) => {
+                        // optionally hide the Batch Fields domain from the UI
+                        if (this.shouldSkipBatchDomain(domain)) return null;
 
-                            return (
-                                <AssayDomainForm
-                                    api={api}
-                                    appDomainHeaders={appDomainHeaders}
-                                    domain={domain}
-                                    domainFormDisplayOptions={domainFormDisplayOptions}
-                                    index={i}
-                                    key={domain.name}
-                                    onDomainChange={this.onDomainChange}
-                                    protocolModel={protocolModel}
-                                    currentPanelIndex={currentPanelIndex}
-                                    firstState={firstState}
-                                    onTogglePanel={onTogglePanel}
-                                    validatePanel={validatePanel}
-                                    visitedPanels={visitedPanels}
-                                />
-                            );
-                        })}
+                        return (
+                            <AssayDomainForm
+                                api={api}
+                                appDomainHeaders={appDomainHeaders}
+                                domain={domain}
+                                domainFormDisplayOptions={domainFormDisplayOptions}
+                                index={i}
+                                key={domain.name}
+                                onDomainChange={this.onDomainChange}
+                                protocolModel={protocolModel}
+                                currentPanelIndex={currentPanelIndex}
+                                firstState={firstState}
+                                onTogglePanel={onTogglePanel}
+                                validatePanel={validatePanel}
+                                visitedPanels={visitedPanels}
+                            />
+                        );
+                    })}
                     {modalOpen && (
                         <HitCriteriaModal
                             model={protocolModel}
