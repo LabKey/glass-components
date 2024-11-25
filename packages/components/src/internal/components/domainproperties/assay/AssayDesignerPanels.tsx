@@ -40,7 +40,7 @@ const DOMAIN_PANEL_INDEX = 1;
 interface AssayDomainFormProps
     extends Omit<InjectedBaseDomainDesignerProps, 'onFinish' | 'setSubmitting' | 'submitting'> {
     api: DomainPropertiesAPIWrapper;
-    appDomainHeaders?: Map<string, HeaderRenderer>;
+    appDomainHeaders: Map<string, HeaderRenderer>;
     domain: DomainDesign;
     domainFormDisplayOptions: IDomainFormDisplayOptions;
     hideAdvancedProperties?: boolean;
@@ -344,10 +344,16 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
         this.props.onTogglePanel(PROPERTIES_PANEL_INDEX, collapsed, callback);
     };
 
+    toggleFoldersPanel = (collapsed, callback): void => {
+        const { protocolModel } = this.state;
+        this.props.onTogglePanel(protocolModel.domains.size + 1, collapsed, callback);
+    };
+
     render() {
         const {
             allowFolderExclusion,
             api,
+            appDomainHeaders,
             appPropertiesOnly,
             hideAdvancedProperties,
             domainFormDisplayOptions,
@@ -411,6 +417,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                             return (
                                 <AssayDomainForm
                                     api={api}
+                                    appDomainHeaders={appDomainHeaders}
                                     domain={domain}
                                     domainFormDisplayOptions={domainFormDisplayOptions}
                                     index={i}
@@ -441,9 +448,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                         dataTypeName={protocolModel?.name}
                         entityDataType={AssayRunDataType}
                         initCollapsed={currentPanelIndex !== protocolModel.domains.size + 1}
-                        onToggle={(collapsed, callback) => {
-                            onTogglePanel(protocolModel.domains.size + 1, collapsed, callback);
-                        }}
+                        onToggle={this.toggleFoldersPanel}
                         onUpdateExcludedFolders={this.onUpdateExcludedFolders}
                     />
                 )}

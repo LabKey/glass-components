@@ -735,6 +735,8 @@ export const HitCriteriaInput: FC<InputProps> = memo(({ model }) => {
     const onClick = useCallback(() => openModal(), [openModal]);
     const domain = useMemo(() => model.domains.find(domain => domain.isNameSuffixMatch('Data')), [model.domains]);
 
+    if (!domain) return null;
+
     return (
         <AssayPropertiesInput label="Hit Selection Criteria">
             <div className="hit-selection-criteria-input">
