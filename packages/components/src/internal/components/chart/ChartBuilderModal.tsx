@@ -78,16 +78,7 @@ const BAR_CHART_AGGREGATE_METHODS = [
 ];
 const BAR_CHART_AGGREGATE_METHOD_TIP =
     'The aggregate method that will be used to determine the bar height for a given x-axis category / dimension. Field values that are blank are not included in calculated aggregate values.';
-const TRENDLINE_OPTIONS: TrendlineType[] = [
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[''],
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Linear'],
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Polynomial'],
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Three Parameter'],
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['3 Parameter'],
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Four Parameter'],
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['4 Parameter'],
-    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Five Parameter'],
-];
+const TRENDLINE_VALUES = ['', 'Linear', 'Polynomial', 'Three Parameter', '3 Parameter', 'Four Parameter', '4 Parameter', 'Five Parameter'];
 const ICONS = {
     bar_chart: 'bar_chart',
     box_plot: 'box_plot',
@@ -673,6 +664,8 @@ interface ChartBuilderModalProps extends RequiresModelAndActions {
 
 export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, model, onHide, savedChartModel }) => {
     const CHART_TYPES = LABKEY_VIS?.GenericChartHelper.getRenderTypes();
+    const TRENDLINE_OPTIONS = useMemo(() => TRENDLINE_VALUES.map(value => LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[value]), []);
+
     const { user, container, moduleContext } = useServerContext();
     const canShare = useMemo(
         () => savedChartModel?.canShare ?? hasPermissions(user, [PermissionTypes.ShareReportPermission]),
@@ -879,8 +872,9 @@ interface TrendlineOptionProps {
 }
 
 const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
-    const { fieldValues, onFieldChange, schemaQuery, fieldRangeURI } = props;
-    const disabled = useMemo(() => !!fieldRangeURI && !PropDescType.isNumeric(fieldRangeURI), [fieldRangeURI]);
+    const TRENDLINE_OPTIONS = useMemo(() => TRENDLINE_VALUES.map(value => LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[value]), []);
+    const { fieldValues, onFieldChange, schemaQuery } = props;
+    // const disabled = useMemo(() => !!fieldRangeURI && !PropDescType.isNumeric(fieldRangeURI), [fieldRangeURI]);
 
     const [loadingTrendlineOptions, setLoadingTrendlineOptions] = useState<boolean>(true);
     const [asymptoteMin, setAsymptoteMin] = useState<string>('');
@@ -936,14 +930,16 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
                 Trendline{' '}
                 <LabelOverlay placement="bottom">
                     <table>
-                        {trendlineOptions
-                            .filter(option => option.equation)
-                            .map(option => (
-                                <tr key={option.value}>
-                                    <td><b>{option.label}</b></td>
-                                    <td className="equation">{option.equation}</td>
-                                </tr>
-                            ))}
+                        <tbody>
+                            {trendlineOptions
+                                .filter(option => option.equation)
+                                .map(option => (
+                                    <tr key={option.value}>
+                                        <td><b>{option.label}</b></td>
+                                        <td className="equation">{option.equation}</td>
+                                    </tr>
+                                ))}
+                        </tbody>
                     </table>
                 </LabelOverlay>
             </label>

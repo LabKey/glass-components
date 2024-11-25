@@ -13,6 +13,13 @@ import { BIOLOGICS_APP_PROPERTIES, ProductFeature } from '../../internal/app/con
 
 import { makeTestActions, makeTestQueryModel } from './testUtils';
 import { ChartMenu, ChartMenuItem } from './ChartMenu';
+import {LABKEY_VIS} from "../../internal/constants";
+
+LABKEY_VIS = {
+    GenericChartHelper: {
+        TRENDLINE_OPTIONS: {},
+    },
+};
 
 describe('ChartMenuItem', () => {
     test('use chart icon', () => {

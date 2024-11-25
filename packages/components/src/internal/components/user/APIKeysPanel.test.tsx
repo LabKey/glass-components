@@ -14,6 +14,13 @@ import {
 import { APIKeysPanel, KeyGenerator, KeyGeneratorModal } from './APIKeysPanel';
 import { waitFor } from '@testing-library/dom';
 import {createMockGetQueryDetails, createMockSelectRowsDeprecatedResponse} from '../../../test/MockUtils';
+import {LABKEY_VIS} from "../../constants";
+
+LABKEY_VIS = {
+    GenericChartHelper: {
+        TRENDLINE_OPTIONS: {},
+    },
+};
 
 jest.mock('../../query/api', () => ({
     ...jest.requireActual('../../query/api'),
