@@ -79,14 +79,14 @@ const BAR_CHART_AGGREGATE_METHODS = [
 const BAR_CHART_AGGREGATE_METHOD_TIP =
     'The aggregate method that will be used to determine the bar height for a given x-axis category / dimension. Field values that are blank are not included in calculated aggregate values.';
 const TRENDLINE_OPTIONS: TrendlineType[] = [
-    { label: 'Point-to-Point', value: '' },
-    { label: 'Linear Regression', value: 'Linear' },
-    { label: 'Polynomial', value: 'Polynomial' },
-    { label: 'Nonlinear 3PL', value: 'Three Parameter', showMax: true, schemaPrefix: 'assay' },
-    { label: 'Nonlinear 3PL (Alternate)', value: '3 Parameter', showMax: true, schemaPrefix: 'assay' },
-    { label: 'Nonlinear 4PL', value: 'Four Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
-    { label: 'Nonlinear 4PL (Simplex)', value: '4 Parameter', schemaPrefix: 'assay' },
-    { label: 'Nonlinear 5PL', value: 'Five Parameter', showMin: true, showMax: true, schemaPrefix: 'assay' },
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS[''],
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Linear'],
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Polynomial'],
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Three Parameter'],
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['3 Parameter'],
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Four Parameter'],
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['4 Parameter'],
+    LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['Five Parameter'],
 ];
 const ICONS = {
     bar_chart: 'bar_chart',
@@ -933,7 +933,19 @@ const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
     return (
         <div>
             <label>
-                Trendline <LabelOverlay placement="bottom">TODO ...</LabelOverlay>
+                Trendline{' '}
+                <LabelOverlay placement="bottom">
+                    <table>
+                        {trendlineOptions
+                            .filter(option => option.equation)
+                            .map(option => (
+                                <tr key={option.value}>
+                                    <td><b>{option.label}</b></td>
+                                    <td className="equation">{option.equation}</td>
+                                </tr>
+                            ))}
+                    </table>
+                </LabelOverlay>
             </label>
             <SelectInput
                 showLabel={false}

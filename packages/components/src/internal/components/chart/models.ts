@@ -75,6 +75,7 @@ export interface GenericChartModel extends Visualization.VisualizationGetRespons
 }
 
 export interface TrendlineType {
+    equation?: string;
     label: string;
     schemaPrefix?: string;
     showMax?: boolean;
