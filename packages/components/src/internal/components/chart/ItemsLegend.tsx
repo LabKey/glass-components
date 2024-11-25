@@ -72,7 +72,7 @@ export class ItemsLegend extends React.PureComponent<Props> {
                     </td>
                     {legend.data && (
                         <td className="text-align-right">
-                            <span className="cell-legend-label">
+                            <span className="cell-legend-data">
                                 <DefaultRenderer data={legend.data} />
                             </span>
                         </td>
