@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "5.24.0-fb-lineChartTrendline.7",
+  "version": "5.24.0-fb-lineChartTrendline.8",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [
