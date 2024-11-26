@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.24.1
+*Released*: 26 November 2024
+- Support Plate Set ELN References
+
 ### version 5.24.0
 *Released*: 19 November 2024
 - Issue 51645: Escape advanced search characters
