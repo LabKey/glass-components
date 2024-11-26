@@ -6,20 +6,20 @@ import { QueryModel } from '../../../public/QueryModel/QueryModel';
 import { User } from '../base/models/User';
 import { AppURL } from '../../url/AppURL';
 
-import { OperationConfirmationData } from '../entities/models';
+import { EntityDataType, OperationConfirmationData } from '../entities/models';
 
 import { SamplesEditButtonSections } from './utils';
 import { ALIQUOT_FILTER_MODE, SampleStateType } from './constants';
 
-export enum SampleCreationType {
-    Aliquots = 'Aliquots',
-    Derivatives = 'Derivatives',
-    FromSources = 'New samples from sources',
+export enum EntityCreationType {
+    Aliquots = 'Aliquot',
+    Derivatives = 'Derive',
+    FromSources = 'From sources',
     Independents = 'New samples',
-    PooledSamples = 'Pooled Samples',
+    PooledSamples = 'Pool',
 }
 
-export interface SampleCreationTypeModel {
+export interface EntityCreationTypeModel {
     description?: string;
     disabled?: boolean;
     disabledDescription?: string;
@@ -28,47 +28,42 @@ export interface SampleCreationTypeModel {
     minParentsPerSample: number;
     quantityLabel?: string;
     selected?: boolean;
-    type: SampleCreationType;
+    type: EntityCreationType;
+    typeChoiceLabel?: string;
 }
 
-export const INDEPENDENT_SAMPLE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.Independents,
+export const INDEPENDENT_SAMPLE_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.Independents,
     description: 'Create samples.',
     minParentsPerSample: 0,
     quantityLabel: 'New Samples',
 };
 
-export const CHILD_SAMPLE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.FromSources,
-    description: 'Create multiple output samples per source.',
-    minParentsPerSample: 1,
-    iconSrc: 'derivatives',
-    quantityLabel: 'New Samples per Source',
-};
-
-export const DERIVATIVE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.Derivatives,
-    description: 'Create multiple output samples per parent.',
+export const DERIVATIVE_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.Derivatives,
+    description: 'Create samples of different types from each selected sample.',
     disabledDescription: 'Only one parent sample type is allowed when creating derivative samples.',
     minParentsPerSample: 1,
     iconSrc: 'derivatives',
-    quantityLabel: 'Derivatives per Parent',
+    quantityLabel: 'Derivatives Per Parent',
+    typeChoiceLabel: 'Derivative Type',
 };
 
-export const POOLED_SAMPLE_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.PooledSamples,
-    description: 'Put multiple samples into pooled outputs.',
+export const POOLED_SAMPLE_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.PooledSamples,
+    description: 'Combine selected samples to create new samples.',
     minParentsPerSample: 2,
     iconSrc: 'pooled',
-    quantityLabel: 'New Samples per Parent Group',
+    quantityLabel: 'New Samples from Pool',
+    typeChoiceLabel: 'Sample Type',
 };
 
-export const ALIQUOT_CREATION: SampleCreationTypeModel = {
-    type: SampleCreationType.Aliquots,
-    description: 'Create aliquot copies from each parent sample.',
+export const ALIQUOT_CREATION: EntityCreationTypeModel = {
+    type: EntityCreationType.Aliquots,
+    description: 'Create copies that inherit data from each parent sample.',
     minParentsPerSample: 1,
     iconSrc: 'aliquots',
-    quantityLabel: 'Aliquots per Parent',
+    quantityLabel: 'Aliquots Per Parent',
 };
 
 export interface GroupedSampleFields {
@@ -206,10 +201,12 @@ export class SampleState {
 export interface SampleGridButtonProps {
     afterSampleActionComplete?: () => void;
     afterSampleDelete?: (rowsToKeep: any[]) => void;
+    createBtnParentEntityType?: EntityDataType;
     createBtnParentKey?: string;
-    createBtnParentType?: string;
+    currentProductId?: string;
     excludeAddButton?: boolean;
     excludedMenuKeys?: SamplesEditButtonSections[];
+    getJobURL?: (jobId: number) => string;
     includesMedia?: boolean;
     initAliquotMode?: ALIQUOT_FILTER_MODE;
     metricFeatureArea?: string;

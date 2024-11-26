@@ -72,6 +72,7 @@ import {
     isIntegerInRange,
     isNonNegativeFloat,
     isNonNegativeInteger,
+    parseScientificInt,
     parseCsvString,
     quoteValueWithDelimiters,
     toggleDevTools,
@@ -153,6 +154,7 @@ import {
     isRelativeDateFilterValue,
     parseDate,
     getNonStandardFormatWarning,
+    getDateFNSDateFormat,
     getDateTimeInputOptions,
     splitDateTimeFormat,
     DateFormatType,
@@ -430,12 +432,8 @@ import {
 import { AssayPicker, AssayPickerTabs } from './internal/components/assay/AssayPicker';
 import { AssayStateModel, AssayUploadResultModel } from './internal/components/assay/models';
 import { clearAssayDefinitionCache, getAssayDefinitions, getProtocol } from './internal/components/assay/actions';
-import { BaseBarChart } from './internal/components/chart/BaseBarChart';
-import {
-    createHorizontalBarLegendData,
-    createPercentageBarData,
-    processChartData,
-} from './internal/components/chart/utils';
+
+import { createHorizontalBarLegendData } from './internal/components/chart/utils';
 import { ReportItemModal, ReportList, ReportListItem } from './internal/components/report-list/ReportList';
 import {
     createGridModel,
@@ -528,6 +526,7 @@ import {
     ParentEntityRequiredColumns,
     SAMPLE_SET_IMPORT_PREFIX,
     SamplePropertyDataType,
+    SampleParentDataType,
     SampleTypeDataType,
 } from './internal/components/entities/constants';
 import { getModuleCustomLabels } from './internal/components/labels/actions';
@@ -547,11 +546,10 @@ import {
 } from './internal/components/entities/utils';
 import {
     ALIQUOT_CREATION,
-    CHILD_SAMPLE_CREATION,
     DERIVATIVE_CREATION,
     INDEPENDENT_SAMPLE_CREATION,
     POOLED_SAMPLE_CREATION,
-    SampleCreationType,
+    EntityCreationType,
 } from './internal/components/samples/models';
 import { DEFAULT_ALIQUOT_NAMING_PATTERN, SampleTypeModel } from './internal/components/domainproperties/samples/models';
 
@@ -560,10 +558,8 @@ import { Pagination } from './internal/components/pagination/Pagination';
 import { getQueryModelExportParams, runDetailsColumnsForQueryModel } from './public/QueryModel/utils';
 import { CONFIRM_MESSAGE, useRouteLeave } from './internal/util/RouteLeave';
 import { useRequestHandler } from './internal/util/RequestHandler';
-import { BarChartViewer } from './internal/components/chart/BarChartViewer';
 import { HorizontalBarSection } from './internal/components/chart/HorizontalBarSection';
 import { ItemsLegend } from './internal/components/chart/ItemsLegend';
-import { CHART_GROUPS } from './internal/components/chart/configs';
 import { AuditDetailsModel, TimelineEventModel } from './internal/components/auditlog/models';
 import {
     ASSAY_AUDIT_QUERY,
@@ -1352,9 +1348,8 @@ export {
     SAMPLE_INSERT_EXTRA_COLUMNS,
     SAMPLE_ALL_PROJECT_LOOKUP_FIELDS,
     IS_ALIQUOT_COL,
-    SampleCreationType,
+    EntityCreationType,
     ALIQUOT_CREATION,
-    CHILD_SAMPLE_CREATION,
     INDEPENDENT_SAMPLE_CREATION,
     DERIVATIVE_CREATION,
     POOLED_SAMPLE_CREATION,
@@ -1371,6 +1366,7 @@ export {
     getParentTypeDataForLineage,
     getSelectedSampleIdsFromSelectionKey,
     ParentEntityLineageColumns,
+    SampleParentDataType,
     SampleTypeDataType,
     SamplePropertyDataType,
     DataClassDataType,
@@ -1478,14 +1474,9 @@ export {
     getAssayDefinitions,
     GENERAL_ASSAY_PROVIDER_NAME,
     // report / chart related items
-    BaseBarChart,
-    BarChartViewer,
-    CHART_GROUPS,
     HorizontalBarSection,
     ItemsLegend,
-    createPercentageBarData,
     createHorizontalBarLegendData,
-    processChartData,
     DataViewInfoTypes,
     loadReports,
     flattenBrowseDataTreeResponse,
@@ -1610,6 +1601,7 @@ export {
     formatDate,
     formatDateTime,
     fromDate,
+    getDateFNSDateFormat,
     fromNow,
     generateNameWithTimestamp,
     parseDate,
@@ -1637,6 +1629,7 @@ export {
     resolveKey,
     isInteger,
     isIntegerInRange,
+    parseScientificInt,
     isImage,
     isNonNegativeFloat,
     isNonNegativeInteger,
@@ -1919,7 +1912,7 @@ export type {
 export type { ISelectInitData } from './internal/components/forms/model';
 export type { QuerySelectChange, QuerySelectOwnProps } from './internal/components/forms/QuerySelect';
 export type {
-    SampleCreationTypeModel,
+    EntityCreationTypeModel,
     SampleStatus,
     SampleGridButtonProps,
     GroupedSampleFields,
