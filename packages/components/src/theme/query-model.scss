@@ -169,13 +169,17 @@
 .responsive-btn-group {
     margin-right: 10px;
 
-    .responsive-menu, .responsive-menu button {
+    .responsive-menu, .responsive-menu button, button.standalone-btn {
         border-color: transparent;
 
         &:hover {
             border-color: $border-color;
             background-color: transparent;
         }
+    }
+    .responsive-menu .dropdown-menu button {
+        border-color: transparent;
+        margin-left: 8px;
     }
 
     button {
