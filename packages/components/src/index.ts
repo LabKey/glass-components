@@ -1950,8 +1950,7 @@ export type {
     UpdateContainerSettingsOptions,
 } from './internal/components/container/FolderAPIWrapper';
 export type { PageDetailHeaderProps } from './internal/components/forms/PageDetailHeader';
-export type { HorizontalBarData } from './internal/components/chart/HorizontalBarSection';
-export type { HorizontalBarLegendData } from './internal/components/chart/utils';
+export type { HorizontalBarData, HorizontalBarLegendData } from './internal/components/chart/utils';
 export type { InjectedLineage, WithLineageOptions } from './internal/components/lineage/withLineage';
 export type {
     LabelPrintingContext,

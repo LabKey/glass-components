@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { Map } from 'immutable';
 
 import { ItemsLegend } from './ItemsLegend';
 
@@ -144,5 +145,47 @@ describe('<ItemsLegend/>', () => {
         expect(document.getElementsByClassName('cell-lock').length).toBe(1);
         expect(document.getElementsByClassName('cell-legend-label')[8].innerHTML).toBe('Sample expired');
         expect(document.getElementsByClassName('expired-form-field').length).toBe(1);
+    });
+
+    test('with link and activeIndex', () => {
+        const sampleAllocationLegends = [
+            {
+                circleColor: '#ab149e',
+                backgroundColor: 'none',
+                legendLabel: 'Cell Bank',
+                data: Map.of(
+                    'value',
+                    2,
+                    'url',
+                    '/LKSM/freezermanager-app.view#/boxes/9?query.SampleType/Name~eq=Cell Bank'
+                ),
+            },
+            {
+                circleColor: '#2980b9',
+                backgroundColor: 'none',
+                legendLabel: 'CellValidation',
+                data: Map.of(
+                    'value',
+                    1,
+                    'url',
+                    '/LKSM/freezermanager-app.view#/boxes/9?query.SampleType/Name~eq=CellValidation'
+                ),
+            },
+            {
+                circleColor: 'fff',
+                backgroundColor: 'none',
+                legendLabel: 'Space Available',
+                data: Map.of('value', 1),
+            },
+        ];
+        render(<ItemsLegend legendData={sampleAllocationLegends} activeIndex={1} />);
+        const legends = document.querySelectorAll('tr');
+        expect(legends.length).toBe(3);
+        expect(document.querySelectorAll('a')).toHaveLength(2);
+        expect(legends[0].querySelectorAll('a')).toHaveLength(1);
+        expect(legends[0].querySelectorAll('.bold-text')).toHaveLength(0);
+        expect(legends[1].querySelectorAll('a')).toHaveLength(1);
+        expect(legends[1].querySelectorAll('.bold-text')).toHaveLength(1);
+        expect(legends[2].querySelectorAll('a')).toHaveLength(0);
     });
 });
