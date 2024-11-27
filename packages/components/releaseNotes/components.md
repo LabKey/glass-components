@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Issue 51680: Use proper container path for importing assay data for jobs
+
 ### version 6.0.1
 *Released*: 27 November 2024
 - Incorporate Recent Storage Dashboard Widget
