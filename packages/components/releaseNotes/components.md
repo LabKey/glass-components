@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 5.X
-*Released*: X November 2024
+### version 6.0.1
+*Released*: 27 November 2024
 - Incorporate Recent Storage Dashboard Widget
   - Modify `HorizontalBarSection` to support `showSummaryTooltip`
   - Add `createHorizontalBarCountLegendData` util
