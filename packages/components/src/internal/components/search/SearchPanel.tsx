@@ -172,6 +172,7 @@ export const SearchPanel: FC<SearchPanelProps> = memo(props => {
         }
         if (platesEnabled) {
             categories.push(SearchCategory.Plate);
+            categories.push(SearchCategory.PlateSet);
         }
 
         return categories;

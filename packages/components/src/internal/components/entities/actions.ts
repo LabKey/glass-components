@@ -9,7 +9,7 @@ import { SchemaQuery } from '../../../public/SchemaQuery';
 import { getFilterForSampleOperation, isSamplesSchema } from '../samples/utils';
 import { importData, InsertOptions } from '../../query/api';
 import { caseInsensitive, generateId, handleRequestFailure } from '../../util/utils';
-import { SampleCreationType } from '../samples/models';
+import { EntityCreationType } from '../samples/models';
 
 import { SHARED_CONTAINER_PATH } from '../../constants';
 import { naturalSortByProperty } from '../../../public/sort';
@@ -326,11 +326,11 @@ async function initParents(
     initialParents: string[],
     selectionKey: string,
     isSnapshotSelection,
-    creationType?: SampleCreationType,
+    creationType?: EntityCreationType,
     isItemSamples?: boolean,
     targetQueryName?: string
 ): Promise<List<EntityParentType>> {
-    const isAliquotParent = creationType === SampleCreationType.Aliquots;
+    const isAliquotParent = creationType === EntityCreationType.Aliquots;
 
     if (selectionKey) {
         const { schemaQuery } = SchemaQuery.parseSelectionKey(selectionKey);
@@ -496,12 +496,12 @@ export async function getChosenParentData(
 
         const numPerParent = model.numPerParent ?? 1;
         const validEntityCount = totalParentValueCount
-            ? creationType === SampleCreationType.PooledSamples
+            ? creationType === EntityCreationType.PooledSamples
                 ? numPerParent
                 : totalParentValueCount * numPerParent
             : 0;
 
-        if (validEntityCount >= 1 || isParentTypeOnly || creationType === SampleCreationType.Aliquots) {
+        if (validEntityCount >= 1 || isParentTypeOnly || creationType === EntityCreationType.Aliquots) {
             return {
                 entityCount: validEntityCount,
                 entityParents: entityParents.set(parentEntityDataType, chosenParents),
@@ -525,7 +525,7 @@ export async function getEntityTypeOptions(
     containerPath?: string,
     containerFilter?: Query.ContainerFilter,
     skipFolderDataExclusion?: boolean,
-    requiredParentTypes?: string[]
+    requiredParentTypes?: string[],
 ): Promise<Map<string, List<IEntityTypeOption>>> {
     const { typeListingSchemaQuery, filterArray, instanceSchemaName } = entityDataType;
 

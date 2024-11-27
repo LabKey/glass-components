@@ -318,7 +318,7 @@ const RESOLVE_LSID_MAPPERS = [
             if (params.type) {
                 const type = params.type;
                 const lsid = params.lsid;
-                if (!!lsid) {
+                if (lsid) {
                     if (type?.toLowerCase() === 'data') {
                         const url = ['rd', 'expdata', lsid];
                         return AppURL.create(...url);
@@ -768,6 +768,11 @@ export class URLResolver {
                         const plateRowId = row.getIn(['data', 'rowId']);
                         if (plateRowId) {
                             return row.set('url', this.mapURL({ url, row, query: plateRowId }));
+                        }
+                    } else if (url.indexOf('query-queryDetailsRow') && url.indexOf('.queryName=PlateSet&')) {
+                        const plateSetRowId = row.getIn(['data', 'rowId']);
+                        if (plateSetRowId) {
+                            return row.set('url', this.mapURL({ url, row, query: plateSetRowId }));
                         }
                     }
                 }

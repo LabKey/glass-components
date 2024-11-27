@@ -1664,7 +1664,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
 
             return (
                 <Tabs activeKey={activeEditTab} className={tabContainerCls} onSelect={this.onTabChange}>
-                    {/* TODO: tabbed bulk add note yet supported */}
+                    {/* TODO: tabbed bulk add not yet supported */}
                     {allowBulkUpdate && (
                         <Tab
                             className="top-spacing"

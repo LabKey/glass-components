@@ -210,7 +210,7 @@ export function resolveIconSrc(data: any, category: SearchCategory): string {
             // else fallback to default
         } else if (data.sampleSet?.name) {
             iconSrc = 'samples';
-        } else if (data.type) {
+        } else if (data.type && category !== SearchCategory.PlateSet) {
             const lcType = data.type.toLowerCase();
             if (lcType === 'sampleset') {
                 iconSrc = 'sample_set';
@@ -233,6 +233,7 @@ export function resolveIconSrc(data: any, category: SearchCategory): string {
             case SearchCategory.NotebookTemplate:
                 iconSrc = 'notebook_blue';
                 break;
+            case SearchCategory.PlateSet:
             case SearchCategory.Plate:
                 iconSrc = 'plates';
                 break;

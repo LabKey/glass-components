@@ -25,7 +25,7 @@ import { Modal } from '../../Modal';
 import { MAX_EDITABLE_GRID_ROWS } from '../../constants';
 import { FormButtons } from '../../FormButtons';
 
-import { SampleCreationTypeModel } from '../samples/models';
+import { EntityCreationTypeModel } from '../samples/models';
 import { QueryInfo } from '../../../public/QueryInfo';
 import { formatDate, formatDateTime } from '../../util/Date';
 import { Alert } from '../base/Alert';
@@ -48,7 +48,7 @@ export interface QueryInfoFormProps extends Omit<QueryFormInputsProps, 'onFields
     canSubmitNotDirty?: boolean;
     cancelText?: string;
     countText?: string;
-    creationTypeOptions?: SampleCreationTypeModel[];
+    creationTypeOptions?: EntityCreationTypeModel[];
     disabled?: boolean;
     errorCallback?: (error: any) => void;
     errorMessagePrefix?: string;
