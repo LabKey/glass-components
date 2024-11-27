@@ -150,25 +150,33 @@ describe('<ItemsLegend/>', () => {
     test('with link and activeIndex', () => {
         const sampleAllocationLegends = [
             {
-                'circleColor': '#ab149e',
-                'backgroundColor': 'none',
-                'legendLabel': 'Cell Bank',
-                'data': Map.of('value', 2,
-                    'url', '/LKSM/freezermanager-app.view#/boxes/9?query.SampleType/Name~eq=Cell Bank')
+                circleColor: '#ab149e',
+                backgroundColor: 'none',
+                legendLabel: 'Cell Bank',
+                data: Map.of(
+                    'value',
+                    2,
+                    'url',
+                    '/LKSM/freezermanager-app.view#/boxes/9?query.SampleType/Name~eq=Cell Bank'
+                ),
             },
             {
-                'circleColor': '#2980b9',
-                'backgroundColor': 'none',
-                'legendLabel': 'CellValidation',
-                'data': Map.of('value', 1,
-                    'url', '/LKSM/freezermanager-app.view#/boxes/9?query.SampleType/Name~eq=CellValidation')
+                circleColor: '#2980b9',
+                backgroundColor: 'none',
+                legendLabel: 'CellValidation',
+                data: Map.of(
+                    'value',
+                    1,
+                    'url',
+                    '/LKSM/freezermanager-app.view#/boxes/9?query.SampleType/Name~eq=CellValidation'
+                ),
             },
             {
-                'circleColor': 'fff',
-                'backgroundColor': 'none',
-                'legendLabel': 'Space Available',
-                'data': Map.of('value', 1)
-            }
+                circleColor: 'fff',
+                backgroundColor: 'none',
+                legendLabel: 'Space Available',
+                data: Map.of('value', 1),
+            },
         ];
         render(<ItemsLegend legendData={sampleAllocationLegends} activeIndex={1} />);
         const legends = document.querySelectorAll('tr');

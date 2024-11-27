@@ -11,22 +11,34 @@ const DEFAULT_EMPTY_TEXT = 'No data available.';
 
 interface Props {
     data: HorizontalBarData[];
+    emptySectionTextPlural?: string;
+    emptySectionTextSingular?: string;
     emptyText?: string;
     showSummaryTooltip?: boolean;
     subtitle?: React.ReactNode;
     title?: string;
-    emptySectionTextSingular?: string;
-    emptySectionTextPlural?: string;
 }
 
 export const HorizontalBarSection: FC<Props> = memo(props => {
-    const { subtitle, title, data, emptyText, showSummaryTooltip, emptySectionTextSingular = 'Space Available', emptySectionTextPlural = 'Spaces Available' } = props;
+    const {
+        subtitle,
+        title,
+        data,
+        emptyText,
+        showSummaryTooltip,
+        emptySectionTextSingular = 'Space Available',
+        emptySectionTextPlural = 'Spaces Available',
+    } = props;
     let horizontalBars: ReactNode = <div className="horizontal-bar--empty-text">{emptyText ?? DEFAULT_EMPTY_TEXT}</div>;
 
     if (data?.length) {
         let summaryLegendData = null;
         if (showSummaryTooltip) {
-            summaryLegendData = createHorizontalBarCountLegendData(data, emptySectionTextSingular, emptySectionTextPlural);
+            summaryLegendData = createHorizontalBarCountLegendData(
+                data,
+                emptySectionTextSingular,
+                emptySectionTextPlural
+            );
         }
 
         horizontalBars = data

@@ -176,9 +176,7 @@ describe('createHorizontalBarLegendData', () => {
                 filled: true,
             },
         ];
-        expect(
-            createHorizontalBarLegendData(data)
-        ).toStrictEqual([
+        expect(createHorizontalBarLegendData(data)).toStrictEqual([
             {
                 circleColor: 'blue',
                 backgroundColor: 'none',
@@ -190,31 +188,49 @@ describe('createHorizontalBarLegendData', () => {
                 legendLabel: 'Sample Type 2, Sample Type 3',
             },
         ]);
-        expect(
-            createHorizontalBarCountLegendData(data, 'Empty Space', 'Empty Spaces')
-        ).toStrictEqual([
+        expect(createHorizontalBarCountLegendData(data, 'Empty Space', 'Empty Spaces')).toStrictEqual([
             {
                 circleColor: 'blue',
                 backgroundColor: 'none',
-                data: Map.of('value', '22', 'url', '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 1'),
+                data: Map.of(
+                    'value',
+                    '22',
+                    'url',
+                    '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 1'
+                ),
                 legendLabel: 'Sample Type 1',
             },
             {
                 circleColor: 'blue',
                 backgroundColor: 'none',
-                data: Map.of('value', '20', 'url', '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 1'),
+                data: Map.of(
+                    'value',
+                    '20',
+                    'url',
+                    '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 1'
+                ),
                 legendLabel: 'Sample Type 1',
             },
             {
                 circleColor: 'red',
                 backgroundColor: 'none',
-                data: Map.of('value', '10', 'url', '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 2'),
+                data: Map.of(
+                    'value',
+                    '10',
+                    'url',
+                    '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 2'
+                ),
                 legendLabel: 'Sample Type 2',
             },
             {
                 circleColor: 'red',
                 backgroundColor: 'none',
-                data: Map.of('value', '30', 'url', '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 3'),
+                data: Map.of(
+                    'value',
+                    '30',
+                    'url',
+                    '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 3'
+                ),
                 legendLabel: 'Sample Type 3',
             },
         ]);
@@ -241,30 +257,31 @@ describe('createHorizontalBarLegendData', () => {
                 filled: false,
             },
         ];
-        expect(
-            createHorizontalBarLegendData(data)
-        ).toStrictEqual([
+        expect(createHorizontalBarLegendData(data)).toStrictEqual([
             {
                 circleColor: 'blue',
                 backgroundColor: 'none',
                 legendLabel: 'Sample Type 1',
             },
         ]);
-        expect(
-            createHorizontalBarCountLegendData(data, 'space', 'spaces')
-        ).toStrictEqual([
+        expect(createHorizontalBarCountLegendData(data, 'space', 'spaces')).toStrictEqual([
             {
                 circleColor: 'blue',
                 backgroundColor: 'none',
-                data: Map.of('value', '22', 'url', '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 1'),
+                data: Map.of(
+                    'value',
+                    '22',
+                    'url',
+                    '#/freezers/test/storageView?query.SampleType/Name~eq=Sample Type 1'
+                ),
                 legendLabel: 'Sample Type 1',
             },
             {
                 circleColor: 'fff',
                 backgroundColor: 'none',
-                data: Map.of('value', "6,000"),
+                data: Map.of('value', '6,000'),
                 legendLabel: 'spaces',
-            }
+            },
         ]);
     });
 });
