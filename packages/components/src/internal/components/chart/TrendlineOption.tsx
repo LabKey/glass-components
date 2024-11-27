@@ -77,12 +77,11 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
     return (
         <div>
             <label>
-                Trendline{' '}
-                <LabelOverlay placement="bottom">
+                <LabelOverlay placement="bottom" label="Trendline">
                     {trendlineOptions
                         .filter(option => option.equation)
                         .map(option => (
-                            <div className="row" key={option.value}>
+                            <div className="row margin-bottom" key={option.value}>
                                 <div className="col-xs-4">
                                     <strong>{option.label}</strong>
                                 </div>
