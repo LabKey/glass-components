@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Issue 51105: Workflow job links to navigate user to app project home or subfolder accordingly
+  - export createProductUrlFromPartsWithContainer for use in WORKFLOW_MAPPER
+
 ### version 6.0.2
 *Released*: 29 November 2024
 - Issue 51680: Use proper container path for importing assay data for jobs
