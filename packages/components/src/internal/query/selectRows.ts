@@ -1,4 +1,4 @@
-import { Query } from '@labkey/api';
+import { Filter, Query } from '@labkey/api';
 
 import { SchemaQuery } from '../../public/SchemaQuery';
 import { QueryInfo } from '../../public/QueryInfo';
@@ -78,4 +78,18 @@ export async function selectRows(options: SelectRowsOptions): Promise<SelectRows
         rowCount: resolved.rowCount,
         schemaQuery,
     };
+}
+
+/**
+ * selections: The selections object from a QueryModel
+ */
+interface GetSelectedRowsOptions extends SelectRowsOptions {
+    keyColumn?: string;
+    selections: Set<string>;
+}
+
+export function getSelectedRows(options: GetSelectedRowsOptions): Promise<SelectRowsResponse> {
+    const { keyColumn = 'RowId', selections, ...rest } = options;
+    const filterArray = [Filter.create(keyColumn, Array.from(selections), Filter.Types.IN)];
+    return selectRows({ ...rest, filterArray });
 }
