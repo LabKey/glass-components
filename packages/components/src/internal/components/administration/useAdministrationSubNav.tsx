@@ -9,7 +9,7 @@ import { useSubNavTabsContext } from '../navigation/hooks';
 import { AppURL } from '../../url/AppURL';
 import { useServerContext } from '../base/ServerContext';
 import { AUDIT_KEY } from '../../app/constants';
-import { isProjectContainer, isProductFoldersEnabled, isAppHomeFolder } from '../../app/utils';
+import { isProductFoldersEnabled, isAppHomeFolder } from '../../app/utils';
 import { useContainerUser } from '../container/actions';
 import { ITab } from '../navigation/types';
 
@@ -32,7 +32,6 @@ export const useAdministrationSubNav = (): void => {
 
         if (homeProjectContainer.isLoaded && user.isAdmin) {
             const foldersEnabled = isProductFoldersEnabled(moduleContext);
-            const inProjectContainer = isProjectContainer(container.path);
             const tabs = [];
 
             if (appHomeUser.isAdmin) {
@@ -43,7 +42,7 @@ export const useAdministrationSubNav = (): void => {
 
             tabs.push({ text: 'Audit Logs', url: AppURL.create(AUDIT_KEY) });
 
-            if (!foldersEnabled || inProjectContainer) {
+            if (appHomeUser.isAdmin) {
                 tabs.push({ text: 'Users', url: AppURL.create(ADMIN_KEY, 'users') });
                 tabs.push({ text: 'Groups', url: AppURL.create(ADMIN_KEY, 'groups') });
             }
