@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.1.0
+*Released*: 29 November 2024
+- Issue 49016: App admin Groups and Users pages to show in subfolders when applicable
+
 ### version 6.0.2
 *Released*: 29 November 2024
 - Issue 51680: Use proper container path for importing assay data for jobs

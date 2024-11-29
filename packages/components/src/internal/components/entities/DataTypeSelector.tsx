@@ -155,6 +155,7 @@ export const DataTypeSelectorList: FC<DataTypeSelectorListProps> = memo(props =>
                             {subList?.map((type, index) => {
                                 return (
                                     <DataTypeSelectorItem
+                                        key={type.rowId}
                                         index={index}
                                         dataType={type}
                                         disabled={disabled}
