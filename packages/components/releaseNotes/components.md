@@ -4,7 +4,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version TBD
 *Released*: TBD
 - Issue 49016: App admin Groups and Users pages to show in subfolders when applicable
-  - if the user has admin permissions to the app home folder
+
+### version 6.0.2
+*Released*: 29 November 2024
+- Issue 51680: Use proper container path for importing assay data for jobs
 
 ### version 6.0.1
 *Released*: 27 November 2024
