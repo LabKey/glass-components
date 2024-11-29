@@ -61,11 +61,12 @@ interface TabsProps {
     activeKey?: string;
     children: ReactElement<TabProps> | Array<ReactElement<TabProps>>;
     className?: string;
+    contentCls?: string;
     onSelect?: (eventKey: string) => void;
 }
 
 export const Tabs: FC<TabsProps> = props => {
-    const { children, onSelect } = props;
+    const { children, onSelect, contentCls = 'tab-content' } = props;
     const id = useMemo(() => generateId('tabs'), []);
     const className = classNames('lk-tabs', props.className);
     const [activeKey, setActiveKey] = useState<string>(() => {
@@ -124,7 +125,7 @@ export const Tabs: FC<TabsProps> = props => {
             <ul className="nav nav-tabs" role="tablist">
                 {tabs}
             </ul>
-            <div className="tab-content">
+            <div className={contentCls}>
                 <Context.Provider value={tabContext}>{children}</Context.Provider>
             </div>
         </div>
