@@ -96,7 +96,7 @@ export class CreateUsersModal extends React.Component<Props, State> {
         return (
             <>
                 <label className="create-users-label-bottom" htmlFor="create-users-email-input">
-                    Enter one or more email addresses, each on its own line:
+                    Enter one or more email addresses, each on its own line
                 </label>
                 <textarea
                     className="form-control"
@@ -113,7 +113,7 @@ export class CreateUsersModal extends React.Component<Props, State> {
                 {this.hasRoleOptions() && (
                     <>
                         <label className="create-users-label-top create-users-label-bottom" htmlFor="create-users-role">
-                            Roles:
+                            Roles
                         </label>
                         <SelectInput
                             containerClass="form-group row"
@@ -133,7 +133,7 @@ export class CreateUsersModal extends React.Component<Props, State> {
                     </>
                 )}
                 <label className="create-users-label-bottom" htmlFor="create-users-optionalMessage-input">
-                    Optional message to send to new users:
+                    Optional message to send to new users
                 </label>
                 <textarea
                     className="form-control"
