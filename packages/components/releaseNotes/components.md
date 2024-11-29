@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.1.0
+*Released*: 29 November 2024
 - Issue 49016: App admin Groups and Users pages to show in subfolders when applicable
 
 ### version 6.0.2
