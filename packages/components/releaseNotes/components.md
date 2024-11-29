@@ -7,6 +7,9 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Styles moved to utils.scss or ui-premium
 - Add utils.scss
   - Move util styles from various scss files to utils.scss
+- Rename getSelectedData to getSelectedDataDeprecated
+- Add getSelectedRows
+  - This uses the components version of selectRows to fetch the selected data for a QueryModel
 
 ### version 6.3.1
 *Released*: 4 December 2024

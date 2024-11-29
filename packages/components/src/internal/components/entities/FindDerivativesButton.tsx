@@ -16,7 +16,7 @@ import { FieldFilter } from '../search/models';
 import { useAppContext } from '../../AppContext';
 import { ResponsiveMenuButton } from '../buttons/ResponsiveMenuButton';
 
-import { getSelectedData } from '../../actions';
+import { getSelectedDataDeprecated } from '../../actions';
 import { caseInsensitive } from '../../util/utils';
 
 import { EntityDataType, FilterProps } from './models';
@@ -77,7 +77,7 @@ export const getSessionSearchFilterProps = async (
         const pkCol = model.queryInfo.getPkCols()[0];
         const titleCol = model.queryInfo.getColumn(model.queryInfo.titleColumn);
 
-        const selectedData = await getSelectedData(
+        const selectedData = await getSelectedDataDeprecated(
             model.schemaName,
             model.queryName,
             Array.from(model.selections),
