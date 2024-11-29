@@ -1,12 +1,12 @@
 import React from 'react';
-import { mount } from 'enzyme';
+
+import { render } from '@testing-library/react';
+
+import { waitFor } from '@testing-library/dom';
 
 import { TEST_USER_READER } from '../../userFixtures';
-import { FileInput } from '../forms/input/FileInput';
-import { TextInput } from '../forms/input/TextInput';
 
 import { getTestAPIWrapper } from '../../APIWrapper';
-import { waitForLifecycle } from '../../test/enzymeTestHelpers';
 
 import { getQueryTestAPIWrapper } from '../../query/APIWrapper';
 import { makeQueryInfo } from '../../test/testHelpers';
@@ -23,7 +23,7 @@ describe('UserProfile', () => {
             }),
         });
 
-        const wrapper = mount(
+        render(
             <UserProfile
                 api={API}
                 user={TEST_USER_READER}
@@ -33,16 +33,20 @@ describe('UserProfile', () => {
             />
         );
 
-        await waitForLifecycle(wrapper);
+        await waitFor(() => {
+            expect(document.querySelectorAll('.user-section-header')).toHaveLength(2);
+        });
+        expect(document.querySelectorAll('img')).toHaveLength(1);
+        expect(document.querySelectorAll('.user-text-link')).toHaveLength(0);
+        expect(document.querySelectorAll('button')).toHaveLength(1);
 
-        expect(wrapper.find('.user-section-header')).toHaveLength(2);
-        expect(wrapper.find('img')).toHaveLength(1);
-        expect(wrapper.find(FileInput)).toHaveLength(1);
-        expect(wrapper.find('.user-text-link')).toHaveLength(0);
-        expect(wrapper.find(TextInput)).toHaveLength(5);
-        expect(wrapper.find('input').findWhere(input => input.prop('disabled'))).toHaveLength(1); // email disabled
-        expect(wrapper.find('button')).toHaveLength(1);
-
-        wrapper.unmount();
+        const inputs = document.querySelectorAll('input');
+        expect(inputs).toHaveLength(6); // 1 file and 5 text inputs
+        expect(inputs[0].hasAttribute('disabled')).toBe(false);
+        expect(inputs[1].hasAttribute('disabled')).toBe(true); // email
+        expect(inputs[2].hasAttribute('disabled')).toBe(false);
+        expect(inputs[3].hasAttribute('disabled')).toBe(false);
+        expect(inputs[4].hasAttribute('disabled')).toBe(false);
+        expect(inputs[5].hasAttribute('disabled')).toBe(false);
     });
 });
