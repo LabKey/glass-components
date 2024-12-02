@@ -31,6 +31,7 @@
 }
 
 .horizontal-bar--subtitle, .horizontal-bar--empty-text {
+    padding-top: 5px;
     color: $text-muted;
 }
 
@@ -104,7 +105,7 @@
         margin-bottom: 5px;
     }
 
-    .cell-legend-label {
+    .cell-legend-label, .cell-legend-data {
         padding-left: 10px;
         display: inline-block;
         overflow: hidden;

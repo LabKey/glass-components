@@ -9,7 +9,7 @@ import { QueryInfo } from '../public/QueryInfo';
 
 import { AssayUploadTabs } from './constants';
 
-import { AppURL, createProductUrlFromParts } from './url/AppURL';
+import { AppURL, createProductUrlFromPartsWithContainer } from './url/AppURL';
 
 import { SCHEMAS } from './schemas';
 import { ASSAYS_KEY } from './app/constants';
@@ -128,7 +128,8 @@ export class AssayDefinitionModel extends ImmutableRecord({
         isPicklist?: boolean,
         currentProductId?: string,
         targetProductId?: string,
-        ignoreFilter?: boolean
+        ignoreFilter?: boolean,
+        containerPath?: string
     ): string {
         let url: AppURL | string;
         // Note, will need to handle the re-import run case separately. Possibly introduce another URL via links
@@ -147,9 +148,10 @@ export class AssayDefinitionModel extends ImmutableRecord({
             }
             if (selectionKey) params.selectionKey = selectionKey;
             if (isPicklist) params.isPicklist = true;
-            url = createProductUrlFromParts(
+            url = createProductUrlFromPartsWithContainer(
                 targetProductId,
                 currentProductId,
+                containerPath,
                 params,
                 ASSAYS_KEY,
                 this.type,

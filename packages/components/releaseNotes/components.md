@@ -8,6 +8,21 @@ Components, models, actions, and utility functions for LabKey applications and p
   - trendline asymptote min and max inputs for specific curve fit types
   - available trendline options (i.e. linear vs non-linear) based on schema prefix
 
+### version 6.1.0
+*Released*: 29 November 2024
+- Issue 49016: App admin Groups and Users pages to show in subfolders when applicable
+
+### version 6.0.2
+*Released*: 29 November 2024
+- Issue 51680: Use proper container path for importing assay data for jobs
+
+### version 6.0.1
+*Released*: 27 November 2024
+- Incorporate Recent Storage Dashboard Widget
+  - Modify `HorizontalBarSection` to support `showSummaryTooltip`
+  - Add `createHorizontalBarCountLegendData` util
+  - Modify `ItemLegend` to render data with `DefaultRenderer`
+
 ### version 6.0.0
 *Released*: 26 November 2024
 - Move `BarChartViewer` and relatives to `ui-premium` package

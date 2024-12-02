@@ -1,6 +1,7 @@
 import { fromJS } from 'immutable';
 import React from 'react';
-import renderer from 'react-test-renderer';
+
+import { render } from '@testing-library/react';
 
 import mixturesQueryInfo from '../../test/data/mixtures-getQueryDetails.json';
 import mixturesQuery from '../../test/data/mixtures-getQuery.json';
@@ -31,7 +32,7 @@ const SQ = new SchemaQuery('exp.data', 'mixtures', '~~default~~');
 
 describe('PreviewGrid render', () => {
     test('PreviewGrid loading', () => {
-        const tree = renderer.create(
+        const { container } = render(
             <StatelessPreviewGrid
                 schemaQuery={SQ}
                 numCols={4}
@@ -42,11 +43,11 @@ describe('PreviewGrid render', () => {
                 data={DATA}
             />
         );
-        expect(tree.toJSON()).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
 
     test('PreviewGrid with data', () => {
-        const tree = renderer.create(
+        const { container } = render(
             <StatelessPreviewGrid
                 schemaQuery={SQ}
                 numCols={4}
@@ -57,11 +58,11 @@ describe('PreviewGrid render', () => {
                 data={DATA}
             />
         );
-        expect(tree.toJSON()).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
 
     test('PreviewGrid with different numCols and numRows', () => {
-        const tree = renderer.create(
+        const { container } = render(
             <StatelessPreviewGrid
                 schemaQuery={SQ}
                 numCols={2}
@@ -72,6 +73,6 @@ describe('PreviewGrid render', () => {
                 data={DATA}
             />
         );
-        expect(tree.toJSON()).toMatchSnapshot();
+        expect(container).toMatchSnapshot();
     });
 });

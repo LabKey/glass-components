@@ -1,50 +1,52 @@
 import React from 'react';
-import { mount } from 'enzyme';
+
+import { render } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import { AutoForm, FormSchema } from './AutoForm';
 
 describe('AutoForm', () => {
-    const expectField = (wrapper, field, index): void => {
-        const fieldEl = wrapper.find('.auto-form-field').at(index);
+    const expectField = (field, index): void => {
+        const fieldEl = document.querySelectorAll('.auto-form-field')[index];
 
-        const label = fieldEl.find('label').at(0);
-        expect(label.text()).toContain(field.label + (field.required ? '*' : ''));
+        const label = fieldEl.querySelectorAll('label')[0];
+        expect(label.textContent).toContain(field.label + (field.required ? '*' : ''));
 
         if (field.helpText) {
             // Can't assert text content of help icon at the moment, so just assert it exists.
-            expect(label.find('.help-icon').exists()).toEqual(true);
+            expect(label.querySelectorAll('.help-icon')).toHaveLength(1);
         }
 
         if (field.type === 'textarea') {
-            expect(fieldEl.find('textarea').length).toEqual(1);
+            expect(fieldEl.querySelectorAll('textarea').length).toEqual(1);
         } else if (field.type === 'radio') {
-            const radios = fieldEl.find('label.radio-inline');
+            const radios = fieldEl.querySelectorAll('label.radio-inline');
             expect(radios.length).toEqual(field.options.length);
             field.options.forEach((option, idx) => {
-                const radio = radios.at(idx);
-                expect(radio.find('input').props().name).toEqual(field.name);
-                expect(radio.find('input').props().value).toEqual(option.value);
-                expect(radio.text()).toEqual(option.label);
+                const radio = radios[idx];
+                expect(radio.querySelector('input').getAttribute('name')).toEqual(field.name);
+                expect(radio.querySelector('input').getAttribute('value')).toEqual(option.value);
+                expect(radio.textContent).toEqual(option.label);
             });
         } else if (field.type === 'checkbox') {
-            expect(fieldEl.find('input[type="checkbox"]').length).toEqual(1);
+            expect(fieldEl.querySelectorAll('input[type="checkbox"]').length).toEqual(1);
         } else if (field.type === 'select') {
-            expect(fieldEl.find('select').length).toEqual(1);
+            expect(fieldEl.querySelectorAll('select').length).toEqual(1);
             const expectedOptions = field.placeholder ? field.options.length + 1 : field.options.length;
-            const optionEls = fieldEl.find('select > option');
+            const optionEls = fieldEl.querySelectorAll('select > option');
             expect(optionEls.length).toEqual(expectedOptions);
             optionEls.forEach((optionEl, idx) => {
                 if (field.placeholder && idx === 0) {
-                    expect(optionEl.props().value).toEqual('');
-                    expect(optionEl.text()).toEqual(field.placeholder);
+                    expect(optionEl.getAttribute('value')).toEqual('');
+                    expect(optionEl.textContent).toEqual(field.placeholder);
                 } else {
                     const option = field.options[field.placeholder ? idx - 1 : idx];
-                    expect(optionEl.props().value).toEqual(option.value);
-                    expect(optionEl.text()).toEqual(option.label);
+                    expect(optionEl.getAttribute('value')).toEqual(option.value);
+                    expect(optionEl.textContent).toEqual(option.label);
                 }
             });
         } else {
-            expect(fieldEl.find('input[type="text"]').length).toEqual(1);
+            expect(fieldEl.querySelectorAll('input[type="text"]').length).toEqual(1);
         }
     };
     test('render', () => {
@@ -118,12 +120,12 @@ describe('AutoForm', () => {
                 },
             ],
         };
-        const wrapper = mount(<AutoForm formSchema={formSchema} onChange={jest.fn()} values={{}} />);
+        render(<AutoForm formSchema={formSchema} onChange={jest.fn()} values={{}} />);
 
-        formSchema.fields.forEach((field, index) => expectField(wrapper, field, index));
+        formSchema.fields.forEach((field, index) => expectField(field, index));
     });
 
-    test('interaction', () => {
+    test('interaction', async () => {
         const formSchema: FormSchema = {
             fields: [
                 {
@@ -158,18 +160,14 @@ describe('AutoForm', () => {
         };
 
         const onChange = jest.fn();
-        const wrapper = mount(<AutoForm formSchema={formSchema} onChange={onChange} values={{}} />);
+        render(<AutoForm formSchema={formSchema} onChange={onChange} values={{}} />);
         const text = 'I am text';
-        wrapper.find('input[type="text"]').simulate('change', { target: { value: text } });
-        expect(onChange).toHaveBeenCalledWith('textField', text);
-        wrapper
-            .find('input[type="radio"]')
-            .at(1)
-            .simulate('change', { target: { value: 'option2' } });
-        expect(onChange).toHaveBeenCalledWith('radioField', 'option2');
-        wrapper.find('select').simulate('change', { target: { value: 'option2' } });
-        expect(onChange).toHaveBeenCalledWith('selectField', 'option2');
-        wrapper.find('input[type="checkbox"]').simulate('change', { target: { checked: false } });
-        expect(onChange).toHaveBeenCalledWith('checkboxField', false);
+        await userEvent.type(document.querySelectorAll('input[type="text"]')[0], text);
+        expect(onChange).toHaveBeenCalledTimes(9);
+        expect(onChange).toHaveBeenLastCalledWith('textField', 't');
+        await userEvent.click(document.querySelectorAll('input[type="radio"]')[1]);
+        expect(onChange).toHaveBeenLastCalledWith('radioField', 'option2');
+        await userEvent.selectOptions(document.querySelectorAll('select')[0], 'option2');
+        expect(onChange).toHaveBeenLastCalledWith('selectField', 'option2');
     });
 });

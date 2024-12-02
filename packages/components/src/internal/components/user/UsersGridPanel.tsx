@@ -30,6 +30,10 @@ import { InjectedQueryModels, withQueryModels } from '../../../public/QueryModel
 
 import { MenuItem } from '../../dropdowns';
 
+import { Container } from '../base/models/Container';
+
+import { isAppHomeFolder } from '../../app/utils';
+
 import { CreateUsersModal } from './CreateUsersModal';
 import { UserDetailsPanel } from './UserDetailsPanel';
 import { UserActivateChangeConfirmModal } from './UserActivateChangeConfirmModal';
@@ -50,6 +54,7 @@ const OMITTED_COLUMNS = [
 interface OwnProps {
     // option to disable the reset password UI pieces for this component
     allowResetPassword?: boolean;
+    container: Container;
     // optional array of role options, objects with id and label values (i.e. [{id: "org.labkey.api.security.roles.ReaderRole", label: "Reader (default)"}])
     // note that the createNewUser action will not use this value but it will be passed back to the onCreateComplete
     newUserRoleOptions?: any[];
@@ -116,12 +121,13 @@ export class UsersGridPanelImpl extends PureComponent<Props, State> {
     }
 
     initQueryModel = (usersView: string): void => {
-        const { actions } = this.props;
+        const { actions, container } = this.props;
         const baseFilters = usersView === 'all' ? [] : [Filter.create('active', usersView === 'active')];
 
         actions.addModel(
             {
                 id: this.getUsersModelId(),
+                containerPath: container.path,
                 schemaQuery: SCHEMAS.CORE_TABLES.USERS,
                 baseFilters,
                 omittedColumns: OMITTED_COLUMNS,
@@ -305,9 +311,12 @@ export class UsersGridPanelImpl extends PureComponent<Props, State> {
     };
 
     render(): ReactNode {
-        const { newUserRoleOptions, user, showDetailsPanel, actions, userLimitSettings } = this.props;
+        const { newUserRoleOptions, user, showDetailsPanel, actions, userLimitSettings, container } = this.props;
         const { selectedUserId, showDialog, usersView } = this.state;
         const model = this.getUsersModel();
+
+        // don't pass container from this.props as we want to check serverContext.container
+        const isAppHome = isAppHomeFolder();
 
         return (
             <>
@@ -319,7 +328,7 @@ export class UsersGridPanelImpl extends PureComponent<Props, State> {
                                 actions={actions}
                                 model={model}
                                 loadOnMount={false}
-                                title={capitalizeFirstChar(usersView) + ' Users'}
+                                title={'Application ' + capitalizeFirstChar(usersView) + ' Users'}
                                 ButtonsComponent={() => this.renderButtons()}
                                 highlightLastSelectedRow
                                 showChartMenu={false}
@@ -333,12 +342,14 @@ export class UsersGridPanelImpl extends PureComponent<Props, State> {
                                 currentUser={user}
                                 userId={selectedUserId}
                                 onUsersStateChangeComplete={this.onUsersStateChangeComplete}
+                                showPermissionListLinks={isAppHome}
                             />
                         </div>
                     )}
                 </div>
                 {user.hasAddUsersPermission() && showDialog === 'create' && (
                     <CreateUsersModal
+                        container={container}
                         userLimitSettings={userLimitSettings}
                         roleOptions={newUserRoleOptions}
                         onComplete={this.onCreateComplete}
