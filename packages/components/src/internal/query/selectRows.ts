@@ -90,6 +90,7 @@ interface GetSelectedRowsOptions extends SelectRowsOptions {
 
 export function getSelectedRows(options: GetSelectedRowsOptions): Promise<SelectRowsResponse> {
     const { keyColumn = 'RowId', selections, ...rest } = options;
-    const filterArray = [Filter.create(keyColumn, Array.from(selections), Filter.Types.IN)];
+    const originalFilterArray = rest.filterArray ?? [];
+    const filterArray = originalFilterArray.concat([Filter.create(keyColumn, Array.from(selections), Filter.Types.IN)]);
     return selectRows({ ...rest, filterArray });
 }
