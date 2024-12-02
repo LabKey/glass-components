@@ -44,7 +44,7 @@ export const DiscardConsumedSamplesPanel: FC<Props> = memo(props => {
                     onChange={onCommentChange}
                     disabled={!shouldDiscard}
                     actionName="Removing"
-                    containerClassName="top-spacing bottom-spacing"
+                    containerClassName="top-padding bottom-padding"
                     requiresUserComment={requiresUserComment}
                     value={comment}
                 />

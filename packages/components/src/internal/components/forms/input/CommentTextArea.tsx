@@ -19,7 +19,7 @@ export const COMMENT_FIELD_ID = 'actionComments';
 export const CommentTextArea: FC<Props> = props => {
     const {
         actionName,
-        containerClassName = 'top-spacing',
+        containerClassName = 'top-padding',
         disabled,
         inline,
         onChange,

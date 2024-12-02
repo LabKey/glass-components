@@ -25,7 +25,7 @@ export class FileAttachmentEntry extends PureComponent<Props, any> {
                         title={deleteTitleText}
                     />
                 )}
-                <span className="fa fa-file-text attached-file--icon attached-file--bottom-spacing" />
+                <span className="fa fa-file-text attached-file--icon attached-file--bottom-padding" />
                 {downloadUrl ? (
                     <strong>
                         <a href={downloadUrl} title={name}>

@@ -252,7 +252,7 @@ export const ManageViewsModal: FC<Props> = memo(props => {
                                     {canEdit && (
                                         <span className="pull-right">
                                             <span
-                                                className="edit-inline-field__toggle small-right-spacing"
+                                                className="edit-inline-field__toggle small-right-padding"
                                                 onClick={onSelectView}
                                             >
                                                 <i id={'select-' + ind} className="fa fa-pencil" />
@@ -265,7 +265,7 @@ export const ManageViewsModal: FC<Props> = memo(props => {
                                 </div>
                             </div>
                             {deleting === view && (
-                                <div className="row bottom-spacing">
+                                <div className="row bottom-padding">
                                     <div className="col-xs-12">
                                         <div className="inline-confirmation">
                                             <div>
@@ -273,7 +273,7 @@ export const ManageViewsModal: FC<Props> = memo(props => {
                                                     Permanently remove this view?
                                                 </span>
                                                 <button
-                                                    className="button-left-spacing alert-button btn btn-danger"
+                                                    className="button-left-margin alert-button btn btn-danger"
                                                     id={'confirm-delete-' + ind}
                                                     onClick={deleteSavedView}
                                                     type="button"
@@ -281,7 +281,7 @@ export const ManageViewsModal: FC<Props> = memo(props => {
                                                     Yes
                                                 </button>
                                                 <button
-                                                    className="button-left-spacing alert-button btn btn-default"
+                                                    className="button-left-margin alert-button btn btn-default"
                                                     id={'cancel-delete-' + ind}
                                                     onClick={cancelDeleteView}
                                                     type="button"

@@ -49,7 +49,7 @@ export const SearchResultsPanel: FC<Props> = memo(({ emptyResultDisplay, iconUrl
     return (
         <div className="search-results-panel">
             {loading && (
-                <div className="top-spacing">
+                <div className="top-padding">
                     <LoadingSpinner />
                 </div>
             )}
@@ -63,7 +63,7 @@ export const SearchResultsPanel: FC<Props> = memo(({ emptyResultDisplay, iconUrl
                 </Alert>
             )}
             {!loading && !error && hasData && (
-                <div className="top-spacing">
+                <div className="top-padding">
                     {data.size > 0 &&
                         data.map((item, i) => (
                             <div key={i} className="col-md-12 col-sm-12 search-results__margin-top">

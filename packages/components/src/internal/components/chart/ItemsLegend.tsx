@@ -47,17 +47,15 @@ export class ItemsLegend extends React.PureComponent<Props> {
             if (legend.borderColor) {
                 style['border'] = '3px solid ' + legend.borderColor;
             }
+            const iconClassName = classNames('cell-legend-icon', {
+                'cell-legend-icon-margin': legend.locked,
+                'cell-legend-icon-border': hasBackground,
+                'expired-form-field': legend.expired,
+            });
             const legendDisplay = (
                 <tr key={key} className="cell-legend-row">
                     <td>
-                        <span
-                            className={classNames('cell-legend-icon', {
-                                'cell-legend-icon-spacing': legend.locked,
-                                'cell-legend-icon-border': hasBackground,
-                                'expired-form-field': legend.expired,
-                            })}
-                            style={style}
-                        >
+                        <span className={iconClassName} style={style}>
                             {icon}
                         </span>
                     </td>

@@ -327,7 +327,7 @@ export const SampleStatusDetail: FC<SampleStatusDetailProps> = memo(props => {
                 >
                     <span>
                         The <b>{updatedState.label}</b> status will be permanently deleted.
-                        <p className="top-spacing">
+                        <p className="top-padding">
                             <strong>Deletion cannot be undone.</strong> Do you want to proceed?
                         </p>
                     </span>

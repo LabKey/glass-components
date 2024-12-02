@@ -1,6 +1,4 @@
-/**
-Layout helpers
- */
+/** Layout helpers **/
 
 .display-flex {
     display: flex;
@@ -26,9 +24,7 @@ Layout helpers
     width: 100%;
 }
 
-/**
-Margins
- */
+/** Margin **/
 
 .no-margin {
     margin: 0;
@@ -70,10 +66,16 @@ Margins
     margin-left: 20px;
 }
 
-/**
-Padding
-Note: please use the ".padding" styles and not the ".spacing" styles, the ".spacing" styles will be removed
- */
+.button-right-margin {
+    margin-right: 15px;
+}
+
+.input-left-margin,
+.button-left-margin {
+    margin-left: 15px;
+}
+
+/** Padding **/
 
 .no-padding {
     padding: 0;
@@ -88,18 +90,15 @@ Note: please use the ".padding" styles and not the ".spacing" styles, the ".spac
     padding: 15px 0 0 0;
 }
 
-.top-padding,
-.top-spacing {
+.top-padding {
     padding-top: 15px;
 }
 
-.top-padding-less,
-.top-spacing-less {
+.top-padding-less {
     padding-top: 5px;
 }
 
-.right-padding,
-.right-spacing {
+.right-padding {
     padding-right: 15px;
 }
 
@@ -108,13 +107,11 @@ Note: please use the ".padding" styles and not the ".spacing" styles, the ".spac
     padding-right: 8px;
 }
 
-.bottom-padding,
-.bottom-spacing {
+.bottom-padding {
     padding-bottom: 15px;
 }
 
-.bottom-padding-less,
-.bottom-spacing-less {
+.bottom-padding-less {
     padding-bottom: 5px;
 }
 
@@ -128,9 +125,11 @@ Note: please use the ".padding" styles and not the ".spacing" styles, the ".spac
     padding-left: 8px;
 }
 
-/**
-Text utils
- */
+.button-small-padding {
+    padding: 3px 8px;
+}
+
+/** Text utils **/
 
 .bold-text {
     font-weight: bold;
@@ -165,9 +164,7 @@ Text utils
     font-size: $font-size-large;
 }
 
-/**
-Other
- */
+/** Other **/
 
 .pointer {
     cursor: pointer;

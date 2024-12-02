@@ -203,7 +203,7 @@ export class DataClassPropertiesPanelImpl extends PureComponent<Props, State> {
                 />
                 {allowParentAlias && (
                     <>
-                        <SectionHeading title="Lineage Settings" cls="top-spacing bottom-spacing" />
+                        <SectionHeading title="Lineage Settings" cls="top-padding bottom-padding" />
                         <DomainParentAliases
                             {...this.props}
                             parentAliases={model.parentAliases}

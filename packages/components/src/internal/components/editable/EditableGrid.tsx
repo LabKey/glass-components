@@ -1667,7 +1667,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                     {/* TODO: tabbed bulk add not yet supported */}
                     {allowBulkUpdate && (
                         <Tab
-                            className="top-spacing"
+                            className="top-padding"
                             disabled={bulkDisabled}
                             eventKey={EditableGridTabs.BulkUpdate}
                             title="Edit in Bulk"
@@ -1676,7 +1676,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                         </Tab>
                     )}
                     {showGrid && (
-                        <Tab className="top-spacing" eventKey={EditableGridTabs.Grid} title="Edit Individually">
+                        <Tab className="top-padding" eventKey={EditableGridTabs.Grid} title="Edit Individually">
                             {gridContent}
                         </Tab>
                     )}

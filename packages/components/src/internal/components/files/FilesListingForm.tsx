@@ -128,7 +128,7 @@ export class FilesListingForm extends Component<Props, State> {
 
         return (
             <>
-                <div className="row bottom-spacing">
+                <div className="row bottom-padding">
                     <div className="col-md-7">
                         {canInsert && (
                             <button
