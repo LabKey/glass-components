@@ -368,7 +368,8 @@ export function isAssayDesignExportEnabled(moduleContext?: ModuleContext): boole
 }
 
 export function isNonstandardAssayEnabled(moduleContext?: ModuleContext): boolean {
-    return isFeatureEnabled(ProductFeature.NonstandardAssay, moduleContext);
+    // Issue 51775: only LKB has pages for non-standard assays
+    return biologicsIsPrimaryApp(moduleContext) && isFeatureEnabled(ProductFeature.NonstandardAssay, moduleContext);
 }
 
 export function isPlatesEnabled(moduleContext?: ModuleContext): boolean {
@@ -651,7 +652,7 @@ export function getMenuSectionConfigs(
         sectionConfigs = sectionConfigs.push(configs);
 
         if (isAssayEnabled(moduleContext)) {
-            sectionConfigs = addAssaysSectionConfig(user, sectionConfigs, isNonstandardAssayEnabled(moduleContext));
+            sectionConfigs = addAssaysSectionConfig(user, sectionConfigs, !isNonstandardAssayEnabled(moduleContext));
         }
     }
 
