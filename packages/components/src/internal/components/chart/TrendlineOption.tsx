@@ -127,6 +127,9 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
                             value={asymptoteMax}
                         />
                     )}
+                    {!!asymptoteMin && !!asymptoteMax && asymptoteMax <= asymptoteMin && (
+                        <span className="text-danger margin-left">Invalid range</span>
+                    )}
                 </div>
             )}
         </div>
