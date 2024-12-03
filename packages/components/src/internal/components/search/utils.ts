@@ -607,7 +607,7 @@ export function getSearchResultCardData(
                 };
             } else if (type.indexOf('dataClass') === 0) {
                 const parts = type.split(':');
-                if (parts.length == 1 || (parts.length > 1 && parts[1].toLowerCase() !== REGISTRY_KEY)) {
+                if (parts.length === 1 || (parts.length > 1 && parts[1].toLowerCase() !== REGISTRY_KEY)) {
                     return {
                         altText: 'source_type-icon',
                         iconSrc: 'source_type',
@@ -618,9 +618,15 @@ export function getSearchResultCardData(
                     return {
                         altText: 'source_type-icon',
                         iconSrc: data.name.toLowerCase(),
-                        category: 'Registry Source Type',
+                        category: 'Source Type',
                     };
                 }
+                return {
+                    altText: 'source_type-icon',
+                    iconSrc: 'source_type',
+                    category: 'Source Type',
+                    title: dataName,
+                };
             } else if (type === 'assay') {
                 return { category: 'Assay' };
             }

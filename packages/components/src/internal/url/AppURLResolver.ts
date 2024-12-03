@@ -110,10 +110,6 @@ export class ListResolver implements AppRouteResolver {
 export class ExperimentRunResolver implements AppRouteResolver {
     jobs: Set<number>; // set of rowIds that are jobs
 
-    static createURL(rowId: string | number): AppURL {
-        return AppURL.create('rd', 'run', rowId);
-    }
-
     constructor(jobs?: Set<number>) {
         this.jobs = jobs !== undefined ? jobs : new Set();
     }

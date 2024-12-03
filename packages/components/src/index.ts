@@ -21,6 +21,7 @@ import {
     buildURL,
     createProductUrl,
     createProductUrlFromParts,
+    createProductUrlFromPartsWithContainer,
     spliceURL,
 } from './internal/url/AppURL';
 import { getHref } from './internal/url/utils';
@@ -1202,6 +1203,7 @@ export {
     NOT_ANY_FILTER_TYPE,
     createProductUrl,
     createProductUrlFromParts,
+    createProductUrlFromPartsWithContainer,
     // renderers
     ArchivedFolderTag,
     AttachmentCard,
