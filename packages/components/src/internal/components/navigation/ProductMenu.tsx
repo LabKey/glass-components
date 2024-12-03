@@ -357,7 +357,7 @@ const HEADER_MENU_SUBTITLE_MAP = {
     [MEDIA_KEY]: 'Media',
     [PLATES_KEY]: 'Plates',
     [PICKLIST_KEY]: 'Picklists',
-    [REGISTRY_KEY]: 'Registry',
+    [REGISTRY_KEY]: 'Registry Sources',
     [SAMPLE_TYPE_KEY.toLowerCase()]: 'Sample Types',
     [SAMPLES_KEY]: 'Sample Types',
     [SOURCE_TYPE_KEY.toLowerCase()]: 'Source Types',
