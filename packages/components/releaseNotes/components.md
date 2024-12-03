@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.X
+*Released*: X 2024
+- Issue 51432: LKSM: special character not working well with editable grid paste
+  - Warn user about missing quotes when pasting data containing comma
+
 ### version 6.1.0
 *Released*: 29 November 2024
 - Issue 49016: App admin Groups and Users pages to show in subfolders when applicable
