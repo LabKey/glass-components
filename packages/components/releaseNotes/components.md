@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.2.0
+*Released*: 3 December 2024
+- Issue 51707: Change "Registry Source Type" to "Source Type" and "Registry" to "Registry Sources"
+- Issue 51775: Don't produce link for non-standard assay import if not supported
+
 ### version 6.1.0
 *Released*: 29 November 2024
 - Issue 49016: App admin Groups and Users pages to show in subfolders when applicable
