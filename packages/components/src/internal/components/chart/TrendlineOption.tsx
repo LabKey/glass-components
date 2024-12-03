@@ -75,7 +75,7 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
     if (hidden) return null;
 
     return (
-        <div>
+        <div className="trendline-option">
             <label>
                 Trendline{' '}
                 <LabelOverlay placement="bottom">
