@@ -1381,7 +1381,7 @@ describe('getSearchResultCardData', () => {
             )
         ).toStrictEqual({
             iconSrc: 'testregistrysource',
-            category: 'Registry Source Type',
+            category: 'Source Type',
             altText: 'source_type-icon',
         });
     });
