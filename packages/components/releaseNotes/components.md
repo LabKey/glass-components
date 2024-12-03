@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.2.1
+*Released*: 3 December 2024
+- Issue 51105: Workflow job links to navigate user to app project home or subfolder accordingly
+  - export createProductUrlFromPartsWithContainer for use in WORKFLOW_MAPPER
+
 ### version 6.2.0
 *Released*: 3 December 2024
 - Issue 51707: Change "Registry Source Type" to "Source Type" and "Registry" to "Registry Sources"
