@@ -19,13 +19,11 @@ import {
 
 import {
     ChartBuilderModal,
-    ChartFieldInfo,
     ChartTypeInfo,
     getChartBuilderChartConfig,
     getChartBuilderQueryConfig,
     getChartRenderMsg,
     getDefaultBarChartAxisLabel,
-    getSelectOptions,
     MAX_POINT_DISPLAY,
     MAX_ROWS_PREVIEW,
 } from './ChartBuilderModal';
@@ -119,7 +117,7 @@ const SERVER_CONTEXT = {
 };
 
 describe('ChartBuilderModal', () => {
-    function validate(isNew: boolean, canShare = true, canDelete = false, allowInherit = false) {
+    function validate(isNew: boolean, canShare = true, canDelete = false, allowInherit = false): void {
         expect(document.querySelectorAll('.chart-builder-modal')).toHaveLength(1);
         expect(document.querySelector('.modal-title').textContent).toBe(isNew ? 'Create Chart' : 'Edit Chart');
         expect(document.querySelectorAll('.btn')).toHaveLength(canDelete ? 3 : 2);
@@ -456,28 +454,6 @@ describe('getChartRenderMsg', () => {
     });
 });
 
-describe('getSelectOptions', () => {
-    test('hasMatchingType', () => {
-        LABKEY_VIS.GenericChartHelper = {
-            ...LABKEY_VIS.GenericChartHelper,
-            isMeasureDimensionMatch: () => false,
-        };
-        const field = { name: 'x' } as ChartFieldInfo;
-        const options = getSelectOptions(model, BAR_CHART_TYPE, field);
-        expect(options.length).toBe(2);
-    });
-
-    test('isMeasureDimensionMatch', () => {
-        LABKEY_VIS.GenericChartHelper = {
-            ...LABKEY_VIS.GenericChartHelper,
-            isMeasureDimensionMatch: () => true,
-        };
-        const field = { name: 'x' } as ChartFieldInfo;
-        const options = getSelectOptions(model, BAR_CHART_TYPE, field);
-        expect(options.length).toBe(3);
-    });
-});
-
 describe('getChartBuilderQueryConfig', () => {
     const chartConfig = { measures: {} } as ChartConfig;
     const fieldValues = {
@@ -661,13 +637,13 @@ describe('getChartBuilderChartConfig', () => {
             fields: [{ name: 'x' }, { name: 'y' }],
         } as ChartTypeInfo;
 
-        const fieldValues = {
+        const fieldValues2 = {
             x: { value: 'field1', label: 'Field 1', data: { fieldKey: 'field1' } },
             y: { value: 'field2', label: 'Field 2', data: { fieldKey: 'field2' } },
             'aggregate-method': { value: 'MEAN', name: 'Mean' },
         };
 
-        const config = getChartBuilderChartConfig(boxType, fieldValues, undefined);
+        const config = getChartBuilderChartConfig(boxType, fieldValues2, undefined);
         expect(config.geomOptions.boxFillColor).not.toBe('none');
         expect(config.geomOptions.lineWidth).toBe(1);
         expect(config.geomOptions.opacity).toBe(1.0);
