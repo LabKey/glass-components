@@ -201,6 +201,11 @@ export class FileAttachmentForm extends PureComponent<FileAttachmentFormProps, S
         );
     };
 
+    // Used in module editor—see DirectoryOperations.tsx
+    manuallyClearFiles = (attachmentName: string): void => {
+        this.fileAttachmentContainerRef.current.handleRemove(attachmentName);
+    };
+
     handleSubmit = (): void => {
         this.props.onSubmit?.(this.state.attachedFiles);
 

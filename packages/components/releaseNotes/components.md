@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.3.1
+*Released*: 4 December 2024
+- Reinstate prior removed fn
+
 ### version 6.3.0
 *Released*: 4 December 2024
 - Chart builder support for Trendline option in line chart
