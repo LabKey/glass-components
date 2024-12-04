@@ -38,7 +38,7 @@ function trimExceptionPrefix(exceptionMessage: string, message: string): string 
     return message.substring(startIndex + exceptionMessage.length).trim();
 }
 
-function resolveDuplicatesAsName(errorMsg: string, noun: string, nounPlural?: string, verb?: string): string {
+function resolveDuplicatesAsName(errorMsg: string, noun: string, nounPlural?: string, verbPresParticiple?: string): string {
     // N.B. Issues 48050 and 48209: only for Postgres since the error message from SQL server doesn't provide a
     // reasonable way to parse a multi-field key in the face of names that may contain commas and spaces. Seems
     // better to show a generic message instead of an incorrectly parsed name.
@@ -59,7 +59,7 @@ function resolveDuplicatesAsName(errorMsg: string, noun: string, nounPlural?: st
             }
         }
     }
-    let retMsg = `There was a problem ${verb || 'creating'} your ${nounPlural || noun || 'data'}.`;
+    let retMsg = `There was a problem ${verbPresParticiple || 'creating'} your ${nounPlural || noun || 'data'}.`;
     if (name) {
         retMsg += ` Duplicate name '${name}' found.`;
     } else {
@@ -87,7 +87,7 @@ export function resolveErrorMessage(
     noun = 'data',
     nounPlural?: string,
     verbPresent?: string,
-    duplicatesMessageResolver?: (errorMsg: string, noun: string, nounPlural?: string, verb?: string) => string,
+    duplicatesMessageResolver?: (errorMsg: string, noun: string, nounPlural?: string, verbPresParticiple?: string) => string,
     returnInitialMsg = false
 ): string {
     const verbPresParticiple = makePresentParticiple(verbPresent);
@@ -114,7 +114,7 @@ export function resolveErrorMessage(
             lcMessage.indexOf('violation of unique key constraint') >= 0 ||
             lcMessage.indexOf('cannot insert duplicate key row') >= 0
         ) {
-            return duplicatesResolver(errorMsg, noun, nounPlural, verbPresent);
+            return duplicatesResolver(errorMsg, noun, nounPlural, verbPresParticiple);
         } else if (
             lcMessage.indexOf('violates foreign key constraint') >= 0 ||
             lcMessage.indexOf('conflicted with the foreign key constraint') >= 0
