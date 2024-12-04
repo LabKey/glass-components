@@ -11,9 +11,10 @@ import { renderWithAppContext } from '../../internal/test/reactTestLibraryHelper
 import { TEST_USER_GUEST, TEST_USER_READER } from '../../internal/userFixtures';
 import { BIOLOGICS_APP_PROPERTIES, ProductFeature } from '../../internal/app/constants';
 
+import { LABKEY_VIS } from '../../internal/constants';
+
 import { makeTestActions, makeTestQueryModel } from './testUtils';
 import { ChartMenu, ChartMenuItem } from './ChartMenu';
-import {LABKEY_VIS} from "../../internal/constants";
 
 LABKEY_VIS = {
     GenericChartHelper: {
