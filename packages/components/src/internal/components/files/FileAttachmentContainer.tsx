@@ -62,7 +62,6 @@ interface State {
 
 export class FileAttachmentContainer extends React.PureComponent<Props, State> {
     fileInput: React.RefObject<HTMLInputElement>;
-
     dirCbCount: number;
     fileCbCount: number;
 
@@ -469,14 +468,11 @@ export class FileAttachmentContainer extends React.PureComponent<Props, State> {
                     />
                 </div>
 
-                {warningMsg !== '' && warningMsg !== undefined && (
-                    <Alert bsStyle="warning" className={classNames({ 'file-upload--error-message--compact': compact })}>
-                        {warningMsg}
-                    </Alert>
-                )}
-                {errorMsg !== '' && errorMsg !== undefined && (
-                    <Alert className={classNames({ 'file-upload--error-message--compact': compact })}>{errorMsg}</Alert>
-                )}
+                <Alert bsStyle="warning" className={classNames({ 'file-upload--error-message--compact': compact })}>
+                    {warningMsg}
+                </Alert>
+
+                <Alert className={classNames({ 'file-upload--error-message--compact': compact })}>{errorMsg}</Alert>
 
                 <div
                     className={classNames('file-upload--file-entry-listing', {
