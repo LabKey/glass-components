@@ -92,6 +92,7 @@ export const SVGChart: FC<Props> = memo(({ api, chart, container, filters }) => 
     const [chartConfig, setChartConfig] = useState<ChartConfig>(undefined);
     const [loadingData, setLoadingData] = useState<boolean>(false);
     const [measureStore, setMeasureStore] = useState<any>(undefined);
+    const [trendlineData, setTrendlineData] = useState<any>(undefined);
     const [renderMsg, setRenderMsg] = useState<string>(undefined);
     const [loadError, setLoadError] = useState<string>(undefined);
     const filterKey = useMemo(() => computeFilterKey(filters), [filters]);
@@ -100,6 +101,7 @@ export const SVGChart: FC<Props> = memo(({ api, chart, container, filters }) => 
         setLoadingState(LoadingState.LOADING);
         setRenderMsg(undefined);
         setMeasureStore(undefined);
+        setTrendlineData(undefined);
         try {
             const savedChartModel = await api.fetchGenericChart(reportId);
 
@@ -144,13 +146,19 @@ export const SVGChart: FC<Props> = memo(({ api, chart, container, filters }) => 
                 ref.current.innerHTML = '';
                 if (!measureStore) {
                     setLoadingData(true);
-                    LABKEY_VIS.GenericChartHelper.queryChartData(divId, queryConfig, _measureStore => {
-                        const rowCount = LABKEY_VIS.GenericChartHelper.getMeasureStoreRecords(_measureStore).length;
-                        setRenderMsg(getChartRenderMsg(chartConfig, rowCount, false));
+                    LABKEY_VIS.GenericChartHelper.queryChartData(
+                        divId,
+                        queryConfig,
+                        chartConfig,
+                        (_measureStore, _trendlineData) => {
+                            const rowCount = LABKEY_VIS.GenericChartHelper.getMeasureStoreRecords(_measureStore).length;
+                            setRenderMsg(getChartRenderMsg(chartConfig, rowCount, false));
 
-                        setMeasureStore(_measureStore);
-                        setLoadingData(false);
-                    });
+                            setMeasureStore(_measureStore);
+                            setTrendlineData(_trendlineData);
+                            setLoadingData(false);
+                        }
+                    );
                 } else {
                     LABKEY_VIS.GenericChartHelper.generateChartSVG(
                         divId,
@@ -159,7 +167,8 @@ export const SVGChart: FC<Props> = memo(({ api, chart, container, filters }) => 
                             // Issue 49754: need to wait until we have measureStore to calculated width
                             ...computeDimensions(chartConfig, measureStore, ref.current.offsetWidth),
                         },
-                        measureStore
+                        measureStore,
+                        trendlineData
                     );
                 }
             }
@@ -168,7 +177,7 @@ export const SVGChart: FC<Props> = memo(({ api, chart, container, filters }) => 
         // new chartConfig objects
         const renderId = window.setTimeout(render, 250);
         return () => window.clearTimeout(renderId);
-    }, [divId, chartConfig, queryConfig, measureStore]);
+    }, [divId, chartConfig, queryConfig, measureStore, trendlineData]);
 
     return (
         <div className="svg-chart chart-body">

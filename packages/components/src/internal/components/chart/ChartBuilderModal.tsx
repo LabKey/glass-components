@@ -32,7 +32,8 @@ import { isAppHomeFolder } from '../../app/utils';
 
 import { deleteChart, saveChart, SaveReportConfig } from './actions';
 
-import { ChartConfig, ChartQueryConfig, GenericChartModel } from './models';
+import { ChartConfig, ChartQueryConfig, GenericChartModel, TrendlineType } from './models';
+import { TrendlineOption } from './TrendlineOption';
 
 interface AggregateFieldInfo {
     name: string;
@@ -41,11 +42,13 @@ interface AggregateFieldInfo {
 
 export interface ChartFieldInfo {
     aggregate?: AggregateFieldInfo;
+    altSelectionOnly?: boolean;
     // allowMultiple?: boolean; // not yet supported, will be part of a future dev story
     label: string;
     name: string;
     nonNumericOnly?: boolean;
     numericOnly?: boolean;
+    numericOrDateOnly?: boolean;
     required: boolean;
 }
 
@@ -58,7 +61,7 @@ export interface ChartTypeInfo {
 }
 
 const HIDDEN_CHART_TYPES = ['time_chart'];
-const RIGHT_COL_FIELDS = ['color', 'shape', 'series'];
+const RIGHT_COL_FIELDS = ['color', 'shape', 'series', 'trendline'];
 export const MAX_ROWS_PREVIEW = 10000;
 export const MAX_POINT_DISPLAY = 10000;
 const BLUE_HEX_COLOR = '3366FF';
@@ -73,7 +76,6 @@ const BAR_CHART_AGGREGATE_METHODS = [
 ];
 const BAR_CHART_AGGREGATE_METHOD_TIP =
     'The aggregate method that will be used to determine the bar height for a given x-axis category / dimension. Field values that are blank are not included in calculated aggregate values.';
-
 const ICONS = {
     bar_chart: 'bar_chart',
     box_plot: 'box_plot',
@@ -81,6 +83,8 @@ const ICONS = {
     scatter_plot: 'xy_scatter',
     line_plot: 'xy_line',
 };
+
+const toggleScaleValue = (value: string): string => (value === 'linear' ? 'log' : 'linear');
 
 export const getChartRenderMsg = (chartConfig: ChartConfig, rowCount: number, isPreview: boolean): string => {
     const msg = [];
@@ -145,6 +149,12 @@ export const getChartBuilderQueryConfig = (
     } as ChartQueryConfig;
 };
 
+export const getDefaultBarChartAxisLabel = (config: ChartConfig): string => {
+    const aggregate = config.measures.y?.aggregate;
+    const prefix = (aggregate?.name ?? aggregate?.label ?? 'Sum') + ' of ';
+    return config.measures.y ? prefix + config.measures.y.label : 'Count';
+};
+
 export const getChartBuilderChartConfig = (
     chartType: ChartTypeInfo,
     fieldValues: Record<string, SelectInputOption>,
@@ -195,22 +205,23 @@ export const getChartBuilderChartConfig = (
             position: chartType.name === 'box_plot' ? 'jitter' : null,
             showOutliers: true,
             showPiePercentages: true,
+            trendlineType: undefined,
+            trendlineAsymptoteMin: undefined,
+            trendlineAsymptoteMax: undefined,
             ...savedConfig?.geomOptions,
         },
     } as ChartConfig;
 
     chartType.fields.forEach(field => {
-        if (fieldValues[field.name]?.value) {
+        const fieldConfig = fieldValues[field.name];
+        if (fieldConfig?.value) {
             config.measures[field.name] = {
-                fieldKey: fieldValues[field.name].data.fieldKey,
-                name: fieldValues[field.name].value,
-                label: fieldValues[field.name].label,
-                queryName: fieldValues[field.name].data.queryName,
-                schemaName: fieldValues[field.name].data.schemaName,
-                type:
-                    fieldValues[field.name].data.displayFieldJsonType ||
-                    fieldValues[field.name].data.jsonType ||
-                    fieldValues[field.name].data.type,
+                fieldKey: fieldConfig.data.fieldKey,
+                name: fieldConfig.value,
+                label: fieldConfig.label,
+                queryName: fieldConfig.data.queryName,
+                schemaName: fieldConfig.data.schemaName,
+                type: fieldConfig.data.displayFieldJsonType || fieldConfig.data.jsonType || fieldConfig.data.type,
             };
 
             // check if the field has an aggregate method (bar chart y-axis only)
@@ -229,6 +240,13 @@ export const getChartBuilderChartConfig = (
         }
     });
 
+    if (chartType.name === 'line_plot' && fieldValues.trendlineType) {
+        const type = fieldValues.trendlineType?.value ?? '';
+        config.geomOptions.trendlineType = type === '' ? undefined : type;
+        config.geomOptions.trendlineAsymptoteMin = fieldValues.trendlineAsymptoteMin?.value;
+        config.geomOptions.trendlineAsymptoteMax = fieldValues.trendlineAsymptoteMax?.value;
+    }
+
     if (
         chartType.name === 'bar_chart' &&
         (!savedConfig ||
@@ -239,12 +257,6 @@ export const getChartBuilderChartConfig = (
     }
 
     return config;
-};
-
-export const getDefaultBarChartAxisLabel = (config: ChartConfig): string => {
-    const aggregate = config.measures.y?.aggregate;
-    const prefix = (aggregate?.name ?? aggregate?.label ?? 'Sum') + ' of ';
-    return config.measures.y ? prefix + config.measures.y.label : 'Count';
 };
 
 interface ChartTypeSideBarProps {
@@ -286,8 +298,8 @@ interface ChartTypeQueryFormProps {
     inheritable: boolean;
     model: QueryModel;
     name: string;
+    onFieldChange: (key: string, value: SelectInputOption) => void;
     onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onSelectFieldChange: (key: string, _: any, selectedOption: SelectInputOption) => void;
     onToggleInheritable: () => void;
     onToggleShared: () => void;
     savedChartModel: GenericChartModel;
@@ -308,7 +320,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
         selectedType,
         fieldValues,
         model,
-        onSelectFieldChange,
+        onFieldChange,
     } = props;
 
     const leftColFields = useMemo(() => {
@@ -318,9 +330,23 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
     }, [selectedType]);
     const rightColFields = useMemo(() => {
         return selectedType.fields.filter(
-            field => RIGHT_COL_FIELDS.includes(field.name) || (selectedType.name === 'bar_chart' && field.name === 'y')
+            field =>
+                (RIGHT_COL_FIELDS.includes(field.name) && !field.altSelectionOnly) ||
+                (selectedType.name === 'bar_chart' && field.name === 'y')
         );
     }, [selectedType]);
+
+    const hasTrendlineOption = useMemo(
+        () => selectedType.fields.filter(field => field.name === 'trendline').length > 0,
+        [selectedType]
+    );
+
+    const onSelectFieldChange = useCallback(
+        (key: string, _: never, selectedOption: SelectInputOption) => {
+            onFieldChange(key, selectedOption);
+        },
+        [onFieldChange]
+    );
 
     return (
         <div className="chart-builder-type-inputs">
@@ -410,6 +436,13 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                             )}
                         </Fragment>
                     ))}
+                    {hasTrendlineOption && (
+                        <TrendlineOption
+                            fieldValues={fieldValues}
+                            onFieldChange={onFieldChange}
+                            schemaQuery={model.schemaQuery}
+                        />
+                    )}
                 </div>
             </div>
         </div>
@@ -482,35 +515,40 @@ const ChartPreview: FC<ChartPreviewProps> = memo(props => {
 
         setLoadingData(true);
 
-        LABKEY_VIS.GenericChartHelper.queryChartData(divId, queryConfig_, measureStore => {
-            const rowCount = LABKEY_VIS.GenericChartHelper.getMeasureStoreRecords(measureStore).length;
-            const _previewMsg = getChartRenderMsg(chartConfig, rowCount, true);
+        LABKEY_VIS.GenericChartHelper.queryChartData(
+            divId,
+            queryConfig_,
+            chartConfig,
+            (measureStore, trendlineData) => {
+                const rowCount = LABKEY_VIS.GenericChartHelper.getMeasureStoreRecords(measureStore).length;
+                const _previewMsg = getChartRenderMsg(chartConfig, rowCount, true);
 
-            if (rowCount > MAX_POINT_DISPLAY) {
-                if (chartConfig.renderType === 'box_plot') {
-                    chartConfig.pointType = 'outliers';
-                    chartConfig.geomOptions.boxFillColor = BLUE_HEX_COLOR;
-                } else if (chartConfig.renderType === 'line_plot') {
-                    chartConfig.geomOptions.hideDataPoints = true;
+                if (rowCount > MAX_POINT_DISPLAY) {
+                    if (chartConfig.renderType === 'box_plot') {
+                        chartConfig.pointType = 'outliers';
+                        chartConfig.geomOptions.boxFillColor = BLUE_HEX_COLOR;
+                    } else if (chartConfig.renderType === 'line_plot') {
+                        chartConfig.geomOptions.hideDataPoints = true;
+                    }
                 }
+
+                // adjust height, width, and marginTop for the chart config for the preview, but not to save with the chart
+                const chartConfig_ = {
+                    ...chartConfig,
+                    height: 350,
+                    width,
+                };
+                if (!savedChartModel || savedChartModel.visualizationConfig.chartConfig.geomOptions.marginTop === 20) {
+                    chartConfig_.geomOptions.marginTop = 15;
+                }
+
+                if (ref.current) ref.current.innerHTML = ''; // clear again, right before render
+                LABKEY_VIS.GenericChartHelper.generateChartSVG(divId, chartConfig_, measureStore, trendlineData);
+
+                setPreviewMsg(_previewMsg);
+                setLoadingData(false);
             }
-
-            // adjust height, width, and marginTop for the chart config for the preview, but not to save with the chart
-            var chartConfig_ = {
-                ...chartConfig,
-                height: 350,
-                width,
-            };
-            if (!savedChartModel || savedChartModel.visualizationConfig.chartConfig.geomOptions.marginTop === 20) {
-                chartConfig_.geomOptions.marginTop = 15;
-            }
-
-            if (ref?.current) ref.current.innerHTML = ''; // clear again, right before render
-            LABKEY_VIS.GenericChartHelper.generateChartSVG(divId, chartConfig_, measureStore);
-
-            setPreviewMsg(_previewMsg);
-            setLoadingData(false);
-        });
+        );
     }, [divId, model, hasRequiredValues, selectedType, fieldValues, savedChartModel, containerFilter, setReportConfig]);
 
     return (
@@ -621,6 +659,8 @@ interface ChartBuilderModalProps extends RequiresModelAndActions {
 
 export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, model, onHide, savedChartModel }) => {
     const CHART_TYPES = LABKEY_VIS?.GenericChartHelper.getRenderTypes();
+    const TRENDLINE_OPTIONS: TrendlineType[] = Object.values(LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS);
+
     const { user, container, moduleContext } = useServerContext();
     const canShare = useMemo(
         () => savedChartModel?.canShare ?? hasPermissions(user, [PermissionTypes.ShareReportPermission]),
@@ -647,14 +687,13 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
     useEffect(
         () => {
             if (savedChartModel) {
-                setSelectedChartType(
-                    chartTypes.find(c => savedChartModel?.visualizationConfig.chartConfig.renderType === c.name)
-                );
+                const chartConfig = savedChartModel.visualizationConfig?.chartConfig;
+                setSelectedChartType(chartTypes.find(c => chartConfig?.renderType === c.name));
                 setName(savedChartModel.name);
                 setShared(savedChartModel.shared);
                 setInheritable(savedChartModel.inheritable);
 
-                const measures = savedChartModel.visualizationConfig?.chartConfig?.measures || {};
+                const measures = chartConfig?.measures || {};
                 const fieldValues_ = Object.keys(measures).reduce((result, key) => {
                     let measure = measures[key];
                     if (measure) {
@@ -665,9 +704,26 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                     return result;
                 }, {});
 
-                // special case for the bar chart aggregate method
+                // handle bar chart aggregate method
                 if (measures.y?.aggregate) {
                     fieldValues_[BAR_CHART_AGGREGATE_NAME] = { ...measures.y.aggregate };
+                }
+
+                // handle trendline options
+                if (chartConfig?.geomOptions?.trendlineType) {
+                    fieldValues_['trendlineType'] = TRENDLINE_OPTIONS.find(
+                        option => option.value === chartConfig.geomOptions.trendlineType
+                    );
+                    if (chartConfig.geomOptions.trendlineAsymptoteMin) {
+                        fieldValues_['trendlineAsymptoteMin'] = {
+                            value: chartConfig.geomOptions.trendlineAsymptoteMin,
+                        };
+                    }
+                    if (chartConfig.geomOptions.trendlineAsymptoteMax) {
+                        fieldValues_['trendlineAsymptoteMax'] = {
+                            value: chartConfig.geomOptions.trendlineAsymptoteMax,
+                        };
+                    }
                 }
 
                 setFieldValues(fieldValues_);
@@ -707,9 +763,9 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
         setInheritable(prev => !prev);
     }, []);
 
-    const onSelectFieldChange = useCallback((key: string, _, selectedOption: SelectInputOption) => {
+    const onFieldChange = useCallback((key: string, value: SelectInputOption) => {
         setReportConfig(undefined); // clear report config state, it will be reset after the preview loads
-        setFieldValues(prev => ({ ...prev, [key]: selectedOption }));
+        setFieldValues(prev => ({ ...prev, [key]: value }));
     }, []);
 
     const onSaveChart = useCallback(async () => {
@@ -786,7 +842,7 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                         model={model}
                         name={name}
                         onNameChange={onNameChange}
-                        onSelectFieldChange={onSelectFieldChange}
+                        onFieldChange={onFieldChange}
                         onToggleInheritable={onToggleInheritable}
                         onToggleShared={onToggleShared}
                         savedChartModel={savedChartModel}

@@ -188,12 +188,12 @@
     min-width: 850px;
 }
 .chart-builder-modal .col-left {
-    height: 560px;
+    height: 575px;
     width: 116px;
     border-right: solid 1px $gray-border-light;
 }
 .chart-builder-modal .col-right {
-    height: 560px;
+    height: 575px;
     width: calc(100% - 116px)
 }
 
@@ -226,17 +226,45 @@
 }
 
 .chart-builder-modal .fields-col {
-    min-height: 160px;
+    min-height: 185px;
     border-left: solid 1px $gray-border-light;
 }
 
-.chart-builder-modal .checkbox-input {
-    padding-top: 15px;
+.chart-builder-modal .checkbox-input,
+.chart-builder-modal .checkbox-footer-input {
     cursor: pointer;
 
     input {
         margin-right: 5px;
     }
+}
+.chart-builder-modal .checkbox-input {
+    padding-top: 15px;
+}
+.chart-builder-modal .checkbox-footer-input {
+    padding-bottom: 15px;
+}
+
+.chart-builder-modal .select-input-with-footer {
+    margin-bottom: 0;
+}
+
+.chart-builder-modal .field-footer-section {
+    color: $text-muted;
+    margin-bottom: 15px;
+    input {
+        color: $text-color;
+    }
+}
+.chart-builder-modal .field-footer-input {
+    width: 60px;
+    height: 24px;
+    display: inline;
+    margin: 5px 0 0 5px;
+}
+.chart-builder-modal .field-footer-checkbox {
+    display: inline;
+    margin: 5px 15px 0 5px;
 }
 
 .chart-builder-preview-body {
@@ -248,4 +276,9 @@
 
 .svg-chart__chart {
     overflow: auto;
+}
+
+.equation {
+    font-family: monospace;
+    font-size: 13px;
 }

@@ -41,6 +41,7 @@ describe('ChartBuilderMenuItem', () => {
             ],
             getQueryConfigSortKey: () => 'lsid',
             queryChartData: () => Promise.resolve({}),
+            TRENDLINE_OPTIONS: {},
         },
     };
 
