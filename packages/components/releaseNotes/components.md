@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.3.0
+*Released*: 4 December 2024
 - Chart builder support for Trendline option in line chart
   - add Trendline option to ChartBuilderModal and support trendlineType in chartConfig
   - trendline asymptote min and max inputs for specific curve fit types
