@@ -403,7 +403,10 @@ export function getSelected(
     });
 }
 
-export async function getSelectedData(
+/**
+ * @deprecated use getSelectedRows instead
+ */
+export async function getSelectedDataDeprecated(
     schemaName?: string,
     queryName?: string,
     selections?: string[],

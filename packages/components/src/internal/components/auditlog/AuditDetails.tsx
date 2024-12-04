@@ -63,20 +63,20 @@ export class AuditDetails extends Component<Props> {
 
         return (
             <div className="row margin-bottom" key={field}>
-                <div className="left-spacing right-spacing">
-                    <span className="audit-detail-row-label right-spacing">{capitalizeFirstChar(field)}</span>
+                <div className="left-padding right-padding">
+                    <span className="audit-detail-row-label right-padding">{capitalizeFirstChar(field)}</span>
                 </div>
-                <div className="left-spacing right-spacing">
+                <div className="left-padding right-padding">
                     {isInsert && <span className="new-audit-value">{newValue}</span>}
                     {isUpdate && changed && (
                         <>
-                            <span className="display-light old-audit-value right-spacing">{oldValue}</span>
-                            <i className="fa fa-long-arrow-right right-spacing" />
+                            <span className="display-light old-audit-value right-padding">{oldValue}</span>
+                            <i className="fa fa-long-arrow-right right-padding" />
                             <span className="new-audit-value">{newValue}</span>
                         </>
                     )}
                     {isUpdate && !changed && (
-                        <span className="display-light old-audit-value right-spacing">{oldValue}</span>
+                        <span className="display-light old-audit-value right-padding">{oldValue}</span>
                     )}
                     {!isInsert && !isUpdate && <span className="display-light old-audit-value">{oldValue}</span>}
                 </div>

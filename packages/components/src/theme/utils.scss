@@ -1,0 +1,171 @@
+/** Layout helpers **/
+
+.display-flex {
+    display: flex;
+}
+
+.flex {
+    flex: 1;
+}
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.hidden {
+    display: none;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/** Margin **/
+
+.no-margin {
+    margin: 0;
+}
+
+.no-margin-top {
+    margin-top: 0;
+}
+
+.margin-top {
+    margin-top: 15px;
+}
+
+.large-margin-top {
+    margin-top: 30px;
+}
+
+.margin-right {
+    margin-right: 10px;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.margin-bottom {
+    margin-bottom: 15px;
+}
+
+.small-margin-bottom {
+    margin-bottom: 5px;
+}
+
+.margin-left {
+    margin-left: 10px;
+}
+
+.margin-left-more {
+    margin-left: 20px;
+}
+
+.button-right-margin {
+    margin-right: 15px;
+}
+
+.input-left-margin,
+.button-left-margin {
+    margin-left: 15px;
+}
+
+/** Padding **/
+
+.no-padding {
+    padding: 0;
+}
+
+.padding,
+.spacing {
+    padding: 15px;
+}
+
+.top-padding-only {
+    padding: 15px 0 0 0;
+}
+
+.top-padding {
+    padding-top: 15px;
+}
+
+.top-padding-less {
+    padding-top: 5px;
+}
+
+.right-padding {
+    padding-right: 15px;
+}
+
+.small-right-padding,
+.small-right-spacing {
+    padding-right: 8px;
+}
+
+.bottom-padding {
+    padding-bottom: 15px;
+}
+
+.bottom-padding-less {
+    padding-bottom: 5px;
+}
+
+.left-padding,
+.left-spacing {
+    padding-left: 15px;
+}
+
+.small-left-padding,
+.small-left-spacing {
+    padding-left: 8px;
+}
+
+.button-small-padding {
+    padding: 3px 8px;
+}
+
+/** Text utils **/
+
+.bold-text {
+    font-weight: bold;
+}
+
+.gray-text {
+    color: $gray-light;
+}
+
+.display-light {
+    color: darkgray
+}
+
+.as-primary-color {
+    color: $brand-primary;
+}
+
+.as-secondary-color {
+    color: $brand-secondary;
+}
+
+.important-text {
+    font-weight: 500;
+    font-style: italic;
+}
+
+.smaller-font {
+    font-size: 85%;
+}
+
+.font-large {
+    font-size: $font-size-large;
+}
+
+/** Other **/
+
+.pointer {
+    cursor: pointer;
+}

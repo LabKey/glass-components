@@ -239,7 +239,7 @@ export const EditableDetailPanel: FC<EditableDetailPanelProps> = props => {
                     </button>
                 </FormButtons>
 
-                {asSubPanel && <div className="panel-divider-spacing" />}
+                {asSubPanel && <div className="panel-divider-padding" />}
             </Formsy>
         );
     }

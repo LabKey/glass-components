@@ -175,7 +175,7 @@ export function resolveErrorMessage(
 
 export function getConfirmDeleteMessage(verbNoun = 'Deletion'): ReactNode {
     return (
-        <p className="top-spacing">
+        <p className="top-padding">
             <strong>{capitalizeFirstChar(verbNoun)} cannot be undone.</strong>
             &nbsp;Do you want to proceed?
         </p>

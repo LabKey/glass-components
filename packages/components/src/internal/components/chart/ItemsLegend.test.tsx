@@ -141,7 +141,7 @@ describe('<ItemsLegend/>', () => {
         expect(document.getElementsByClassName('cell-legend-circle').length).toBe(6);
         expect(document.getElementsByClassName('cell-legend-label').length).toBe(10);
         expect(document.getElementsByClassName('cell-legend-label')[7].innerHTML).toBe('Restricted');
-        expect(document.getElementsByClassName('cell-legend-icon-spacing').length).toBe(1);
+        expect(document.getElementsByClassName('cell-legend-icon-margin').length).toBe(1);
         expect(document.getElementsByClassName('cell-lock').length).toBe(1);
         expect(document.getElementsByClassName('cell-legend-label')[8].innerHTML).toBe('Sample expired');
         expect(document.getElementsByClassName('expired-form-field').length).toBe(1);

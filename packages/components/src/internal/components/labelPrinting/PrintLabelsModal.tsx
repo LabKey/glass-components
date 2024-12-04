@@ -221,7 +221,7 @@ export class PrintLabelsModalImpl extends PureComponent<PrintModalProps & Inject
             }
             body = (
                 <>
-                    <div className="bottom-spacing">{message}</div>
+                    <div className="bottom-padding">{message}</div>
                     <div>
                         <strong>Number of copies</strong>
                         <input
@@ -233,7 +233,7 @@ export class PrintLabelsModalImpl extends PureComponent<PrintModalProps & Inject
                             value={numCopies ? numCopies.toString() : undefined}
                         />
                         {showSelection && (
-                            <div className="top-spacing">
+                            <div className="top-padding">
                                 <strong>Selected samples to print</strong>
                                 <QuerySelect
                                     formsy={false}
@@ -254,7 +254,7 @@ export class PrintLabelsModalImpl extends PureComponent<PrintModalProps & Inject
                                 />
                             </div>
                         )}
-                        <div className="top-spacing">
+                        <div className="top-padding">
                             <strong>Label template</strong>
                             <QuerySelect
                                 formsy={false}

@@ -98,7 +98,7 @@ export const SampleStatusInput: FC<SampleStatusInputProps> = memo(props => {
                 <div className="row sample-bulk-update-discard-panel">
                     <div className="col-sm-3 col-xs-12" />
                     <div className="col-sm-9 col-xs-12">
-                        <div className="left-spacing right-spacing">{panel}</div>
+                        <div className="left-padding right-padding">{panel}</div>
                     </div>
                 </div>
             );

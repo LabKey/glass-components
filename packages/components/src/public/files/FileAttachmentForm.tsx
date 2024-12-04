@@ -235,7 +235,7 @@ export class FileAttachmentForm extends PureComponent<FileAttachmentFormProps, S
         }
 
         return (
-            <div className="row top-spacing bottom-spacing">
+            <div className="row top-padding bottom-padding">
                 <div className="col-xs-6">
                     <button className="btn btn-default" onClick={onCancel} title={cancelText} type="button">
                         {cancelText}

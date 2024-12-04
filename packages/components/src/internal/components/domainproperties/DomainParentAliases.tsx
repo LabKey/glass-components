@@ -162,7 +162,7 @@ export const DomainParentAliases: FC<Props> = memo(props => {
     return (
         <>
             {filteredParentAliases?.length > 0 && (
-                <div className="bottom-spacing">
+                <div className="bottom-padding">
                     <div className="row domain-floating-hdr">
                         <div className="col-xs-2">
                             <DomainFieldLabel label={aliasCaption + 's'} />
