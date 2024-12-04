@@ -781,7 +781,7 @@ function addEdges(
     }
 }
 
-const FULLWIDTH_AMPERSAND = '＆'; //U+FF06, use as alt display for & so vis-network won't error out
+const FULLWIDTH_AMPERSAND = '＆'; // U+FF06, use as alt display for & so vis-network won't error out
 function createVisNode(
     node: LineageNode,
     id: string,
@@ -801,11 +801,9 @@ function createVisNode(
             nodeLabel = nodeLabel.replace('&', FULLWIDTH_AMPERSAND);
         }
 
-        try{
+        try {
             new RegExp(nodeLabel);
-        }
-        catch (error)
-        {
+        } catch (error) {
             // vis-network is not able to tolerate the presence of '&' in certain strings due to Uncaught SyntaxError from `new RegExp()`. Encoding does not help.
             nodeLabel = nodeLabel.replaceAll('&', FULLWIDTH_AMPERSAND);
         }
