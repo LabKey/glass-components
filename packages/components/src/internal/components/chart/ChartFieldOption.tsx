@@ -134,7 +134,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                         <OverlayTrigger
                             triggerType="click"
                             overlay={
-                                <Popover id="disabled-button-popover" placement="bottom">
+                                <Popover id="chart-field-option-popover" placement="bottom">
                                     <div className="field-option-radio-group">
                                         <label>Scale</label>
                                         <RadioGroupInput
@@ -166,7 +166,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                                         />
                                     </div>
                                     {scale.type === 'manual' && (
-                                        <div className="chart-builder-scale-range">
+                                        <div className="chart-builder-scale-range-inputs">
                                             <input
                                                 name="scaleMin"
                                                 type="number"
@@ -176,7 +176,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                                                 onChange={onScaleMinChange}
                                                 value={scale.min ?? ''}
                                             />
-                                            <span> - </span>
+                                            <span>&nbsp;&nbsp;-&nbsp;</span>
                                             <input
                                                 name="scaleMan"
                                                 type="number"
