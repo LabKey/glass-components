@@ -9,6 +9,7 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Factor out ChartFieldOption.tsx from ChartBuilderModal.tsx
   - ChartFieldOption.tsx support for axis layout options (scale and range) to be set in OverlayTrigger on click
   - ChartBuilderModal to support axis layout options from saved config and to update when saving config
+  - TrendlineOption.tsx update to asymptote min/max inputs to match axis layout options (via OverlayTrigger)
 
 ### version 6.3.0
 *Released*: 4 December 2024
