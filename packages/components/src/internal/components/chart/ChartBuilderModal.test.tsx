@@ -48,12 +48,29 @@ const SCATTER_PLOT_TYPE = {
     ],
     title: 'Scatter',
 } as ChartTypeInfo;
+const LINE_PLOT_TYPE = {
+    name: 'line_plot',
+    fields: [
+        { name: 'x', label: 'X Axis', required: true, numericOrDateOnly: true },
+        { name: 'y', label: 'Y Axis', required: true, numericOnly: true, allowMultiple: true },
+        { name: 'series', label: 'Series', nonNumericOnly: true },
+        {
+            name: 'trendline',
+            label: 'Trendline',
+            required: false,
+            altSelectionOnly: true,
+            altFieldType: 'LABKEY.vis.TrendlineField',
+        },
+    ],
+    title: 'Line',
+} as ChartTypeInfo;
 
 LABKEY_VIS = {
     GenericChartHelper: {
         getRenderTypes: () => [
             BAR_CHART_TYPE,
             SCATTER_PLOT_TYPE,
+            LINE_PLOT_TYPE,
             {
                 name: 'hidden_chart',
                 fields: [],
@@ -70,6 +87,7 @@ LABKEY_VIS = {
         queryChartData: () => Promise.resolve({}),
         getAllowableTypes: () => ['int', 'double'],
         isMeasureDimensionMatch: () => true,
+        TRENDLINE_OPTIONS: [{ value: 'option1', label: 'Options 1' }],
     },
 };
 
@@ -112,11 +130,12 @@ describe('ChartBuilderModal', () => {
 
         // hidden chart types are filtered out
         const chartTypeItems = document.querySelectorAll('.chart-builder-type');
-        expect(chartTypeItems).toHaveLength(2);
+        expect(chartTypeItems).toHaveLength(3);
         expect(chartTypeItems[0].textContent).toBe('Bar');
         expect(chartTypeItems[1].textContent).toBe('Scatter');
+        expect(chartTypeItems[2].textContent).toBe('Line');
 
-        expect(document.querySelector('input[name="name"]')).not.toBeNull();
+        expect(document.querySelectorAll('input[name="name"]')).toHaveLength(1);
         expect(document.querySelectorAll('input[name="shared"]')).toHaveLength(canShare ? 1 : 0);
         expect(document.querySelectorAll('input[name="inheritable"]')).toHaveLength(allowInherit ? 1 : 0);
 
@@ -225,16 +244,28 @@ describe('ChartBuilderModal', () => {
         // verify field inputs displayed for default / first chart type
         expect(document.querySelectorAll('input')).toHaveLength(6);
         BAR_CHART_TYPE.fields.forEach(field => {
-            expect(document.querySelector(`input[name="${field.name}"]`)).not.toBeNull();
+            expect(document.querySelectorAll(`input[name="${field.name}"]`)).toHaveLength(1);
         });
 
-        // click on another chart type and verify field inputs change
-        await userEvent.click(document.querySelector('.selectable'));
+        // click on Scatter chart type and verify field inputs change
+        expect(document.querySelectorAll('.chart-builder-type')[1].textContent).toBe('Scatter');
+        await userEvent.click(document.querySelectorAll('.chart-builder-type')[1]);
         expect(document.querySelector('.selected').textContent).toBe('Scatter');
         expect(document.querySelector('.selectable').textContent).toBe('Bar');
         expect(document.querySelectorAll('input')).toHaveLength(8);
         SCATTER_PLOT_TYPE.fields.forEach(field => {
-            expect(document.querySelector(`input[name="${field.name}"]`)).not.toBeNull();
+            expect(document.querySelectorAll(`input[name="${field.name}"]`)).toHaveLength(1);
+        });
+
+        // click on Line chart type and verify field inputs change
+        expect(document.querySelectorAll('.chart-builder-type')[2].textContent).toBe('Line');
+        await userEvent.click(document.querySelectorAll('.chart-builder-type')[2]);
+        expect(document.querySelector('.selected').textContent).toBe('Line');
+        expect(document.querySelectorAll('input')).toHaveLength(8);
+        LINE_PLOT_TYPE.fields.forEach(field => {
+            if (field.name !== 'trendline') {
+                expect(document.querySelectorAll(`input[name="${field.name}"]`)).toHaveLength(1);
+            }
         });
     });
 
@@ -525,6 +556,9 @@ describe('getChartBuilderChartConfig', () => {
         expect(config.measures.y.name).toBe('field2');
         expect(config.labels.x).toBe('X Label');
         expect(config.labels.y).toBe('Sum of Field 2');
+        expect(config.geomOptions.trendlineType).toBe(undefined);
+        expect(config.geomOptions.trendlineAsymptoteMin).toBe(undefined);
+        expect(config.geomOptions.trendlineAsymptoteMax).toBe(undefined);
     });
 
     test('based on savedConfig, with y-label', () => {
@@ -547,6 +581,27 @@ describe('getChartBuilderChartConfig', () => {
         expect(config.measures.y.name).toBe('field2');
         expect(config.labels.x).toBe('X Label');
         expect(config.labels.y).toBe('Y Label');
+    });
+
+    test('based on savedConfig, with trendline options', () => {
+        const savedConfig = {
+            pointType: 'outliers',
+            scales: { x: 'linear', y: 'log' },
+            labels: { main: 'Main', subtitle: 'Subtitle', color: 'Something', x: 'X Label', y: 'Y Label' },
+            measures: { x: { name: 'saved1' }, y: { name: 'saved2' } },
+            height: 1,
+            width: 2,
+            geomOptions: {
+                trendlineType: 'Linear',
+                trendlineAsymptoteMin: '0.1',
+                trendlineAsymptoteMax: '1.0',
+            },
+        } as ChartConfig;
+
+        const config = getChartBuilderChartConfig(BAR_CHART_TYPE, fieldValues, savedConfig);
+        expect(config.geomOptions.trendlineType).toBe('Linear');
+        expect(config.geomOptions.trendlineAsymptoteMin).toBe('0.1');
+        expect(config.geomOptions.trendlineAsymptoteMax).toBe('1.0');
     });
 
     test('box plot specifics', () => {
@@ -575,6 +630,29 @@ describe('getChartBuilderChartConfig', () => {
         expect(config.geomOptions.opacity).toBe(1.0);
         expect(config.geomOptions.pointSize).toBe(5);
         expect(config.geomOptions.position).toBe(null);
+        expect(config.geomOptions.trendlineType).toBe(undefined);
+        expect(config.geomOptions.trendlineAsymptoteMin).toBe(undefined);
+        expect(config.geomOptions.trendlineAsymptoteMax).toBe(undefined);
+    });
+
+    test('line plot with trendline options', () => {
+        const boxType = {
+            name: 'line_plot',
+            fields: [{ name: 'x' }, { name: 'y' }],
+        } as ChartTypeInfo;
+
+        const trendlineFieldValues = {
+            x: { value: 'field1', label: 'Field 1', data: { fieldKey: 'field1' } },
+            y: { value: 'field2', label: 'Field 2', data: { fieldKey: 'field2' } },
+            trendlineType: { value: 'Linear' },
+            trendlineAsymptoteMin: { value: '0.1' },
+            trendlineAsymptoteMax: { value: '1.0' },
+        };
+
+        const config = getChartBuilderChartConfig(boxType, trendlineFieldValues, undefined);
+        expect(config.geomOptions.trendlineType).toBe('Linear');
+        expect(config.geomOptions.trendlineAsymptoteMin).toBe('0.1');
+        expect(config.geomOptions.trendlineAsymptoteMax).toBe('1.0');
     });
 
     test('bar chart specifics', () => {

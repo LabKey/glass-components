@@ -1,5 +1,7 @@
 import React, { act } from 'react';
 
+import { waitFor } from '@testing-library/dom';
+
 import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
 import { TEST_USER_APP_ADMIN, TEST_USER_EDITOR, TEST_USER_SITE_ADMIN } from '../../userFixtures';
@@ -11,9 +13,16 @@ import {
     TEST_LKSM_STARTER_MODULE_CONTEXT,
 } from '../../productFixtures';
 
+import { createMockGetQueryDetails, createMockSelectRowsDeprecatedResponse } from '../../../test/MockUtils';
+import { LABKEY_VIS } from '../../constants';
+
 import { APIKeysPanel, KeyGenerator, KeyGeneratorModal } from './APIKeysPanel';
-import { waitFor } from '@testing-library/dom';
-import {createMockGetQueryDetails, createMockSelectRowsDeprecatedResponse} from '../../../test/MockUtils';
+
+LABKEY_VIS = {
+    GenericChartHelper: {
+        TRENDLINE_OPTIONS: {},
+    },
+};
 
 jest.mock('../../query/api', () => ({
     ...jest.requireActual('../../query/api'),
