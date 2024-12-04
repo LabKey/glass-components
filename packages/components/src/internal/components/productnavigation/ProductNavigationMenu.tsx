@@ -134,7 +134,7 @@ export const ProductNavigationMenuImpl: FC<ProductNavigationMenuImplProps> = mem
             {selectedProductId === undefined && (
                 <div className="product-navigation-footer">
                     {showMenuSettings && (
-                        <div className="bottom-spacing-less">
+                        <div className="bottom-padding-less">
                             <a href={ADMIN_LOOK_AND_FEEL_URL} target="_blank" rel="noopener noreferrer">
                                 Menu Settings
                             </a>

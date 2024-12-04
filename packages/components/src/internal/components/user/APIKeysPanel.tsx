@@ -153,7 +153,7 @@ export const KeyGeneratorModal: FC<ModalProps> = props => {
             {!!keyValue && (
                 <>
                     <div className="api-key__description">{description}</div>
-                    <div className="top-spacing form-group">
+                    <div className="top-padding form-group">
                         <input
                             disabled
                             type="text"
@@ -202,8 +202,8 @@ export const KeyGenerator: FC<KeyGeneratorProps> = props => {
 
     return (
         <>
-            <div className="top-spacing">
-                <div className="top-spacing form-group">
+            <div className="top-padding">
+                <div className="top-padding form-group">
                     <button className="btn btn-success api-key__button" onClick={openModal} disabled={showModal}>
                         Generate {noun}
                     </button>
@@ -349,7 +349,7 @@ const APIKeysPanelBody: FC<APIKeysPanelBodyProps & InjectedQueryModels> = props 
                 )}
                 {sessionEnabled && includeSessionKeys && (
                     <>
-                        <div className="user-section-header top-spacing bottom-spacing">Session Keys</div>
+                        <div className="user-section-header top-padding bottom-padding">Session Keys</div>
                         {impersonatingUser !== undefined && (
                             <Alert bsStyle="warning" id="session-impersonating-msg">
                                 Session key generation is not available while impersonating.

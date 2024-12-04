@@ -4,7 +4,7 @@ import { List } from 'immutable';
 
 import { insertRows, QueryCommandResponse, selectRowsDeprecated } from '../../query/api';
 import { resolveKey, SchemaQuery } from '../../../public/SchemaQuery';
-import { getSelected, getSelectedData, setSnapshotSelections } from '../../actions';
+import { getSelected, getSelectedDataDeprecated, setSnapshotSelections } from '../../actions';
 import { PICKLIST } from '../domainproperties/list/constants';
 import { saveDomain } from '../domainproperties/actions';
 import { QueryModel } from '../../../public/QueryModel/QueryModel';
@@ -315,7 +315,7 @@ export interface PicklistDeletionData {
 export function getPicklistDeleteData(model: QueryModel, user: User): Promise<PicklistDeletionData> {
     return new Promise((resolve, reject) => {
         const columnString = 'Name,listId,category,createdBy';
-        getSelectedData(
+        getSelectedDataDeprecated(
             model.schemaName,
             model.queryName,
             [...model.selections],

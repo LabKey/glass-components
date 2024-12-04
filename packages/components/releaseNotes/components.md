@@ -6,6 +6,22 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Issue 51432: LKSM: special character not working well with editable grid paste
   - Warn user about missing quotes when pasting data containing comma
 
+### version 6.4.0
+*Released*: 4 December 2024
+- Remove assays.scss
+  - Styles moved to utils.scss or ui-premium
+- Add utils.scss
+  - Move util styles from various scss files to utils.scss
+- Rename getSelectedData to getSelectedDataDeprecated
+- Add getSelectedRows
+  - This uses the components version of selectRows to fetch the selected data for a QueryModel
+- "-spacing" classes renamed
+  - renamed to "-margin" or "-padding"
+
+### version 6.3.1
+*Released*: 4 December 2024
+- Reinstate prior removed fn
+
 ### version 6.3.0
 *Released*: 4 December 2024
 - Chart builder support for Trendline option in line chart

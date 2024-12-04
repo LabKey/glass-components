@@ -236,7 +236,7 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
                 )}
                 {!allShown && (
                     <div className="row">
-                        <div className="col-xs-12 bottom-spacing">
+                        <div className="col-xs-12 bottom-padding">
                             <div>
                                 There are more than {MAX_DISTINCT_FILTER_OPTIONS} distinct values. Use the filter box
                                 above to find additional values.

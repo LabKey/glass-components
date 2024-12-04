@@ -348,7 +348,7 @@ export const GridTitle: FC<GridTitleProps> = memo(props => {
             {displayTitle ?? 'Default View'}
             {showRevert && (
                 <button
-                    className="btn btn-default button-left-spacing button-right-spacing"
+                    className="btn btn-default button-left-margin button-right-margin"
                     onClick={_revertViewEdit}
                     type="button"
                 >
@@ -1122,7 +1122,7 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
                     />
 
                     <div
-                        className={classNames('grid-panel__body', { 'panel-body': asPanel, 'top-spacing': !hasHeader })}
+                        className={classNames('grid-panel__body', { 'panel-body': asPanel, 'top-padding': !hasHeader })}
                     >
                         {!gridIsLoading && <ChartPanel actions={actions} model={model} />}
 

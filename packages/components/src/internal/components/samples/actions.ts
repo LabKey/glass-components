@@ -19,7 +19,7 @@ import { ActionURL, Ajax, Domain, Experiment, Filter, Query, Utils } from '@labk
 import { IEntityTypeDetails } from '../entities/models';
 import { deleteEntityType, getSelectedItemSamples } from '../entities/actions';
 
-import { getSelectedData, getSelection, getSnapshotSelections } from '../../actions';
+import { getSelectedDataDeprecated, getSelection, getSnapshotSelections } from '../../actions';
 
 import { caseInsensitive, handleRequestFailure } from '../../util/utils';
 
@@ -533,7 +533,7 @@ export async function getFieldLookupFromSelection(
 
     if (fieldKey) {
         const rowIdFieldKey = `${fieldKey}/RowId`; // Pull the rowId of the lookup
-        const { data, dataIds } = await getSelectedData(schemaName, queryName, selected, 'RowId,' + rowIdFieldKey); // Include the RowId column to prevent warnings
+        const { data, dataIds } = await getSelectedDataDeprecated(schemaName, queryName, selected, 'RowId,' + rowIdFieldKey); // Include the RowId column to prevent warnings
         if (data) {
             const rows = data.toJS();
             dataIds.forEach(rowId => {

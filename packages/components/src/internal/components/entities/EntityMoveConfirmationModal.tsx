@@ -160,7 +160,7 @@ export const EntityMoveConfirmationModal: FC<EntityMoveConfirmationModalProps> =
             canConfirm={!!selectedContainerOption && (!requiresUserComment || hasValidUserComment)}
         >
             {children}
-            <div className="top-spacing">
+            <div className="top-padding">
                 <SelectInput
                     helpTipRenderer="NONE"
                     label="Move to"

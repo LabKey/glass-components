@@ -46,7 +46,7 @@ export const UniqueIdBanner: FC<Props> = memo(({ model, isFieldsPanel, onAddFiel
             return (
                 <div className="uniqueid-msg">
                     <i className="fa fa-check-circle domain-panel-status-icon-green" />
-                    <span className="left-spacing">
+                    <span className="left-padding">
                         {uniqueIdFields?.length === 1
                             ? 'A Unique ID field for barcodes is defined: ' + uniqueIdFields[0].name
                             : uniqueIdFields.length +

@@ -152,7 +152,7 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
             }
             togglePanel={togglePanel}
         >
-            <div className="bottom-spacing">
+            <div className="bottom-padding">
                 Select which folders can use this {entityDataType.typeNounSingular.toLowerCase()}.
             </div>
             {!!allContainers && allContainers?.length === excludedContainerIds?.length && (
@@ -167,7 +167,7 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
             ) : (
                 <div className="row">
                     {!relatedFolderConfigurableDataType && (
-                        <div className="col-xs-12 bottom-spacing">
+                        <div className="col-xs-12 bottom-padding">
                             <DataTypeSelector
                                 api={api}
                                 entityDataType={entityDataType}
@@ -186,7 +186,7 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                     )}
                     {!!relatedFolderConfigurableDataType && (
                         <>
-                            <div className="col-xs-6 bottom-spacing">
+                            <div className="col-xs-6 bottom-padding">
                                 <DataTypeSelector
                                     api={api}
                                     entityDataType={entityDataType}
@@ -200,7 +200,7 @@ export const DataTypeFoldersPanelImpl: FC<OwnProps & InjectedDomainPropertiesPan
                                     showUncheckedWarning={!!dataTypeRowId}
                                 />
                             </div>
-                            <div className="col-xs-6 bottom-spacing">
+                            <div className="col-xs-6 bottom-padding">
                                 <DataTypeSelector
                                     api={api}
                                     dataTypePrefix="Dashboard"

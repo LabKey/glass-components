@@ -230,7 +230,7 @@ export const BarTenderSettingsForm: FC<Props> = memo(props => {
 
                             {isTestable && (
                                 <button
-                                    className="button-right-spacing pull-right btn btn-success"
+                                    className="button-right-margin pull-right btn btn-success"
                                     onClick={onVerifyBarTenderConfiguration}
                                     disabled={testing}
                                     type="button"
