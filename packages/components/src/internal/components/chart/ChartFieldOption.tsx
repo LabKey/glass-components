@@ -72,10 +72,10 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
     const [scale, setScale] = useState<Record<string, string | number>>(scaleValues);
 
     useEffect(() => {
-        if (scaleValues) {
+        if (scaleValues && !scale) {
             setScale(scaleValues);
         }
-    }, [scaleValues]);
+    }, [scaleValues, scale]);
 
     const onScaleTransChange = useCallback(
         (selected: string) => {
