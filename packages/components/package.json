@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "6.4.0",
+  "version": "6.4.1-entityCreateFolderChoice.0",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [
