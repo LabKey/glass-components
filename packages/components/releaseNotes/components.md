@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 6.?.?
-*Released*: ?? December 2024
+### version 6.4.0
+*Released*: 4 December 2024
 - Remove assays.scss
   - Styles moved to utils.scss or ui-premium
 - Add utils.scss
