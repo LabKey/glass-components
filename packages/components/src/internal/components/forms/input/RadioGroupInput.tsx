@@ -41,11 +41,12 @@ class RadioGroupInputImpl extends PureComponent<RadioGroupInputProps, State> {
     }
 
     onValueChange: ChangeEventHandler<HTMLInputElement> = (evt): void => {
+        this.onSetValue(evt.target.value);
+    };
+
+    onSetValue = (value: string): void => {
         const { formsy, onValueChange, setValue } = this.props;
-        const { value } = evt.target;
-
         this.setState({ selectedValue: value });
-
         if (formsy) {
             setValue?.(value);
         }
@@ -86,7 +87,12 @@ class RadioGroupInputImpl extends PureComponent<RadioGroupInputProps, State> {
                                 onChange={this.onValueChange}
                                 disabled={option.disabled}
                             />
-                            <span className={classNames('radioinput-label', { selected })}>{option.label}</span>
+                            <span
+                                className={classNames('radioinput-label', { selected })}
+                                onClick={() => this.onSetValue(option.value)}
+                            >
+                                {option.label}
+                            </span>
                             {showDescriptions && option.description && (
                                 <span className="radioinput-description"> - {option.description}</span>
                             )}
