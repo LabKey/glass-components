@@ -215,6 +215,12 @@ export const getChartBuilderChartConfig = (
         }
     });
 
+    if (fieldValues.scales?.value) {
+        Object.keys(fieldValues.scales.value).forEach(key => {
+            config.scales[key] = { ...fieldValues.scales.value[key] };
+        });
+    }
+
     if (chartType.name === 'line_plot' && fieldValues.trendlineType) {
         const type = fieldValues.trendlineType?.value ?? '';
         config.geomOptions.trendlineType = type === '' ? undefined : type;
@@ -321,6 +327,16 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
             onFieldChange(key, selectedOption);
         },
         [onFieldChange]
+    );
+
+    const onFieldScaleChange = useCallback(
+        (field: string, key: string, value: string | number) => {
+            const scales = fieldValues.scales?.value ?? {};
+            if (!scales[field]) scales[field] = { type: 'automatic', trans: 'linear' };
+            scales[field][key] = value;
+            onFieldChange('scales', { value: scales });
+        },
+        [fieldValues.scales?.value, onFieldChange]
     );
 
     return (
@@ -668,6 +684,11 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                     }
                     return result;
                 }, {});
+
+                // handle scales
+                if (chartConfig?.scales) {
+                    fieldValues_['scales'] = { value: { ...chartConfig.scales } };
+                }
 
                 // handle bar chart aggregate method
                 if (measures.y?.aggregate) {
