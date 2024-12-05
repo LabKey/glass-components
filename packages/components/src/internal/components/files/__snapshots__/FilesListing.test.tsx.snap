@@ -12,7 +12,7 @@ exports[`<FilesListing> with files custom header 1`] = `
 <div>
   <div>
     <div
-      class="file-listing--header bottom-spacing"
+      class="file-listing--header bottom-padding"
     >
       Custom header
     </div>

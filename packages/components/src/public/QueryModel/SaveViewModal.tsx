@@ -176,7 +176,7 @@ export const SaveViewModal: FC<Props> = memo(props => {
             <Alert>{errorMessage}</Alert>
             <form onSubmit={saveView}>
                 <div className="form-group">
-                    <div className="bottom-spacing">
+                    <div className="bottom-padding">
                         Columns, sort order, and filters will be saved. Once saved, this view will be available for all{' '}
                         {gridLabel} grids throughout the application.
                     </div>
@@ -211,7 +211,7 @@ export const SaveViewModal: FC<Props> = memo(props => {
                     </RequiresPermission>
                     {!isDefaultView && (
                         <div
-                            className={classNames('bottom-spacing', {
+                            className={classNames('bottom-padding', {
                                 'margin-left-more': user.hasAdminPermission(),
                             })}
                         >
@@ -249,7 +249,7 @@ export const SaveViewModal: FC<Props> = memo(props => {
                                 <span className="margin-left">Make this grid view available in all Folders</span>
                             </div>
                         )}
-                    <div className="top-spacing">
+                    <div className="top-padding">
                         Learn more about <HelpLink topic={CUSTOM_VIEW}>custom grid views</HelpLink> in LabKey.
                     </div>
                 </div>

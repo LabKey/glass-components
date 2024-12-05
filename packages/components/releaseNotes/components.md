@@ -11,6 +11,22 @@ Components, models, actions, and utility functions for LabKey applications and p
   - ChartBuilderModal to support axis layout options from saved config and to update when saving config
   - TrendlineOption.tsx update to asymptote min/max inputs to match axis layout options (via OverlayTrigger)
 
+### version 6.4.0
+*Released*: 4 December 2024
+- Remove assays.scss
+  - Styles moved to utils.scss or ui-premium
+- Add utils.scss
+  - Move util styles from various scss files to utils.scss
+- Rename getSelectedData to getSelectedDataDeprecated
+- Add getSelectedRows
+  - This uses the components version of selectRows to fetch the selected data for a QueryModel
+- "-spacing" classes renamed
+  - renamed to "-margin" or "-padding"
+
+### version 6.3.1
+*Released*: 4 December 2024
+- Reinstate prior removed fn
+
 ### version 6.3.0
 *Released*: 4 December 2024
 - Chart builder support for Trendline option in line chart

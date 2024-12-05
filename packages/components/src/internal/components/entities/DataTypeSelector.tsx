@@ -357,10 +357,10 @@ export const DataTypeSelector: FC<DataTypeSelectorProps> = memo(props => {
         <>
             <Alert>{error}</Alert>
             <div>
-                {headerLabel && !noHeader && <div className="bottom-spacing content-group-label">{headerLabel}</div>}
+                {headerLabel && !noHeader && <div className="bottom-padding content-group-label">{headerLabel}</div>}
                 {toggleSelectAll && !disabled && dataTypes?.length > 0 && (
                     <div className="row">
-                        <div className="col-xs-12 bottom-spacing">
+                        <div className="col-xs-12 bottom-padding">
                             <div className="clickable-text" onClick={onSelectAll}>
                                 {allSelected ? 'Deselect All' : 'Select All'}
                             </div>

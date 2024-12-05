@@ -58,7 +58,7 @@ export class FilesListing extends PureComponent<FilesListingProps, State> {
 
         return (
             <div>
-                {headerText && <div className="file-listing--header bottom-spacing">{headerText}</div>}
+                {headerText && <div className="file-listing--header bottom-padding">{headerText}</div>}
                 {files.map((file, key) => {
                     const { description, downloadUrl, name } = file;
                     const confirmDelete = confirmDeletionSet.has(name);

@@ -300,7 +300,7 @@ export const ColumnInView: FC<ColumnInViewProps> = memo(props => {
                     ref={dragProvided.innerRef}
                     {...dragProvided.draggableProps}
                 >
-                    <div className="right-spacing" {...dragProvided.dragHandleProps}>
+                    <div className="right-padding" {...dragProvided.dragHandleProps}>
                         <DragDropHandle highlighted={snapshot.isDragging} {...dragProvided.dragHandleProps} />
                     </div>
                     <FieldLabelDisplay

@@ -1,7 +1,7 @@
 import { ActionURL, Ajax, Filter, getServerContext, PermissionTypes, Query, Security, Utils } from '@labkey/api';
 import { List, Map } from 'immutable';
 
-import { getSelected, getSelectedData, setSnapshotSelections } from '../../actions';
+import { getSelected, getSelectedDataDeprecated, setSnapshotSelections } from '../../actions';
 
 import { buildURL } from '../../url/AppURL';
 import { SampleOperation } from '../samples/constants';
@@ -267,7 +267,7 @@ async function getSelectedParents(
 
 export async function getSelectedItemSamples(selectedItemIds: string[]): Promise<number[]> {
     const { queryName, schemaName } = SCHEMAS.INVENTORY.ITEMS;
-    const { data } = await getSelectedData(schemaName, queryName, selectedItemIds, 'RowId, MaterialId');
+    const { data } = await getSelectedDataDeprecated(schemaName, queryName, selectedItemIds, 'RowId, MaterialId');
     return data.map(row => row.getIn(['MaterialId', 'value'])).toArray();
 }
 
@@ -1190,7 +1190,7 @@ export function getOrderedSelectedMappedKeys(
     viewName?: string
 ): Promise<RemappedKeyValues> {
     return new Promise((resolve, reject) => {
-        getSelectedData(
+        getSelectedDataDeprecated(
             schemaName,
             queryName,
             Array.from(selections),

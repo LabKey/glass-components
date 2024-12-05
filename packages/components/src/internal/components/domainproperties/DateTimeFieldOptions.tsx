@@ -259,7 +259,7 @@ export const DateTimeFieldOptions: FC<DateTimeFieldProps> = memo(props => {
                 {setting.invalidWarning && (
                     <div className="col-xs-1">
                         <Tip caption={setting.invalidWarning}>
-                            <span className="domain-warning-icon top-spacing fa fa-exclamation-circle" />
+                            <span className="domain-warning-icon top-padding fa fa-exclamation-circle" />
                         </Tip>
                     </div>
                 )}

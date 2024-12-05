@@ -7,7 +7,7 @@ import { Operation, QueryColumn } from '../../../public/QueryColumn';
 import { QueryInfo } from '../../../public/QueryInfo';
 import { SchemaQuery } from '../../../public/SchemaQuery';
 
-import { getSelectedData } from '../../actions';
+import { getSelectedDataDeprecated } from '../../actions';
 
 import { capitalizeFirstChar, caseInsensitive, getCommonDataValues, getUpdatedData } from '../../util/utils';
 
@@ -93,7 +93,7 @@ export class BulkUpdateForm extends PureComponent<Props, State> {
             .concat(requiredColumns);
 
         try {
-            const { data, dataIds } = await getSelectedData(
+            const { data, dataIds } = await getSelectedDataDeprecated(
                 schemaName,
                 name,
                 selectedIds,

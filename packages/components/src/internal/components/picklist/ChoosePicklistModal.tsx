@@ -151,7 +151,7 @@ export const PicklistDetails: FC<PicklistDetailsProps> = memo(props => {
 
             <div className="choice-details-section choice-details__description">{picklist.Description}</div>
 
-            <div className="choice-details-section top-spacing choice-details__summary">
+            <div className="choice-details-section top-padding choice-details__summary">
                 <PicklistItemsSummary picklist={picklist} />
             </div>
         </div>

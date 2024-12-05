@@ -150,7 +150,7 @@ exports[`SampleTypePropertiesPanel appPropertiesOnly 1`] = `
             </div>
           </form>
           <div
-            class="domain-field-section-heading top-spacing bottom-spacing"
+            class="domain-field-section-heading top-padding bottom-padding"
           >
             Lineage Settings
           </div>
@@ -183,7 +183,7 @@ exports[`SampleTypePropertiesPanel appPropertiesOnly 1`] = `
             </div>
           </div>
           <div
-            class="domain-field-section-heading top-spacing"
+            class="domain-field-section-heading top-padding"
           >
             Storage Settings
           </div>
@@ -407,7 +407,7 @@ exports[`SampleTypePropertiesPanel appPropertiesOnly 1`] = `
           </div>
         </form>
         <div
-          class="domain-field-section-heading top-spacing bottom-spacing"
+          class="domain-field-section-heading top-padding bottom-padding"
         >
           Lineage Settings
         </div>
@@ -440,7 +440,7 @@ exports[`SampleTypePropertiesPanel appPropertiesOnly 1`] = `
           </div>
         </div>
         <div
-          class="domain-field-section-heading top-spacing"
+          class="domain-field-section-heading top-padding"
         >
           Storage Settings
         </div>
@@ -701,7 +701,7 @@ exports[`SampleTypePropertiesPanel default props 1`] = `
             </div>
           </form>
           <div
-            class="domain-field-section-heading top-spacing bottom-spacing"
+            class="domain-field-section-heading top-padding bottom-padding"
           >
             Lineage Settings
           </div>
@@ -898,7 +898,7 @@ exports[`SampleTypePropertiesPanel default props 1`] = `
           </div>
         </form>
         <div
-          class="domain-field-section-heading top-spacing bottom-spacing"
+          class="domain-field-section-heading top-padding bottom-padding"
         >
           Lineage Settings
         </div>
@@ -1142,7 +1142,7 @@ exports[`SampleTypePropertiesPanel include dataclass and use custom labels 1`] =
             </div>
           </form>
           <div
-            class="domain-field-section-heading top-spacing bottom-spacing"
+            class="domain-field-section-heading top-padding bottom-padding"
           >
             Lineage Settings
           </div>
@@ -1367,7 +1367,7 @@ exports[`SampleTypePropertiesPanel include dataclass and use custom labels 1`] =
           </div>
         </form>
         <div
-          class="domain-field-section-heading top-spacing bottom-spacing"
+          class="domain-field-section-heading top-padding bottom-padding"
         >
           Lineage Settings
         </div>

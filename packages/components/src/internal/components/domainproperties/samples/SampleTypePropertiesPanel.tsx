@@ -401,7 +401,7 @@ class SampleTypePropertiesPanelImpl extends PureComponent<Props & InjectedDomain
                 )}
                 {showAddParentAlias && (
                     <>
-                        <SectionHeading title="Lineage Settings" cls="top-spacing bottom-spacing" />
+                        <SectionHeading title="Lineage Settings" cls="top-padding bottom-padding" />
                         <DomainParentAliases
                             {...this.props}
                             parentAliases={model.parentAliases}
@@ -467,7 +467,7 @@ class SampleTypePropertiesPanelImpl extends PureComponent<Props & InjectedDomain
                 )}
 
                 {(appPropertiesOnly || !isCommunityDistribution()) && (
-                    <SectionHeading cls="top-spacing" title="Storage Settings" />
+                    <SectionHeading cls="top-padding" title="Storage Settings" />
                 )}
                 {appPropertiesOnly && (
                     <>

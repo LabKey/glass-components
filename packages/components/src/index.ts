@@ -201,7 +201,7 @@ import {
     getGridIdsFromTransactionId,
     getSampleTypesFromTransactionIds,
     getSelected,
-    getSelectedData,
+    getSelectedDataDeprecated,
     incrementClientSideMetricCount,
     replaceSelected,
     selectGridIdsFromTransactionId,
@@ -245,7 +245,7 @@ import {
     NOT_IN_EXP_DESCENDANTS_OF_FILTER_TYPE,
     registerFilterType,
 } from './internal/query/filter';
-import { selectRows } from './internal/query/selectRows';
+import { selectRows, getSelectedRows } from './internal/query/selectRows';
 import { flattenBrowseDataTreeResponse, loadReports } from './internal/query/reports';
 import {
     AssayUploadTabs,
@@ -1121,7 +1121,7 @@ export {
     getOrderedSelectedMappedKeysFromQueryModel,
     saveOrderedSnapshotSelection,
     getSelected,
-    getSelectedData,
+    getSelectedDataDeprecated,
     getQueryModelExportParams,
     replaceSelected,
     setSelected,
@@ -1143,6 +1143,7 @@ export {
     getExpandQueryInfo,
     selectDistinctRows,
     selectRows,
+    getSelectedRows,
     selectRowsDeprecated,
     updateRows,
     deleteRows,

@@ -3,7 +3,7 @@
 exports[`<FilesListingForm/> empty files custom msg 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -21,7 +21,7 @@ exports[`<FilesListingForm/> empty files custom msg 1`] = `
 exports[`<FilesListingForm/> empty files default props 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -36,7 +36,7 @@ exports[`<FilesListingForm/> empty files default props 1`] = `
 exports[`<FilesListingForm/> with editable and noReadOnlyFilesMessage 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -75,7 +75,7 @@ exports[`<FilesListingForm/> with editable and noReadOnlyFilesMessage 1`] = `
   <hr />
   <div>
     <div
-      class="file-listing--header bottom-spacing"
+      class="file-listing--header bottom-padding"
     >
       Your files
     </div>
@@ -296,7 +296,7 @@ exports[`<FilesListingForm/> with editable and noReadOnlyFilesMessage 1`] = `
 exports[`<FilesListingForm/> with files custom props 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -546,7 +546,7 @@ exports[`<FilesListingForm/> with files custom props 1`] = `
 exports[`<FilesListingForm/> with files default props 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -764,7 +764,7 @@ exports[`<FilesListingForm/> with files default props 1`] = `
 exports[`<FilesListingForm/> with no files and both messages 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -793,7 +793,7 @@ exports[`<FilesListingForm/> with no files and both messages 1`] = `
 exports[`<FilesListingForm/> with only readOnly files 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -819,7 +819,7 @@ exports[`<FilesListingForm/> with only readOnly files 1`] = `
   </div>
   <div>
     <div
-      class="file-listing--header bottom-spacing"
+      class="file-listing--header bottom-padding"
     >
       Read-only files
     </div>
@@ -1016,7 +1016,7 @@ exports[`<FilesListingForm/> with only readOnly files 1`] = `
 exports[`<FilesListingForm/> with readOnly and editable files 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -1051,7 +1051,7 @@ exports[`<FilesListingForm/> with readOnly and editable files 1`] = `
   <hr />
   <div>
     <div
-      class="file-listing--header bottom-spacing"
+      class="file-listing--header bottom-padding"
     >
       Other files you can't remove
     </div>
@@ -1183,7 +1183,7 @@ exports[`<FilesListingForm/> with readOnly and editable files 1`] = `
   <hr />
   <div>
     <div
-      class="file-listing--header bottom-spacing"
+      class="file-listing--header bottom-padding"
     >
       Your files
     </div>
@@ -1404,7 +1404,7 @@ exports[`<FilesListingForm/> with readOnly and editable files 1`] = `
 exports[`<FilesListingForm/> with readOnly and noFilesMessage 1`] = `
 <div>
   <div
-    class="row bottom-spacing"
+    class="row bottom-padding"
   >
     <div
       class="col-md-7"
@@ -1438,7 +1438,7 @@ exports[`<FilesListingForm/> with readOnly and noFilesMessage 1`] = `
   </div>
   <div>
     <div
-      class="file-listing--header bottom-spacing"
+      class="file-listing--header bottom-padding"
     >
       Other files you can't remove
     </div>

@@ -159,7 +159,7 @@ export const CalculatedFieldOptions: FC<Props> = memo(props => {
         >
             <div className="row">
                 <div className="col-xs-12 col-md-6">
-                    <SectionHeading title="Expression" cls="bottom-spacing" helpTipBody={HELP_TIP_BODY} />
+                    <SectionHeading title="Expression" cls="bottom-padding" helpTipBody={HELP_TIP_BODY} />
                     <textarea
                         className="form-control"
                         rows={6}
