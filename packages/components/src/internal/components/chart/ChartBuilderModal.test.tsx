@@ -85,6 +85,7 @@ LABKEY_VIS = {
         queryChartData: () => Promise.resolve({}),
         getAllowableTypes: () => ['int', 'double'],
         isMeasureDimensionMatch: () => true,
+        isNumericType: () => true,
         TRENDLINE_OPTIONS: [{ value: 'option1', label: 'Options 1' }],
     },
 };
