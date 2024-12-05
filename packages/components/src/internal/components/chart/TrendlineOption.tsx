@@ -81,13 +81,6 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
         [clearTrendlineAsymptote, onFieldChange]
     );
 
-    useEffect(() => {
-        // if the x-axis measure has been removed or the option is hidden, clear the trendline type
-        if (hidden && fieldValues.trendlineType?.value) {
-            onTrendlineFieldChange('trendlineType', undefined, undefined);
-        }
-    }, [hidden, fieldValues, onTrendlineFieldChange]);
-
     const trendlineOptions = useMemo(() => {
         return TRENDLINE_OPTIONS.filter(option => {
             return !option.schemaPrefix || schemaQuery.schemaName.startsWith(option.schemaPrefix);

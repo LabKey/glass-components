@@ -324,9 +324,14 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
 
     const onSelectFieldChange = useCallback(
         (key: string, _: never, selectedOption: SelectInputOption) => {
+            // clear / reset trendline option here if x change
+            if (hasTrendlineOption && key === 'x') {
+                onFieldChange('trendlineType', LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['']);
+            }
+
             onFieldChange(key, selectedOption);
         },
-        [onFieldChange]
+        [onFieldChange, hasTrendlineOption]
     );
 
     const onFieldScaleChange = useCallback(
