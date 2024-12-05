@@ -789,7 +789,7 @@ describe('parsePastedLookup', () => {
             valueDescriptors: List([{ display: 'abc', raw: 'abc' }]),
         });
         expect(parsePastedLookup(stringLookupCol, stringLookupValues, 'abc, valueD')).toStrictEqual({
-            message: { message: 'Could not find "abc", "valueD"' },
+            message: { message: 'Could not find "abc", "valueD". Please make sure values that contains comma(,) are properly quoted.' },
             valueDescriptors: List([
                 { display: 'abc', raw: 'abc' },
                 { display: 'valueD', raw: 'valueD' },
@@ -820,7 +820,7 @@ describe('parsePastedLookup', () => {
             valueDescriptors: List([{ display: 'abc', raw: 'abc' }]),
         });
         expect(parsePastedLookup(intLookupCol, intLookupValues, 'abc, valueD')).toStrictEqual({
-            message: { message: 'Could not find "abc", "valueD"' },
+            message: { message: 'Could not find "abc", "valueD". Please make sure values that contains comma(,) are properly quoted.' },
             valueDescriptors: List([
                 { display: 'abc', raw: 'abc' },
                 { display: 'valueD', raw: 'valueD' },

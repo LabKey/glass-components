@@ -795,7 +795,7 @@ function createVisNode(
     let nodeLabel = node.name;
     // Issue 51432: LKSM: special character in sample names result in client side exception: SyntaxError: unterminated character class
     // vis-network does special processing for labels that evaluates to true for `/&/.test()`
-    if (nodeLabel.indexOf('&') > -1) {
+    if (nodeLabel?.indexOf('&') > -1) {
         // for labels that starts with '&', the entire label is replaced with '&lt;' by vis
         if (nodeLabel.startsWith('&')) {
             nodeLabel = nodeLabel.replace('&', FULLWIDTH_AMPERSAND);
