@@ -70,6 +70,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
     const options = useMemo(() => getSelectOptions(model, selectedType, field), [model, selectedType, field]);
     const showFieldOptions = shouldShowFieldOptions(field, selectedType);
     const [scale, setScale] = useState<Record<string, string | number>>(scaleValues);
+    const invalidRange = useMemo(() => !!scale.min && !!scale.max && scale.max <= scale.min, [scale]);
 
     useEffect(() => {
         if (scaleValues.type && !scale.type) {
@@ -108,9 +109,10 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
     }, []);
 
     const onScaleRangeBlur = useCallback(() => {
+        if (invalidRange) return;
         onScaleChange(field.name, 'min', parseFloat(scale.min?.toString()));
         onScaleChange(field.name, 'max', parseFloat(scale.max?.toString()));
-    }, [field.name, onScaleChange, scale.max, scale.min]);
+    }, [field.name, onScaleChange, scale.max, scale.min, invalidRange]);
 
     return (
         <div>
@@ -186,6 +188,9 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                                                 onChange={onScaleMaxChange}
                                                 value={scale.max ?? ''}
                                             />
+                                            {invalidRange && (
+                                                <div className="text-danger">Invalid range (Max &lt;= Min)</div>
+                                            )}
                                         </div>
                                     )}
                                 </Popover>

@@ -38,6 +38,10 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
     const [asymptoteType, setAsymptoteType] = useState<string>('automatic');
     const [asymptoteMin, setAsymptoteMin] = useState<string>('');
     const [asymptoteMax, setAsymptoteMax] = useState<string>('');
+    const invalidRange = useMemo(
+        () => !!asymptoteMin && !!asymptoteMax && asymptoteMax <= asymptoteMin,
+        [asymptoteMin, asymptoteMax]
+    );
     useEffect(() => {
         if (loadingTrendlineOptions && (!!fieldValues.trendlineAsymptoteMin || !!fieldValues.trendlineAsymptoteMax)) {
             setAsymptoteType('manual');
@@ -56,12 +60,12 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
     }, []);
 
     const applyTrendlineAsymptote = useCallback(() => {
+        if (invalidRange) return;
         onFieldChange('trendlineAsymptoteMin', { value: asymptoteMin });
         onFieldChange('trendlineAsymptoteMax', { value: asymptoteMax });
-    }, [onFieldChange, asymptoteMin, asymptoteMax]);
+    }, [onFieldChange, asymptoteMin, asymptoteMax, invalidRange]);
 
     const clearTrendlineAsymptote = useCallback(() => {
-        setAsymptoteType('automatic');
         setAsymptoteMin('');
         onFieldChange('trendlineAsymptoteMin', undefined);
         setAsymptoteMax('');
@@ -70,6 +74,7 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
 
     const onTrendlineFieldChange = useCallback(
         (key: string, _, selectedOption: SelectInputOption) => {
+            setAsymptoteType('automatic');
             clearTrendlineAsymptote();
             onFieldChange(key, selectedOption);
         },
@@ -91,7 +96,9 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
 
     const onAsymptoteTypeChange = useCallback(
         (selected: string) => {
-            clearTrendlineAsymptote();
+            if (selected === 'automatic') {
+                clearTrendlineAsymptote();
+            }
             setAsymptoteType(selected);
         },
         [clearTrendlineAsymptote]
@@ -175,7 +182,7 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
                                                     value={asymptoteMax}
                                                 />
                                             )}
-                                            {!!asymptoteMin && !!asymptoteMax && asymptoteMax <= asymptoteMin && (
+                                            {invalidRange && (
                                                 <div className="text-danger">Invalid range (Max &lt;= Min)</div>
                                             )}
                                         </div>
