@@ -56,6 +56,8 @@ const SCALE_RANGE_TYPES = [
     { value: 'manual', label: 'Manual' },
 ];
 
+const DEFAULT_SCALE_VALUES = { type: 'automatic', trans: 'linear' };
+
 interface ChartFieldOptionProps {
     field: ChartFieldInfo;
     fieldValue?: SelectInputOption;
@@ -67,21 +69,21 @@ interface ChartFieldOptionProps {
 }
 
 export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
-    const { field, model, selectedType, onSelectFieldChange, scaleValues = {}, fieldValue, onScaleChange } = props;
+    const { field, model, selectedType, onSelectFieldChange, scaleValues, fieldValue, onScaleChange } = props;
     const options = useMemo(() => getSelectOptions(model, selectedType, field), [model, selectedType, field]);
     const isNumericType = useMemo(
         () => LABKEY_VIS.GenericChartHelper.isNumericType(getFieldDataType(fieldValue?.data)),
         [fieldValue?.data]
     );
     const showFieldOptions = isNumericType && shouldShowFieldOptions(field, selectedType);
-    const [scale, setScale] = useState<Record<string, string | number>>(scaleValues);
+    const [scale, setScale] = useState<Record<string, string | number>>(scaleValues ?? {});
     const invalidRange = useMemo(() => !!scale.min && !!scale.max && scale.max <= scale.min, [scale]);
 
     useEffect(() => {
-        if (scaleValues['type'] && !scale.type) {
-            setScale(scaleValues);
+        if (showFieldOptions && !scale.type) {
+            setScale(scaleValues?.type ? scaleValues : DEFAULT_SCALE_VALUES);
         }
-    }, [scale.type, scaleValues]);
+    }, [showFieldOptions, scale.type, scaleValues]);
 
     const onScaleTransChange = useCallback(
         (selected: string) => {
@@ -94,7 +96,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
     const onSelectFieldChange_ = useCallback(
         (name: string, value: any, selectedOption: SelectInputOption) => {
             onScaleChange(field.name, undefined, undefined, true);
-            setScale({ type: 'automatic', trans: 'linear' });
+            setScale(DEFAULT_SCALE_VALUES);
             onSelectFieldChange(name, value, selectedOption);
         },
         [field.name, onScaleChange, onSelectFieldChange]
