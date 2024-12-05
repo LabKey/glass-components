@@ -336,10 +336,10 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
     );
 
     const onFieldScaleChange = useCallback(
-        (field: string, key: string, value: string | number) => {
+        (field: string, key: string, value: string | number, reset = false) => {
             const scales = fieldValues.scales?.value ?? {};
-            if (!scales[field]) scales[field] = { type: 'automatic', trans: 'linear' };
-            scales[field][key] = value;
+            if (!scales[field] || reset) scales[field] = { type: 'automatic', trans: 'linear' };
+            if (key) scales[field][key] = value;
             onFieldChange('scales', { value: scales });
         },
         [fieldValues.scales?.value, onFieldChange]

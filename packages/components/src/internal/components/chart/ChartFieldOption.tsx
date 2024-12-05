@@ -60,8 +60,8 @@ interface ChartFieldOptionProps {
     field: ChartFieldInfo;
     fieldValue?: SelectInputOption;
     model: QueryModel;
-    onScaleChange: (field: string, key: string, value: string | number) => void;
-    onSelectFieldChange: SelectInputChange;
+    onScaleChange: (field: string, key: string, value: string | number, reset?: boolean) => void;
+    onSelectFieldChange: (name: string, value: any, selectedOption: SelectInputOption) => void;
     scaleValues?: Record<string, string | number>;
     selectedType: ChartTypeInfo;
 }
@@ -89,6 +89,15 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
             setScale(prev => ({ ...prev, trans: selected }));
         },
         [field.name, onScaleChange]
+    );
+
+    const onSelectFieldChange_ = useCallback(
+        (name: string, value: any, selectedOption: SelectInputOption) => {
+            onScaleChange(field.name, undefined, undefined, true);
+            setScale({ type: 'automatic', trans: 'linear' });
+            onSelectFieldChange(name, value, selectedOption);
+        },
+        [field.name, onScaleChange, onSelectFieldChange]
     );
 
     const onScaleTypeChange = useCallback(
@@ -133,7 +142,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                     placeholder="Select a field"
                     name={field.name}
                     options={options}
-                    onChange={onSelectFieldChange}
+                    onChange={onSelectFieldChange_}
                     value={fieldValue?.value}
                 />
                 {showFieldOptions && (
