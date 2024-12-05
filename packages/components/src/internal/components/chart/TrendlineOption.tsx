@@ -11,6 +11,7 @@ import { Popover } from '../../Popover';
 import { RadioGroupInput, RadioGroupOption } from '../forms/input/RadioGroupInput';
 
 import { TrendlineType } from './models';
+import { getFieldDataType } from './utils';
 
 const ASYMPTOTE_TYPES = [
     { value: 'automatic', label: 'Automatic' },
@@ -30,7 +31,7 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
 
     // hide the trendline option if no x-axis value selected and for date field selection on x-axis
     const hidden = useMemo(() => {
-        const jsonType = fieldValues.x?.data?.jsonType || fieldValues.x?.data?.type;
+        const jsonType = getFieldDataType(fieldValues.x?.data);
         return !fieldValues.x?.value || jsonType === 'date' || jsonType === 'time';
     }, [fieldValues.x]);
 

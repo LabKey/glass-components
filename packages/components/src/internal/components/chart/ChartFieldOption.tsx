@@ -12,6 +12,7 @@ import { Popover } from '../../Popover';
 import { RadioGroupInput, RadioGroupOption } from '../forms/input/RadioGroupInput';
 
 import { ChartFieldInfo, ChartTypeInfo } from './ChartBuilderModal';
+import { getFieldDataType } from './utils';
 
 export const getSelectOptions = (
     model: QueryModel,
@@ -23,7 +24,7 @@ export const getSelectOptions = (
     return model.queryInfo
         .getDisplayColumns(model.viewName)
         .filter(col => {
-            const colType = col.displayFieldJsonType || col.jsonType;
+            const colType = getFieldDataType(col);
             const hasMatchingType = allowableTypes.indexOf(colType) > -1;
             const isMeasureDimensionMatch = LABKEY_VIS.GenericChartHelper.isMeasureDimensionMatch(
                 chartType.name,
@@ -57,23 +58,27 @@ const SCALE_RANGE_TYPES = [
 
 interface ChartFieldOptionProps {
     field: ChartFieldInfo;
+    fieldValue?: SelectInputOption;
     model: QueryModel;
     onScaleChange: (field: string, key: string, value: string | number) => void;
     onSelectFieldChange: SelectInputChange;
     scaleValues?: Record<string, string | number>;
     selectedType: ChartTypeInfo;
-    value?: any;
 }
 
 export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
-    const { field, model, selectedType, onSelectFieldChange, scaleValues = {}, value, onScaleChange } = props;
+    const { field, model, selectedType, onSelectFieldChange, scaleValues = {}, fieldValue, onScaleChange } = props;
     const options = useMemo(() => getSelectOptions(model, selectedType, field), [model, selectedType, field]);
-    const showFieldOptions = shouldShowFieldOptions(field, selectedType);
+    const isNumericType = useMemo(
+        () => LABKEY_VIS.GenericChartHelper.isNumericType(getFieldDataType(fieldValue?.data)),
+        [fieldValue?.data]
+    );
+    const showFieldOptions = isNumericType && shouldShowFieldOptions(field, selectedType);
     const [scale, setScale] = useState<Record<string, string | number>>(scaleValues);
     const invalidRange = useMemo(() => !!scale.min && !!scale.max && scale.max <= scale.min, [scale]);
 
     useEffect(() => {
-        if (scaleValues.type && !scale.type) {
+        if (scaleValues['type'] && !scale.type) {
             setScale(scaleValues);
         }
     }, [scale.type, scaleValues]);
@@ -129,7 +134,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                     name={field.name}
                     options={options}
                     onChange={onSelectFieldChange}
-                    value={value}
+                    value={fieldValue?.value}
                 />
                 {showFieldOptions && (
                     <div className="field-option-icon">

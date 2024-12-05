@@ -33,6 +33,7 @@ import { deleteChart, saveChart, SaveReportConfig } from './actions';
 import { ChartConfig, ChartQueryConfig, GenericChartModel, TrendlineType } from './models';
 import { TrendlineOption } from './TrendlineOption';
 import { ChartFieldOption } from './ChartFieldOption';
+import { getFieldDataType } from './utils';
 
 interface AggregateFieldInfo {
     name: string;
@@ -196,7 +197,7 @@ export const getChartBuilderChartConfig = (
                 label: fieldConfig.label,
                 queryName: fieldConfig.data.queryName,
                 schemaName: fieldConfig.data.schemaName,
-                type: fieldConfig.data.displayFieldJsonType || fieldConfig.data.jsonType || fieldConfig.data.type,
+                type: getFieldDataType(fieldConfig.data),
             };
 
             // check if the field has an aggregate method (bar chart y-axis only)
@@ -384,7 +385,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                             onSelectFieldChange={onSelectFieldChange}
                             onScaleChange={onFieldScaleChange}
                             selectedType={selectedType}
-                            value={fieldValues[field.name]?.value}
+                            fieldValue={fieldValues[field.name]}
                             scaleValues={fieldValues.scales?.value[field.name]}
                         />
                     ))}
@@ -399,7 +400,7 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                                 onSelectFieldChange={onSelectFieldChange}
                                 onScaleChange={onFieldScaleChange}
                                 selectedType={selectedType}
-                                value={fieldValues[field.name]?.value}
+                                fieldValue={fieldValues[field.name]}
                                 scaleValues={fieldValues.scales?.value[field.name]}
                             />
                             {selectedType.name === 'bar_chart' && fieldValues.y?.value && (
