@@ -188,12 +188,12 @@
     min-width: 850px;
 }
 .chart-builder-modal .col-left {
-    height: 575px;
+    height: 560px;
     width: 116px;
     border-right: solid 1px $gray-border-light;
 }
 .chart-builder-modal .col-right {
-    height: 575px;
+    height: 560px;
     width: calc(100% - 116px)
 }
 
@@ -226,12 +226,11 @@
 }
 
 .chart-builder-modal .fields-col {
-    min-height: 185px;
+    min-height: 160px;
     border-left: solid 1px $gray-border-light;
 }
 
-.chart-builder-modal .checkbox-input,
-.chart-builder-modal .checkbox-footer-input {
+.chart-builder-modal .checkbox-input {
     cursor: pointer;
 
     input {
@@ -240,9 +239,6 @@
 }
 .chart-builder-modal .checkbox-input {
     padding-top: 15px;
-}
-.chart-builder-modal .checkbox-footer-input {
-    padding-bottom: 15px;
 }
 
 .chart-builder-modal .select-input-with-footer {
