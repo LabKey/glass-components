@@ -196,7 +196,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                                             />
                                             <span>&nbsp;&nbsp;-&nbsp;</span>
                                             <input
-                                                name="scaleMan"
+                                                name="scaleMax"
                                                 type="number"
                                                 className="chart-builder-field-footer-input"
                                                 placeholder="Max"

@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 
-import { createHorizontalBarLegendData, createHorizontalBarCountLegendData } from './utils';
+import { createHorizontalBarLegendData, createHorizontalBarCountLegendData, getFieldDataType } from './utils';
 
 beforeEach(() => {
     LABKEY.vis = {};
@@ -283,5 +283,25 @@ describe('createHorizontalBarLegendData', () => {
                 legendLabel: 'spaces',
             },
         ]);
+    });
+});
+
+describe('getFieldDataType', () => {
+    test('without data', () => {
+        expect(getFieldDataType(undefined)).toBe(undefined);
+        expect(getFieldDataType(null)).toBe(undefined);
+        expect(getFieldDataType({})).toBe(undefined);
+        expect(getFieldDataType({ displayFieldJsonType: undefined, jsonType: undefined, type: undefined })).toBe(
+            undefined
+        );
+    });
+
+    test('with data', () => {
+        expect(getFieldDataType({ displayFieldJsonType: 'string' })).toBe('string');
+        expect(getFieldDataType({ jsonType: 'string' })).toBe('string');
+        expect(getFieldDataType({ type: 'string' })).toBe('string');
+        expect(getFieldDataType({ displayFieldJsonType: 'string', jsonType: 'int', type: 'date' })).toBe('string');
+        expect(getFieldDataType({ displayFieldJsonType: undefined, jsonType: 'int', type: 'date' })).toBe('int');
+        expect(getFieldDataType({ displayFieldJsonType: undefined, jsonType: undefined, type: 'date' })).toBe('date');
     });
 });
