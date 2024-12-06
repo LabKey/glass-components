@@ -77,7 +77,10 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
     );
     const showFieldOptions = isNumericType && shouldShowFieldOptions(field, selectedType);
     const [scale, setScale] = useState<Record<string, string | number>>(scaleValues ?? {});
-    const invalidRange = useMemo(() => !!scale.min && !!scale.max && scale.max <= scale.min, [scale]);
+    const invalidRange = useMemo(
+        () => scale.min !== undefined && scale.max !== undefined && scale.max <= scale.min,
+        [scale]
+    );
 
     useEffect(() => {
         if (showFieldOptions && !scale.type) {
