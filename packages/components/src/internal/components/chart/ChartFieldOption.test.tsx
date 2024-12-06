@@ -216,7 +216,7 @@ describe('ChartFieldOption', () => {
             <ChartFieldOption
                 field={{ name: 'x', label: 'X Axis', required: true } as ChartFieldInfo}
                 fieldValue={{ value: 'field1', data: { type: 'int' } }}
-                scaleValues={{ trans: 'log', type: 'manual', min: 1, max: 100 }}
+                scaleValues={{ trans: 'log', type: 'manual', min: '3', max: '20' }}
                 model={model}
                 onScaleChange={jest.fn()}
                 onSelectFieldChange={jest.fn()}
@@ -233,8 +233,8 @@ describe('ChartFieldOption', () => {
         await userEvent.click(document.querySelector('.fa-gear'));
         expect(document.querySelectorAll('.radioinput-label.selected')[0].textContent).toBe('Log');
         expect(document.querySelectorAll('.radioinput-label.selected')[1].textContent).toBe('Manual');
-        expect(document.querySelector('input[name=scaleMin]').getAttribute('value')).toBe('1');
-        expect(document.querySelector('input[name=scaleMax]').getAttribute('value')).toBe('100');
+        expect(document.querySelector('input[name=scaleMin]').getAttribute('value')).toBe('3');
+        expect(document.querySelector('input[name=scaleMax]').getAttribute('value')).toBe('20');
         expect(document.querySelectorAll('.text-danger')).toHaveLength(0);
 
         // verify min and max are cleared when changed to automatic
@@ -253,7 +253,7 @@ describe('ChartFieldOption', () => {
             <ChartFieldOption
                 field={{ name: 'x', label: 'X Axis', required: true } as ChartFieldInfo}
                 fieldValue={{ value: 'field1', data: { type: 'int' } }}
-                scaleValues={{ trans: 'log', type: 'manual', min: 1, max: 0 }}
+                scaleValues={{ trans: 'log', type: 'manual', min: '1', max: '0' }}
                 model={model}
                 onScaleChange={jest.fn()}
                 onSelectFieldChange={jest.fn()}
