@@ -5,6 +5,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD
 - Update `EntityIdCreationModel` with `selectionContainerId`
 - Fix `resolveSampleParentTypes` when `orderedRowIds` is undefined
+- Fix some error message verbiage
 
 ### version 6.4.0
 *Released*: 4 December 2024
