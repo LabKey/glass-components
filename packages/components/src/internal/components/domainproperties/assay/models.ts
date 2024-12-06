@@ -159,6 +159,10 @@ export class AssayProtocolModel extends ImmutableRecord({
         delete json.autoCopyTargetContainer;
         delete json.exception;
 
+        // TODO: "hitCriteria" have been moved to DomainField and are now called "filterCriteria".
+        // Removing for now so result can be saved without throwing a server error.
+        delete json.hitCriteria;
+
         return json;
     }
 
