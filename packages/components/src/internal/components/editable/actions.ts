@@ -294,7 +294,7 @@ async function getLookupValueDescriptors(
 function lookupValidationError(value: string | number | boolean, fromPaste?: boolean): CellMessage {
     let suffix = '';
     if (fromPaste && typeof value === 'string' && value.toString().indexOf(',') > -1) {
-        suffix = '. Please make sure values that contains comma(,) are properly quoted.';
+        suffix = '. Please make sure values that contain commas are properly quoted.';
     }
     return { message: `Could not find ${value}${suffix}` };
 }
