@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, FC, PureComponent, ReactNode } from 'react';
+import React, { ChangeEvent, FC, memo, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 
 import { FormsyInjectedProps, withFormsy } from '../formsy';
@@ -13,6 +13,50 @@ export interface RadioGroupOption {
     value: string;
 }
 
+interface RadioGroupOptionImplProps {
+    isSelected: boolean;
+    name: string;
+    onSetValue: (value: string) => void;
+    option: RadioGroupOption;
+    showDescriptions: boolean;
+}
+
+const RadioGroupOptionImpl: FC<RadioGroupOptionImplProps> = memo(props => {
+    const { isSelected, name, option, showDescriptions, onSetValue } = props;
+
+    const onLabelClick = useCallback(() => {
+        onSetValue(option.value);
+    }, [onSetValue, option.value]);
+
+    const onRadioChange = useCallback(
+        (evt: ChangeEvent<HTMLInputElement>) => {
+            onSetValue(evt.target.value);
+        },
+        [onSetValue]
+    );
+
+    return (
+        <div className="radio-input-wrapper">
+            <input
+                className="radioinput-input"
+                checked={isSelected && !option.disabled}
+                type="radio"
+                name={name}
+                value={option.value}
+                onChange={onRadioChange}
+                disabled={option.disabled}
+            />
+            <span className={classNames('radioinput-label', { selected: isSelected })} onClick={onLabelClick}>
+                {option.label}
+            </span>
+            {showDescriptions && option.description && (
+                <span className="radioinput-description"> - {option.description}</span>
+            )}
+            {!showDescriptions && option.description && <LabelHelpTip>{option.description}</LabelHelpTip>}
+        </div>
+    );
+});
+
 interface OwnProps {
     formsy?: boolean;
     name: string;
@@ -23,90 +67,63 @@ interface OwnProps {
 
 type RadioGroupInputProps = OwnProps & FormsyInjectedProps<any>;
 
-interface State {
-    selectedValue: string;
-}
+const RadioGroupInputImpl: FC<RadioGroupInputProps> = memo(props => {
+    const { options, name, showDescriptions, formsy, setValue, onValueChange } = props;
+    const selected = useMemo(() => options?.find(option => option.selected), [options]);
+    const [selectedValue, setSelectedValue] = useState<string>(selected?.value);
 
-class RadioGroupInputImpl extends PureComponent<RadioGroupInputProps, State> {
-    constructor(props: RadioGroupInputProps) {
-        super(props);
-
-        const selected = props.options?.find(option => option.selected);
-        this.state = {
-            selectedValue: selected?.value,
-        };
-        if (selected?.value && props.formsy) {
-            props.setValue?.(selected.value);
-        }
-    }
-
-    onValueChange: ChangeEventHandler<HTMLInputElement> = (evt): void => {
-        this.onSetValue(evt.target.value);
-    };
-
-    onSetValue = (value: string): void => {
-        const { formsy, onValueChange, setValue } = this.props;
-        this.setState({ selectedValue: value });
-        if (formsy) {
-            setValue?.(value);
-        }
-        onValueChange?.(value);
-    };
-
-    render(): ReactNode {
-        const { options, name, showDescriptions } = this.props;
-        const { selectedValue } = this.state;
-        const inputs = [];
-
-        if (options) {
-            if (options.length === 1) {
-                inputs.push(
-                    <div key={options[0].value}>
-                        <input
-                            checked
-                            hidden
-                            name={name}
-                            onChange={this.onValueChange}
-                            type="radio"
-                            value={options[0].value}
-                        />
-                    </div>
-                );
-            } else {
-                options.forEach(option => {
-                    const selected = selectedValue === option.value;
-
-                    inputs.push(
-                        <div key={option.value} className="radio-input-wrapper">
-                            <input
-                                className="radioinput-input"
-                                checked={selected && !option.disabled}
-                                type="radio"
-                                name={name}
-                                value={option.value}
-                                onChange={this.onValueChange}
-                                disabled={option.disabled}
-                            />
-                            <span
-                                className={classNames('radioinput-label', { selected })}
-                                onClick={() => this.onSetValue(option.value)}
-                            >
-                                {option.label}
-                            </span>
-                            {showDescriptions && option.description && (
-                                <span className="radioinput-description"> - {option.description}</span>
-                            )}
-                            {!showDescriptions && option.description && (
-                                <LabelHelpTip>{option.description}</LabelHelpTip>
-                            )}
-                        </div>
-                    );
-                });
+    useEffect(
+        () => {
+            if (selected?.value && formsy) {
+                setValue?.(selected.value);
             }
-        }
-        return inputs;
+        },
+        [
+            /* constructor */
+        ]
+    );
+
+    const onSetValue = useCallback(
+        (value: string): void => {
+            setSelectedValue(value);
+            onValueChange?.(value);
+        },
+        [onValueChange]
+    );
+
+    const onValueChange_ = useCallback(
+        (evt: ChangeEvent<HTMLInputElement>) => {
+            onSetValue(evt.target.value);
+        },
+        [onSetValue]
+    );
+
+    if (options?.length === 1) {
+        return (
+            <div key={options[0].value}>
+                <input checked hidden name={name} onChange={onValueChange_} type="radio" value={options[0].value} />
+            </div>
+        );
     }
-}
+
+    return (
+        <>
+            {options?.map(option => {
+                const isSelected = selectedValue === option.value;
+                return (
+                    <RadioGroupOptionImpl
+                        key={option.value}
+                        name={name}
+                        onSetValue={onSetValue}
+                        option={option}
+                        isSelected={isSelected}
+                        showDescriptions={showDescriptions}
+                    />
+                );
+            })}
+        </>
+    );
+});
 
 const RadioGroupInputFormsy = withFormsy<OwnProps, any>(RadioGroupInputImpl);
 
