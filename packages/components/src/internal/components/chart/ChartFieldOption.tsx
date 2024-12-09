@@ -80,7 +80,9 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
     const invalidRange = useMemo(
         () =>
             scale.min !== undefined &&
+            scale.min !== null &&
             scale.max !== undefined &&
+            scale.max !== null &&
             parseFloat(scale.max.toString()) <= parseFloat(scale.min.toString()),
         [scale]
     );
