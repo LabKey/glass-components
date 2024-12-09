@@ -797,16 +797,8 @@ function createVisNode(
     // vis-network does special processing for labels that evaluates to true for `/&/.test()`
     if (nodeLabel?.indexOf('&') > -1) {
         // for labels that starts with '&', the entire label is replaced with '&lt;' by vis
-        if (nodeLabel.startsWith('&')) {
-            nodeLabel = nodeLabel.replace('&', FULLWIDTH_AMPERSAND);
-        }
-
-        try {
-            new RegExp(nodeLabel);
-        } catch (error) {
-            // vis-network is not able to tolerate the presence of '&' in certain strings due to Uncaught SyntaxError from `new RegExp()`. Encoding does not help.
-            nodeLabel = nodeLabel.replaceAll('&', FULLWIDTH_AMPERSAND);
-        }
+        // vis-network is not able to tolerate the presence of '&' in certain strings due to Uncaught SyntaxError from `new RegExp()`. Encoding does not help.
+        nodeLabel = nodeLabel.replaceAll('&', FULLWIDTH_AMPERSAND);
     }
 
     return {
