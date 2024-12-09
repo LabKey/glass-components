@@ -291,8 +291,12 @@ async function getLookupValueDescriptors(
     return descriptorMap;
 }
 
-function lookupValidationError(value: string | number | boolean): CellMessage {
-    return { message: `Could not find ${value}` };
+function lookupValidationError(value: string | number | boolean, fromPaste?: boolean): CellMessage {
+    let suffix = '';
+    if (fromPaste && typeof value === 'string' && value.toString().indexOf(',') > -1) {
+        suffix = '. Please make sure values that contain commas are properly quoted.';
+    }
+    return { message: `Could not find ${value}${suffix}` };
 }
 
 async function getLookupDisplayValue(column: QueryColumn, value: any, containerPath: string): Promise<MessageAndValue> {
@@ -455,16 +459,15 @@ export function addColumns(
     if (insertFieldKey && leftColIndex < editorModel.orderedColumns.size - 1) {
         let readOnlyEnded = false;
         editorModel.orderedColumns.forEach((fieldKey, ind) => {
-            if (ind <= leftColIndex || readOnlyEnded)
-                return;
-            if (!editorModel.columnMap.get(fieldKey).readOnly)
-                readOnlyEnded = true;
-            else
-                altInsertFieldKey = fieldKey;
+            if (ind <= leftColIndex || readOnlyEnded) return;
+            if (!editorModel.columnMap.get(fieldKey).readOnly) readOnlyEnded = true;
+            else altInsertFieldKey = fieldKey;
         });
 
         if (altInsertFieldKey)
-            leftColIndex = editorModel.orderedColumns.findIndex(column => Utils.caseInsensitiveEquals(column, altInsertFieldKey));
+            leftColIndex = editorModel.orderedColumns.findIndex(column =>
+                Utils.caseInsensitiveEquals(column, altInsertFieldKey)
+            );
     }
 
     const editorModelIndex = leftColIndex + 1;
@@ -940,7 +943,7 @@ export function parsePastedLookup(
             .slice(0, 4)
             .map(u => '"' + u + '"')
             .join(', ');
-        message = lookupValidationError(valueStr);
+        message = lookupValidationError(valueStr, true);
     }
 
     return {

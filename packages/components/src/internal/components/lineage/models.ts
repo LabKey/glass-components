@@ -781,6 +781,7 @@ function addEdges(
     }
 }
 
+const FULLWIDTH_AMPERSAND = '＆'; // U+FF06, use as alt display for & so vis-network won't error out
 function createVisNode(
     node: LineageNode,
     id: string,
@@ -791,11 +792,20 @@ function createVisNode(
     // show the alternate icon image color if this node is the seed or has been selected
     const { image, imageBackup, imageSelected, imageShape } = node.iconProps;
 
+    let nodeLabel = node.name;
+    // Issue 51432: LKSM: special character in sample names result in client side exception: SyntaxError: unterminated character class
+    // vis-network does special processing for labels that evaluates to true for `/&/.test()`
+    if (nodeLabel?.indexOf('&') > -1) {
+        // for labels that starts with '&', the entire label is replaced with '&lt;' by vis
+        // vis-network is not able to tolerate the presence of '&' in certain strings due to Uncaught SyntaxError from `new RegExp()`. Encoding does not help.
+        nodeLabel = nodeLabel.replaceAll('&', FULLWIDTH_AMPERSAND);
+    }
+
     return {
         kind: 'node',
         id,
         lineageNode: node,
-        label: node.name,
+        label: nodeLabel,
         level: level(depth, dir, false),
         title: getLineageNodeTitle(node, true),
         image: {
