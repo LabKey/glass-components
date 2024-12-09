@@ -21,7 +21,7 @@ interface RadioGroupOptionImplProps {
     showDescriptions: boolean;
 }
 
-const RadioGroupOptionImpl: FC<RadioGroupOptionImplProps> = memo(props => {
+const RadioGroupOption: FC<RadioGroupOptionImplProps> = memo(props => {
     const { isSelected, name, option, showDescriptions, onSetValue } = props;
 
     const onLabelClick = useCallback(() => {
@@ -56,6 +56,8 @@ const RadioGroupOptionImpl: FC<RadioGroupOptionImplProps> = memo(props => {
         </div>
     );
 });
+
+RadioGroupOption.displayName = 'RadioGroupOption';
 
 interface OwnProps {
     formsy?: boolean;
@@ -108,22 +110,21 @@ const RadioGroupInputImpl: FC<RadioGroupInputProps> = memo(props => {
 
     return (
         <>
-            {options?.map(option => {
-                const isSelected = selectedValue === option.value;
-                return (
-                    <RadioGroupOptionImpl
-                        key={option.value}
-                        name={name}
-                        onSetValue={onSetValue}
-                        option={option}
-                        isSelected={isSelected}
-                        showDescriptions={showDescriptions}
-                    />
-                );
-            })}
+            {options?.map(option => (
+                <RadioGroupOption
+                    key={option.value}
+                    name={name}
+                    onSetValue={onSetValue}
+                    option={option}
+                    isSelected={selectedValue === option.value}
+                    showDescriptions={showDescriptions}
+                />
+            ))}
         </>
     );
 });
+
+RadioGroupInputImpl.displayName = 'RadioGroupInputImpl';
 
 const RadioGroupInputFormsy = withFormsy<OwnProps, any>(RadioGroupInputImpl);
 
