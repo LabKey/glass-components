@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { SelectInput, SelectInputOption } from '../forms/input/SelectInput';
 import { SchemaQuery } from '../../../public/SchemaQuery';
@@ -52,11 +52,11 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
         }
     }, [fieldValues, loadingTrendlineOptions]);
 
-    const onTrendlineAsymptoteMin = useCallback((event: any) => {
+    const onTrendlineAsymptoteMin = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setAsymptoteMin(event.target.value);
     }, []);
 
-    const onTrendlineAsymptoteMax = useCallback((event: any) => {
+    const onTrendlineAsymptoteMax = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setAsymptoteMax(event.target.value);
     }, []);
 
@@ -97,6 +97,16 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
         },
         [clearTrendlineAsymptote]
     );
+
+    const asymptoteTypeOptions = useMemo(() => {
+        return ASYMPTOTE_TYPES.map(
+            option =>
+                ({
+                    ...option,
+                    selected: asymptoteType === option.value,
+                }) as RadioGroupOption
+        );
+    }, [asymptoteType]);
 
     if (hidden) return null;
 
@@ -139,13 +149,7 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
                                         <label>Asymptote</label>
                                         <RadioGroupInput
                                             name="asymptoteType"
-                                            options={ASYMPTOTE_TYPES.map(
-                                                option =>
-                                                    ({
-                                                        ...option,
-                                                        selected: asymptoteType === option.value,
-                                                    }) as RadioGroupOption
-                                            )}
+                                            options={asymptoteTypeOptions}
                                             onValueChange={onAsymptoteTypeChange}
                                             formsy={false}
                                         />
@@ -184,7 +188,7 @@ export const TrendlineOption: FC<TrendlineOptionProps> = memo(props => {
                                 </Popover>
                             }
                         >
-                            <i className="fa fa-gear" />
+                            <span className="fa fa-gear" />
                         </OverlayTrigger>
                     </div>
                 )}

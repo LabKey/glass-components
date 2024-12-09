@@ -79,16 +79,19 @@ export function useOverlayTriggerState<T extends Element = HTMLDivElement>(
                 setShow(_show => !_show);
             }
         },
-        [clickEventEnabled]
+        [clickEventEnabled, portalEl]
     );
 
-    const onDocumentClick = useCallback(event => {
-        const isToggle = event.target === targetRef.current;
-        const insideToggle = portalEl?.contains(event.target);
-        if (!isToggle && !insideToggle) {
-            setShow(false);
-        }
-    }, []);
+    const onDocumentClick = useCallback(
+        event => {
+            const isToggle = event.target === targetRef.current;
+            const insideToggle = portalEl?.contains(event.target);
+            if (!isToggle && !insideToggle) {
+                setShow(false);
+            }
+        },
+        [portalEl]
+    );
 
     useEffect(() => {
         if (clickEventEnabled) {

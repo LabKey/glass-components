@@ -1,6 +1,6 @@
-import React, { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { SelectInput, SelectInputChange, SelectInputOption } from '../forms/input/SelectInput';
+import { SelectInput, SelectInputOption } from '../forms/input/SelectInput';
 
 import { QueryModel } from '../../../public/QueryModel/QueryModel';
 
@@ -63,7 +63,7 @@ interface ChartFieldOptionProps {
     fieldValue?: SelectInputOption;
     model: QueryModel;
     onScaleChange: (field: string, key: string, value: string | number, reset?: boolean) => void;
-    onSelectFieldChange: (name: string, value: any, selectedOption: SelectInputOption) => void;
+    onSelectFieldChange: (name: string, value: string, selectedOption: SelectInputOption) => void;
     scaleValues?: Record<string, string | number>;
     selectedType: ChartTypeInfo;
 }
@@ -102,7 +102,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
     );
 
     const onSelectFieldChange_ = useCallback(
-        (name: string, value: any, selectedOption: SelectInputOption) => {
+        (name: string, value: string, selectedOption: SelectInputOption) => {
             onScaleChange(field.name, undefined, undefined, true);
             setScale(DEFAULT_SCALE_VALUES);
             onSelectFieldChange(name, value, selectedOption);
@@ -124,11 +124,11 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
         [field.name, onScaleChange, scale]
     );
 
-    const onScaleMinChange = useCallback((event: any) => {
+    const onScaleMinChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setScale(prev => ({ ...prev, min: event.target.value }));
     }, []);
 
-    const onScaleMaxChange = useCallback((event: any) => {
+    const onScaleMaxChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setScale(prev => ({ ...prev, max: event.target.value }));
     }, []);
 
@@ -137,6 +137,26 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
         onScaleChange(field.name, 'min', parseFloat(scale.min?.toString()));
         onScaleChange(field.name, 'max', parseFloat(scale.max?.toString()));
     }, [field.name, onScaleChange, scale.max, scale.min, invalidRange]);
+
+    const scaleTransOptions = useMemo(() => {
+        return SCALE_TRANS_TYPES.map(
+            option =>
+                ({
+                    ...option,
+                    selected: scale.trans === option.value,
+                }) as RadioGroupOption
+        );
+    }, [scale.trans]);
+
+    const scaleTypeOptions = useMemo(() => {
+        return SCALE_RANGE_TYPES.map(
+            option =>
+                ({
+                    ...option,
+                    selected: scale.type === option.value,
+                }) as RadioGroupOption
+        );
+    }, [scale.type]);
 
     return (
         <div>
@@ -165,13 +185,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                                         <label>Scale</label>
                                         <RadioGroupInput
                                             name="scaleTrans"
-                                            options={SCALE_TRANS_TYPES.map(
-                                                option =>
-                                                    ({
-                                                        ...option,
-                                                        selected: scale.trans === option.value,
-                                                    }) as RadioGroupOption
-                                            )}
+                                            options={scaleTransOptions}
                                             onValueChange={onScaleTransChange}
                                             formsy={false}
                                         />
@@ -180,13 +194,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                                         <label>Range</label>
                                         <RadioGroupInput
                                             name="scaleType"
-                                            options={SCALE_RANGE_TYPES.map(
-                                                option =>
-                                                    ({
-                                                        ...option,
-                                                        selected: scale.type === option.value,
-                                                    }) as RadioGroupOption
-                                            )}
+                                            options={scaleTypeOptions}
                                             onValueChange={onScaleTypeChange}
                                             formsy={false}
                                         />
@@ -220,7 +228,7 @@ export const ChartFieldOption: FC<ChartFieldOptionProps> = memo(props => {
                                 </Popover>
                             }
                         >
-                            <i className="fa fa-gear" />
+                            <span className="fa fa-gear" />
                         </OverlayTrigger>
                     </div>
                 )}
