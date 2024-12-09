@@ -225,5 +225,38 @@ describe('lineage model', () => {
             expect(nodes[childThreeNode.lsid].level).toEqual(-1);
             expect(nodes[childFourNode.lsid].level).toEqual(0);
         });
+
+        it('Issue 51432: special character in sample names result in: SyntaxError: unterminated character class', () => {
+            const childLsid = 'child-lsid';
+            const parentLsid = 'parent-lsid';
+
+            const childNode = LineageNode.create(childLsid, {
+                parents: [{ lsid: parentLsid, name: '&4[0' }],
+                name: '&4[0_1001'
+            });
+
+            const parentNode = LineageNode.create(parentLsid, {
+                children: [{ lsid: childLsid, name: '&4[0_1001' }],
+                name: '&4[0'
+            });
+
+            const result = LineageResult.create({
+                nodes: {
+                    [parentNode.lsid]: parentNode,
+                    [childNode.lsid]: childNode,
+                },
+                seed: childNode.lsid,
+            });
+
+            const { edges, nodes } = generateNodesAndEdges(result);
+
+            expect(Object.keys(edges).length).toEqual(1);
+            expect(Object.keys(nodes).length).toEqual(2);
+
+            expect(nodes[parentNode.lsid].level).toEqual(-1);
+            expect(nodes[parentNode.lsid].label).toEqual('＆4[0');
+            expect(nodes[childNode.lsid].level).toEqual(0);
+            expect(nodes[childNode.lsid].label).toEqual('＆4[0_1001');
+        });
     });
 });

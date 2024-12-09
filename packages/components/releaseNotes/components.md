@@ -7,6 +7,12 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Fix `resolveSampleParentTypes` when `orderedRowIds` is undefined
 - Fix some error message verbiage
 
+### version 6.4.1
+*Released*: 9 December 2024
+- Issue 51432: LKSM: special character not working well on various pages
+  - Warn user about missing quotes when pasting data into editable grid that contains a comma
+  - Replace `&` with a similar unicode character for lineage graph labels display as vis-network doesn't work well with `&`
+
 ### version 6.4.0
 *Released*: 4 December 2024
 - Remove assays.scss
