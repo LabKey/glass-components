@@ -52,14 +52,11 @@
   z-index: -1;
 }
 
-.file-upload__remove--icon {
+.attached-file__remove-icon {
     cursor: pointer;
     font-size: 20px;
     margin-right: 8px;
-}
-
-.file-upload__remove--icon {
-  color: $brand-danger;
+    color: $brand-danger;
 }
 
 .file-upload__is-hover {
@@ -77,12 +74,8 @@
   padding: 8px;
 }
 
-.file-upload--compact-label i, .file-listing-info {
+.file-upload--compact-label i {
   display: inline-block;
-
-  .file-listing-info-light {
-    color: gray;
-  }
 }
 
 .file-upload--is-disabled {
@@ -107,7 +100,7 @@
   color: #116596;
 }
 
-.attached-file--container {
+.attached-file__container {
   margin-top: 5px;
   position: relative;
 }
@@ -119,7 +112,7 @@
   position: relative;
 }
 
-.attached-file--icon {
+.attached-file__icon {
   color: darkgray;
   font-size: 20px;
   margin-right: 7px;
@@ -137,65 +130,12 @@
   cursor: pointer;
 }
 
-.file-listing--header {
-    font-weight: bold;
-}
-
-.file-listing-icon {
-  width: 55px;
-  height: 55px;
-  border-radius: 55px;
-  font-size: 24pt;
-  color: $brand-secondary;
-  line-height: 55px;
-  margin-left: 10px;
-  text-align: center;
-  background-color: $blue-icon-background;
-  vertical-align: middle;
-}
-
-.file-listing-delete {
-  display: inline-block;
-  cursor: pointer;
-
-  .file-listing-delete-icon {
-    font-size: 20px;
-    color: red;
-  }
-
-}
-
-.file-listing-filename {
+.attached-file__filename {
   width: 250px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
-}
-
-.file-listing-icon--container {
-  width: 108px;
-}
-
-.file-listing-canceldel-icon {
-  margin-right: 5px;
-}
-
-.test-loc-file-created-by {
-  padding-right: 5px;
-}
-
-.file-listing-row--container {
-  border: 1px solid lightgray;
-
-  &:before, &:after {
-    content: " ";
-    display: table;
-  }
-
-  &:after {
-    clear: both;
-  }
 }
 
 .file-upload--scroll-footer {
