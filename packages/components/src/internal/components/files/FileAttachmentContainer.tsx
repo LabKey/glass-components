@@ -427,20 +427,22 @@ export class FileAttachmentContainer extends React.PureComponent<Props, State> {
         const { fileNames, isHover, errorMsg, warningMsg } = this.state;
         const hideFileUpload = !allowMultiple && fileNames.length > 0;
         const fileUploadText = 'fileUpload' + (index !== undefined ? index : '');
+        const containerClassName = classNames('file-upload__container', {
+            'file-upload__container--compact': compact,
+            hidden: hideFileUpload,
+            block: !hideFileUpload,
+        });
+        const labelClassName = classNames({
+            'file-upload__label': !compact,
+            'file-upload__label--compact': compact,
+            'file-upload__is-hover': isHover,
+        });
 
         return (
             <>
-                <div
-                    className={classNames('file-upload--container', hideFileUpload ? 'hidden' : 'block', {
-                        'file-upload--container--compact': compact,
-                    })}
-                >
+                <div className={containerClassName}>
                     <label
-                        className={classNames({
-                            'file-upload--label': !compact,
-                            'file-upload--label--compact': compact,
-                            'file-upload__is-hover': isHover,
-                        })}
+                        className={labelClassName}
                         htmlFor={fileUploadText}
                         onDragEnter={this.handleDrag}
                         onDragLeave={this.handleLeave}
@@ -458,7 +460,7 @@ export class FileAttachmentContainer extends React.PureComponent<Props, State> {
                     </label>
                     <input
                         accept={acceptedFormats}
-                        className="file-upload--input"
+                        className="file-upload__input"
                         id={fileUploadText}
                         multiple={allowMultiple}
                         name={fileUploadText}
@@ -468,14 +470,14 @@ export class FileAttachmentContainer extends React.PureComponent<Props, State> {
                     />
                 </div>
 
-                <Alert bsStyle="warning" className={classNames({ 'file-upload--error-message--compact': compact })}>
+                <Alert bsStyle="warning" className={classNames({ 'file-upload__error-message--compact': compact })}>
                     {warningMsg}
                 </Alert>
 
-                <Alert className={classNames({ 'file-upload--error-message--compact': compact })}>{errorMsg}</Alert>
+                <Alert className={classNames({ 'file-upload__error-message--compact': compact })}>{errorMsg}</Alert>
 
                 <div
-                    className={classNames('file-upload--file-entry-listing', {
+                    className={classNames('file-upload__file-entry-listing', {
                         'well well-sm': allowMultiple && fileNames.length,
                     })}
                 >
@@ -484,7 +486,7 @@ export class FileAttachmentContainer extends React.PureComponent<Props, State> {
                     ))}
                 </div>
                 {fileCountSuffix && fileNames.length > 0 && (
-                    <div className="file-upload--scroll-footer">
+                    <div className="file-upload__scroll-footer">
                         {Utils.pluralBasic(fileNames.length, 'file')} {fileCountSuffix}.
                     </div>
                 )}

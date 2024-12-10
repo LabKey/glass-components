@@ -33,7 +33,7 @@ describe('AssayPicker', () => {
         const importTab = document.querySelectorAll('.nav-tabs li a')[2];
         await userEvent.click(importTab);
         expect(document.querySelectorAll('.nav-tabs li')[2].getAttribute('class')).toEqual('active');
-        expect(document.querySelectorAll('.file-upload--container')).toHaveLength(1);
+        expect(document.querySelectorAll('.file-upload__container')).toHaveLength(1);
     });
 
     test('AssayPicker No Import, No Container, Selected Specialty tab, No premium', async () => {
