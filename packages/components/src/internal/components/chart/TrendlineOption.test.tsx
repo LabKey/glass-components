@@ -31,9 +31,9 @@ describe('TrendlineOption', () => {
         await waitFor(() => {
             expect(document.querySelectorAll('.trendline-option')).toHaveLength(0);
         });
-        expect(document.querySelectorAll('.select-input-with-footer')).toHaveLength(0);
+        expect(document.querySelectorAll('.select-input')).toHaveLength(0);
         expect(document.querySelectorAll('option')).toHaveLength(0);
-        expect(document.querySelectorAll('.field-footer-section')).toHaveLength(0);
+        expect(document.querySelectorAll('.field-option-icon')).toHaveLength(0);
         expect(document.querySelectorAll('input[name="trendlineAsymptoteMin"]')).toHaveLength(0);
         expect(document.querySelectorAll('input[name="trendlineAsymptoteMax"]')).toHaveLength(0);
     });
@@ -56,9 +56,9 @@ describe('TrendlineOption', () => {
         });
 
         expect(document.querySelector('label').textContent).toBe('Trendline  ');
-        expect(document.querySelectorAll('.select-input-with-footer')).toHaveLength(1);
+        expect(document.querySelectorAll('.select-input')).toHaveLength(1);
         expect(document.querySelectorAll('.select-input__option')).toHaveLength(0); // none until click below
-        expect(document.querySelectorAll('.field-footer-section')).toHaveLength(0);
+        expect(document.querySelectorAll('.field-option-icon')).toHaveLength(0);
 
         await userEvent.click(document.querySelector('.select-input__indicator'));
         const options = document.querySelectorAll('.select-input__option');
@@ -85,8 +85,8 @@ describe('TrendlineOption', () => {
             expect(document.querySelectorAll('.trendline-option')).toHaveLength(0);
         });
 
-        expect(document.querySelectorAll('.select-input-with-footer')).toHaveLength(0);
-        expect(document.querySelectorAll('.field-footer-section')).toHaveLength(0);
+        expect(document.querySelectorAll('.select-input')).toHaveLength(0);
+        expect(document.querySelectorAll('.field-option-icon')).toHaveLength(0);
     });
 
     test('hidden with x-axis value selected, time', async () => {
@@ -106,8 +106,8 @@ describe('TrendlineOption', () => {
             expect(document.querySelectorAll('.trendline-option')).toHaveLength(0);
         });
 
-        expect(document.querySelectorAll('.select-input-with-footer')).toHaveLength(0);
-        expect(document.querySelectorAll('.field-footer-section')).toHaveLength(0);
+        expect(document.querySelectorAll('.select-input')).toHaveLength(0);
+        expect(document.querySelectorAll('.field-option-icon')).toHaveLength(0);
     });
 
     test('show asymptote min and max', async () => {
@@ -128,12 +128,24 @@ describe('TrendlineOption', () => {
             expect(document.querySelectorAll('.trendline-option')).toHaveLength(1);
         });
 
-        expect(document.querySelectorAll('.select-input-with-footer')).toHaveLength(1);
-        expect(document.querySelectorAll('.field-footer-section')).toHaveLength(1);
-        expect(document.querySelectorAll('input[name="trendlineAsymptoteMin"]')).toHaveLength(1);
+        expect(document.querySelectorAll('.select-input')).toHaveLength(1);
+        expect(document.querySelectorAll('.field-option-icon')).toHaveLength(1);
+
+        await userEvent.click(document.querySelector('.fa-gear'));
+        expect(document.querySelectorAll('input[type="radio"]')).toHaveLength(2);
+
+        await userEvent.click(document.querySelector('input[value="manual"]'));
+        expect(document.querySelectorAll('input[type="number"]')).toHaveLength(2);
         expect(document.querySelector('input[name="trendlineAsymptoteMin"]').getAttribute('value')).toBe('0.1');
-        expect(document.querySelectorAll('input[name="trendlineAsymptoteMax"]')).toHaveLength(1);
         expect(document.querySelector('input[name="trendlineAsymptoteMax"]').getAttribute('value')).toBe('1.0');
+
+        // clicking automatic should hide the inputs and clear values
+        await userEvent.click(document.querySelector('input[value="automatic"]'));
+        expect(document.querySelectorAll('input[type="number"]')).toHaveLength(0);
+        await userEvent.click(document.querySelector('input[value="manual"]'));
+        expect(document.querySelectorAll('input[type="number"]')).toHaveLength(2);
+        expect(document.querySelector('input[name="trendlineAsymptoteMin"]').getAttribute('value')).toBe('');
+        expect(document.querySelector('input[name="trendlineAsymptoteMax"]').getAttribute('value')).toBe('');
     });
 
     test('show asymptote min but not max', async () => {
@@ -154,10 +166,23 @@ describe('TrendlineOption', () => {
             expect(document.querySelectorAll('.trendline-option')).toHaveLength(1);
         });
 
-        expect(document.querySelectorAll('.select-input-with-footer')).toHaveLength(1);
-        expect(document.querySelectorAll('.field-footer-section')).toHaveLength(1);
-        expect(document.querySelectorAll('input[name="trendlineAsymptoteMin"]')).toHaveLength(1);
-        expect(document.querySelector('input[name="trendlineAsymptoteMin"]').getAttribute('value')).toBe('0.1');
+        expect(document.querySelectorAll('.select-input')).toHaveLength(1);
+        expect(document.querySelectorAll('.field-option-icon')).toHaveLength(1);
+
+        await userEvent.click(document.querySelector('.fa-gear'));
+        expect(document.querySelectorAll('input[type="radio"]')).toHaveLength(2);
+
+        await userEvent.click(document.querySelector('input[value="manual"]'));
+        expect(document.querySelectorAll('input[type="number"]')).toHaveLength(1);
         expect(document.querySelectorAll('input[name="trendlineAsymptoteMax"]')).toHaveLength(0);
+        expect(document.querySelector('input[name="trendlineAsymptoteMin"]').getAttribute('value')).toBe('0.1');
+
+        // clicking automatic should hide the inputs and clear values
+        await userEvent.click(document.querySelector('input[value="automatic"]'));
+        expect(document.querySelectorAll('input[type="number"]')).toHaveLength(0);
+        await userEvent.click(document.querySelector('input[value="manual"]'));
+        expect(document.querySelectorAll('input[type="number"]')).toHaveLength(1);
+        expect(document.querySelectorAll('input[name="trendlineAsymptoteMax"]')).toHaveLength(0);
+        expect(document.querySelector('input[name="trendlineAsymptoteMin"]').getAttribute('value')).toBe('');
     });
 });
