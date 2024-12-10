@@ -10,6 +10,7 @@ import React, {
     CSSProperties,
     useMemo,
     PropsWithChildren,
+    useEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -19,7 +20,7 @@ import { usePortalRef } from './hooks';
 import { generateId } from './util/utils';
 
 interface OverlayTriggerState<T extends Element = HTMLDivElement> {
-    onClick: () => void;
+    onClick: (event) => void;
     onMouseEnter: () => void;
     onMouseLeave: () => void;
     portalEl: HTMLElement;
@@ -68,10 +69,40 @@ export function useOverlayTriggerState<T extends Element = HTMLDivElement>(
 
         setShow(false);
     }, [hoverEventsEnabled]);
-    const onClick = useCallback(() => {
-        if (!clickEventEnabled) return;
-        setShow(_show => !_show);
-    }, [clickEventEnabled]);
+
+    const onClick = useCallback(
+        event => {
+            if (!clickEventEnabled) return;
+            const isToggle = event.target === targetRef.current;
+            const insideToggle = portalEl?.contains(event.target);
+            if (isToggle || !insideToggle) {
+                setShow(_show => !_show);
+            }
+        },
+        [clickEventEnabled, portalEl]
+    );
+
+    const onDocumentClick = useCallback(
+        event => {
+            const isToggle = event.target === targetRef.current;
+            const insideToggle = portalEl?.contains(event.target);
+            if (!isToggle && !insideToggle) {
+                setShow(false);
+            }
+        },
+        [portalEl]
+    );
+
+    useEffect(() => {
+        if (clickEventEnabled) {
+            if (show) {
+                document.addEventListener('click', onDocumentClick);
+            }
+            return () => {
+                document.removeEventListener('click', onDocumentClick);
+            };
+        }
+    }, [onDocumentClick, show, clickEventEnabled]);
 
     return {
         onClick,

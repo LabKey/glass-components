@@ -19,13 +19,11 @@ import {
 
 import {
     ChartBuilderModal,
-    ChartFieldInfo,
     ChartTypeInfo,
     getChartBuilderChartConfig,
     getChartBuilderQueryConfig,
     getChartRenderMsg,
     getDefaultBarChartAxisLabel,
-    getSelectOptions,
     MAX_POINT_DISPLAY,
     MAX_ROWS_PREVIEW,
 } from './ChartBuilderModal';
@@ -87,7 +85,8 @@ LABKEY_VIS = {
         queryChartData: () => Promise.resolve({}),
         getAllowableTypes: () => ['int', 'double'],
         isMeasureDimensionMatch: () => true,
-        TRENDLINE_OPTIONS: [{ value: 'option1', label: 'Options 1' }],
+        isNumericType: () => true,
+        TRENDLINE_OPTIONS: [{ value: 'option1', label: 'Options 1', showMin: true, showMax: true }],
     },
 };
 
@@ -119,7 +118,7 @@ const SERVER_CONTEXT = {
 };
 
 describe('ChartBuilderModal', () => {
-    function validate(isNew: boolean, canShare = true, canDelete = false, allowInherit = false) {
+    function validate(isNew: boolean, canShare = true, canDelete = false, allowInherit = false): void {
         expect(document.querySelectorAll('.chart-builder-modal')).toHaveLength(1);
         expect(document.querySelector('.modal-title').textContent).toBe(isNew ? 'Create Chart' : 'Edit Chart');
         expect(document.querySelectorAll('.btn')).toHaveLength(canDelete ? 3 : 2);
@@ -386,6 +385,115 @@ describe('ChartBuilderModal', () => {
         expect(document.querySelectorAll('input')).toHaveLength(8);
         expect(document.querySelector('input[name=y]').getAttribute('value')).toBe('field2');
         expect(document.querySelector('input[name=aggregate-method]').getAttribute('value')).toBe('MEAN');
+        expect(document.querySelectorAll('input[name=trendlineType]')).toHaveLength(0);
+    });
+
+    test('init from line chart with trendline options', async () => {
+        const savedChartModel = {
+            canShare: true,
+            canDelete: true,
+            name: 'SavedChart',
+            reportId: 'reportId',
+            shared: false,
+            visualizationConfig: {
+                chartConfig: {
+                    renderType: 'line_plot',
+                    measures: { x: { name: 'field1' }, y: { name: 'field2' } },
+                    labels: { x: 'Field 1', y: 'Field 2' },
+                    geomOptions: {
+                        trendlineType: 'option1',
+                        trendlineAsymptoteMin: '0.1',
+                        trendlineAsymptoteMax: '1.0',
+                    },
+                },
+                queryConfig: {
+                    schemaName: 'savedSchema',
+                    queryName: 'savedQuery',
+                    viewName: 'savedView',
+                },
+            },
+        } as GenericChartModel;
+
+        renderWithAppContext(
+            <ChartBuilderModal actions={actions} model={model} onHide={jest.fn()} savedChartModel={savedChartModel} />,
+            {
+                serverContext: SERVER_CONTEXT,
+            }
+        );
+
+        validate(false, true, true);
+        expect(document.querySelectorAll('input')).toHaveLength(10);
+        expect(document.querySelector('input[name=x]').getAttribute('value')).toBe('field1');
+        expect(document.querySelector('input[name=y]').getAttribute('value')).toBe('field2');
+        expect(document.querySelectorAll('input[name=aggregate-method]')).toHaveLength(0);
+        expect(document.querySelector('input[name=trendlineType]').getAttribute('value')).toBe('option1');
+        expect(document.querySelectorAll('input[name=trendlineAsymptoteMin]')).toHaveLength(0);
+        expect(document.querySelectorAll('input[name=trendlineAsymptoteMax]')).toHaveLength(0);
+
+        await userEvent.click(document.querySelector('.trendline-option').querySelector('.fa-gear')); // trendline options icon
+        expect(document.querySelector('input[name=trendlineAsymptoteMin]').getAttribute('value')).toBe('0.1');
+        expect(document.querySelector('input[name=trendlineAsymptoteMax]').getAttribute('value')).toBe('1.0');
+    });
+
+    test('init from line chart with axis options', async () => {
+        const savedChartModel = {
+            canShare: true,
+            canDelete: true,
+            name: 'SavedChart',
+            reportId: 'reportId',
+            shared: false,
+            visualizationConfig: {
+                chartConfig: {
+                    renderType: 'line_plot',
+                    measures: { x: { name: 'field1' }, y: { name: 'field2' } },
+                    labels: { x: 'Field 1', y: 'Field 2' },
+                    scales: {
+                        x: { trans: 'linear', type: 'manual', min: 0, max: 100 },
+                        y: { trans: 'log', type: 'automatic' },
+                    },
+                },
+                queryConfig: {
+                    schemaName: 'savedSchema',
+                    queryName: 'savedQuery',
+                    viewName: 'savedView',
+                },
+            },
+        } as GenericChartModel;
+
+        renderWithAppContext(
+            <ChartBuilderModal actions={actions} model={model} onHide={jest.fn()} savedChartModel={savedChartModel} />,
+            {
+                serverContext: SERVER_CONTEXT,
+            }
+        );
+
+        validate(false, true, true);
+        expect(document.querySelectorAll('input')).toHaveLength(10);
+        expect(document.querySelector('input[name=x]').getAttribute('value')).toBe('field1');
+        expect(document.querySelector('input[name=y]').getAttribute('value')).toBe('field2');
+        expect(document.querySelectorAll('input[name=aggregate-method]')).toHaveLength(0);
+        expect(document.querySelectorAll('input[name=trendlineType]')).toHaveLength(1);
+        expect(document.querySelectorAll('.field-option-icon')).toHaveLength(2); // gear icon for x and y axis
+
+        await userEvent.click(document.querySelectorAll('.fa-gear')[0]); // x-axis options icon
+        expect(document.querySelectorAll('.radioinput-label.selected')[0].textContent).toBe('Linear');
+        expect(document.querySelectorAll('input[name=scaleTrans]')[0].hasAttribute('checked')).toBe(true); // linear
+        expect(document.querySelectorAll('input[name=scaleTrans]')[1].hasAttribute('checked')).toBe(false); // log
+        expect(document.querySelectorAll('.radioinput-label.selected')[1].textContent).toBe('Manual');
+        expect(document.querySelector('input[name=scaleMin]').getAttribute('value')).toBe('0');
+        expect(document.querySelector('input[name=scaleMax]').getAttribute('value')).toBe('100');
+
+        await userEvent.click(document.querySelectorAll('.radioinput-label')[2]); // click 'Automatic' to verify clear min/max
+        await userEvent.click(document.querySelectorAll('.radioinput-label')[3]); // click 'Manual'
+        expect(document.querySelector('input[name=scaleMin]').getAttribute('value')).toBe('');
+        expect(document.querySelector('input[name=scaleMax]').getAttribute('value')).toBe('');
+
+        await userEvent.click(document.querySelectorAll('.fa-gear')[0]); // x-axis options icon, click to close
+        await userEvent.click(document.querySelectorAll('.fa-gear')[1]); // y-axis options icon
+        expect(document.querySelectorAll('.radioinput-label.selected')[0].textContent).toBe('Log');
+        expect(document.querySelectorAll('input[name=scaleTrans]')[0].hasAttribute('checked')).toBe(false); // linear
+        expect(document.querySelectorAll('input[name=scaleTrans]')[1].hasAttribute('checked')).toBe(true); // log
+        expect(document.querySelectorAll('.radioinput-label.selected')[1].textContent).toBe('Automatic');
     });
 
     test('canDelete and canShare false', () => {
@@ -453,28 +561,6 @@ describe('getChartRenderMsg', () => {
         expect(getChartRenderMsg(chartConfig, MAX_POINT_DISPLAY + 1, true)).toBe(
             'The number of individual points exceeds 10,000. The data is now grouped by density.'
         );
-    });
-});
-
-describe('getSelectOptions', () => {
-    test('hasMatchingType', () => {
-        LABKEY_VIS.GenericChartHelper = {
-            ...LABKEY_VIS.GenericChartHelper,
-            isMeasureDimensionMatch: () => false,
-        };
-        const field = { name: 'x' } as ChartFieldInfo;
-        const options = getSelectOptions(model, BAR_CHART_TYPE, field);
-        expect(options.length).toBe(2);
-    });
-
-    test('isMeasureDimensionMatch', () => {
-        LABKEY_VIS.GenericChartHelper = {
-            ...LABKEY_VIS.GenericChartHelper,
-            isMeasureDimensionMatch: () => true,
-        };
-        const field = { name: 'x' } as ChartFieldInfo;
-        const options = getSelectOptions(model, BAR_CHART_TYPE, field);
-        expect(options.length).toBe(3);
     });
 });
 
@@ -661,13 +747,13 @@ describe('getChartBuilderChartConfig', () => {
             fields: [{ name: 'x' }, { name: 'y' }],
         } as ChartTypeInfo;
 
-        const fieldValues = {
+        const fieldValues2 = {
             x: { value: 'field1', label: 'Field 1', data: { fieldKey: 'field1' } },
             y: { value: 'field2', label: 'Field 2', data: { fieldKey: 'field2' } },
             'aggregate-method': { value: 'MEAN', name: 'Mean' },
         };
 
-        const config = getChartBuilderChartConfig(boxType, fieldValues, undefined);
+        const config = getChartBuilderChartConfig(boxType, fieldValues2, undefined);
         expect(config.geomOptions.boxFillColor).not.toBe('none');
         expect(config.geomOptions.lineWidth).toBe(1);
         expect(config.geomOptions.opacity).toBe(1.0);
