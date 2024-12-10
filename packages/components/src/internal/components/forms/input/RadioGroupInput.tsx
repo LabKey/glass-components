@@ -102,7 +102,7 @@ const RadioGroupInputImpl: FC<RadioGroupInputProps> = memo(props => {
 
     if (options?.length === 1) {
         return (
-            <div key={options[0].value}>
+            <div key={options[0].value} className="radio-input-wrapper">
                 <input checked hidden name={name} onChange={onValueChange_} type="radio" value={options[0].value} />
             </div>
         );
