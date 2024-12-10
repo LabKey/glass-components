@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.5.0
+*Released*: 10 December 2024
 - Chart builder support for axis layout options
   - OverlayTrigger to only close on "click outside" for triggerType="click"
   - RadioGroupInput to support click on input label to setValue
