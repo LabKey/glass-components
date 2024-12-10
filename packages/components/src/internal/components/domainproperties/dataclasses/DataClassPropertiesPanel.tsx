@@ -47,6 +47,7 @@ interface OwnProps extends BasePropertiesPanelProps {
     allowParentAlias?: boolean;
     appPropertiesOnly?: boolean;
     dataClassAliasCaption?: string;
+    errorMsg?: string;
     headerText?: string;
     helpTopic?: string;
     model: DataClassModel;
@@ -56,7 +57,6 @@ interface OwnProps extends BasePropertiesPanelProps {
     namePreviewsLoading?: boolean;
     nounPlural?: string;
     nounSingular?: string;
-    onAddParentAlias: (id: string, newAlias: IParentAlias) => void;
     onChange: (model: DataClassModel) => void;
     onNameFieldHover?: () => any;
     onParentAliasChange: (id: string, field: string, newValue: any) => void;
@@ -65,7 +65,7 @@ interface OwnProps extends BasePropertiesPanelProps {
     parentOptions: IParentOption[];
     previewName?: string;
     updateDupeParentAliases?: (id: string) => void;
-    errorMsg?: string;
+    onAddParentAlias: (id: string, newAlias: IParentAlias) => void;
 }
 
 type Props = OwnProps & InjectedDomainPropertiesPanelCollapseProps;

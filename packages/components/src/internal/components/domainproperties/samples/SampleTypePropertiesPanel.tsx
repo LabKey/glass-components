@@ -106,13 +106,13 @@ const UniqueIdHelpTip: FC = () => (
 
 // Splitting these out to clarify where they end-up
 interface OwnProps {
-    errorMsg?: string;
     aliquotNamePatternProps?: AliquotNamePatternProps;
     api?: ComponentsAPIWrapper;
     appPropertiesOnly?: boolean;
     dataClassAliasCaption?: string;
     dataClassParentageLabel?: string;
     dataClassTypeCaption?: string;
+    errorMsg?: string;
     headerText?: string;
     helpTopic?: string;
     includeDataClasses?: boolean;
@@ -274,7 +274,7 @@ class SampleTypePropertiesPanelImpl extends PureComponent<Props & InjectedDomain
             namePreviews,
             namePreviewsLoading,
             nameExpressionGenIdProps,
-            errorMsg
+            errorMsg,
         } = this.props;
         const { isValid, containers, prefix, loadingError, sampleTypeCategory } = this.state;
 

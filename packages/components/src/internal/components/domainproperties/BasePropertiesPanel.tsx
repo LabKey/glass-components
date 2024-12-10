@@ -18,13 +18,13 @@ export interface BasePropertiesPanelProps {
 }
 
 interface OwnProps extends PropsWithChildren {
+    errorMsg?: string;
     headerId: string;
     isValid: boolean;
     title: string;
     titlePrefix?: string;
     todoIconHelpMsg?: string;
     updateValidStatus: (model?: any) => void;
-    errorMsg?: string;
 }
 
 type Props = OwnProps & BasePropertiesPanelProps & InjectedDomainPropertiesPanelCollapseProps;
@@ -64,7 +64,7 @@ export class BasePropertiesPanel extends React.PureComponent<Props> {
             children,
             warning,
             todoIconHelpMsg,
-            errorMsg
+            errorMsg,
         } = this.props;
         const isApp_ = isApp();
 
