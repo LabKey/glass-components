@@ -668,6 +668,7 @@ export class SampleTypeDesignerImpl extends React.PureComponent<Props & Injected
                 saveBtnText={saveBtnText}
             >
                 <SampleTypePropertiesPanel
+                    errorMsg={model.domain.getNonFieldException()}
                     api={api}
                     nounSingular={nounSingular}
                     nounPlural={nounPlural}

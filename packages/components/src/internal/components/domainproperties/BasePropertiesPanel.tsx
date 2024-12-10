@@ -24,6 +24,7 @@ interface OwnProps extends PropsWithChildren {
     titlePrefix?: string;
     todoIconHelpMsg?: string;
     updateValidStatus: (model?: any) => void;
+    errorMsg?: string;
 }
 
 type Props = OwnProps & BasePropertiesPanelProps & InjectedDomainPropertiesPanelCollapseProps;
@@ -32,6 +33,7 @@ export class BasePropertiesPanel extends React.PureComponent<Props> {
     static defaultProps = {
         title: 'Properties',
         validate: false,
+        errorMsg: PROPERTIES_PANEL_ERROR_MSG,
     };
 
     componentDidUpdate(prevProps: Props): void {
@@ -62,6 +64,7 @@ export class BasePropertiesPanel extends React.PureComponent<Props> {
             children,
             warning,
             todoIconHelpMsg,
+            errorMsg
         } = this.props;
         const isApp_ = isApp();
 
@@ -88,14 +91,14 @@ export class BasePropertiesPanel extends React.PureComponent<Props> {
                         controlledCollapse={controlledCollapse}
                         panelStatus={panelStatus}
                         isValid={isValid}
-                        iconHelpMsg={PROPERTIES_PANEL_ERROR_MSG}
+                        iconHelpMsg={errorMsg}
                         todoIconHelpMsg={todoIconHelpMsg}
                     />
                     {body}
                 </div>
                 {!isValid && (
                     <div onClick={this.toggleLocalPanel} className={getDomainAlertClasses(collapsed, true, isApp_)}>
-                        <Alert bsStyle="danger">{PROPERTIES_PANEL_ERROR_MSG}</Alert>
+                        <Alert bsStyle="danger">{errorMsg}</Alert>
                     </div>
                 )}
                 {isValid && warning && (

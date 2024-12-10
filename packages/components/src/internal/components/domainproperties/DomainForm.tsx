@@ -1245,7 +1245,7 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
         const styleToolbar =
             !hasFields && !systemFields && (this.shouldShowInferFromFile() || this.shouldShowImportExport());
         const disableExport = !hasFields || fields.filter(f => f.visible).size < 1;
-        const hasException = domain.hasException();
+        const hasFieldException = domain.hasFieldException();
         const isApp_ = isApp();
 
         return (
@@ -1264,8 +1264,8 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
                             todoIconHelpMsg={todoIconHelpMsg}
                             panelStatus={panelStatus}
                             togglePanel={this.togglePanel}
-                            isValid={!hasException}
-                            iconHelpMsg={hasException ? domain.domainException.exception : undefined}
+                            isValid={!hasFieldException}
+                            iconHelpMsg={hasFieldException ? domain.domainException.exception : undefined}
                         >
                             {children}
                         </CollapsiblePanelHeader>
@@ -1407,7 +1407,7 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
                         </div>
                     </Collapsible>
                 </div>
-                {hasException && domain.domainException.severity === SEVERITY_LEVEL_ERROR && (
+                {hasFieldException && domain.domainException.severity === SEVERITY_LEVEL_ERROR && (
                     <div
                         onClick={this.togglePanel}
                         className={getDomainAlertClasses(collapsed, controlledCollapse, isApp_)}

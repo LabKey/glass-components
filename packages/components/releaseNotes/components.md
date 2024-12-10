@@ -1,6 +1,13 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.X
+*Released*: X December 2024
+- Add restrictions on names of domains
+    - Add getFieldException and getNonFieldException method for DomainDesign model
+    - Display Domain Name related error at BasePropertiesPanel instead of at Fields Panel
+    - Update resolveErrorMessage util to handle more scenarios
+
 ### version 6.4.1
 *Released*: 9 December 2024
 - Issue 51432: LKSM: special character not working well on various pages

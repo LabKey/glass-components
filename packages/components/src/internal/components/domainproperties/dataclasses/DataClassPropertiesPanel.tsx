@@ -65,6 +65,7 @@ interface OwnProps extends BasePropertiesPanelProps {
     parentOptions: IParentOption[];
     previewName?: string;
     updateDupeParentAliases?: (id: string) => void;
+    errorMsg?: string;
 }
 
 type Props = OwnProps & InjectedDomainPropertiesPanelCollapseProps;
@@ -153,6 +154,7 @@ export class DataClassPropertiesPanelImpl extends PureComponent<Props, State> {
             onNameFieldHover,
             nameExpressionGenIdProps,
             allowParentAlias,
+            errorMsg,
         } = this.props;
         const { isValid, prefix, loadingError } = this.state;
 
@@ -174,7 +176,8 @@ export class DataClassPropertiesPanelImpl extends PureComponent<Props, State> {
                 headerId={PROPERTIES_HEADER_ID}
                 title={nounSingular + ' Properties'}
                 updateValidStatus={this.updateValidStatus}
-                isValid={isValid}
+                errorMsg={errorMsg}
+                isValid={isValid && !errorMsg}
                 warning={warning}
             >
                 <div className="row margin-bottom">
