@@ -523,6 +523,14 @@ export async function getChosenParentData(
     };
 }
 
+export async function getEntityTypeOptionsWithExclusions(
+    entityDataType: EntityDataType,
+    dataTypeExclusions?: { [key: string]: number[] },
+    containerPath?: string,
+): Promise<Map<string, List<IEntityTypeOption>>> {
+    return getEntityTypeOptions(entityDataType, containerPath, undefined, undefined, undefined, dataTypeExclusions);
+}
+
 // get back a map from the typeListQueryName (e.g., 'SampleSet') and the list of options for that query
 // where the schema field for those options is the typeSchemaName (e.g., 'samples')
 export async function getEntityTypeOptions(
@@ -531,14 +539,15 @@ export async function getEntityTypeOptions(
     containerFilter?: Query.ContainerFilter,
     skipFolderDataExclusion?: boolean,
     requiredParentTypes?: string[],
+    dataTypeExclusions?: { [key: string]: number[] }
 ): Promise<Map<string, List<IEntityTypeOption>>> {
     const { typeListingSchemaQuery, filterArray, instanceSchemaName } = entityDataType;
 
     const filters = [];
 
     if (!skipFolderDataExclusion) {
-        const dataTypeExclusions = getFolderDataExclusion();
-        const exclusions = dataTypeExclusions?.[entityDataType.folderConfigurableDataType];
+        const dataTypeExclusions_ = dataTypeExclusions ?? getFolderDataExclusion();
+        const exclusions = dataTypeExclusions_?.[entityDataType.folderConfigurableDataType];
         if (exclusions) filters.push(Filter.create('RowId', exclusions, Filter.Types.NOT_IN));
     }
 
