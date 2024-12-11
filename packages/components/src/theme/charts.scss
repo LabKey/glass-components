@@ -188,12 +188,12 @@
     min-width: 850px;
 }
 .chart-builder-modal .col-left {
-    height: 575px;
+    height: 560px;
     width: 116px;
     border-right: solid 1px $gray-border-light;
 }
 .chart-builder-modal .col-right {
-    height: 575px;
+    height: 560px;
     width: calc(100% - 116px)
 }
 
@@ -226,12 +226,11 @@
 }
 
 .chart-builder-modal .fields-col {
-    min-height: 185px;
+    min-height: 160px;
     border-left: solid 1px $gray-border-light;
 }
 
-.chart-builder-modal .checkbox-input,
-.chart-builder-modal .checkbox-footer-input {
+.chart-builder-modal .checkbox-input {
     cursor: pointer;
 
     input {
@@ -240,9 +239,6 @@
 }
 .chart-builder-modal .checkbox-input {
     padding-top: 15px;
-}
-.chart-builder-modal .checkbox-footer-input {
-    padding-bottom: 15px;
 }
 
 .chart-builder-modal .select-input-with-footer {
@@ -256,15 +252,39 @@
         color: $text-color;
     }
 }
-.chart-builder-modal .field-footer-input {
+.chart-builder-field-footer-input {
     width: 60px;
     height: 24px;
     display: inline;
     margin: 5px 0 0 5px;
 }
-.chart-builder-modal .field-footer-checkbox {
-    display: inline;
-    margin: 5px 15px 0 5px;
+
+.chart-builder-scale-range-inputs {
+    padding-left: 50px;
+}
+.chart-builder-asymptote-inputs {
+    padding-left: 80px;
+}
+
+.chart-builder-modal .field-option-icon {
+    font-size: 20px;
+    color: $text-muted;
+    cursor: default;
+    padding-top: 5px;
+
+    &:hover {
+        color: $text-color;
+    }
+}
+
+.field-option-radio-group .radio-input-wrapper {
+    display: inline-block;
+    padding-left: 15px;
+
+    .radioinput-label {
+        padding-left: 5px;
+        cursor: default;
+    }
 }
 
 .chart-builder-preview-body {

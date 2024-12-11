@@ -69,3 +69,8 @@ export function createHorizontalBarCountLegendData(
     });
     return legendData;
 }
+
+export const getFieldDataType = (fieldData: Record<string, any>): string => {
+    if (!fieldData) return undefined;
+    return fieldData.displayFieldJsonType || fieldData.jsonType || fieldData.type;
+};

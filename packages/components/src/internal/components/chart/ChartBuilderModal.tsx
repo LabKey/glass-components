@@ -9,8 +9,6 @@ import { Modal } from '../../Modal';
 
 import { SelectInput, SelectInputOption } from '../forms/input/SelectInput';
 
-import { naturalSortByProperty } from '../../../public/sort';
-
 import { LoadingSpinner } from '../base/LoadingSpinner';
 
 import { QueryModel } from '../../../public/QueryModel/QueryModel';
@@ -34,6 +32,8 @@ import { deleteChart, saveChart, SaveReportConfig } from './actions';
 
 import { ChartConfig, ChartQueryConfig, GenericChartModel, TrendlineType } from './models';
 import { TrendlineOption } from './TrendlineOption';
+import { ChartFieldOption } from './ChartFieldOption';
+import { getFieldDataType } from './utils';
 
 interface AggregateFieldInfo {
     name: string;
@@ -99,30 +99,6 @@ export const getChartRenderMsg = (chartConfig: ChartConfig, rowCount: number, is
         msg.push('The data is now grouped by density.');
     }
     return msg.length === 0 ? undefined : msg.join(' ');
-};
-
-export const getSelectOptions = (
-    model: QueryModel,
-    chartType: ChartTypeInfo,
-    field: ChartFieldInfo
-): SelectInputOption[] => {
-    const allowableTypes = LABKEY_VIS.GenericChartHelper.getAllowableTypes(field);
-
-    return model.queryInfo
-        .getDisplayColumns(model.viewName)
-        .filter(col => {
-            const colType = col.displayFieldJsonType || col.jsonType;
-            const hasMatchingType = allowableTypes.indexOf(colType) > -1;
-            const isMeasureDimensionMatch = LABKEY_VIS.GenericChartHelper.isMeasureDimensionMatch(
-                chartType.name,
-                field,
-                col.measure,
-                col.dimension
-            );
-            return hasMatchingType || isMeasureDimensionMatch;
-        })
-        .sort(naturalSortByProperty('caption'))
-        .map(col => ({ label: col.caption, value: col.fieldKey, data: col }));
 };
 
 export const getChartBuilderQueryConfig = (
@@ -221,7 +197,7 @@ export const getChartBuilderChartConfig = (
                 label: fieldConfig.label,
                 queryName: fieldConfig.data.queryName,
                 schemaName: fieldConfig.data.schemaName,
-                type: fieldConfig.data.displayFieldJsonType || fieldConfig.data.jsonType || fieldConfig.data.type,
+                type: getFieldDataType(fieldConfig.data),
             };
 
             // check if the field has an aggregate method (bar chart y-axis only)
@@ -239,6 +215,12 @@ export const getChartBuilderChartConfig = (
             }
         }
     });
+
+    if (fieldValues.scales?.value) {
+        Object.keys(fieldValues.scales.value).forEach(key => {
+            config.scales[key] = { ...fieldValues.scales.value[key] };
+        });
+    }
 
     if (chartType.name === 'line_plot' && fieldValues.trendlineType) {
         const type = fieldValues.trendlineType?.value ?? '';
@@ -343,9 +325,24 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
 
     const onSelectFieldChange = useCallback(
         (key: string, _: never, selectedOption: SelectInputOption) => {
+            // clear / reset trendline option here if x change
+            if (hasTrendlineOption && key === 'x') {
+                onFieldChange('trendlineType', LABKEY_VIS.GenericChartHelper.TRENDLINE_OPTIONS['']);
+            }
+
             onFieldChange(key, selectedOption);
         },
-        [onFieldChange]
+        [onFieldChange, hasTrendlineOption]
+    );
+
+    const onFieldScaleChange = useCallback(
+        (field: string, key: string, value: string | number, reset = false) => {
+            const scales = fieldValues.scales?.value ?? {};
+            if (!scales[field] || reset) scales[field] = { type: 'automatic', trans: 'linear' };
+            if (key) scales[field][key] = value;
+            onFieldChange('scales', { value: scales });
+        },
+        [fieldValues.scales?.value, onFieldChange]
     );
 
     return (
@@ -381,41 +378,31 @@ const ChartTypeQueryForm: FC<ChartTypeQueryFormProps> = memo(props => {
                 </div>
                 <div className="col-xs-4 fields-col">
                     {leftColFields.map(field => (
-                        <div key={field.name}>
-                            <label>
-                                {field.label}
-                                {field.required && ' *'}
-                            </label>
-                            <SelectInput
-                                showLabel={false}
-                                inputClass="col-xs-12"
-                                placeholder="Select a field"
-                                name={field.name}
-                                options={getSelectOptions(model, selectedType, field)}
-                                onChange={onSelectFieldChange}
-                                value={fieldValues[field.name]?.value}
-                            />
-                        </div>
+                        <ChartFieldOption
+                            key={field.name}
+                            field={field}
+                            model={model}
+                            onSelectFieldChange={onSelectFieldChange}
+                            onScaleChange={onFieldScaleChange}
+                            selectedType={selectedType}
+                            fieldValue={fieldValues[field.name]}
+                            scaleValues={fieldValues.scales?.value[field.name]}
+                        />
                     ))}
                 </div>
                 <div className="col-xs-4 fields-col">
                     {rightColFields.map(field => (
                         <Fragment key={field.name}>
-                            <div>
-                                <label>
-                                    {field.label}
-                                    {field.required && ' *'}
-                                </label>
-                                <SelectInput
-                                    showLabel={false}
-                                    inputClass="col-xs-12"
-                                    placeholder="Select a field"
-                                    name={field.name}
-                                    options={getSelectOptions(model, selectedType, field)}
-                                    onChange={onSelectFieldChange}
-                                    value={fieldValues[field.name]?.value}
-                                />
-                            </div>
+                            <ChartFieldOption
+                                key={field.name}
+                                field={field}
+                                model={model}
+                                onSelectFieldChange={onSelectFieldChange}
+                                onScaleChange={onFieldScaleChange}
+                                selectedType={selectedType}
+                                fieldValue={fieldValues[field.name]}
+                                scaleValues={fieldValues.scales?.value[field.name]}
+                            />
                             {selectedType.name === 'bar_chart' && fieldValues.y?.value && (
                                 <div>
                                     <label>
@@ -703,6 +690,11 @@ export const ChartBuilderModal: FC<ChartBuilderModalProps> = memo(({ actions, mo
                     }
                     return result;
                 }, {});
+
+                // handle scales
+                if (chartConfig?.scales) {
+                    fieldValues_['scales'] = { value: { ...chartConfig.scales } };
+                }
 
                 // handle bar chart aggregate method
                 if (measures.y?.aggregate) {
