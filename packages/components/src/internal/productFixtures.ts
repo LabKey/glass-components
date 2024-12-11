@@ -72,7 +72,7 @@ export const TEST_LKS_STARTER_MODULE_CONTEXT = {
     },
 };
 
-export const TEST_LIMS_STARTER_MODULE_CONTEXT = {
+export const TEST_BIO_LIMS_STARTER_MODULE_CONTEXT = {
     biologics: {
         productId: BIOLOGICS_APP_PROPERTIES.productId,
     },
@@ -87,6 +87,32 @@ export const TEST_LIMS_STARTER_MODULE_CONTEXT = {
             ProductFeature.ApiKeys,
             ProductFeature.CalculatedFields,
             ProductFeature.DataChangeCommentRequirement,
+        ],
+    },
+    inventory: {
+        productId: FREEZER_MANAGER_APP_PROPERTIES.productId,
+    },
+    samplemanagement: {
+        productId: SAMPLE_MANAGER_APP_PROPERTIES.productId,
+    },
+};
+
+export const TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT = {
+    biologics: {
+        productId: BIOLOGICS_APP_PROPERTIES.productId,
+    },
+    core: {
+        productFeatures: [
+            ProductFeature.Assay,
+            ProductFeature.ELN,
+            ProductFeature.FreezerManagement,
+            ProductFeature.Folders,
+            ProductFeature.SampleManagement,
+            ProductFeature.Workflow,
+            ProductFeature.ApiKeys,
+            ProductFeature.CalculatedFields,
+            ProductFeature.DataChangeCommentRequirement,
+            ProductFeature.Media,
         ],
     },
     inventory: {

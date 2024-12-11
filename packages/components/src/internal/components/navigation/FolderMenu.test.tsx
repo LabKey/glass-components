@@ -5,7 +5,7 @@ import { TEST_ARCHIVED_FOLDER_CONTAINER, TEST_FOLDER_CONTAINER, TEST_PROJECT_CON
 
 import { TEST_USER_APP_ADMIN, TEST_USER_EDITOR } from '../../userFixtures';
 
-import { TEST_LIMS_STARTER_MODULE_CONTEXT } from '../../productFixtures';
+import { TEST_BIO_LIMS_STARTER_MODULE_CONTEXT } from '../../productFixtures';
 
 import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
@@ -49,7 +49,7 @@ describe('FolderMenu', () => {
         renderWithAppContext(<FolderMenu {...getDefaultProps()} />, {
             serverContext: {
                 user: TEST_USER_APP_ADMIN,
-                moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT,
+                moduleContext: TEST_BIO_LIMS_STARTER_MODULE_CONTEXT,
             },
         });
 
@@ -69,7 +69,7 @@ describe('FolderMenu', () => {
 
     it('with folders, with top level', () => {
         renderWithAppContext(<FolderMenu {...getDefaultProps()} items={[topFolderMenu, childFolderMenu]} />, {
-            serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+            serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_BIO_LIMS_STARTER_MODULE_CONTEXT },
         });
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
@@ -96,7 +96,7 @@ describe('FolderMenu', () => {
                 activeContainerId={TEST_ARCHIVED_FOLDER_CONTAINER.id}
             />,
             {
-                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_BIO_LIMS_STARTER_MODULE_CONTEXT },
             }
         );
 
@@ -135,7 +135,7 @@ describe('FolderMenu', () => {
 
     it('with folders, without top level', () => {
         renderWithAppContext(<FolderMenu {...getDefaultProps()} items={[childFolderMenu]} />, {
-            serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+            serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_BIO_LIMS_STARTER_MODULE_CONTEXT },
         });
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);
@@ -160,7 +160,7 @@ describe('FolderMenu', () => {
                 items={[topFolderMenu, childFolderMenu]}
             />,
             {
-                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+                serverContext: { user: TEST_USER_APP_ADMIN, moduleContext: TEST_BIO_LIMS_STARTER_MODULE_CONTEXT },
             }
         );
 
@@ -181,7 +181,7 @@ describe('FolderMenu', () => {
 
     it('with folders, non admin', () => {
         renderWithAppContext(<FolderMenu {...getDefaultProps()} items={[topFolderMenu, childFolderMenu]} />, {
-            serverContext: { user: TEST_USER_EDITOR, moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT },
+            serverContext: { user: TEST_USER_EDITOR, moduleContext: TEST_BIO_LIMS_STARTER_MODULE_CONTEXT },
         });
 
         expect(document.querySelectorAll('.col-folders')).toHaveLength(1);

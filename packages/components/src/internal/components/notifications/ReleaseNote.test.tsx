@@ -2,7 +2,7 @@ import React from 'react';
 
 import { userEvent } from '@testing-library/user-event';
 
-import { TEST_LIMS_STARTER_MODULE_CONTEXT, TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT } from '../../productFixtures';
+import { TEST_BIO_LIMS_STARTER_MODULE_CONTEXT, TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT } from '../../productFixtures';
 import { FREEZER_MANAGER_APP_PROPERTIES } from '../../app/constants';
 import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
@@ -56,7 +56,7 @@ describe('ReleaseNote', () => {
         renderWithAppContext(<ReleaseNote />, {
             serverContext: {
                 versionString: version,
-                moduleContext: TEST_LIMS_STARTER_MODULE_CONTEXT,
+                moduleContext: TEST_BIO_LIMS_STARTER_MODULE_CONTEXT,
             },
             appContext: {},
         });
