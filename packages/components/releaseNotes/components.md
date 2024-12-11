@@ -1,7 +1,7 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
+### version 6.5.1
 *Released*: 11 December 2024
 - RadioGroupInput fix for formsy input usage
   - need to call setValue on each change of radio selection
