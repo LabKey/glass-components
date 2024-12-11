@@ -9,7 +9,9 @@ Components, models, actions, and utility functions for LabKey applications and p
     - Helper hook that takes a loader method and returns loadingState, value, and error
 - DomainField: Add filterCriteria
 - Render Filter Criteria components in AssayDesignerPanels
-- Add `request` an async wrapper for Ajax.request
+- Add `request` method
+  - `request` is an async wrapper for `Ajax.request` which takes the same config as `Ajax.request` except `success` and
+  `failure` callbacks. Instead of using `success` and `failure` you `await request(config)` and `catch` errors.
 
 ### version 6.7.0
 *Released*: 18 December 2024
