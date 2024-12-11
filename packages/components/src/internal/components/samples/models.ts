@@ -15,7 +15,7 @@ export enum EntityCreationType {
     Aliquots = 'Aliquot',
     Derivatives = 'Derive',
     FromSources = 'From sources',
-    Independents = 'New samples',
+    Independents = 'Independent',
     PooledSamples = 'Pool',
 }
 
