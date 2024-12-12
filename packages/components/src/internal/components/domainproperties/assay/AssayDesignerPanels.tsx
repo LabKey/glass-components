@@ -6,7 +6,9 @@ import { DomainPropertiesAPIWrapper } from '../APIWrapper';
 
 import {
     DomainDesign,
+    DomainField,
     DomainFieldIndexChange,
+    FilterCriteriaMap,
     HeaderRenderer,
     IDomainFormDisplayOptions,
     IFieldChange,
@@ -27,15 +29,16 @@ import { AssayRunDataType } from '../../entities/constants';
 
 import { FolderConfigurableDataType } from '../../entities/models';
 
-import { HitCriteriaModal } from '../../../HitCriteriaModal';
+import { FilterCriteriaModal } from '../../../FilterCriteriaModal';
 
 import { saveAssayDesign } from './actions';
-import { AssayProtocolModel, HitCriteria } from './models';
+import { AssayProtocolModel } from './models';
 import { AssayPropertiesPanel } from './AssayPropertiesPanel';
-import { HitCriteriaContext } from './HitCriteriaContext';
+import { FilterCriteriaContext } from './FilterCriteriaContext';
 
 const PROPERTIES_PANEL_INDEX = 0;
 const DOMAIN_PANEL_INDEX = 1;
+const resultsDomainPredicate = (domain: DomainDesign): boolean => domain.isNameSuffixMatch('Data');
 
 interface AssayDomainFormProps
     extends Omit<InjectedBaseDomainDesignerProps, 'onFinish' | 'setSubmitting' | 'submitting'> {
@@ -106,8 +109,8 @@ const AssayDomainForm: FC<AssayDomainFormProps> = memo(props => {
             domainKindDisplayName: 'assay design',
             hideFilePropertyType,
             hideInferFromFile,
+            showFilterCriteria: isResultsDomain,
             textChoiceLockedForDomain,
-            showHitCriteria: isResultsDomain,
         };
     }, [
         domain,
@@ -329,13 +332,46 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
         this.setState({ modalOpen: false, openTo: undefined });
     };
 
-    saveHitCriteria = (hitCriteria: HitCriteria) => {
+    saveFilterCriteria = (filterCriteria: FilterCriteriaMap) => {
         this.setState(current => {
-            // Note: use protocolModel.set instead of merge so hitCriteria doesn't get converted to an immutable object
+            const protocolModel = current.protocolModel;
+            const resultsIndex = current.protocolModel.domains.findIndex(resultsDomainPredicate);
+            const domains = current.protocolModel.domains;
+            let resultsDomain = domains.find(resultsDomainPredicate);
+            // Clear the existing values first
+            let fields = resultsDomain.fields.map(f => f.set('filterCriteria', []) as DomainField).toList();
+
+            Object.keys(filterCriteria).forEach(fieldName => {
+                console.log('fieldFilterCriteria:', fieldName, filterCriteria[fieldName]);
+                const fieldCriteria = filterCriteria[fieldName];
+                let domainFieldIdx = fields.findIndex(d => d.name === fieldName);
+
+                if (!domainFieldIdx) {
+                    // TODO: error prone a user could create a field named my_field which would result in the incorrect
+                    //  prefix. We'd get my instead of my_field, so we'd never find the field index
+                    const prefix = fieldName.split('_')[0];
+                    domainFieldIdx = fields.findIndex(d => d.name === prefix);
+                }
+
+                if (!domainFieldIdx) return;
+
+                let domainField = fields.get(domainFieldIdx);
+                domainField = domainField.set(
+                    'filterCriteria',
+                    domainField.filterCriteria.concat(fieldCriteria)
+                ) as DomainField;
+                fields = fields.set(domainFieldIdx, domainField);
+            });
+
+            resultsDomain = resultsDomain.set('fields', fields) as DomainDesign;
+
             return {
                 modalOpen: false,
                 openTo: undefined,
-                protocolModel: current.protocolModel.set('hitCriteria', hitCriteria) as AssayProtocolModel,
+                protocolModel: protocolModel.set(
+                    'domains',
+                    protocolModel.domains.set(resultsIndex, resultsDomain)
+                ) as AssayProtocolModel,
             };
         });
     };
@@ -369,9 +405,9 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
         const { modalOpen, openTo, protocolModel } = this.state;
         const isGpat = protocolModel.providerName === GENERAL_ASSAY_PROVIDER_NAME;
 
-        const hitCriteriaState = {
+        const filterCriteriaState = {
             openModal: this.openModal,
-            hitCriteria: protocolModel.hitCriteria,
+            protocolModel,
         };
         const panelStatus = protocolModel.isNew()
             ? getDomainPanelStatus(PROPERTIES_PANEL_INDEX, currentPanelIndex, visitedPanels, firstState)
@@ -389,7 +425,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                 onFinish={this.onFinish}
                 saveBtnText={saveBtnText}
             >
-                <HitCriteriaContext.Provider value={hitCriteriaState}>
+                <FilterCriteriaContext.Provider value={filterCriteriaState}>
                     <AssayPropertiesPanel
                         model={protocolModel}
                         onChange={this.onAssayPropertiesChange}
@@ -429,14 +465,13 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                         );
                     })}
                     {modalOpen && (
-                        <HitCriteriaModal
-                            model={protocolModel}
+                        <FilterCriteriaModal
                             onClose={this.closeModal}
                             openTo={openTo}
-                            onSave={this.saveHitCriteria}
+                            onSave={this.saveFilterCriteria}
                         />
                     )}
-                </HitCriteriaContext.Provider>
+                </FilterCriteriaContext.Provider>
                 {appPropertiesOnly && allowFolderExclusion && (
                     <DataTypeFoldersPanel
                         controlledCollapse

@@ -14,29 +14,13 @@
  * limitations under the License.
  */
 import { List, Record as ImmutableRecord } from 'immutable';
-import { Filter } from '@labkey/api';
 
 import { getServerContext, Utils } from '@labkey/api';
 
-import { DomainDesign, DomainField, FieldErrors } from '../models';
+import { DomainDesign, FieldErrors } from '../models';
 import { AppURL } from '../../../url/AppURL';
 import { getAppHomeFolderPath } from '../../../app/utils';
 import { Container } from '../../base/models/Container';
-
-// HitCriteria should be stored as a Record, where the key is in the form of: propertyId:<number> or fieldKey:<string>
-// We use propertyId:<number> to reference existing fields, and fieldKey:<string> to reference new fields when sending
-// to the server. However, when working locally we always use propertyId:<number> and use fake (negative indexed)
-// propertyIds in order to prevent issues when users re-name new fields.
-export type HitCriteria = Record<string, Filter.IFilter[]>;
-
-// Locally we always want to use the propertyId to handle changes to the field name, but during upload we have to use
-// the field name for new fields.
-export function hitCriteriaKey(field: DomainField, forUpload?: false): string {
-    const useFieldKey = forUpload && field.propertyId < 0;
-    const prefix = useFieldKey ? 'fieldKey' : 'propertyId';
-    const value = useFieldKey ? field.name : field.propertyId;
-    return `${prefix}:${value}`;
-}
 
 // See ExpProtocol.Status in 'platform' repository.
 export enum Status {
@@ -57,7 +41,6 @@ export class AssayProtocolModel extends ImmutableRecord({
     availableMetadataInputFormats: undefined,
     availablePlateTemplates: undefined,
     backgroundUpload: false,
-    hitCriteria: {},
     description: undefined,
     domains: undefined,
     editableResults: false,
@@ -91,7 +74,6 @@ export class AssayProtocolModel extends ImmutableRecord({
     declare availableMetadataInputFormats: {};
     declare availablePlateTemplates: [];
     declare backgroundUpload: boolean;
-    declare hitCriteria: HitCriteria;
     declare description: string;
     declare domains: List<DomainDesign>;
     declare editableResults: boolean;
@@ -158,11 +140,6 @@ export class AssayProtocolModel extends ImmutableRecord({
         // only need to serialize the id and not the autoCopyTargetContainer object
         delete json.autoCopyTargetContainer;
         delete json.exception;
-
-        // TODO: "hitCriteria" have been moved to DomainField and are now called "filterCriteria".
-        // Removing for now so result can be saved without throwing a server error.
-        delete json.hitCriteria;
-
         return json;
     }
 
@@ -185,8 +162,8 @@ export class AssayProtocolModel extends ImmutableRecord({
         return this.isNew()
             ? getAppHomeFolderPath(container)
             : domainContainerId === container.id
-            ? container.path
-            : domainContainerId;
+              ? container.path
+              : domainContainerId;
     }
 
     get domainContainerId(): string {

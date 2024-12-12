@@ -30,7 +30,7 @@ import {
     DetectionMethodsInput,
     EditableResultsInput,
     EditableRunsInput,
-    HitCriteriaInput,
+    FilterCriteriaInput,
     MetadataInputFormatsInput,
     ModuleProvidedScriptsInput,
     NameInput,
@@ -196,7 +196,7 @@ const AssayPropertiesForm: FC<AssayPropertiesFormProps> = memo(props => {
                         )}
                         {model.allowPlateMetadata && <PlateMetadataInput model={model} onChange={onInputChange} />}
 
-                        <HitCriteriaInput model={model} onChange={onInputChange} />
+                        <FilterCriteriaInput model={model} onChange={onInputChange} />
                     </div>
                 </div>
             )}

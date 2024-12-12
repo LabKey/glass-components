@@ -37,8 +37,8 @@ import { resolveErrorMessage } from '../../../util/messaging';
 import { AssayProtocolModel } from './models';
 import { FORM_IDS, SCRIPTS_DIR } from './constants';
 import { getScriptEngineForExtension, getValidPublishTargets } from './actions';
-import { useHitCriteriaContext } from './HitCriteriaContext';
-import { HitCriteriaRenderer } from '../../../HitCriteriaRenderer';
+import { useFilterCriteriaContext } from './FilterCriteriaContext';
+import { FilterCriteriaRenderer } from '../../../FilterCriteriaRenderer';
 
 interface AssayPropertiesInputProps extends DomainFieldLabelProps, PropsWithChildren {
     colSize?: number;
@@ -726,8 +726,8 @@ export const PlateMetadataInput: FC<InputProps> = memo(props => (
     </AssayPropertiesInput>
 ));
 
-export const HitCriteriaInput: FC<InputProps> = memo(({ model }) => {
-    const context = useHitCriteriaContext();
+export const FilterCriteriaInput: FC<InputProps> = memo(({ model }) => {
+    const context = useFilterCriteriaContext();
 
     if (!context) return null;
 
@@ -746,7 +746,7 @@ export const HitCriteriaInput: FC<InputProps> = memo(({ model }) => {
                     </button>
                 </div>
                 <div className="hit-selection-criteria-input__criteria">
-                    <HitCriteriaRenderer criteria={context.hitCriteria} fields={domain.fields.toArray()} />
+                    <FilterCriteriaRenderer fields={domain.fields.toArray()} />
                 </div>
             </div>
         </AssayPropertiesInput>

@@ -874,6 +874,32 @@ export interface IDomainField {
     visible: boolean;
 }
 
+/**
+ * name: Name of the field this criterion applies to. May not be the same as the field these filterCriteria are
+ * specified on. See "referencePropertyId".
+ *
+ * op: The filter operation for this criterion. This is accepted as the shorthand URL parameter for a LABKEY.Filter
+ * (e.g. "gt", "lt", etc.).
+ *
+ * propertyId: The propertyId of the property (field) this criterion applies to. When saving, if this is not specified,
+ * then it will be presumed to be the propertyId of the field on which the "filterCriteria" are specified.
+ *
+ * referencePropertyId: Reference property (field) identifier. All filter criterion specified on a field are referenced
+ * to the field, however, the criterion may be filtering against a different field. This makes it easier to determine
+ * which field a criterion is related to.
+ *
+ * value: The value of the filter. When saving the value can be a string, number, or boolean.The server always persists
+ * the value as a string. When retrieved the value will be a string.
+ */
+export interface FilterCriteria {
+    name: string;
+    op: string;
+    propertyId: number;
+    referencePropertyId: number;
+    value: string | number | boolean;
+}
+export type FilterCriteriaMap = Record<number, FilterCriteria[]>;
+
 export class DomainField
     extends ImmutableRecord({
         conceptURI: undefined,
@@ -885,6 +911,7 @@ export class DomainField
         description: undefined,
         dimension: undefined,
         excludeFromShifting: false,
+        filterCriteria: [],
         format: undefined,
         hidden: false,
         importAliases: undefined,
@@ -945,6 +972,7 @@ export class DomainField
     declare description?: string;
     declare dimension?: boolean;
     declare excludeFromShifting?: boolean;
+    declare filterCriteria?: FilterCriteria[];
     declare format?: string;
     declare hidden?: boolean;
     declare importAliases?: string;
@@ -2065,7 +2093,7 @@ export interface IDomainFormDisplayOptions {
     phiLevelDisabled?: boolean;
     retainReservedFields?: boolean;
     showScannableOption?: boolean;
-    showHitCriteria?: boolean;
+    showFilterCriteria?: boolean;
     textChoiceLockedForDomain?: boolean;
     textChoiceLockedSqlFragment?: string;
 }

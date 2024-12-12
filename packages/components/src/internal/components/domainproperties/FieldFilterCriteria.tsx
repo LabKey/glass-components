@@ -1,20 +1,20 @@
 import React, { FC, memo, useCallback, useMemo } from 'react';
 
+import { FilterCriteriaRenderer } from '../../FilterCriteriaRenderer';
+
 import { SectionHeading } from './SectionHeading';
 import { DomainField } from './models';
-import { useHitCriteriaContext } from './assay/HitCriteriaContext';
-import { HitCriteriaRenderer } from '../../HitCriteriaRenderer';
+import { useFilterCriteriaContext } from './assay/FilterCriteriaContext';
 
 interface Props {
     field: DomainField;
 }
 
-export const FieldHitCriteria: FC<Props> = memo(({ field }) => {
+export const FieldFilterCriteria: FC<Props> = memo(({ field }) => {
     const { propertyId } = field;
-    const context = useHitCriteriaContext();
+    const context = useFilterCriteriaContext();
     const openModal = context?.openModal;
     const onClick = useCallback(() => openModal(propertyId), [openModal, propertyId]);
-    // TODO: need to get the generate field (STD Dev, Median, etc)
     const fields = useMemo(() => [field], [field]);
 
     if (!context) return null;
@@ -34,9 +34,10 @@ export const FieldHitCriteria: FC<Props> = memo(({ field }) => {
                     </button>
                 </div>
                 <div className="col-xs-10">
-                    <HitCriteriaRenderer criteria={context.hitCriteria} fields={fields} />
+                    <FilterCriteriaRenderer fields={fields} />
                 </div>
             </div>
         </div>
     );
 });
+FieldFilterCriteria.displayName = 'FieldFilterCriteria';
