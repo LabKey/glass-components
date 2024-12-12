@@ -112,7 +112,6 @@ interface OwnProps {
     dataClassAliasCaption?: string;
     dataClassParentageLabel?: string;
     dataClassTypeCaption?: string;
-    errorMsg?: string;
     headerText?: string;
     helpTopic?: string;
     includeDataClasses?: boolean;
@@ -274,7 +273,6 @@ class SampleTypePropertiesPanelImpl extends PureComponent<Props & InjectedDomain
             namePreviews,
             namePreviewsLoading,
             nameExpressionGenIdProps,
-            errorMsg,
         } = this.props;
         const { isValid, containers, prefix, loadingError, sampleTypeCategory } = this.state;
 
@@ -320,8 +318,7 @@ class SampleTypePropertiesPanelImpl extends PureComponent<Props & InjectedDomain
                 headerId={PROPERTIES_HEADER_ID}
                 title="Sample Type Properties"
                 updateValidStatus={this.updateValidStatus}
-                errorMsg={errorMsg}
-                isValid={isValid && !errorMsg}
+                isValid={isValid}
                 warning={warning}
             >
                 <div className="row margin-bottom">

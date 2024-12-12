@@ -4,8 +4,6 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version 6.X
 *Released*: X December 2024
 - Add restrictions on names of domains
-    - Add getFieldException and getNonFieldException method for DomainDesign model
-    - Display Domain Name related error at BasePropertiesPanel instead of at Fields Panel
     - Update resolveErrorMessage util to handle more scenarios
 
 ### version 6.5.0

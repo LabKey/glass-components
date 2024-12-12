@@ -47,7 +47,6 @@ interface OwnProps extends BasePropertiesPanelProps {
     allowParentAlias?: boolean;
     appPropertiesOnly?: boolean;
     dataClassAliasCaption?: string;
-    errorMsg?: string;
     headerText?: string;
     helpTopic?: string;
     model: DataClassModel;
@@ -154,7 +153,6 @@ export class DataClassPropertiesPanelImpl extends PureComponent<Props, State> {
             onNameFieldHover,
             nameExpressionGenIdProps,
             allowParentAlias,
-            errorMsg,
         } = this.props;
         const { isValid, prefix, loadingError } = this.state;
 
@@ -176,8 +174,7 @@ export class DataClassPropertiesPanelImpl extends PureComponent<Props, State> {
                 headerId={PROPERTIES_HEADER_ID}
                 title={nounSingular + ' Properties'}
                 updateValidStatus={this.updateValidStatus}
-                errorMsg={errorMsg}
-                isValid={isValid && !errorMsg}
+                isValid={isValid}
                 warning={warning}
             >
                 <div className="row margin-bottom">

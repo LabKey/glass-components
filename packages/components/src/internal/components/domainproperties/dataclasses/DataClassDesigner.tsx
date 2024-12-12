@@ -481,7 +481,6 @@ export class DataClassDesignerImpl extends PureComponent<DataClassDesignerProps,
                 saveBtnText={saveBtnText}
             >
                 <DataClassPropertiesPanel
-                    errorMsg={model.domain.getNonFieldException()}
                     nounSingular={nounSingular}
                     nounPlural={nounPlural}
                     nameExpressionInfoUrl={nameExpressionInfoUrl}
