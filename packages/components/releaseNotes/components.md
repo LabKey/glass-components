@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Parent type selector updates for adding and removing from EditableGrid
+  - AddEntityButton asButton property to allow for icon only version
+
 ### version 6.5.2
 *Released*: 12 December 2024
 - Update `EntityIdCreationModel` with `selectionContainerId`
