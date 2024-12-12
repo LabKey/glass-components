@@ -168,16 +168,12 @@ export function resolveErrorMessage(
             const fieldname =
                 startIndex > -1 ? 'for field ' + lcMessage.substring(startIndex + 13, lcMessage.indexOf(')=(')) : '';
             return `Unable to create a unique constraint ${fieldname} because duplicate values already exists in the data.`;
-        } else if (
-            errorMsg.indexOf('Invalid SampleSet name.') >= 0 ||
-            errorMsg.indexOf('Invalid DataClass name.') >= 0
-        ) {
-            errorMsg = errorMsg.replace(
-                'Domain',
-                errorMsg.indexOf('Invalid SampleSet name.') >= 0 ? 'Sample type' : 'Source type'
-            );
-            errorMsg = errorMsg.replace('Invalid SampleSet name.', 'Invalid sample type name.');
-            return errorMsg.replace('Invalid DataClass name.', 'Invalid source type name.');
+        } else if (errorMsg.indexOf('Invalid SampleSet name "') >= 0) {
+            return errorMsg.replace('. Domain', '. Sample type').replace('Invalid SampleSet name "', 'Invalid sample type name "');
+        } else if (errorMsg.indexOf('Invalid DataClass name "') >= 0) {
+            return errorMsg.replace('. Domain', '. Source type').replace('Invalid DataClass name "', 'Invalid source type name "');
+        } else if (errorMsg.indexOf('Invalid Assay Design name "') >= 0) {
+            return errorMsg.replace('. Domain', '. Assay Design');
         } else if (errorMsg.indexOf('ERROR: invalid byte sequence for encoding') > -1) {
             if (errorMsg.indexOf('0x00') > 0)
                 return verbPresent === 'import'
