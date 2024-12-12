@@ -96,16 +96,6 @@ export class EntityParentType extends Record({
         return new EntityParentType(values);
     }
 
-    createColumnName() {
-        const parentInputType = this.getInputType();
-        if (parentInputType === QueryColumn.ALIQUOTED_FROM) return QueryColumn.ALIQUOTED_FROM;
-
-        const formattedQueryName = capitalizeFirstChar(this.query);
-        // Issue 33653: query name is case-sensitive for some data inputs (sample parents), so leave it
-        // capitalized here and we lower it where needed
-        return [parentInputType, formattedQueryName].join('/');
-    }
-
     getInputType(): string {
         if (this.schema === SCHEMAS.DATA_CLASSES.SCHEMA) return QueryColumn.DATA_INPUTS;
         return this.isAliquotParent ? QueryColumn.ALIQUOTED_FROM : QueryColumn.MATERIAL_INPUTS;
@@ -146,7 +136,7 @@ export class EntityParentType extends Record({
             caption: this.isAliquotParent ? QueryColumn.ALIQUOTED_FROM_CAPTION : formattedQueryName + captionSuffix,
             description: this.isAliquotParent
                 ? 'The parent sample of the aliquot'
-                : 'Contains optional parent entity for this ' + formattedQueryName,
+                : 'Contains ' + formattedQueryName + ' parent entities.',
             fieldKeyArray: [parentColName],
             fieldKey: parentColName,
             lookup: new QueryLookup({

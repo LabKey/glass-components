@@ -65,6 +65,10 @@
 .grid-panel__menu-toggle {
     color: $light-gray;
     font-size: 12px;
+
+    span {
+        vertical-align: middle;
+    }
 }
 
 .grid-panel__search-form {

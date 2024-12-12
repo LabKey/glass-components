@@ -49,6 +49,7 @@
   position: relative;
   padding: 0 9px;
   font-weight: bold;
+  vertical-align: bottom;
 
     input:not([type=checkbox]) {
         width: 100%
@@ -169,6 +170,11 @@
 
 .editable-grid-buttons {
     margin-bottom: 15px;
+}
+
+.editable-grid-buttons div {
+    display: inline-block;
+    vertical-align: top;
 }
 
 .editable-grid-buttons__action-buttons button {

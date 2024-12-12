@@ -295,16 +295,14 @@ export interface BulkAddQueryInfoFormProps extends QueryInfoFormProps {
 export interface SharedEditableGridProps {
     activeEditTab?: EditableGridTabs;
     addControlProps?: Partial<AddRowsControlProps>;
+    additionalButtons?: ReactNode;
     allowAdd?: boolean;
     allowBulkAdd?: boolean;
     allowBulkRemove?: boolean;
     allowBulkUpdate?: boolean;
     allowSelection?: boolean;
     bulkAddProps?: Partial<BulkAddQueryInfoFormProps>;
-    bulkAddText?: string;
-    bulkRemoveText?: string;
     bulkUpdateProps?: Partial<BulkUpdateQueryInfoFormProps>;
-    bulkUpdateText?: string;
     containerFilter?: Query.ContainerFilter;
     containerPath?: string;
     disabled?: boolean;
@@ -383,9 +381,6 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
             nounPlural: 'Rows',
             nounSingular: 'Row',
         },
-        bulkAddText: 'Bulk Add',
-        bulkRemoveText: 'Delete Rows',
-        bulkUpdateText: 'Bulk Update',
         fixedHeight: true,
         lockLeftOnScroll: true,
         disabled: false,
@@ -1425,66 +1420,64 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
 
     renderTopControls = (): ReactNode => {
         const {
+            additionalButtons,
             addControlProps,
             allowAdd,
             allowBulkAdd,
             allowBulkRemove,
             allowBulkUpdate,
-            bulkAddText,
-            bulkRemoveText,
-            bulkUpdateText,
             editorModel,
             isSubmitting,
             maxRows,
             showAsTab,
         } = this.props;
-        const nounPlural = addControlProps?.nounPlural ?? 'rows';
         const showAddOnTop = allowAdd && this.getControlsPlacement() !== 'bottom';
+        if (!showAddOnTop && !allowBulkAdd && !allowBulkRemove && !allowBulkUpdate && !additionalButtons) return null;
+
+        const nounPlural = addControlProps?.nounPlural ?? 'rows';
         const invalidSel = this.state.selected.size === 0;
         const canAddRows = !isSubmitting && editorModel.rowCount < maxRows;
         const addTitle = canAddRows
-            ? 'Add multiple ' + nounPlural + ' with the same values'
+            ? 'Add multiple ' + nounPlural + ' with the same values.'
             : 'The grid contains the maximum number of ' + nounPlural + '.';
-        const actionButtonClassNames = classNames('editable-grid-buttons__action-buttons', {
-            'col-sm-9': showAddOnTop,
-            'col-sm-12': !showAddOnTop,
-        });
-
         return (
             <div className="row editable-grid-buttons">
-                {showAddOnTop && <div className="col-sm-3">{this.renderAddRowsControl('top')}</div>}
-                <div className={actionButtonClassNames}>
-                    {!showAsTab && allowBulkAdd && (
-                        <button
-                            className="bulk-add-button btn btn-default"
-                            disabled={!canAddRows}
-                            onClick={this.toggleBulkAdd}
-                            title={addTitle}
-                            type="button"
-                        >
-                            {bulkAddText}
-                        </button>
-                    )}
-                    {!showAsTab && allowBulkUpdate && (
-                        <button
-                            className="bulk-update-button btn btn-default"
-                            disabled={invalidSel}
-                            onClick={this.toggleBulkUpdate}
-                            type="button"
-                        >
-                            {bulkUpdateText}
-                        </button>
-                    )}
-                    {allowBulkRemove && (
-                        <button
-                            className="bulk-remove-button btn btn-default"
-                            disabled={invalidSel}
-                            onClick={this.removeSelected}
-                            type="button"
-                        >
-                            {bulkRemoveText}
-                        </button>
-                    )}
+                <div className="col-sm-12">
+                    {showAddOnTop && <div className="margin-right">{this.renderAddRowsControl('top')}</div>}
+                    <div className="editable-grid-buttons__action-buttons">
+                        {!showAsTab && allowBulkAdd && (
+                            <button
+                                className="bulk-add-button btn btn-default"
+                                disabled={!canAddRows}
+                                onClick={this.toggleBulkAdd}
+                                title={addTitle}
+                                type="button"
+                            >
+                                Bulk Add
+                            </button>
+                        )}
+                        {!showAsTab && allowBulkUpdate && (
+                            <button
+                                className="bulk-update-button btn btn-default"
+                                disabled={invalidSel}
+                                onClick={this.toggleBulkUpdate}
+                                type="button"
+                            >
+                                Edit in Bulk
+                            </button>
+                        )}
+                        {allowBulkRemove && (
+                            <button
+                                className="bulk-remove-button btn btn-default"
+                                disabled={invalidSel}
+                                onClick={this.removeSelected}
+                                type="button"
+                            >
+                                Delete
+                            </button>
+                        )}
+                    </div>
+                    {additionalButtons}
                 </div>
             </div>
         );
