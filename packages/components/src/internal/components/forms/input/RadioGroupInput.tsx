@@ -74,16 +74,11 @@ const RadioGroupInputImpl: FC<RadioGroupInputProps> = memo(props => {
     const selected = useMemo(() => options?.find(option => option.selected), [options]);
     const [selectedValue, setSelectedValue] = useState<string>(selected?.value);
 
-    useEffect(
-        () => {
-            if (selected?.value && formsy) {
-                setValue?.(selected.value);
-            }
-        },
-        [
-            /* constructor */
-        ]
-    );
+    useEffect(() => {
+        if (selectedValue && formsy) {
+            setValue?.(selectedValue);
+        }
+    }, [formsy, selectedValue, setValue]);
 
     const onSetValue = useCallback(
         (value: string): void => {
