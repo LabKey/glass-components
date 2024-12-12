@@ -47,6 +47,8 @@ import { LabelHelpTip } from '../base/LabelHelpTip';
 
 import { LabelOverlay } from '../forms/LabelOverlay';
 
+import { DropdownAnchor, MenuItem } from '../../dropdowns';
+
 import {
     addRows,
     addRowsPerPivotValue,
@@ -921,12 +923,14 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
     };
 
     renderColumnHeader = (col: GridColumn, metadataKey: string): React.ReactNode => {
+        const { editorModel } = this.props;
         const label = col.title;
         const qColumn: QueryColumn = col.raw;
         const req = !!qColumn?.required;
-        const metadata = this.props.editorModel.getColumnMetadata(metadataKey);
+        const metadata = editorModel.getColumnMetadata(metadataKey);
         const showOverlayFromMetadata = !!metadata?.toolTip;
         const showLabelOverlay = !showOverlayFromMetadata && qColumn?.hasHelpTipData;
+
         // TODO should be able to just use LabelOverlay here since it can handle an alternate tooltip renderer
         return (
             <>
@@ -943,6 +947,17 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                 )}
                 {showLabelOverlay && (
                     <LabelOverlay column={qColumn} label={metadata?.caption} placement="bottom" required={req} />
+                )}
+                {metadata?.onRemoveColumn && (
+                    <DropdownAnchor
+                        asAnchor={false}
+                        className="grid-panel__menu-toggle pull-right"
+                        title={<i className="fa fa-chevron-circle-down" />}
+                        pullRight
+                    >
+                        {/*TODO fix IntelliJ error below*/}
+                        <MenuItem onClick={() => metadata.onRemoveColumn(qColumn)}>Remove Column</MenuItem>
+                    </DropdownAnchor>
                 )}
             </>
         );
