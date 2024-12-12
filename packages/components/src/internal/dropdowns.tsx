@@ -25,7 +25,7 @@ const DROPDOWN_MENU_CLASS = 'dropdown-menu';
  * There are a few narrow cases where clicking on something in a dropdown menu will trigger a click event on the actual
  * <ul> element. This handler cancels the event if the user triggers such an event.
  */
-function handleMenuClick(event: MouseEvent<HTMLUListElement>) {
+function handleMenuClick(event: MouseEvent<HTMLUListElement>): void {
     const target = event.target as HTMLElement;
 
     if (target.classList.contains(DROPDOWN_MENU_CLASS)) {
@@ -73,6 +73,7 @@ function useToggleState<T extends HTMLElement>(): ToggleState<T> {
 }
 
 interface DropdownAnchorProps extends PropsWithChildren {
+    asAnchor?: boolean;
     className?: string;
     label?: string;
     pullRight?: boolean;
@@ -83,28 +84,32 @@ interface DropdownAnchorProps extends PropsWithChildren {
  * See docs in docs/dropdowns.md
  */
 export const DropdownAnchor: FC<DropdownAnchorProps> = props => {
-    const { children, label, pullRight, title } = props;
+    const { children, label, pullRight, title, asAnchor = true } = props;
     const id = useMemo(() => generateId('dropdown-anchor-'), []);
     const { onClick, open, toggleRef } = useToggleState<HTMLAnchorElement>();
     const className = classNames('lk-dropdown', 'dropdown', props.className, { open });
     const menuClassName = classNames(DROPDOWN_MENU_CLASS, { 'dropdown-menu-right': pullRight });
 
+    const elemProps = {
+        'aria-haspopup': true,
+        'aria-expanded': open,
+        className: 'dropdown-toggle',
+        id,
+        onClick,
+        ref: toggleRef,
+        role: 'button',
+        title: label,
+    };
+
     return (
         <div className={className}>
-            <a
-                aria-haspopup="true"
-                aria-expanded={open}
-                className="dropdown-toggle"
-                href="#"
-                id={id}
-                onClick={onClick}
-                ref={toggleRef}
-                role="button"
-                title={label}
-            >
-                {title}
-                <span className="caret" />
-            </a>
+            {asAnchor && (
+                <a {...elemProps} href="#">
+                    {title}
+                    <span className="caret" />
+                </a>
+            )}
+            {!asAnchor && <span {...elemProps}>{title}</span>}
 
             <ul className={menuClassName} onClick={handleMenuClick}>
                 {children}

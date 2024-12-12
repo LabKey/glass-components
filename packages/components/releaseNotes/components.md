@@ -5,6 +5,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD
 - Parent type selector updates for adding and removing from EditableGrid
   - AddEntityButton asButton property to allow for icon only version
+  - DropdownAnchor asAnchor property to allow for version without `<a>` tag and href
 
 ### version 6.5.2
 *Released*: 12 December 2024
