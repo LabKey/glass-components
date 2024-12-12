@@ -17,6 +17,7 @@ import { immerable, produce } from 'immer';
 
 import { AssayDefinitionModel } from '../../AssayDefinitionModel';
 import { LoadingState } from '../../../public/LoadingState';
+import { IDomainField } from '../domainproperties/models';
 
 export class AssayUploadResultModel {
     [immerable] = true;
@@ -83,3 +84,5 @@ export class AssayStateModel {
         });
     }
 }
+
+export type FilterCriteriaColumns = Record<string, IDomainField[]>;
