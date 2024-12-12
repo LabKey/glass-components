@@ -33,7 +33,7 @@ import { decodePart, encodePart, getSchemaQuery, resolveKey, SchemaQuery } from 
 import { insertColumnFilter, Operation, QueryColumn, QueryLookup } from './public/QueryColumn';
 import { QuerySort } from './public/QuerySort';
 import { LastActionStatus, MessageLevel } from './internal/LastActionStatus';
-import { InferDomainResponse, inferDomainFromFile } from './public/InferDomainResponse';
+import { inferDomainFromFile, InferDomainResponse } from './public/InferDomainResponse';
 import { ViewInfo } from './internal/ViewInfo';
 import { QueryInfo, QueryInfoStatus } from './public/QueryInfo';
 import { SchemaDetails } from './internal/SchemaDetails';
@@ -58,7 +58,6 @@ import {
     blurActiveElement,
     capitalizeFirstChar,
     caseInsensitive,
-    getValuesSummary,
     debounce,
     devToolsActive,
     downloadAttachment,
@@ -66,6 +65,7 @@ import {
     generateId,
     getDisambiguatedSelectInputOptions,
     getValueFromRow,
+    getValuesSummary,
     handleFileInputChange,
     handleRequestFailure,
     isImage,
@@ -73,8 +73,8 @@ import {
     isIntegerInRange,
     isNonNegativeFloat,
     isNonNegativeInteger,
-    parseScientificInt,
     parseCsvString,
+    parseScientificInt,
     quoteValueWithDelimiters,
     toggleDevTools,
     uncapitalizeFirstChar,
@@ -140,28 +140,28 @@ import {
 } from './internal/components/notifications/NotificationsContext';
 import { DisableableAnchor } from './internal/components/base/DisableableAnchor';
 import {
+    DateFormatType,
     formatDate,
     formatDateTime,
     fromDate,
     fromNow,
     generateNameWithTimestamp,
     getContainerFormats,
+    getDateFNSDateFormat,
     getDateFormat,
     getDateTimeFormat,
+    getDateTimeInputOptions,
+    getDateTimeSettingFormat,
+    getDateTimeSettingWarning,
+    getNonStandardFormatWarning,
     getParsedRelativeDateStr,
     getTimeFormat,
     isDateBetween,
     isDateTimeInPast,
     isRelativeDateFilterValue,
-    parseDate,
-    getNonStandardFormatWarning,
-    getDateFNSDateFormat,
-    getDateTimeInputOptions,
-    splitDateTimeFormat,
-    DateFormatType,
-    getDateTimeSettingWarning,
     joinDateTimeFormat,
-    getDateTimeSettingFormat,
+    parseDate,
+    splitDateTimeFormat,
 } from './internal/util/Date';
 import { SVGIcon, Theme } from './internal/components/base/SVGIcon';
 import { CreatedModified } from './internal/components/base/CreatedModified';
@@ -245,7 +245,7 @@ import {
     NOT_IN_EXP_DESCENDANTS_OF_FILTER_TYPE,
     registerFilterType,
 } from './internal/query/filter';
-import { selectRows, getSelectedRows } from './internal/query/selectRows';
+import { getSelectedRows, selectRows } from './internal/query/selectRows';
 import { flattenBrowseDataTreeResponse, loadReports } from './internal/query/reports';
 import {
     AssayUploadTabs,
@@ -253,8 +253,8 @@ import {
     EXPORT_TYPES,
     GRID_CHECKBOX_OPTIONS,
     IMPORT_DATA_FORM_TYPES,
-    MAX_SELECTION_ACTION_ROWS,
     MAX_EDITABLE_GRID_ROWS,
+    MAX_SELECTION_ACTION_ROWS,
     NO_UPDATES_MESSAGE,
     PIPELINE_JOB_NOTIFICATION_EVENT,
     PIPELINE_JOB_NOTIFICATION_EVENT_ERROR,
@@ -267,16 +267,16 @@ import { ActionMapper, URL_MAPPERS, URLResolver, URLService } from './internal/u
 import {
     DATA_IMPORT_TOPIC,
     DATE_FORMATS_TOPIC,
+    getFolderDateTimeHelp,
     getHelpLink,
     HELP_LINK_REFERRER,
     HelpLink,
     JavaDocsLink,
     SAMPLE_IMPORT_TOPIC,
-    getFolderDateTimeHelp,
 } from './internal/util/helpLinks';
 import { ExperimentRunResolver, ListResolver } from './internal/url/AppURLResolver';
 import { NOT_ANY_FILTER_TYPE } from './internal/url/NotAnyFilterType';
-import { genCellKey, parseCellKey, incrementRowCountMetric } from './internal/components/editable/utils';
+import { genCellKey, incrementRowCountMetric, parseCellKey } from './internal/components/editable/utils';
 import { EditableGrid, EditableGridTabs } from './internal/components/editable/EditableGrid';
 
 import { EditableGridLoaderFromSelection } from './internal/components/editable/EditableGridLoaderFromSelection';
@@ -327,9 +327,9 @@ import { DetailPanelHeader } from './internal/components/forms/detail/DetailPane
 import { resolveDetailRenderer } from './internal/components/forms/detail/DetailDisplay';
 import { useDataChangeCommentsRequired } from './internal/components/forms/input/useDataChangeCommentsRequired';
 import {
+    InputRenderContext,
     registerInputRenderer,
     registerInputRenderers,
-    InputRenderContext,
 } from './internal/components/forms/input/InputRenderFactory';
 import { Help } from './internal/components/forms/input/Help';
 
@@ -511,10 +511,10 @@ import {
     getOperationConfirmationData,
     getOrderedSelectedMappedKeysFromQueryModel,
     getParentTypeDataForLineage,
+    getSampleIdentifyingFieldGridData,
     getSampleOperationConfirmationData,
     saveOrderedSnapshotSelection,
     updateCellValuesForSampleIds,
-    getSampleIdentifyingFieldGridData,
 } from './internal/components/entities/actions';
 import {
     AssayResultDataType,
@@ -526,31 +526,31 @@ import {
     ParentEntityLineageColumns,
     ParentEntityRequiredColumns,
     SAMPLE_SET_IMPORT_PREFIX,
-    SamplePropertyDataType,
     SampleParentDataType,
+    SamplePropertyDataType,
     SampleTypeDataType,
 } from './internal/components/entities/constants';
 import { getModuleCustomLabels } from './internal/components/labels/actions';
 import {
+    getCellKeyColumnMap,
     getEntityDescription,
     getEntityNoun,
     getInitialParentChoices,
     getJobCreationHref,
+    getSampleIdCellKey,
     getUniqueIdColumnMetadata,
     isDataClassEntity,
     isSampleEntity,
-    sampleDeleteDependencyText,
-    getSampleIdCellKey,
     SAMPLE_ID_FIELD_KEY,
-    getCellKeyColumnMap,
+    sampleDeleteDependencyText,
     updateCellKeySampleIdMap,
 } from './internal/components/entities/utils';
 import {
     ALIQUOT_CREATION,
     DERIVATIVE_CREATION,
+    EntityCreationType,
     INDEPENDENT_SAMPLE_CREATION,
     POOLED_SAMPLE_CREATION,
-    EntityCreationType,
 } from './internal/components/samples/models';
 import { DEFAULT_ALIQUOT_NAMING_PATTERN, SampleTypeModel } from './internal/components/domainproperties/samples/models';
 
@@ -565,11 +565,11 @@ import { AuditDetailsModel, TimelineEventModel } from './internal/components/aud
 import {
     ASSAY_AUDIT_QUERY,
     AUDIT_EVENT_TYPE_PARAM,
+    CONTAINER_AUDIT_QUERY,
     DATACLASS_DATA_UPDATE_AUDIT_QUERY,
     EXPERIMENT_AUDIT_EVENT,
     GROUP_AUDIT_QUERY,
     INVENTORY_AUDIT_QUERY,
-    CONTAINER_AUDIT_QUERY,
     QUERY_UPDATE_AUDIT_QUERY,
     SAMPLE_TIMELINE_AUDIT_QUERY,
     SAMPLE_TYPE_AUDIT_QUERY,
@@ -633,7 +633,7 @@ import {
 } from './internal/test/testHelpers';
 import { renderWithAppContext } from './internal/test/reactTestLibraryHelpers';
 import { flattenValuesFromRow, QueryModel } from './public/QueryModel/QueryModel';
-import { includedColumnsForCustomizationFilter, getExpandQueryInfo } from './public/QueryModel/CustomizeGridViewModal';
+import { getExpandQueryInfo, includedColumnsForCustomizationFilter } from './public/QueryModel/CustomizeGridViewModal';
 import { withQueryModels } from './public/QueryModel/withQueryModels';
 import { GridPanel, GridPanelWithModel } from './public/QueryModel/GridPanel';
 import { TabbedGridPanel } from './public/QueryModel/TabbedGridPanel';
@@ -701,21 +701,19 @@ import { AppReducers, ProductMenuReducers, ServerNotificationReducers } from './
 
 import {
     biologicsIsPrimaryApp,
-    limsIsPrimaryApp,
     CloseEventCode,
     freezerManagerIsCurrentApp,
     getAppHomeFolderId,
     getAppHomeFolderPath,
+    getArchivedFolders,
     getCurrentAppProperties,
     getCurrentProductName,
-    getPrimaryAppProperties,
-    getArchivedFolders,
     getFolderAssayDesignExclusion,
     getFolderDataClassExclusion,
     getFolderDataExclusion,
-    setFolderDataExclusion,
-    getProjectPath,
     getFolderSampleTypeExclusion,
+    getPrimaryAppProperties,
+    getProjectPath,
     hasModule,
     hasPremiumModule,
     hasProductFolders,
@@ -729,6 +727,7 @@ import {
     isAssayQCEnabled,
     isAssayRequestsEnabled,
     isBiologicsEnabled,
+    isDataChangeCommentRequirementFeatureEnabled,
     isELNEnabled,
     isExperimentAliasEnabled,
     isFreezerManagementEnabled,
@@ -748,7 +747,8 @@ import {
     isSharedContainer,
     isSourceTypeEnabled,
     isWorkflowEnabled,
-    isDataChangeCommentRequirementFeatureEnabled,
+    limsIsPrimaryApp,
+    setFolderDataExclusion,
     setProductFolders,
     useMenuSectionConfigs,
     userCanDeletePublicPicklists,
@@ -794,11 +794,11 @@ import {
 import {
     createTestProjectAppContextAdmin,
     createTestProjectAppContextNonAdmin,
+    TEST_ARCHIVED_FOLDER_CONTAINER,
     TEST_FOLDER_CONTAINER,
     TEST_FOLDER_CONTAINER_ADMIN,
     TEST_FOLDER_OTHER_CONTAINER,
     TEST_FOLDER_OTHER_CONTAINER_ADMIN,
-    TEST_ARCHIVED_FOLDER_CONTAINER,
     TEST_PROJECT,
     TEST_PROJECT_CONTAINER,
     TEST_PROJECT_CONTAINER_ADMIN,
@@ -863,7 +863,8 @@ import { ThreadBlock } from './internal/announcements/ThreadBlock';
 import { ThreadEditor } from './internal/announcements/ThreadEditor';
 import { useNotAuthorized, useNotFound, usePortalRef } from './internal/hooks';
 import {
-    TEST_LIMS_STARTER_MODULE_CONTEXT,
+    TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT,
+    TEST_BIO_LIMS_STARTER_MODULE_CONTEXT,
     TEST_LKS_STARTER_MODULE_CONTEXT,
     TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT,
     TEST_LKSM_STARTER_AND_WORKFLOW_MODULE_CONTEXT,
@@ -1058,7 +1059,8 @@ const App = {
     TEST_USER_STORAGE_EDITOR,
     TEST_USER_QC_ANALYST,
     TEST_USER_WORKFLOW_EDITOR,
-    TEST_LIMS_STARTER_MODULE_CONTEXT,
+    TEST_BIO_LIMS_STARTER_MODULE_CONTEXT,
+    TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT,
     TEST_LKS_STARTER_MODULE_CONTEXT,
     TEST_LKSM_STARTER_MODULE_CONTEXT,
     TEST_LKSM_STARTER_AND_WORKFLOW_MODULE_CONTEXT,

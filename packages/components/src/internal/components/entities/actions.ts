@@ -300,7 +300,9 @@ function resolveSampleParentTypes(
                 schema: 'samples',
                 query: sampleType?.toLowerCase(),
                 label: sampleType,
-                value: List<DisplayObject>(data.sort(_getEntitySort(orderedRowIds))),
+                value: orderedRowIds
+                    ? List<DisplayObject>(data.sort(_getEntitySort(orderedRowIds)))
+                    : List<DisplayObject>(data),
                 isAliquotParent,
                 required: isAliquotParent,
             })
@@ -317,6 +319,7 @@ function resolveSampleParentTypes(
  * assumes parents from a single data type.
  * @param initialParents
  * @param selectionKey the key for the parent selection
+ * @param selectionContainerId the entityId of the container associated with selectionKey
  * @param isSnapshotSelection whether this selection key is a snapshot selection or not
  * @param creationType
  * @param isItemSamples
@@ -325,7 +328,8 @@ function resolveSampleParentTypes(
 async function initParents(
     initialParents: string[],
     selectionKey: string,
-    isSnapshotSelection,
+    selectionContainerId: string,
+    isSnapshotSelection: boolean,
     creationType?: EntityCreationType,
     isItemSamples?: boolean,
     targetQueryName?: string
@@ -334,7 +338,7 @@ async function initParents(
 
     if (selectionKey) {
         const { schemaQuery } = SchemaQuery.parseSelectionKey(selectionKey);
-        const selectionResponse = await getSelected(selectionKey, isSnapshotSelection);
+        const selectionResponse = await getSelected(selectionKey, isSnapshotSelection, undefined, undefined, selectionContainerId);
 
         const insertPermissionContainers = await getContainersForPermission(PermissionTypes.Insert);
 
@@ -471,11 +475,12 @@ export async function getChosenParentData(
 
     if (allowParents) {
         const parentSchemaNames = parentEntityDataTypes.keySeq();
-        const { creationType, originalParents, selectionKey, isSnapshotSelection } = model;
+        const { creationType, originalParents, selectionKey, isSnapshotSelection, selectionContainerId } = model;
 
         const chosenParents = await initParents(
             originalParents,
             selectionKey,
+            selectionContainerId,
             isSnapshotSelection,
             creationType,
             isItemSamples,
@@ -518,6 +523,14 @@ export async function getChosenParentData(
     };
 }
 
+export async function getEntityTypeOptionsWithExclusions(
+    entityDataType: EntityDataType,
+    dataTypeExclusions?: { [key: string]: number[] },
+    containerPath?: string,
+): Promise<Map<string, List<IEntityTypeOption>>> {
+    return getEntityTypeOptions(entityDataType, containerPath, undefined, undefined, undefined, dataTypeExclusions);
+}
+
 // get back a map from the typeListQueryName (e.g., 'SampleSet') and the list of options for that query
 // where the schema field for those options is the typeSchemaName (e.g., 'samples')
 export async function getEntityTypeOptions(
@@ -526,14 +539,15 @@ export async function getEntityTypeOptions(
     containerFilter?: Query.ContainerFilter,
     skipFolderDataExclusion?: boolean,
     requiredParentTypes?: string[],
+    dataTypeExclusions?: { [key: string]: number[] }
 ): Promise<Map<string, List<IEntityTypeOption>>> {
     const { typeListingSchemaQuery, filterArray, instanceSchemaName } = entityDataType;
 
     const filters = [];
 
     if (!skipFolderDataExclusion) {
-        const dataTypeExclusions = getFolderDataExclusion();
-        const exclusions = dataTypeExclusions?.[entityDataType.folderConfigurableDataType];
+        const dataTypeExclusions_ = dataTypeExclusions ?? getFolderDataExclusion();
+        const exclusions = dataTypeExclusions_?.[entityDataType.folderConfigurableDataType];
         if (exclusions) filters.push(Filter.create('RowId', exclusions, Filter.Types.NOT_IN));
     }
 
