@@ -11,10 +11,10 @@ import { DomainField, FilterCriteria, FilterCriteriaMap, IDomainField } from './
 import { useLoadableState } from './useLoadableState';
 import { LoadingSpinner } from './components/base/LoadingSpinner';
 import { ChoicesListItem } from './components/base/ChoicesListItem';
-import { useFilterCriteriaContext } from './components/domainproperties/assay/FilterCriteriaContext';
 import { FilterExpressionView } from './components/search/FilterExpressionView';
 import { useAppContext } from './AppContext';
 import { FilterCriteriaColumns } from './components/assay/models';
+import { AssayProtocolModel } from './components/domainproperties/assay/models';
 
 /**
  * openTo: The propertyId of the domain field you want to open the modal to
@@ -23,11 +23,11 @@ interface Props {
     onClose: () => void;
     onSave: (filterCriteria: FilterCriteriaMap) => void;
     openTo?: number;
+    protocolModel: AssayProtocolModel;
 }
 
-export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo }) => {
+export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, protocolModel }) => {
     const { api } = useAppContext();
-    const { protocolModel } = useFilterCriteriaContext();
     const domain = useMemo(
         () => protocolModel.domains.find(domain => domain.isNameSuffixMatch('Data')),
         [protocolModel.domains]

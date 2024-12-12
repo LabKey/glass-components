@@ -405,10 +405,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
         const { modalOpen, openTo, protocolModel } = this.state;
         const isGpat = protocolModel.providerName === GENERAL_ASSAY_PROVIDER_NAME;
 
-        const filterCriteriaState = {
-            openModal: this.openModal,
-            protocolModel,
-        };
+        const filterCriteriaState = { openModal: this.openModal };
         const panelStatus = protocolModel.isNew()
             ? getDomainPanelStatus(PROPERTIES_PANEL_INDEX, currentPanelIndex, visitedPanels, firstState)
             : 'COMPLETE';
@@ -469,6 +466,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                             onClose={this.closeModal}
                             openTo={openTo}
                             onSave={this.saveFilterCriteria}
+                            protocolModel={protocolModel}
                         />
                     )}
                 </FilterCriteriaContext.Provider>
