@@ -6,6 +6,11 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Add restrictions on names of domains
     - Update resolveErrorMessage util to handle more scenarios
 
+### version 6.5.1
+*Released*: 11 December 2024
+- RadioGroupInput fix for formsy input usage
+  - need to call setValue on each change of radio selection
+
 ### version 6.5.0
 *Released*: 10 December 2024
 - Chart builder support for axis layout options
