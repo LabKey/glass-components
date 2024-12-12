@@ -96,7 +96,7 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                 return {
                     ...current,
                     [domainField.name]: newFilters.map(filter => ({
-                        name: domainField.name.indexOf('_') > -1 ? domainField.name : '', // FIXME: HACK
+                        name: domainField.name,
                         op: filter.getFilterType().getURLSuffix(),
                         // propertyId: domainField.propertyId,
                         propertyId: undefined, // TODO: this results in an error for computed fields
