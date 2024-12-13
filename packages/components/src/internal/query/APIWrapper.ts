@@ -5,10 +5,13 @@ import { QueryInfo } from '../../public/QueryInfo';
 import {
     DataTypeEntity,
     EntityDataType,
-    IEntityTypeOption,
     FolderConfigurableDataType,
+    IEntityTypeOption,
 } from '../components/entities/models';
-import { getEntityTypeOptions, getFolderConfigurableEntityTypeOptions } from '../components/entities/actions';
+import {
+    getEntityTypeOptionsWithExclusions,
+    getFolderConfigurableEntityTypeOptions,
+} from '../components/entities/actions';
 import { getDataTypeFolderDataCount, getFolderDataTypeDataCount } from '../components/folder/actions';
 
 import {
@@ -25,8 +28,8 @@ import {
     ReplaceSelectedOptions,
     saveGridView,
     saveSessionView,
-    SelectResponse,
     SelectionResponse,
+    SelectResponse,
     setSelected,
     setSnapshotSelections,
 } from '../actions';
@@ -73,6 +76,7 @@ export interface QueryAPIWrapper {
     getDefaultVisibleColumns: (options: GetQueryDetailsOptions) => Promise<QueryColumn[]>;
     getEntityTypeOptions: (
         entityDataType: EntityDataType,
+        dataTypeExclusions?: { [key: string]: number[] },
         containerPath?: string
     ) => Promise<Map<string, List<IEntityTypeOption>>>;
     getFolderConfigurableEntityTypeOptions: (
@@ -160,7 +164,7 @@ export class QueryServerAPIWrapper implements QueryAPIWrapper {
     deleteRowsByContainer = deleteRowsByContainer;
     deleteView = deleteView;
     getDataTypeFolderDataCount = getDataTypeFolderDataCount;
-    getEntityTypeOptions = getEntityTypeOptions;
+    getEntityTypeOptions = getEntityTypeOptionsWithExclusions;
     getGridViews = getGridViews;
     getFolderConfigurableEntityTypeOptions = getFolderConfigurableEntityTypeOptions;
     getFolderDataTypeDataCount = getFolderDataTypeDataCount;

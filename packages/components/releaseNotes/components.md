@@ -6,6 +6,12 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Add restrictions on names of domains
     - Update resolveErrorMessage util to handle more scenarios
 
+### version 6.5.2
+*Released*: 12 December 2024
+- Update `EntityIdCreationModel` with `selectionContainerId`
+- Fix `resolveSampleParentTypes` when `orderedRowIds` is undefined
+- Fix some error message verbiage
+
 ### version 6.5.1
 *Released*: 11 December 2024
 - RadioGroupInput fix for formsy input usage
