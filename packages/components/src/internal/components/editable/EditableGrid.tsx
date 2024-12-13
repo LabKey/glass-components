@@ -72,6 +72,7 @@ import { AddRowsControl, AddRowsControlProps, PlacementType } from './Controls';
 
 import { CellMessage, EditableColumnMetadata, EditorModel, EditorModelProps, ValueDescriptor } from './models';
 import { computeRangeChange, genCellKey, getValidatedEditableGridValue, parseCellKey } from './utils';
+import { RemoveColumnMenuItem } from './RemoveColumnMenuItem';
 
 function anyCell(values: List<ValueDescriptor>): boolean {
     return true;
@@ -950,8 +951,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                         title={<i className="fa fa-chevron-circle-down" />}
                         pullRight
                     >
-                        {/*TODO fix IntelliJ error below*/}
-                        <MenuItem onClick={() => metadata.onRemoveColumn(qColumn)}>Remove Column</MenuItem>
+                        <RemoveColumnMenuItem column={qColumn} onClick={metadata.onRemoveColumn} />
                     </DropdownAnchor>
                 )}
             </>
