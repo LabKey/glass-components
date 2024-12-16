@@ -1,12 +1,11 @@
 import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
 import { List } from 'immutable';
+
+import { render } from '@testing-library/react';
 
 import { FREEZERS_KEY, MEDIA_KEY, NOTEBOOKS_KEY, WORKFLOW_KEY } from '../../app/constants';
 
 import { Container } from '../base/models/Container';
-
-import { Alert } from '../base/Alert';
 
 import { MenuSectionModel } from '../navigation/model';
 
@@ -15,7 +14,6 @@ import {
     parseProductMenuSectionResponse,
     ProductSectionsDrawerImpl,
 } from './ProductSectionsDrawer';
-import { ProductClickableItem } from './ProductClickableItem';
 import { ProductModel, ProductSectionModel } from './models';
 
 const TEST_SECTIONS = [
@@ -34,28 +32,25 @@ const DEFAULT_PROPS = {
 };
 
 describe('ProductSectionsDrawer', () => {
-    function validate(wrapper: ReactWrapper, count: number, hasError = false) {
-        expect(wrapper.find('.menu-transition-left')).toHaveLength(!hasError ? 1 : 0);
-        expect(wrapper.find(ProductClickableItem)).toHaveLength(count);
-        expect(wrapper.find(Alert)).toHaveLength(hasError ? 1 : 0);
+    function validate(count: number, hasError = false) {
+        expect(document.querySelectorAll('.menu-transition-left')).toHaveLength(!hasError ? 1 : 0);
+        expect(document.querySelectorAll('.clickable-item')).toHaveLength(count);
+        expect(document.querySelectorAll('.alert')).toHaveLength(hasError ? 1 : 0);
     }
 
     test('error', () => {
-        const wrapper = mount(<ProductSectionsDrawerImpl {...DEFAULT_PROPS} error="Test error" />);
-        validate(wrapper, 0, true);
-        expect(wrapper.find(Alert).text()).toBe('Test error');
-        wrapper.unmount();
+        render(<ProductSectionsDrawerImpl {...DEFAULT_PROPS} error="Test error" />);
+        validate(0, true);
+        expect(document.querySelector('.alert').textContent).toBe('Test error');
     });
 
     test('with sections', () => {
-        const wrapper = mount(<ProductSectionsDrawerImpl {...DEFAULT_PROPS} sections={TEST_SECTIONS} />);
-        validate(wrapper, TEST_SECTIONS.length, false);
+        render(<ProductSectionsDrawerImpl {...DEFAULT_PROPS} sections={TEST_SECTIONS} />);
+        validate(TEST_SECTIONS.length, false);
         TEST_SECTIONS.forEach((section, index) => {
-            const item = wrapper.find(ProductClickableItem).at(index);
-            expect(item.prop('id')).toBe(section.key);
-            expect(item.text()).toBe(section.label);
+            const item = document.querySelectorAll('.clickable-item')[index];
+            expect(item.textContent).toBe(section.label);
         });
-        wrapper.unmount();
     });
 
     test('getProductSectionUrl', () => {

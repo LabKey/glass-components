@@ -39,7 +39,7 @@ export function getPicklistsForInsert(): Promise<Picklist[]> {
                 const dataKey = resolveKey(schemaName, queryName);
                 const data = models[dataKey];
                 const picklists = [];
-                orderedModels[dataKey].forEach(id => {
+                orderedModels[dataKey]?.forEach(id => {
                     picklists.push(Picklist.create(data[id]));
                 });
                 resolve(picklists);
