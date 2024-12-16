@@ -84,11 +84,12 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
         () => protocolModel.domains.find(domain => domain.isNameSuffixMatch('Data')),
         [protocolModel.domains]
     );
+
     const [filterCriteria, setFilterCriteria] = useState<FilterCriteriaMap>(() => {
         return domain.fields.reduce((result, field) => {
-            if (field.filterCriteria) result[field.propertyId] = [...field.filterCriteria];
+            if (field.filterCriteria) result.set(field.propertyId, [...field.filterCriteria]);
             return result;
-        }, {} as FilterCriteriaMap);
+        }, new Map<number, FilterCriteria[]>());
     });
     const loader = useMemo(
         () => fieldLoaderFactory(protocolId, container, domain, api.assay.getFilterCriteriaColumns),
@@ -110,9 +111,9 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                 // Use the referencePropertyId if it exists, because all filterCriteria are stored on the parent field
                 const sourcePropertyId = filterCriteriaField.referencePropertyId ?? filterCriteriaField.propertyId;
                 // Remove the existing filter criteria for the filterCriteriaField
-                const existingValues = current[sourcePropertyId].filter(
-                    value => value.propertyId !== filterCriteriaField.propertyId
-                );
+                const existingValues = current
+                    .get(sourcePropertyId)
+                    .filter(value => value.propertyId !== filterCriteriaField.propertyId);
                 const newValues = newFilters.map(filter => ({
                     name: filterCriteriaField.name,
                     op: filter.getFilterType().getURLSuffix(),
@@ -120,10 +121,9 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                     referencePropertyId: filterCriteriaField.referencePropertyId,
                     value: filter.getValue(),
                 }));
-                return {
-                    ...current,
-                    [sourcePropertyId]: existingValues.concat(newValues),
-                };
+                const updated = new Map(current);
+                updated.set(sourcePropertyId, existingValues.concat(newValues));
+                return updated;
             });
         },
         [filterCriteriaFields, selectedFieldId]
@@ -137,10 +137,10 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
         if (!filterCriteriaField) return undefined;
 
         const sourcePropertyId = filterCriteriaField.referencePropertyId ?? filterCriteriaField.propertyId;
-        const filters = filterCriteria[sourcePropertyId].filter(
-            value => value.propertyId === filterCriteriaField.propertyId
-        );
-        return filters.map(fc => Filter.create(fc.name, fc.value, Filter.Types[fc.op.toUpperCase()]));
+        return filterCriteria
+            .get(sourcePropertyId)
+            .filter(value => value.propertyId === filterCriteriaField.propertyId)
+            .map(fc => Filter.create(fc.name, fc.value, Filter.Types[fc.op.toUpperCase()]));
     }, [filterCriteriaFields, filterCriteria, selectedFieldId]);
 
     const currentColumn: QueryColumn = useMemo(() => {

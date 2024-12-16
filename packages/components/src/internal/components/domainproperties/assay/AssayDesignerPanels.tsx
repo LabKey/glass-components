@@ -341,9 +341,8 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
             // Clear the existing values first
             let fields = resultsDomain.fields.map(f => f.set('filterCriteria', []) as DomainField).toList();
 
-            Object.keys(filterCriteria).forEach(propertyId => {
-                const fieldCriteria = filterCriteria[propertyId];
-                const domainFieldIdx = fields.findIndex(d => d.propertyId === parseInt(propertyId, 10));
+            filterCriteria.forEach((fieldCriteria, propertyId) => {
+                const domainFieldIdx = fields.findIndex(d => d.propertyId === propertyId);
 
                 if (!domainFieldIdx) {
                     console.warn(`Unable to find domain field with property id ${propertyId}`);

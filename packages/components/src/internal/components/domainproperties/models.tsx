@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fromJS, List, Map, Record as ImmutableRecord } from 'immutable';
+import { fromJS, List, Map as ImmutableMap, Record as ImmutableRecord } from 'immutable';
 import { ActionURL, Domain, getServerContext, Utils } from '@labkey/api';
 import React, { ReactNode } from 'react';
 
@@ -356,8 +356,8 @@ export class DomainDesign
         return this.getInvalidFields().size > 0;
     }
 
-    getInvalidFields(): Map<number, DomainField> {
-        let invalid = Map<number, DomainField>();
+    getInvalidFields(): ImmutableMap<number, DomainField> {
+        let invalid = ImmutableMap<number, DomainField>();
 
         for (let i = 0; i < this.fields.size; i++) {
             const field = this.fields.get(i);
@@ -445,7 +445,7 @@ export class DomainDesign
                 fieldSerial.selected = field.selected;
                 fieldSerial.visible = field.visible;
 
-                return Map(
+                return ImmutableMap(
                     Object.keys(fieldSerial).map(key => {
                         const rawVal = fieldSerial[key];
                         const valueType = typeof rawVal;
@@ -895,10 +895,11 @@ export interface FilterCriteria {
     name: string;
     op: string;
     propertyId: number;
-    referencePropertyId: number;
+    referencePropertyId?: number;
     value: string | number | boolean;
 }
-export type FilterCriteriaMap = Record<number, FilterCriteria[]>;
+// Note: this is a regular Javascript Map, not an Immutable Map
+export type FilterCriteriaMap = Map<number, FilterCriteria[]>;
 
 export class DomainField
     extends ImmutableRecord({
@@ -1203,6 +1204,13 @@ export class DomainField
         if (df.scale && (isNaN(df.scale) || df.scale > MAX_TEXT_LENGTH)) {
             json.scale = UNLIMITED_TEXT_LENGTH;
         }
+
+        // Strip out the propertyIds used on the filterCrtieria if they are for new fields (which are negative indexed)
+        json.filterCriteria = json.filterCriteria.map(fc => ({
+            ...fc,
+            propertyId: fc.propertyId < 0 ? undefined : fc.propertyId,
+            referencePropertyId: fc.referencePropertyId < 0 ? undefined : fc.referencePropertyId,
+        }));
 
         // remove non-serializable fields
         delete json.dataType;
@@ -1903,7 +1911,7 @@ export class DomainException
         return this.errors.find(error => !error.get('fieldName') && !error.get('propertyId'))?.get('message');
     }
 
-    static clientValidationExceptions(exception: string, fields: Map<number, DomainField>): DomainException {
+    static clientValidationExceptions(exception: string, fields: ImmutableMap<number, DomainField>): DomainException {
         let fieldErrors = List<DomainFieldError>();
 
         fields.forEach((field, index) => {
@@ -2124,17 +2132,17 @@ export class DomainDetails extends ImmutableRecord({
     namePreviews: undefined,
 }) {
     declare domainDesign: DomainDesign;
-    declare options: Map<string, any>;
+    declare options: ImmutableMap<string, any>;
     declare domainKindName: string;
     declare nameReadOnly?: boolean;
     declare namePreviews?: string[];
 
-    static create(rawDesign: Map<string, any> = Map(), domainKindType: string = Domain.KINDS.UNKNOWN): DomainDetails {
+    static create(rawDesign: ImmutableMap<string, any> = ImmutableMap(), domainKindType: string = Domain.KINDS.UNKNOWN): DomainDetails {
         let design;
         if (rawDesign) {
             const domainDesign = DomainDesign.create(rawDesign.get('domainDesign'));
             const domainKindName = rawDesign.get('domainKindName', domainKindType);
-            const options = Map(rawDesign.get('options'));
+            const options = ImmutableMap(rawDesign.get('options'));
             const nameReadOnly = rawDesign.get('nameReadOnly');
             const namePreviews = rawDesign.get('namePreviews');
             design = new DomainDetails({ domainDesign, domainKindName, options, nameReadOnly, namePreviews });
@@ -2142,7 +2150,7 @@ export class DomainDetails extends ImmutableRecord({
             design = new DomainDetails({
                 domainDesign: DomainDesign.create(null),
                 domainKindName: domainKindType,
-                options: Map<string, any>(),
+                options: ImmutableMap<string, any>(),
             });
         }
 
