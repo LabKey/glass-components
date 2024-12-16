@@ -96,8 +96,6 @@ export class DatePickerInputImpl extends DisableableInput<DatePickerInputImplPro
 
         this.toggleDisabled = this.toggleDisabled.bind(this);
 
-        // Issue 45140: formsy values will hold on to the initial formatted value until onChange.
-        // We instead need to make sure that the unformatted Date value is passed to setValue if there is an init value.
         const initDate = this.getInitDate(props);
         if (props.formsy && !props.queryColumn.isTimeColumn) {
             props.setValue?.(initDate ? this.getFormsyValue(initDate) : undefined);
@@ -120,6 +118,17 @@ export class DatePickerInputImpl extends DisableableInput<DatePickerInputImplPro
             invalidStart,
             relativeInputValue: undefined,
         };
+    }
+
+    // Issue 51864: Calling formsy setValue() from component constructor can result in infinite recursion.
+    // Instead, we wait until the component has mounted and then call setValue() to not interrupt initialization.
+    componentDidMount(): void {
+        // Issue 45140: formsy values will hold on to the initial formatted value until onChange.
+        // We instead need to make sure that the unformatted Date value is passed to setValue if there is an init value.
+        if (this.props.formsy && !this.props.queryColumn.isTimeColumn) {
+            const { selectedDate } = this.state;
+            this.props.setValue?.(selectedDate ? this.getFormsyValue(selectedDate) : undefined);
+        }
     }
 
     toggleDisabled = (): void => {
