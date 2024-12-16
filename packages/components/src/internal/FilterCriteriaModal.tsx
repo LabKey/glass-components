@@ -7,7 +7,7 @@ import { isLoading } from '../public/LoadingState';
 import { QueryColumn } from '../public/QueryColumn';
 
 import { Modal } from './Modal';
-import { DomainField, FilterCriteria, FilterCriteriaMap, IDomainField } from './components/domainproperties/models';
+import { DomainDesign, FilterCriteria, FilterCriteriaMap } from './components/domainproperties/models';
 import { useLoadableState } from './useLoadableState';
 import { LoadingSpinner } from './components/base/LoadingSpinner';
 import { ChoicesListItem } from './components/base/ChoicesListItem';
@@ -15,6 +15,57 @@ import { FilterExpressionView } from './components/search/FilterExpressionView';
 import { useAppContext } from './AppContext';
 import { FilterCriteriaColumns } from './components/assay/models';
 import { AssayProtocolModel } from './components/domainproperties/assay/models';
+
+type BaseFilterCriteriaField = Omit<FilterCriteria, 'op' | 'value'>;
+interface FilterCriteriaField extends BaseFilterCriteriaField {
+    isKeyField: boolean;
+}
+type FieldLoader = () => Promise<FilterCriteriaField[]>;
+type ReferenceFieldFetcher = (
+    protocolId: number,
+    columnNames: string[],
+    containerPath: string
+) => Promise<FilterCriteriaColumns>;
+
+// This propertyIdCounter is strictly for reference properties. Starts at -100 so we don't conflict with new fields
+// which start at -1
+let propertyIdCounter = -100;
+
+function fieldLoaderFactory(
+    protocolId: number,
+    container: string,
+    domain: DomainDesign,
+    fetch: ReferenceFieldFetcher
+): FieldLoader {
+    return async () => {
+        const sourceFields = domain.fields
+            .filter(field => {
+                // Note: Maybe this logic should be in the APIWrapper.getFilterCriteriaColumns?
+                const dataType = field.dataType.name;
+                return field.measure && (dataType === 'double' || dataType === 'int');
+            })
+            .map(field => field.name)
+            .toArray();
+        const referenceFields = await fetch(protocolId, sourceFields, container);
+
+        return Object.keys(referenceFields).reduce((result, sourceName) => {
+            const sourceField = domain.fields.find(field => field.name === sourceName);
+            result.push({
+                name: sourceField.name,
+                propertyId: sourceField.propertyId,
+                isKeyField: sourceField.isPrimaryKey || sourceField.isUniqueIdField(),
+            });
+            return result.concat(
+                referenceFields[sourceName].map(rawField => ({
+                    name: rawField.name,
+                    propertyId: rawField.propertyId === 0 ? propertyIdCounter-- : rawField.propertyId,
+                    referencePropertyId: sourceField.propertyId,
+                    isKeyField: false,
+                }))
+            );
+        }, [] as FilterCriteriaField[]);
+    };
+}
 
 /**
  * openTo: The propertyId of the domain field you want to open the modal to
@@ -28,101 +79,81 @@ interface Props {
 
 export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, protocolModel }) => {
     const { api } = useAppContext();
+    const { protocolId, container } = protocolModel;
     const domain = useMemo(
         () => protocolModel.domains.find(domain => domain.isNameSuffixMatch('Data')),
         [protocolModel.domains]
     );
     const [filterCriteria, setFilterCriteria] = useState<FilterCriteriaMap>(() => {
-        // Initialize the filterCriteria from the existing domain fields
         return domain.fields.reduce((result, field) => {
-            if (field.filterCriteria) {
-                for (const criteria of field.filterCriteria) {
-                    if (!result[criteria.name]) result[criteria.name] = [];
-                    result[criteria.name].push(criteria);
-                }
-            }
+            if (field.filterCriteria) result[field.propertyId] = [...field.filterCriteria];
             return result;
         }, {} as FilterCriteriaMap);
     });
-    const load = useCallback(() => {
-        const columnNames = domain.fields
-            .filter(field => {
-                // Note: Maybe this logic should be in the APIWrapper.getFilterCriteriaColumns?
-                const dataType = field.dataType.name;
-                return field.measure && (dataType === 'double' || dataType === 'int');
-            })
-            .map(field => field.name)
-            .toArray();
-        return api.assay.getFilterCriteriaColumns(protocolModel.protocolId, columnNames, protocolModel.container);
-    }, [api.assay, domain.fields, protocolModel.container, protocolModel.protocolId]);
-    const { loadingState, value: filterCriteriaColumns } = useLoadableState<FilterCriteriaColumns>(load);
-    const [selectedFieldName, setSelectedFieldName] = useState<string>(() => {
-        return domain.fields.find(field => field.propertyId === openTo)?.name;
-    });
+    const loader = useMemo(
+        () => fieldLoaderFactory(protocolId, container, domain, api.assay.getFilterCriteriaColumns),
+        [api.assay.getFilterCriteriaColumns, container, domain, protocolId]
+    );
+    const { loadingState, value: filterCriteriaFields } = useLoadableState<FilterCriteriaField[]>(loader);
 
-    // The array of all fields, including the fields on the domain, and the fields returned from the
-    // FilterCriteriaColumns API
-    const allFields = useMemo(() => {
-        if (filterCriteriaColumns === undefined) return [];
-        return Object.keys(filterCriteriaColumns).reduce((result, key) => {
-            // Push the original column
-            result.push(domain.fields.find(f => f.name === key).toJS());
-            // Concat the loaded columns from the FilterCriteriaColumns API
-            return result.concat(filterCriteriaColumns[key]);
-        }, [] as IDomainField[]);
-    }, [domain.fields, filterCriteriaColumns]);
+    const [selectedFieldId, setSelectedFieldId] = useState<number>(openTo);
 
-    // The currently selected DomainField
-    const currentField = useMemo(() => {
-        const rawField = allFields.find(field => field.name === selectedFieldName);
-        if (rawField === undefined) return undefined;
-        return DomainField.create(rawField);
-    }, [allFields, selectedFieldName]);
+    const onSelect = useCallback(
+        (idx: number) => setSelectedFieldId(filterCriteriaFields[idx].propertyId),
+        [filterCriteriaFields]
+    );
 
-    // The currently selected QueryColumn (needed by FilterExpressionView)
+    const onFieldFilterUpdate = useCallback(
+        (newFilters: Filter.IFilter[]) => {
+            setFilterCriteria(current => {
+                const filterCriteriaField = filterCriteriaFields.find(field => field.propertyId === selectedFieldId);
+                // Use the referencePropertyId if it exists, because all filterCriteria are stored on the parent field
+                const sourcePropertyId = filterCriteriaField.referencePropertyId ?? filterCriteriaField.propertyId;
+                // Remove the existing filter criteria for the filterCriteriaField
+                const existingValues = current[sourcePropertyId].filter(
+                    value => value.propertyId !== filterCriteriaField.propertyId
+                );
+                const newValues = newFilters.map(filter => ({
+                    name: filterCriteriaField.name,
+                    op: filter.getFilterType().getURLSuffix(),
+                    propertyId: filterCriteriaField.propertyId,
+                    referencePropertyId: filterCriteriaField.referencePropertyId,
+                    value: filter.getValue(),
+                }));
+                return {
+                    ...current,
+                    [sourcePropertyId]: existingValues.concat(newValues),
+                };
+            });
+        },
+        [filterCriteriaFields, selectedFieldId]
+    );
+
+    const onConfirm = useCallback(() => onSave(filterCriteria), [filterCriteria, onSave]);
+
+    const fieldFilters = useMemo(() => {
+        const filterCriteriaField = filterCriteriaFields?.find(field => field.propertyId === selectedFieldId);
+
+        if (!filterCriteriaField) return undefined;
+
+        const sourcePropertyId = filterCriteriaField.referencePropertyId ?? filterCriteriaField.propertyId;
+        const filters = filterCriteria[sourcePropertyId].filter(
+            value => value.propertyId === filterCriteriaField.propertyId
+        );
+        return filters.map(fc => Filter.create(fc.name, fc.value, Filter.Types[fc.op.toUpperCase()]));
+    }, [filterCriteriaFields, filterCriteria, selectedFieldId]);
+
     const currentColumn: QueryColumn = useMemo(() => {
+        const currentField = filterCriteriaFields?.find(field => field.propertyId === selectedFieldId);
         if (currentField === undefined) return undefined;
         return new QueryColumn({
             fieldKey: currentField.name,
             caption: currentField.name,
-            isKeyField: currentField.isPrimaryKey || currentField.isUniqueIdField(),
+            isKeyField: currentField.isKeyField,
         });
-    }, [currentField]);
-    const onSelect = useCallback((idx: number) => setSelectedFieldName(allFields[idx].name), [allFields]);
-    const onFieldFilterUpdate = useCallback(
-        (newFilters: Filter.IFilter[]) => {
-            setFilterCriteria(current => {
-                const domainField = allFields.find(field => field.name === selectedFieldName);
-                return {
-                    ...current,
-                    [domainField.name]: newFilters.map(filter => ({
-                        name: domainField.name,
-                        op: filter.getFilterType().getURLSuffix(),
-                        // propertyId: domainField.propertyId,
-                        propertyId: undefined, // TODO: this results in an error for computed fields
-                        referencePropertyId: undefined, // TODO: wire this up for reference properties
-                        value: filter.getValue(),
-                    })),
-                };
-            });
-        },
-        [allFields, selectedFieldName]
-    );
-    const onConfirm = useCallback(() => onSave(filterCriteria), [filterCriteria, onSave]);
+    }, [filterCriteriaFields, selectedFieldId]);
+
     const loading = isLoading(loadingState);
-    const fieldFilters = useMemo(() => {
-        if (!selectedFieldName) return undefined;
-
-        const domainField = allFields.find(field => field.name === selectedFieldName);
-
-        if (!domainField) return undefined;
-
-        const fieldFilterCriteria: FilterCriteria[] = filterCriteria[domainField.name] ?? [];
-
-        return fieldFilterCriteria.map(fc => Filter.create(fc.name, fc.value, Filter.Types[fc.op.toUpperCase()]));
-    }, [allFields, filterCriteria, selectedFieldName]);
-
-    console.log(filterCriteria);
 
     return (
         <Modal bsSize="lg" title="Hit Selection Criteria" onCancel={onClose} onConfirm={onConfirm} confirmText="Apply">
@@ -133,9 +164,9 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                         <div className="field-modal__col-title">Fields</div>
                         <div className="field-modal__col-content">
                             <div className="list-group">
-                                {allFields.map((column, index) => (
+                                {filterCriteriaFields.map((column, index) => (
                                     <ChoicesListItem
-                                        active={column.name === selectedFieldName}
+                                        active={filterCriteriaFields[index].propertyId === selectedFieldId}
                                         index={index}
                                         key={column.name}
                                         label={column.name}

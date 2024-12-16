@@ -341,25 +341,17 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
             // Clear the existing values first
             let fields = resultsDomain.fields.map(f => f.set('filterCriteria', []) as DomainField).toList();
 
-            Object.keys(filterCriteria).forEach(fieldName => {
-                console.log('fieldFilterCriteria:', fieldName, filterCriteria[fieldName]);
-                const fieldCriteria = filterCriteria[fieldName];
-                let domainFieldIdx = fields.findIndex(d => d.name === fieldName);
+            Object.keys(filterCriteria).forEach(propertyId => {
+                const fieldCriteria = filterCriteria[propertyId];
+                const domainFieldIdx = fields.findIndex(d => d.propertyId === parseInt(propertyId, 10));
 
                 if (!domainFieldIdx) {
-                    // TODO: error prone a user could create a field named my_field which would result in the incorrect
-                    //  prefix. We'd get my instead of my_field, so we'd never find the field index
-                    const prefix = fieldName.split('_')[0];
-                    domainFieldIdx = fields.findIndex(d => d.name === prefix);
+                    console.warn(`Unable to find domain field with property id ${propertyId}`);
+                    return;
                 }
 
-                if (!domainFieldIdx) return;
-
                 let domainField = fields.get(domainFieldIdx);
-                domainField = domainField.set(
-                    'filterCriteria',
-                    domainField.filterCriteria.concat(fieldCriteria)
-                ) as DomainField;
+                domainField = domainField.set('filterCriteria', fieldCriteria) as DomainField;
                 fields = fields.set(domainFieldIdx, domainField);
             });
 

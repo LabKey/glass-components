@@ -43,7 +43,7 @@ export const FilterExpressionView: FC<Props> = memo(props => {
         const filterOptions = getFilterOptionsForType(field, includeAllAncestorFilter);
         setFieldFilterOptions(filterOptions);
         setActiveFilters(getFilterSelections(fieldFilters, filterOptions));
-    }, [field]); // leave fieldFilters out of deps list, fieldFilters is used to init once
+    }, [field]); // eslint-disable-line react-hooks/exhaustive-deps -- fieldFilters is used to init once
 
     const unusedFilterOptions = useCallback(
         (thisIndex: number): FieldFilterOption[] => {
