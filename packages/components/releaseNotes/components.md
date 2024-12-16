@@ -10,6 +10,11 @@ Components, models, actions, and utility functions for LabKey applications and p
   - EditableColumnMetadata onRemoveColumn optional prop to allow for callback for EditableGrid column removal menu item
   - EditableGrid additionalButtons optional prop to allow custom items to be added to grid button bar
 
+### version 6.5.3
+*Released*: 16 December 2024
+- Add restrictions on names of domains
+    - Update resolveErrorMessage util to handle more scenarios
+
 ### version 6.5.2
 *Released*: 12 December 2024
 - Update `EntityIdCreationModel` with `selectionContainerId`

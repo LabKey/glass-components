@@ -27,7 +27,7 @@ export interface SamplesTabbedGridPanelComponentProps {
     containerFilter?: Query.ContainerFilter;
     createBtnParentEntityType?: EntityDataType;
     createBtnParentKey?: string;
-    getIsDirty?: () => boolean;
+    getIsDirty?: () => boolean; // TODO make getIsDirty/setIsDirty required props: Issue 51863
     gridButtonProps?: any;
     gridButtons?: ComponentType<SampleGridButtonProps & RequiresModelAndActions>;
     initialTabId?: string; // use if you have multiple tabs but want to start on something other than the first one
