@@ -950,6 +950,7 @@
         height: 34px;
     }
 }
+
 .hit-selection-criteria-input {
     display: flex;
     gap: 16px;
@@ -957,4 +958,9 @@
 
 .field-modal__container.hit-criteria-modal-body .field-modal__col-content.field-modal__values {
     padding: 16px;
+}
+
+.hit-criteria-renderer {
+    margin-left: 12px;
+    padding: 0;
 }
