@@ -44,7 +44,7 @@ function useToggleState<T extends HTMLElement>(): ToggleState<T> {
     const toggleRef = useRef<T>();
     const [open, setOpen] = useState<boolean>(false);
     const onClick = useCallback(event => {
-        event.preventDefault(); // Needed so DropdownAnchor doesn't navigate to home page on click
+        event.preventDefault(); // Needed so DropdownMenu doesn't navigate to home page on click
         setOpen(o => !o);
     }, []);
 
@@ -72,7 +72,7 @@ function useToggleState<T extends HTMLElement>(): ToggleState<T> {
     return { onClick, open, setOpen, toggleRef };
 }
 
-interface DropdownAnchorProps extends PropsWithChildren {
+interface DropdownMenuProps extends PropsWithChildren {
     asAnchor?: boolean;
     className?: string;
     label?: string;
@@ -83,7 +83,7 @@ interface DropdownAnchorProps extends PropsWithChildren {
 /**
  * See docs in docs/dropdowns.md
  */
-export const DropdownAnchor: FC<DropdownAnchorProps> = props => {
+export const DropdownMenu: FC<DropdownMenuProps> = props => {
     const { children, label, pullRight, title, asAnchor = true } = props;
     const id = useMemo(() => generateId('dropdown-anchor-'), []);
     const { onClick, open, toggleRef } = useToggleState<HTMLAnchorElement>();
@@ -117,7 +117,7 @@ export const DropdownAnchor: FC<DropdownAnchorProps> = props => {
         </div>
     );
 };
-DropdownAnchor.displayName = 'DropdownAnchor';
+DropdownMenu.displayName = 'DropdownMenu';
 
 interface DropdownButtonProps {
     bsStyle?: BSStyle;

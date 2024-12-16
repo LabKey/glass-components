@@ -1,5 +1,5 @@
 # Dropdown Menu Components
-### DropdownButton, DropdownAnchor, SplitButton, and MenuItem
+### DropdownButton, DropdownMenu, SplitButton, and MenuItem
 
 We have an internal set of components for creating Bootstrap Drodpown menus. This set of comoponents is similar to the
 react-bootstrap components, but differs in a few critical ways. Most notably our internal components do not require an
@@ -68,8 +68,8 @@ We also provide three ways to enable or disable parts of the component:
 - `menuDisabled`:  disables the dropdown toggle, preventing the menu from being opened
 
 
-## DropdownAnchor
-`DropdownAnchor` is our own custom component meant to replace the "low level" usages of the react-bootstrap `Dropdown`,
+## DropdownMenu
+`DropdownMenu` is our own custom component meant to replace the "low level" usages of the react-bootstrap `Dropdown`,
 `Dropdown.Toggle` and `Dropdown.Menu` components. It's most useful when you need a dropdown menu, but you don't want it
 styled like a button (see the usage in ThreadBlock.tsx). Previously to accomplish this you'd need to do something like:
 
@@ -92,16 +92,16 @@ styled like a button (see the usage in ThreadBlock.tsx). Previously to accomplis
 But now you can do this:
 
 ```typescript jsx
-import { DropdownAnchor, MenuItem } from '@labkey/components';
+import { DropdownMenu, MenuItem } from '@labkey/components';
 
-<DropdownAnchor title={<i className="fa fa-ellipsis-v" />}>
+<DropdownMenu title={<i className="fa fa-ellipsis-v" />}>
     <MenuItem onClick={doThing}>
         Do Thing
     </MenuItem>
     <MenuItem onClick={doOtherThing}>
         Do Other Thing
     </MenuItem>
-</DropdownAnchor>
+</DropdownMenu>
 ```
 
 ## MenuItem, MenuHeader, MenuDivider

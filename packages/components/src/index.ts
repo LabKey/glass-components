@@ -94,7 +94,7 @@ import {
     resolveErrorMessage,
 } from './internal/util/messaging';
 import { WHERE_FILTER_TYPE } from './internal/url/WhereFilterType';
-import { AddEntityButton } from './internal/components/buttons/AddEntityButton';
+import { AddEntityButton, AddEntityElement } from './internal/components/buttons/AddEntityButton';
 import { RemoveEntityButton } from './internal/components/buttons/RemoveEntityButton';
 import { Alert } from './internal/components/base/Alert';
 import { DeleteIcon } from './internal/components/base/DeleteIcon';
@@ -899,7 +899,7 @@ import { getLabelsTestAPIWrapper } from './internal/components/labels/APIWrapper
 import { OverlayTrigger, useOverlayTriggerState } from './internal/OverlayTrigger';
 import { Tooltip } from './internal/Tooltip';
 import { Popover } from './internal/Popover';
-import { DropdownAnchor, DropdownButton, MenuDivider, MenuHeader, MenuItem, SplitButton } from './internal/dropdowns';
+import { DropdownMenu, DropdownButton, MenuDivider, MenuHeader, MenuItem, SplitButton } from './internal/dropdowns';
 import { DropdownSection } from './internal/DropdownSection';
 import { isLoginAutoRedirectEnabled, showPremiumFeatures } from './internal/components/administration/utils';
 import { LineageGridModel, LineageResult } from './internal/components/lineage/models';
@@ -1397,6 +1397,7 @@ export {
     EntityParentType,
     OperationConfirmationData,
     AddEntityButton,
+    AddEntityElement,
     RemoveEntityButton,
     AssayResultsForSamplesMenuItem,
     AssayResultsForSamplesButton,
@@ -1826,7 +1827,7 @@ export {
     Popover,
     OverlayTrigger,
     useOverlayTriggerState,
-    DropdownAnchor,
+    DropdownMenu,
     DropdownButton,
     DropdownSection,
     MenuDivider,

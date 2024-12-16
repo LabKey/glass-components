@@ -21,7 +21,7 @@ import { User } from '../base/models/User';
 import { UserMenuGroupImpl } from './UserMenuGroup';
 import { MenuSectionModel } from './model';
 import { mountWithAppServerContext } from '../../test/enzymeTestHelpers';
-import { MenuItem } from '../../dropdowns';
+import {DropdownMenu, MenuItem} from '../../dropdowns';
 
 beforeEach(() => {
     LABKEY.devMode = false;
@@ -108,7 +108,7 @@ describe('UserMenuGroup', () => {
     }
 
     function verify(wrapper: ReactWrapper, userOptions?: string[], adminOptions?: string[], helpOptions?: string[]) {
-        const userMenu = wrapper.find('DropdownAnchor');
+        const userMenu = wrapper.find('DropdownMenu');
         const userMenuOptions = userMenu.at(0).find('MenuItem');
         expect(userMenuOptions).toHaveLength(userOptions?.length);
         for (let i = 0; i < userOptions.length; i++) {

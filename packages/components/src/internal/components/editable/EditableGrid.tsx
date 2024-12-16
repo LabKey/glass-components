@@ -47,7 +47,7 @@ import { LabelHelpTip } from '../base/LabelHelpTip';
 
 import { LabelOverlay } from '../forms/LabelOverlay';
 
-import { DropdownAnchor, MenuItem } from '../../dropdowns';
+import { DropdownMenu } from '../../dropdowns';
 
 import {
     addRows,
@@ -945,14 +945,14 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                     <LabelOverlay column={qColumn} label={metadata?.caption} placement="bottom" required={req} />
                 )}
                 {metadata?.onRemoveColumn && (
-                    <DropdownAnchor
+                    <DropdownMenu
                         asAnchor={false}
                         className="grid-panel__menu-toggle pull-right"
                         title={<i className="fa fa-chevron-circle-down" />}
                         pullRight
                     >
                         <RemoveColumnMenuItem column={qColumn} onClick={metadata.onRemoveColumn} />
-                    </DropdownAnchor>
+                    </DropdownMenu>
                 )}
             </>
         );

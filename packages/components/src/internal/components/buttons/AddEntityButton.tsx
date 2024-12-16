@@ -3,22 +3,29 @@ import React, { FC, memo } from 'react';
 import { ActionButton, ActionButtonProps } from './ActionButton';
 
 export interface AddEntityButtonProps extends ActionButtonProps {
-    asButton?: boolean;
     entity: string;
 }
 
-export const AddEntityButton: FC<AddEntityButtonProps> = memo(({ entity, asButton = true, ...actionButtonProps }) => {
-    const content = (
+export const AddEntityButton: FC<AddEntityButtonProps> = memo(({ entity, ...actionButtonProps }) => {
+    return (
+        <ActionButton {...actionButtonProps}>
+            <i className="fa fa-plus-circle container--addition-icon" /> Add {entity}
+        </ActionButton>
+    );
+});
+
+AddEntityButton.displayName = 'AddEntityButton';
+
+export interface AddEntityElementProps {
+    entity: string;
+}
+
+export const AddEntityElement: FC<AddEntityElementProps> = memo(({ entity }) => {
+    return (
         <>
             <i className="fa fa-plus-circle container--addition-icon" /> Add {entity}
         </>
     );
-
-    if (!asButton) {
-        return content;
-    }
-
-    return <ActionButton {...actionButtonProps}>{content}</ActionButton>;
 });
 
-AddEntityButton.displayName = 'AddEntityButton';
+AddEntityElement.displayName = 'AddEntityElement';
