@@ -34,6 +34,8 @@ import { GridColumn } from '../base/models/GridColumn';
 
 import { SCHEMAS } from '../../schemas';
 
+import { resolveErrorMessage } from '../../util/messaging';
+
 import { DomainDesignerCheckbox } from './DomainDesignerCheckbox';
 
 import {
@@ -335,6 +337,14 @@ export class DomainDesign
 
     hasException(): boolean {
         return this.domainException !== undefined;
+    }
+
+    hasFieldException(): boolean {
+        return this.hasException() && this.domainException.hasFieldErrors();
+    }
+
+    getNonFieldException(): string {
+        return this.domainException?.getNonFieldException();
     }
 
     isNameSuffixMatch(name: string): boolean {
@@ -1837,7 +1847,9 @@ export class DomainException
                     return err.set('message', parts.length > 1 ? parts[1] : parts[0]);
                 }) as List<DomainFieldError>;
             }
-            const exception = errors.isEmpty() ? rawModel.exception : this.getExceptionMessage(errors);
+            const exception = errors.isEmpty()
+                ? resolveErrorMessage(rawModel.exception)
+                : this.getExceptionMessage(errors);
 
             return new DomainException({
                 exception,
@@ -1849,6 +1861,18 @@ export class DomainException
         }
 
         return undefined;
+    }
+
+    hasFieldErrors(): boolean {
+        if (!this.errors || this.errors.isEmpty()) return false;
+
+        return this.errors.find(error => !!error.get('fieldName') || !!error.get('propertyId')) != null;
+    }
+
+    getNonFieldException(): string {
+        if (!this.errors || this.errors.isEmpty()) return null;
+
+        return this.errors.find(error => !error.get('fieldName') && !error.get('propertyId'))?.get('message');
     }
 
     static clientValidationExceptions(exception: string, fields: Map<number, DomainField>): DomainException {
@@ -1935,10 +1959,10 @@ export class DomainException
             if (error.fieldName !== undefined && error.fieldName !== '') {
                 // Field error
                 fieldErrorsCount++;
-                singleFieldError = error.message;
+                singleFieldError = resolveErrorMessage(error.message);
             } else {
                 // General error
-                generalErrorMsg += error.message + ' \n';
+                generalErrorMsg += resolveErrorMessage(error.message) + ' \n';
             }
         });
         return fieldErrorsCount > 1

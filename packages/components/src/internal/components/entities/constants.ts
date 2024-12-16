@@ -14,7 +14,7 @@ import { SAMPLE_PROPERTY_ALL_SAMPLE_TYPE } from '../search/constants';
 
 import { EntityDataType } from './models';
 import { sampleDeleteDependencyText } from './utils';
-import { Query } from '@labkey/api';
+import { Query, QueryKey } from '@labkey/api';
 
 const DATA_OPERATION_CONFIRMATION_ACTION = 'getDataOperationConfirmationData.api';
 const SAMPLE_OPERATION_CONFIRMATION_ACTION = 'getMaterialOperationConfirmationData.api';
@@ -47,11 +47,11 @@ export const AssayResultDataType: EntityDataType = {
     listingSchemaQuery: undefined,
     instanceSchemaName: undefined,
     supportHasNoValueInQuery: true,
-    getInstanceSchemaQuery: (assayName: string) => {
-        return new SchemaQuery('assay.General.' + assayName, 'data');
+    getInstanceSchemaQuery: (assayNameEncoded: string) => {
+        return new SchemaQuery('assay.General.' + QueryKey.encodePart(assayNameEncoded), 'data');
     },
     getInstanceDataType: (schemaQuery: SchemaQuery) => {
-        return schemaQuery.schemaName.replace('assay.General.', '');
+        return QueryKey.decodePart(schemaQuery.schemaName.replace('assay.General.', ''));
     },
     operationConfirmationControllerName: 'assay',
     operationConfirmationActionName: ASSAY_RESULTS_OPERATION_CONFIRMATION_ACTION,
