@@ -38,7 +38,7 @@ export const FilterCriteriaRenderer: FC<Props> = memo(({ fields, renderEmptyMess
     const showEmptyMessage = fieldsWithCriteria.length === 0 && renderEmptyMessage;
 
     return (
-        <div className="hit-criteria-renderer">
+        <div className="filter-criteria-renderer">
             {showEmptyMessage && (
                 <div className="gray-text">
                     <em>No Hit Selection Criteria</em>
