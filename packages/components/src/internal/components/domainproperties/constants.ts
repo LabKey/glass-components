@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { List } from 'immutable';
-
 export const DOMAIN_FIELD_PREFIX = 'domainpropertiesrow';
 export const DOMAIN_FIELD_NAME = 'name';
 export const DOMAIN_FIELD_TYPE = 'type';

@@ -53,6 +53,7 @@ import {
     DOMAIN_FIELD_LOOKUP_CONTAINER,
     DOMAIN_FIELD_LOOKUP_QUERY,
     DOMAIN_FIELD_LOOKUP_SCHEMA,
+    DOMAIN_FIELD_NAME,
     DOMAIN_FIELD_ONTOLOGY_IMPORT_COL,
     DOMAIN_FIELD_ONTOLOGY_LABEL_COL,
     DOMAIN_FIELD_ONTOLOGY_PRINCIPAL_CONCEPT,
@@ -783,6 +784,19 @@ export function handleDomainUpdates(domain: DomainDesign, changes: List<IFieldCh
     return domain;
 }
 
+function updateFilterCriteriaNames(field: DomainField, updatedName: string): DomainField {
+    if (!field.filterCriteria || field.filterCriteria.length === 0) return field;
+    const filterCriteria = field.filterCriteria.map(criteria => {
+        // Note: we can't simply do name.replace(field.name, updatedName) because the name could be something like
+        // Mean, which would cause the calculated field Mean_Mean to become an empty string, which is bad.
+        const name = updatedName + criteria.name.slice(field.name.length);
+
+        return { ...criteria, name };
+    });
+
+    return field.set('filterCriteria', filterCriteria) as DomainField;
+}
+
 export function updateDomainField(domain: DomainDesign, change: IFieldChange): DomainDesign {
     const type = getNameFromId(change.id);
     const index = getIndexFromId(change.id);
@@ -820,6 +834,11 @@ export function updateDomainField(domain: DomainDesign, change: IFieldChange): D
                 const concept = change.value as ConceptModel;
                 newField = newField.merge({ principalConceptCode: concept?.code }) as DomainField;
                 break;
+            case DOMAIN_FIELD_NAME:
+                // Note: it's important to update filter criteria names, because if the field we're updating is new
+                // we rely on the name when saving. For existing fields we can rely on propertyId.
+                newField = updateFilterCriteriaNames(newField, change.value);
+            // eslint-disable-next-line no-fallthrough -- Intentionally falling through here
             default:
                 newField = newField.set(type, change.value) as DomainField;
                 break;
