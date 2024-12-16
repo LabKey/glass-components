@@ -97,10 +97,6 @@ export class DatePickerInputImpl extends DisableableInput<DatePickerInputImplPro
         this.toggleDisabled = this.toggleDisabled.bind(this);
 
         const initDate = this.getInitDate(props);
-        if (props.formsy && !props.queryColumn.isTimeColumn) {
-            props.setValue?.(initDate ? this.getFormsyValue(initDate) : undefined);
-        }
-
         let invalidStart = false;
         let invalid = false;
         if (props.value && !isRelativeDateFilterValue(props.value)) {
