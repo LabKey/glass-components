@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 6.X
-*Released*: X December 2024
+### version 6.5.3
+*Released*: 16 December 2024
 - Add restrictions on names of domains
     - Update resolveErrorMessage util to handle more scenarios
 
