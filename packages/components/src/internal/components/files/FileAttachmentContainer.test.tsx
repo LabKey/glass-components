@@ -19,25 +19,6 @@ import { render } from '@testing-library/react';
 import { FileAttachmentContainer } from './FileAttachmentContainer';
 
 describe('FileAttachmentContainer', () => {
-    test('no props', () => {
-        const { container } = render(<FileAttachmentContainer allowMultiple={false} allowDirectories={false} />);
-        expect(container).toMatchSnapshot();
-    });
-
-    test('with attributes', () => {
-        const { container } = render(
-            <FileAttachmentContainer
-                acceptedFormats=".tsv, .xls, .xlsx"
-                allowDirectories
-                allowMultiple
-                compact
-                index={1}
-                labelLong="Upload your files here please..."
-            />
-        );
-        expect(container).toMatchSnapshot();
-    });
-
     test('with single file', () => {
         render(
             <FileAttachmentContainer
@@ -47,8 +28,8 @@ describe('FileAttachmentContainer', () => {
             />
         );
 
-        expect(document.querySelector('.file-upload--container').className).toContain('hidden');
-        expect(document.querySelector('.attached-file--container').textContent).toBe('file1.txt');
+        expect(document.querySelector('.file-upload__container').className).toContain('hidden');
+        expect(document.querySelector('.attached-file__container').textContent).toBe('file1.txt');
     });
 
     test('with multiple files', () => {
@@ -63,13 +44,13 @@ describe('FileAttachmentContainer', () => {
             />
         );
 
-        expect(document.querySelector('.file-upload--container').className).toContain('block');
-        expect(document.querySelectorAll('.attached-file--container')).toHaveLength(2);
-        expect(document.querySelectorAll('.attached-file--container')[0].textContent).toBe('file1.txt');
-        expect(document.querySelectorAll('.attached-file--container')[1].textContent).toBe('file2.txt');
+        expect(document.querySelector('.file-upload__container').className).toContain('block');
+        expect(document.querySelectorAll('.attached-file__container')).toHaveLength(2);
+        expect(document.querySelectorAll('.attached-file__container')[0].textContent).toBe('file1.txt');
+        expect(document.querySelectorAll('.attached-file__container')[1].textContent).toBe('file2.txt');
 
-        expect(document.querySelectorAll('.file-upload--file-entry-listing')).toHaveLength(1);
-        expect(document.querySelectorAll('.file-upload--scroll-footer')).toHaveLength(0);
+        expect(document.querySelectorAll('.file-upload__file-entry-listing')).toHaveLength(1);
+        expect(document.querySelectorAll('.file-upload__scroll-footer')).toHaveLength(0);
     });
 
     test('with initial file names', () => {
@@ -81,8 +62,8 @@ describe('FileAttachmentContainer', () => {
             />
         );
 
-        expect(document.querySelector('.file-upload--container').className).toContain('block');
-        expect(document.querySelectorAll('.attached-file--container')).toHaveLength(2);
+        expect(document.querySelector('.file-upload__container').className).toContain('block');
+        expect(document.querySelectorAll('.attached-file__container')).toHaveLength(2);
     });
 
     test('with initial single file name - no multiples allowed', () => {
@@ -90,8 +71,8 @@ describe('FileAttachmentContainer', () => {
             <FileAttachmentContainer allowMultiple={false} allowDirectories={false} initialFileNames={['single.csv']} />
         );
 
-        expect(document.querySelector('.file-upload--container').className).toContain('hidden');
-        expect(document.querySelectorAll('.attached-file--container')).toHaveLength(1);
+        expect(document.querySelector('.file-upload__container').className).toContain('hidden');
+        expect(document.querySelectorAll('.attached-file__container')).toHaveLength(1);
     });
 
     test('fileCountSuffix with multiple', () => {
@@ -107,10 +88,10 @@ describe('FileAttachmentContainer', () => {
             />
         );
 
-        expect(document.querySelector('.file-upload--container').className).toContain('block');
-        expect(document.querySelectorAll('.attached-file--container')).toHaveLength(2);
-        expect(document.querySelectorAll('.file-upload--file-entry-listing')).toHaveLength(1);
-        expect(document.querySelector('.file-upload--scroll-footer').textContent).toBe('2 files will be uploaded.');
+        expect(document.querySelector('.file-upload__container').className).toContain('block');
+        expect(document.querySelectorAll('.attached-file__container')).toHaveLength(2);
+        expect(document.querySelectorAll('.file-upload__file-entry-listing')).toHaveLength(1);
+        expect(document.querySelector('.file-upload__scroll-footer').textContent).toBe('2 files will be uploaded.');
     });
 
     test('fileCountSuffix with single', () => {
@@ -125,9 +106,9 @@ describe('FileAttachmentContainer', () => {
             />
         );
 
-        expect(document.querySelector('.file-upload--container').className).toContain('block');
-        expect(document.querySelectorAll('.attached-file--container')).toHaveLength(1);
-        expect(document.querySelectorAll('.file-upload--file-entry-listing')).toHaveLength(1);
-        expect(document.querySelector('.file-upload--scroll-footer').textContent).toBe('1 file will be uploaded.');
+        expect(document.querySelector('.file-upload__container').className).toContain('block');
+        expect(document.querySelectorAll('.attached-file__container')).toHaveLength(1);
+        expect(document.querySelectorAll('.file-upload__file-entry-listing')).toHaveLength(1);
+        expect(document.querySelector('.file-upload__scroll-footer').textContent).toBe('1 file will be uploaded.');
     });
 });

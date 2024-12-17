@@ -1,29 +1,37 @@
 import React from 'react';
 
+import { renderWithAppContext } from '../../internal/test/reactTestLibraryHelpers';
+import { TEST_USER_EDITOR } from '../../internal/userFixtures';
+
 import { FileAttachmentForm } from './FileAttachmentForm';
-import {renderWithAppContext} from "../../internal/test/reactTestLibraryHelpers";
-import {TEST_USER_EDITOR} from "../../internal/userFixtures";
 
 describe('<FileAttachmentForm/>', () => {
     test('no props', () => {
-        const { container } = renderWithAppContext(<FileAttachmentForm />, {
-            serverContext: { user: TEST_USER_EDITOR}
+        renderWithAppContext(<FileAttachmentForm />, {
+            serverContext: { user: TEST_USER_EDITOR },
         });
-        expect(container).toMatchSnapshot();
+        expect(document.querySelector('.fa-download')).not.toBeInTheDocument();
+        expect(document.querySelector('.file-formats')).not.toBeInTheDocument();
+        expect(document.querySelector('.control-label').textContent).toEqual('Attachments');
+        expect(document.querySelector('.file-upload__input').getAttribute('multiple')).toEqual('');
     });
 
     test('with attributes', () => {
-        const { container } = renderWithAppContext(
+        renderWithAppContext(
             <FileAttachmentForm
                 acceptedFormats=".tsv, .xls, .xlsx"
                 allowDirectories={false}
                 allowMultiple={false}
                 label="file attachment"
                 templateUrl="#downloadtemplateurl"
-            />, {
-                serverContext: { user: TEST_USER_EDITOR}
+            />,
+            {
+                serverContext: { user: TEST_USER_EDITOR },
             }
         );
-        expect(container).toMatchSnapshot();
+        expect(document.querySelector('.fa-download')).toBeInTheDocument();
+        expect(document.querySelector('.file-form-formats')).toBeInTheDocument();
+        expect(document.querySelector('.control-label').textContent).toEqual('file attachment');
+        expect(document.querySelector('.file-upload__input').getAttribute('multiple')).toEqual(null);
     });
 });

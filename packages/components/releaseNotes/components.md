@@ -1,6 +1,16 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.6.0
+*Released*: 17 December 2024
+- Delete FileListing
+- Delete FileListingForm
+- FileAttachmentEntry: convert to FC, simplify props
+- Update file related styles
+  - Change class names to match BEM style
+- Remove duplicate CSS imports
+- Remove snapshot tests
+
 ### version 6.5.4
 *Released*: 17 December 2024
 - Update `DateInput` to determine the default date/time from container configuration
