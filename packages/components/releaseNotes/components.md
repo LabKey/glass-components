@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 6.?.?
-*Released*: ? December 2024
+### version 6.6.0
+*Released*: 17 December 2024
 - Delete FileListing
 - Delete FileListingForm
 - FileAttachmentEntry: convert to FC, simplify props
