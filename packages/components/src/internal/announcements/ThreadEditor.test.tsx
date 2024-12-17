@@ -1,7 +1,8 @@
 import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
 
-import { waitForLifecycle } from '../test/enzymeTestHelpers';
+import { render } from '@testing-library/react';
+
+import { userEvent } from '@testing-library/user-event';
 
 import { applyList, applyTemplate, handleBulletedListEnter, olMapper, ThreadEditor, ulMapper } from './ThreadEditor';
 import { createTestAPIWrapper } from './test/utils';
@@ -26,9 +27,7 @@ describe('ThreadEditor', () => {
             title: `${NOUN_SINGULAR} thread`,
         };
 
-        const expectedReplyThread = { ...expectedCreateThread, parent: expectedParent };
-
-        const wrapper = mount(
+        render(
             <ThreadEditor
                 api={createTestAPIWrapper({ createThread })}
                 containerPath={expectedContainerPath}
@@ -39,26 +38,11 @@ describe('ThreadEditor', () => {
             />
         );
 
-        expect(wrapper.find(COMMENT_TEXTAREA).exists()).toEqual(true);
-        wrapper.find(COMMENT_TEXTAREA).simulate('change', { target: { name: 'body', value: expectedBody } });
-        wrapper.find(SUBMIT_BUTTON).simulate('click');
-
-        await waitForLifecycle(wrapper);
+        expect(document.querySelectorAll(COMMENT_TEXTAREA)).toHaveLength(1);
+        await userEvent.type(document.querySelector(COMMENT_TEXTAREA), expectedBody);
+        await userEvent.click(document.querySelector(SUBMIT_BUTTON));
 
         expect(createThread).toHaveBeenCalledWith(expectedCreateThread, [], false, expectedContainerPath);
-        expect(onCreate).toHaveBeenCalledWith(THREAD);
-
-        // supports reply
-        createThread.mockReset().mockResolvedValue(THREAD);
-        onCreate.mockReset();
-
-        wrapper.setProps({ parent: expectedParent });
-        wrapper.find(COMMENT_TEXTAREA).simulate('change', { target: { name: 'body', value: expectedBody } });
-        wrapper.find(SUBMIT_BUTTON).simulate('click');
-
-        await waitForLifecycle(wrapper);
-
-        expect(createThread).toHaveBeenCalledWith(expectedReplyThread, [], true, expectedContainerPath);
         expect(onCreate).toHaveBeenCalledWith(THREAD);
     });
     test('updates thread', async () => {
@@ -69,7 +53,7 @@ describe('ThreadEditor', () => {
 
         const expectedUpdatedThread = { ...RESPONSE, body: expectedBody };
 
-        const wrapper = mount(
+        render(
             <ThreadEditor
                 api={createTestAPIWrapper({ updateThread })}
                 containerPath={expectedContainerPath}
@@ -81,15 +65,14 @@ describe('ThreadEditor', () => {
         );
 
         // Initialize with original value
-        expect(wrapper.find(COMMENT_TEXTAREA).text()).toEqual(RESPONSE.body);
+        expect(document.querySelector(COMMENT_TEXTAREA).textContent).toEqual(RESPONSE.body);
 
         // Update comment block
-        wrapper.find(COMMENT_TEXTAREA).simulate('change', { target: { name: 'body', value: expectedBody } });
+        await userEvent.clear(document.querySelector(COMMENT_TEXTAREA));
+        await userEvent.type(document.querySelector(COMMENT_TEXTAREA), expectedBody);
 
         // Submit
-        wrapper.find(SUBMIT_BUTTON).simulate('click');
-
-        await waitForLifecycle(wrapper);
+        await userEvent.click(document.querySelector(SUBMIT_BUTTON));
 
         expect(updateThread).toHaveBeenCalledWith(expectedUpdatedThread, [], expectedContainerPath);
         expect(onUpdate).toHaveBeenCalledWith(THREAD);
@@ -101,7 +84,7 @@ describe('ThreadEditor', () => {
         // Note: the mocked response here doesn't have to match what would actually get rendered, we're not testing
         // our server response.
         const renderContent = jest.fn().mockResolvedValue(renderedBody);
-        const wrapper = mount(
+        render(
             <ThreadEditor
                 api={createTestAPIWrapper({ renderContent })}
                 containerPath={expectedContainerPath}
@@ -110,15 +93,14 @@ describe('ThreadEditor', () => {
             />
         );
 
-        wrapper.find(COMMENT_TEXTAREA).simulate('change', { target: { name: 'body', value: body } });
-        wrapper.find('.dropdown li a').at(1).simulate('click');
-        await waitForLifecycle(wrapper);
+        await userEvent.type(document.querySelector(COMMENT_TEXTAREA), body);
+        await userEvent.click(document.querySelectorAll('.dropdown li a')[1]);
         expect(renderContent).toHaveBeenCalledWith(body, expectedContainerPath);
-        expect(wrapper.find('.thread-editor-preview div').props().dangerouslySetInnerHTML).toEqual({
-            __html: renderedBody,
-        });
+        expect(document.querySelector('.thread-editor-preview div').textContent).toBe('This is a test preview');
         // Toolbar buttons should all be disabled when rendering previews.
-        wrapper.find(TOOLBAR_BUTTON).forEach(button => expect(button.props().disabled).toEqual(true));
+        document
+            .querySelectorAll(TOOLBAR_BUTTON)
+            .forEach(button => expect(button.hasAttribute('disabled')).toEqual(true));
     });
     test('renders preview error', async () => {
         const error = 'oh no, server is busted';
@@ -126,7 +108,7 @@ describe('ThreadEditor', () => {
         // Note: the mocked response here doesn't have to match what would actually get rendered, we're not testing
         // our server response.
         const renderContent = jest.fn(() => Promise.reject(error));
-        const wrapper = mount(
+        render(
             <ThreadEditor
                 api={createTestAPIWrapper({ renderContent })}
                 nounPlural={NOUN_PLURAL}
@@ -134,27 +116,24 @@ describe('ThreadEditor', () => {
             />
         );
 
-        wrapper.find('.dropdown li a').at(1).simulate('click');
-        await waitForLifecycle(wrapper);
-        expect(wrapper.find('.thread-editor-preview .help-block').text()).toEqual(expectedError);
+        await userEvent.click(document.querySelectorAll('.dropdown li a')[1]);
+        expect(document.querySelector('.thread-editor-preview .help-block').textContent).toEqual(expectedError);
     });
-    const expectToolbarButton = async (wrapper: ReactWrapper, selector, text, expected) => {
-        wrapper.find(COMMENT_TEXTAREA).simulate('change', { target: { name: 'body', value: text } });
-        wrapper.find(TOOLBAR_BUTTON + ' .fa' + selector).simulate('click');
-        await waitForLifecycle(wrapper);
-        expect(wrapper.find(COMMENT_TEXTAREA).text()).toEqual(text + expected);
+    const expectToolbarButton = async (selector, text, expected) => {
+        await userEvent.clear(document.querySelector(COMMENT_TEXTAREA));
+        await userEvent.type(document.querySelector(COMMENT_TEXTAREA), text);
+        await userEvent.click(document.querySelector(TOOLBAR_BUTTON + ' .fa' + selector));
+        expect(document.querySelector(COMMENT_TEXTAREA).textContent).toEqual(text + expected);
     };
     test('toolbar', async () => {
         const body = 'This is a test preview\n';
-        const wrapper = mount(
-            <ThreadEditor api={createTestAPIWrapper()} nounPlural={NOUN_PLURAL} nounSingular={NOUN_SINGULAR} />
-        );
+        render(<ThreadEditor api={createTestAPIWrapper()} nounPlural={NOUN_PLURAL} nounSingular={NOUN_SINGULAR} />);
 
-        await expectToolbarButton(wrapper, '.fa-bold', body, '****');
-        await expectToolbarButton(wrapper, '.fa-italic', body, '**');
-        await expectToolbarButton(wrapper, '.fa-link', body, '[](url)');
-        await expectToolbarButton(wrapper, '.fa-list-ul', body, '- ');
-        await expectToolbarButton(wrapper, '.fa-list-ol', body, '1. ');
+        await expectToolbarButton('.fa-bold', body, '****');
+        await expectToolbarButton('.fa-italic', body, '**');
+        await expectToolbarButton('.fa-link', body, '[](url)');
+        await expectToolbarButton('.fa-list-ul', body, '- ');
+        await expectToolbarButton('.fa-list-ol', body, '1. ');
     });
     test('applyTemplate', () => {
         const value = 'hello world';

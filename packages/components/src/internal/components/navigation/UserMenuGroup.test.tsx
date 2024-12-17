@@ -1,27 +1,13 @@
-/*
- * Copyright (c) 2019 LabKey Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
 
 import { User } from '../base/models/User';
 
+import { MenuItem } from '../../dropdowns';
+
+import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
+
 import { UserMenuGroupImpl } from './UserMenuGroup';
 import { MenuSectionModel } from './model';
-import { mountWithAppServerContext } from '../../test/enzymeTestHelpers';
-import {DropdownMenu, MenuItem} from '../../dropdowns';
 
 beforeEach(() => {
     LABKEY.devMode = false;
@@ -98,46 +84,42 @@ describe('UserMenuGroup', () => {
         sectionKey: 'user',
     });
 
-    function verifyMenuOptions(menu: any, options: string[]) {
-        const menuOptions = menu.find('MenuItem');
+    function verifyMenuOptions(menu, options: string[]) {
+        const menuOptions = menu.querySelectorAll('.lk-menu-item');
         expect(menuOptions).toHaveLength(options?.length);
-        expect(menuOptions.at(0).text()).toEqual(options[0]);
+        expect(menuOptions[0].textContent).toEqual(options[0]);
         for (let i = 0; i < options.length; i++) {
-            expect(menuOptions.at(i).text()).toEqual(options[i]);
+            expect(menuOptions[i].textContent).toEqual(options[i]);
         }
     }
 
-    function verify(wrapper: ReactWrapper, userOptions?: string[], adminOptions?: string[], helpOptions?: string[]) {
-        const userMenu = wrapper.find('DropdownMenu');
-        const userMenuOptions = userMenu.at(0).find('MenuItem');
+    function verify(userOptions?: string[], adminOptions?: string[], helpOptions?: string[]) {
+        const userMenu = document.querySelector('.user-dropdown');
+        const userMenuOptions = userMenu.querySelectorAll('.lk-menu-item');
         expect(userMenuOptions).toHaveLength(userOptions?.length);
         for (let i = 0; i < userOptions.length; i++) {
-            expect(userMenuOptions.at(i).text()).toEqual(userOptions[i]);
+            expect(userMenuOptions[i].textContent).toEqual(userOptions[i]);
         }
 
-        const dropdowns = wrapper.find('DropdownButton');
-
-        let dropdownCount = 0,
-            helpMenu,
-            adminMenu;
         if (adminOptions?.length > 0) {
-            adminMenu = dropdowns.at(dropdownCount);
+            const adminMenu = document.querySelector('.admin-dropdown');
             verifyMenuOptions(adminMenu, adminOptions);
-            dropdownCount += 1;
-        }
-        if (helpOptions?.length > 0) {
-            helpMenu = dropdowns.at(dropdownCount);
-            verifyMenuOptions(helpMenu, helpOptions);
-            dropdownCount += 1;
+        } else {
+            expect(document.querySelectorAll('.admin-dropdown')).toHaveLength(0);
         }
 
-        expect(dropdowns).toHaveLength(dropdownCount);
+        if (helpOptions?.length > 0) {
+            const helpMenu = document.querySelector('.help-dropdown');
+            verifyMenuOptions(helpMenu, helpOptions);
+        } else {
+            expect(document.querySelectorAll('.help-dropdown')).toHaveLength(0);
+        }
     }
 
     test('not initialized', () => {
         const model = new MenuSectionModel({});
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={model} user={new User()} />);
-        expect(tree).toEqual({});
+        renderWithAppContext(<UserMenuGroupImpl model={model} user={new User()} />);
+        verify(['Sign In'], null, null);
     });
 
     test('user not logged in', () => {
@@ -145,8 +127,8 @@ describe('UserMenuGroup', () => {
             isSignedIn: false,
         });
 
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={section} user={user} />);
-        verify(tree, ['Sign In'], null, ['Help']);
+        renderWithAppContext(<UserMenuGroupImpl model={section} user={user} />);
+        verify(['Sign In'], null, ['Help']);
     });
 
     test('no help icon', () => {
@@ -154,8 +136,8 @@ describe('UserMenuGroup', () => {
             isSignedIn: false,
         });
 
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={noHelpSection} user={user} />);
-        verify(tree, ['Documentation', 'Sign In'], null, null);
+        renderWithAppContext(<UserMenuGroupImpl model={noHelpSection} user={user} />);
+        verify(['Documentation', 'Sign In'], null, null);
     });
 
     test('with admin items', () => {
@@ -163,9 +145,9 @@ describe('UserMenuGroup', () => {
             isSignedIn: true,
         });
 
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={withAdmins} user={user} />);
+        renderWithAppContext(<UserMenuGroupImpl model={withAdmins} user={user} />);
 
-        verify(tree, ['Profile', 'Sign Out'], ['Application Settings'], ['Help']);
+        verify(['Profile', 'Sign Out'], ['Application Settings'], ['Help']);
     });
 
     test('user logged in, but not in dev mode', () => {
@@ -173,8 +155,8 @@ describe('UserMenuGroup', () => {
             isSignedIn: true,
         });
 
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={section} user={user} />);
-        verify(tree, ['Profile', 'Sign Out'], null, ['Help']);
+        renderWithAppContext(<UserMenuGroupImpl model={section} user={user} />);
+        verify(['Profile', 'Sign Out'], null, ['Help']);
     });
 
     test('user logged in dev mode', () => {
@@ -183,8 +165,8 @@ describe('UserMenuGroup', () => {
         });
         LABKEY.devMode = true;
 
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={section} user={user} />);
-        verify(tree, ['Profile', 'Sign Out'], ['Enable Redux Tools'], ['Help']);
+        renderWithAppContext(<UserMenuGroupImpl model={section} user={user} />);
+        verify(['Profile', 'Sign Out'], ['Enable Redux Tools'], ['Help']);
     });
 
     test('user logged in extra items', () => {
@@ -198,9 +180,9 @@ describe('UserMenuGroup', () => {
                 <MenuItem key="e2">Extra Two</MenuItem>
             </>
         );
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={section} user={user} extraUserItems={extraUserItems} />);
+        renderWithAppContext(<UserMenuGroupImpl model={section} user={user} extraUserItems={extraUserItems} />);
 
-        verify(tree, ['Profile', 'Extra One', 'Extra Two', 'Sign Out'], null, ['Help']);
+        verify(['Profile', 'Extra One', 'Extra Two', 'Sign Out'], null, ['Help']);
     });
 
     test('user logged in extra dev mode items', () => {
@@ -222,7 +204,7 @@ describe('UserMenuGroup', () => {
         );
 
         LABKEY.devMode = true;
-        const tree = mountWithAppServerContext(
+        renderWithAppContext(
             <UserMenuGroupImpl
                 extraDevItems={extraDevItems}
                 extraUserItems={extraUserItems}
@@ -232,7 +214,6 @@ describe('UserMenuGroup', () => {
         );
 
         verify(
-            tree,
             ['Profile', 'Extra One', 'Extra Two', 'Sign Out'],
             ['Enable Redux Tools', 'Extra Dev One', 'Extra Dev Two'],
             ['Help']
@@ -250,9 +231,9 @@ describe('UserMenuGroup', () => {
             isSignedIn: true,
         });
 
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={withAdmins} user={user} />);
+        renderWithAppContext(<UserMenuGroupImpl model={withAdmins} user={user} />);
 
-        verify(tree, ['Profile', 'Sign Out'], ['Application Settings'], ['Help', 'Release Notes']);
+        verify(['Profile', 'Sign Out'], ['Application Settings'], ['Help', 'Release Notes']);
     });
 
     test('with release note, without help', () => {
@@ -266,8 +247,7 @@ describe('UserMenuGroup', () => {
             isSignedIn: false,
         });
 
-        const tree = mountWithAppServerContext(<UserMenuGroupImpl model={noHelpSection} user={user} />);
-
-        verify(tree, ['Documentation', 'Sign In'], null, ['Release Notes']);
+        renderWithAppContext(<UserMenuGroupImpl model={noHelpSection} user={user} />);
+        verify(['Documentation', 'Sign In'], null, ['Release Notes']);
     });
 });
