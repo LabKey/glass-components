@@ -1,9 +1,24 @@
-import React, { FC, memo, useCallback, useRef } from 'react';
+import React, { FC, memo, useCallback, useMemo, useRef } from 'react';
 import DatePicker, { DatePickerProps } from 'react-datepicker';
 
-export const DateInput: FC<DatePickerProps> = memo(props => {
-    const { onSelect } = props;
+import { getDateFNSDateFormat, parseDateFNSTimeFormat } from '../util/Date';
+
+import { Container } from './base/models/Container';
+
+export interface DateInputProps {
+    container?: Container;
+}
+
+export const DateInput: FC<DateInputProps & DatePickerProps> = memo(props => {
+    const { container, dateFormat, onSelect, timeFormat, ...pickerProps } = props;
     const input = useRef<DatePicker>(undefined);
+    const formats = useMemo(() => {
+        const dateFormat_ = dateFormat ?? getDateFNSDateFormat(container);
+        return {
+            dateFormat: dateFormat_,
+            timeFormat: timeFormat ?? parseDateFNSTimeFormat(dateFormat_ as string),
+        };
+    }, [container, dateFormat, timeFormat]);
 
     const onIconClick = useCallback(() => {
         input.current?.setFocus();
@@ -23,10 +38,11 @@ export const DateInput: FC<DatePickerProps> = memo(props => {
             <DatePicker
                 autoComplete="off"
                 className="form-control"
-                dateFormat="MM/dd/yyyy"
                 wrapperClassName="form-control"
                 showTimeSelect={false}
-                {...props}
+                {...pickerProps}
+                dateFormat={formats.dateFormat}
+                timeFormat={formats.timeFormat}
                 ref={input}
                 onSelect={onSelect_}
             />

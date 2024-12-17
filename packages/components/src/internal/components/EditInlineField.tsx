@@ -6,7 +6,6 @@ import {
     getColDateFormat,
     getDateFNSDateFormat,
     getJsonDateTimeFormatString,
-    parseDateFNSTimeFormat,
     getJsonDateFormatString,
 } from '../util/Date';
 import { Key, useEnterEscape } from '../../public/useEnterEscape';
@@ -191,8 +190,8 @@ export const EditInlineField: FC<Props> = memo(props => {
     }, []);
 
     const dateInputDateFormat = useMemo<string>(
-        () => (isDate ? getColDateFormat(column, column ? undefined : getDateFNSDateFormat()) : undefined),
-        [column, isDate]
+        () => (isDate ? getColDateFormat(column, column ? undefined : getDateFNSDateFormat(container)) : undefined),
+        [column, container, isDate]
     );
 
     return (
@@ -216,6 +215,7 @@ export const EditInlineField: FC<Props> = memo(props => {
             {state.editing && isDateOrTime && !column && (
                 <DateInput
                     autoFocus
+                    container={container}
                     name={name}
                     onBlur={onBlur}
                     onKeyDown={onKeyDown}
@@ -225,7 +225,6 @@ export const EditInlineField: FC<Props> = memo(props => {
                     selected={dateValue}
                     showTimeSelect={!!column}
                     dateFormat={dateInputDateFormat}
-                    timeFormat={parseDateFNSTimeFormat(dateInputDateFormat)}
                 />
             )}
             {state.editing && isTextArea && (
