@@ -1,6 +1,12 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.5.4
+*Released*: 17 December 2024
+- Update `DateInput` to determine the default date/time from container configuration
+- Lineage: be defensive against seed not being set when focusing graph
+- Refactor `ColorPickerInput` to a functional component
+
 ### version 6.5.3
 *Released*: 16 December 2024
 - Add restrictions on names of domains
