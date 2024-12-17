@@ -17,6 +17,7 @@ import {
     sortCellKeys,
 } from './utils';
 import { initEditorModel } from './actions';
+import { Utils } from '@labkey/api';
 
 class MockEditableGridLoader implements EditableGridLoader {
     columns: QueryColumn[];
@@ -269,17 +270,20 @@ describe('getValidatedEditableGridValue', () => {
     test('boolean column', () => {
         const boolCol = new QueryColumn({ jsonType: 'boolean' });
 
-        const validValues = [
+        const validValues: string[] = [
             null,
             undefined,
             '',
             'true',
+            'true\r',
             't',
             'yes',
             'y',
             'on',
             '1',
             'false',
+            'false ',
+            ' false ',
             'f',
             'no',
             'n',
@@ -287,7 +291,10 @@ describe('getValidatedEditableGridValue', () => {
             '0',
         ];
         validValues.forEach(value => {
-            expect(getValidatedEditableGridValue(value, boolCol)).toStrictEqual({ message: undefined, value });
+            expect(getValidatedEditableGridValue(value, boolCol)).toStrictEqual({
+                message: undefined,
+                value: Utils.isString(value) ? value.trim() : value,
+            });
         });
 
         const invalidValues = ['tr', 'correct', 'wrong', '-1', '0.0', 'fail', 'bogus'];
