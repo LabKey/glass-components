@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.1.1
+*Released*: 17 December 2024
+- Issue 51864: Unexpected error when trying to add samples to an assay
+
 ### version 6.1.0
 *Released*: 29 November 2024
 - Issue 49016: App admin Groups and Users pages to show in subfolders when applicable
