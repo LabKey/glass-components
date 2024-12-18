@@ -1424,16 +1424,17 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
                                     {hasFields && summaryViewMode && (
                                         <div className="domain-form__summary-mode">
                                             <DomainPropertiesGrid
-                                                domain={domain}
-                                                search={search}
-                                                selectAll={selectAll}
                                                 actions={{
                                                     toggleSelectAll: this.toggleSelectAll,
                                                     scrollFunction: this.scrollFunction,
                                                     onFieldsChange: this.onFieldsChange,
                                                 }}
                                                 appPropertiesOnly={appPropertiesOnly}
+                                                domain={domain}
                                                 hasOntologyModule={hasModule(ONTOLOGY_MODULE_NAME)}
+                                                search={search}
+                                                selectAll={selectAll}
+                                                showFilterCriteria={domainFormDisplayOptions.showFilterCriteria}
                                             />
                                         </div>
                                     )}

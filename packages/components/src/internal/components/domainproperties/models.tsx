@@ -427,7 +427,7 @@ export class DomainDesign
         return mapping;
     }
 
-    getGridData(appPropertiesOnly: boolean, hasOntologyModule: boolean): List<any> {
+    getGridData(appPropertiesOnly: boolean, hasOntologyModule: boolean, showFilterCriteria: boolean): List<any> {
         return this.fields
             .map((field, i) => {
                 let fieldSerial = DomainField.serialize(field);
@@ -444,6 +444,12 @@ export class DomainDesign
                 // Add back subset of field properties stripped by the serialize
                 fieldSerial.selected = field.selected;
                 fieldSerial.visible = field.visible;
+
+                if (showFilterCriteria) {
+                    fieldSerial.filterCriteria = field.filterCriteria.map(filterCriteriaToStr).join('\n');
+                } else {
+                    delete fieldSerial.filterCriteria;
+                }
 
                 return ImmutableMap(
                     Object.keys(fieldSerial).map(key => {
@@ -481,7 +487,8 @@ export class DomainDesign
         scrollFunction: (i: number) => void,
         domainKindName: string,
         appPropertiesOnly: boolean,
-        hasOntologyModule: boolean
+        hasOntologyModule: boolean,
+        showFilterCriteria: boolean
     ): List<GridColumn | DomainPropertiesGridColumn> {
         const selectionCol = new GridColumn({
             index: GRID_SELECTION_INDEX,
@@ -529,18 +536,16 @@ export class DomainDesign
 
         delete columns.name;
         columns = removeUnusedProperties(columns);
-        if (!hasOntologyModule) {
-            columns = removeUnusedOntologyProperties(columns);
-        }
-        if (appPropertiesOnly) {
-            columns = removeNonAppProperties(columns);
-        }
-        if (domainKindName !== VAR_LIST && domainKindName !== INT_LIST) {
-            delete columns.isPrimaryKey;
-        }
-        if (!(appPropertiesOnly && domainKindName === 'SampleSet')) {
-            delete columns.scannable;
-        }
+
+        if (!hasOntologyModule) columns = removeUnusedOntologyProperties(columns);
+
+        if (appPropertiesOnly) columns = removeNonAppProperties(columns);
+
+        if (domainKindName !== VAR_LIST && domainKindName !== INT_LIST) delete columns.isPrimaryKey;
+
+        if (!(appPropertiesOnly && domainKindName === 'SampleSet')) delete columns.scannable;
+
+        if (!showFilterCriteria) delete columns.filterCriteria;
 
         const unsortedColumns = List(
             Object.keys(columns).map(key => ({ index: key, caption: camelCaseToTitleCase(key), sortable: true }))
@@ -2102,8 +2107,8 @@ export interface IDomainFormDisplayOptions {
     isDragDisabled?: boolean;
     phiLevelDisabled?: boolean;
     retainReservedFields?: boolean;
-    showScannableOption?: boolean;
     showFilterCriteria?: boolean;
+    showScannableOption?: boolean;
     textChoiceLockedForDomain?: boolean;
     textChoiceLockedSqlFragment?: string;
 }
@@ -2139,7 +2144,10 @@ export class DomainDetails extends ImmutableRecord({
     declare nameReadOnly?: boolean;
     declare namePreviews?: string[];
 
-    static create(rawDesign: ImmutableMap<string, any> = ImmutableMap(), domainKindType: string = Domain.KINDS.UNKNOWN): DomainDetails {
+    static create(
+        rawDesign: ImmutableMap<string, any> = ImmutableMap(),
+        domainKindType: string = Domain.KINDS.UNKNOWN
+    ): DomainDetails {
         let design;
         if (rawDesign) {
             const domainDesign = DomainDesign.create(rawDesign.get('domainDesign'));

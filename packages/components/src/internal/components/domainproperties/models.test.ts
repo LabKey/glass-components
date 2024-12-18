@@ -128,7 +128,6 @@ const gridDataAppPropsOnlyConst = [
         propertyValidators: '',
         format: '',
         fieldIndex: 0,
-        filterCriteria: '',
         importAliases: '',
         selected: '',
         description: '',
@@ -189,7 +188,6 @@ const gridColumnsConst = [
     nameCol,
     { index: 'URL', caption: 'URL', sortable: true },
     { index: 'PHI', caption: 'PHI', sortable: true },
-    { index: 'filterCriteria', caption: 'Filter Criteria', sortable: true },
     { index: 'rangeURI', caption: 'Range URI', sortable: true },
     { index: 'required', caption: 'Required', sortable: true },
     { index: 'lockType', caption: 'Lock Type', sortable: true },
@@ -728,22 +726,37 @@ describe('DomainDesign', () => {
     });
 
     test('getGridData with ontology', () => {
-        const gridData = GRID_DATA.getGridData(false, true);
+        const gridData = GRID_DATA.getGridData(false, true, false);
         expect(gridData.toJS()).toStrictEqual(gridDataConstWithOntology);
     });
 
     test('getGridData without ontology', () => {
-        const gridData = GRID_DATA.getGridData(false, false);
+        const gridData = GRID_DATA.getGridData(false, false, false);
         expect(gridData.toJS()).toStrictEqual(gridDataConst);
     });
 
     test('getGridData appPropertiesOnly', () => {
-        let gridData = GRID_DATA.getGridData(true, true);
+        let gridData = GRID_DATA.getGridData(true, true, false);
         expect(gridData.toJS()).toStrictEqual(gridDataAppPropsOnlyConst);
 
         // should be the same with or without the Ontology module in this case
-        gridData = GRID_DATA.getGridData(true, false);
+        gridData = GRID_DATA.getGridData(true, false, false);
         expect(gridData.toJS()).toStrictEqual(gridDataAppPropsOnlyConst);
+    });
+
+    test('getGridData with filterCriteria', () => {
+        const expected = [
+            {
+                ...gridDataAppPropsOnlyConst[0],
+                filterCriteria: '',
+            },
+        ];
+        let gridData = GRID_DATA.getGridData(true, true, true);
+        expect(gridData.toJS()).toStrictEqual(expected);
+
+        // should be the same with or without the Ontology module in this case
+        gridData = GRID_DATA.getGridData(true, false, true);
+        expect(gridData.toJS()).toStrictEqual(expected);
     });
 
     test('getGridColumns', () => {
@@ -752,7 +765,7 @@ describe('DomainDesign', () => {
                 { name: 'a', rangeURI: INTEGER_TYPE.rangeURI },
                 { name: 'b', rangeURI: TEXT_TYPE.rangeURI },
             ],
-        }).getGridColumns(jest.fn(), jest.fn(), 'domainKindName', false, false);
+        }).getGridColumns(jest.fn(), jest.fn(), 'domainKindName', false, false, false);
 
         expect(gridColumns.toJS().slice(2)).toStrictEqual(gridColumnsConst.slice(2));
 
@@ -769,6 +782,17 @@ describe('DomainDesign', () => {
         const nameColConstTest = gridColumnsConst[1] as GridColumn;
         delete nameColConstTest.cell;
         expect(nameColTest).toStrictEqual(nameColConstTest);
+
+        const gridColumnsWithFilterCriteria = DomainDesign.create({
+            fields: [
+                { name: 'a', rangeURI: INTEGER_TYPE.rangeURI },
+                { name: 'b', rangeURI: TEXT_TYPE.rangeURI },
+            ],
+        }).getGridColumns(jest.fn(), jest.fn(), 'domainKindName', false, false, true);
+        const expectedFilterCriteriaColumn = { index: 'filterCriteria', caption: 'Filter Criteria', sortable: true };
+        expect(gridColumnsWithFilterCriteria.toJS().find(c => c.index === 'filterCriteria')).toStrictEqual(
+            expectedFilterCriteriaColumn
+        );
     });
 
     test('uniqueConstraintFieldNames in create', () => {
