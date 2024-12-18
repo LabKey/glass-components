@@ -5,10 +5,12 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD
 - Parent type selector updates for adding and removing from EditableGrid
   - AddEntityButton asButton property to allow for icon only version
-  - DropdownAnchor asAnchor property to allow for version without `<a>` tag and href
   - QueryColumn isParentInput() helper to check for either MaterialInput or DataInput
   - EditableColumnMetadata onRemoveColumn optional prop to allow for callback for EditableGrid column removal menu item
   - EditableGrid additionalButtons optional prop to allow custom items to be added to grid button bar
+  - DropdownAnchor
+    - renamed to DropdownMenu
+    - add asAnchor property to allow for version without `<a>` tag and href
 
 ### version 6.5.3
 *Released*: 16 December 2024
