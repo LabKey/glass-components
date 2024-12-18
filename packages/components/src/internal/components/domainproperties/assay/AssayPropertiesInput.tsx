@@ -11,34 +11,26 @@ import {
     RUN_PROPERTIES_TOPIC,
 } from '../../../util/helpLinks';
 import { DomainFieldLabel, DomainFieldLabelProps } from '../DomainFieldLabel';
-
 import { AutoLinkToStudyDropdown } from '../AutoLinkToStudyDropdown';
-
 import { buildURL } from '../../../url/AppURL';
 import { Container } from '../../base/models/Container';
 import { AddEntityButton } from '../../buttons/AddEntityButton';
 import { RemoveEntityButton } from '../../buttons/RemoveEntityButton';
-
 import { FileAttachmentForm } from '../../../../public/files/FileAttachmentForm';
 import { getWebDavFiles, getWebDavUrl, uploadWebDavFileToUrl } from '../../../../public/files/WebDav';
-
 import { Alert } from '../../base/Alert';
-
 import { AttachmentCard, IAttachment } from '../../../renderers/AttachmentCard';
-
 import { getAttachmentTitleFromName } from '../../../renderers/FileColumnRenderer';
-
 import { setCopyValue } from '../../../events';
-
 import { getFileExtension } from '../../files/actions';
-
 import { resolveErrorMessage } from '../../../util/messaging';
+import { FilterCriteriaRenderer } from '../../../FilterCriteriaRenderer';
+import { DisableableButton } from '../../buttons/DisableableButton';
 
 import { AssayProtocolModel } from './models';
 import { FORM_IDS, SCRIPTS_DIR } from './constants';
 import { getScriptEngineForExtension, getValidPublishTargets } from './actions';
 import { useFilterCriteriaContext } from './FilterCriteriaContext';
-import { FilterCriteriaRenderer } from '../../../FilterCriteriaRenderer';
 
 interface AssayPropertiesInputProps extends DomainFieldLabelProps, PropsWithChildren {
     colSize?: number;
@@ -707,7 +699,7 @@ export const SaveScriptDataInput: FC<InputProps> = memo(({ model, onChange }) =>
     </AssayPropertiesInput>
 ));
 
-export const PlateMetadataInput: FC<InputProps> = memo(props => (
+export const PlateMetadataInput: FC<InputProps> = memo(({ model, onChange }) => (
     <AssayPropertiesInput
         label="Plate Metadata"
         helpTipBody={
@@ -717,12 +709,7 @@ export const PlateMetadataInput: FC<InputProps> = memo(props => (
             </p>
         }
     >
-        <input
-            type="checkbox"
-            id={FORM_IDS.PLATE_METADATA}
-            checked={props.model.plateMetadata}
-            onChange={props.onChange}
-        />
+        <input type="checkbox" id={FORM_IDS.PLATE_METADATA} checked={model.plateMetadata} onChange={onChange} />
     </AssayPropertiesInput>
 ));
 
@@ -737,13 +724,15 @@ export const FilterCriteriaInput: FC<InputProps> = memo(({ model }) => {
 
     if (!domain) return null;
 
+    const disabledMsg = model.plateMetadata ? undefined : 'Plate Metadata must be enabled';
+
     return (
         <AssayPropertiesInput label="Hit Selection Criteria">
             <div className="filter-criteria-input">
                 <div className="filter-criteria-input__button">
-                    <button className="btn btn-default" onClick={onClick} type="button">
+                    <DisableableButton disabledMsg={disabledMsg} onClick={onClick}>
                         Edit Criteria
-                    </button>
+                    </DisableableButton>
                 </div>
                 <div className="filter-criteria-input__criteria">
                     <FilterCriteriaRenderer fields={domain.fields.toArray()} renderEmptyMessage={false} />

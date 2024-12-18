@@ -196,7 +196,7 @@ const AssayPropertiesForm: FC<AssayPropertiesFormProps> = memo(props => {
                         )}
                         {model.allowPlateMetadata && <PlateMetadataInput model={model} onChange={onInputChange} />}
 
-                        <FilterCriteriaInput model={model} onChange={onInputChange} />
+                        {model.allowPlateMetadata && <FilterCriteriaInput model={model} onChange={onInputChange} />}
                     </div>
                 </div>
             )}
