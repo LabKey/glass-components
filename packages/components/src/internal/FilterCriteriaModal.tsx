@@ -152,6 +152,11 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
     const loading = isLoading(loadingState);
     const hasFields = filterCriteriaFields !== undefined && filterCriteriaFields.length > 0;
 
+    // If we're opening the modal to a specific field we only want to show that field and any related fields
+    const fieldsToRender = filterCriteriaFields?.filter(
+        field => openTo === undefined || field.propertyId === openTo || field.referencePropertyId === openTo
+    );
+
     return (
         <Modal bsSize="lg" title="Hit Selection Criteria" onCancel={onClose} onConfirm={onConfirm} confirmText="Apply">
             {loading && <LoadingSpinner />}
@@ -161,13 +166,15 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                         <div className="field-modal__col-title">Fields</div>
                         <div className="field-modal__col-content">
                             <div className="list-group">
-                                {!hasFields && <div className="field-modal__empty-msg padding">No fields defined yet.</div>}
-                                {filterCriteriaFields?.map((column, index) => (
+                                {!hasFields && (
+                                    <div className="field-modal__empty-msg padding">No fields defined yet.</div>
+                                )}
+                                {fieldsToRender.map((field, index) => (
                                     <ChoicesListItem
                                         active={filterCriteriaFields[index].propertyId === selectedFieldId}
                                         index={index}
-                                        key={column.name}
-                                        label={column.name}
+                                        key={field.name}
+                                        label={field.name}
                                         onSelect={onSelect}
                                     />
                                 ))}
