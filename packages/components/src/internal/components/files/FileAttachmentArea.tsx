@@ -43,11 +43,11 @@ export const FileAttachmentArea: FC<SimpleFileAttachmentContainerProps> = memo((
 
     return (
         <div className="file-attachment-area" onDrop={onDrop}>
-            <div className="file-upload--container">
+            <div className="file-upload__container">
                 <label
                     className={classNames({
-                        'file-upload--label': !compact,
-                        'file-upload--label--compact': compact,
+                        'file-upload__label': !compact,
+                        'file-upload__label--compact': compact,
                         'file-upload__is-hover': highlight,
                     })}
                     htmlFor="simple-file-attachment-container"
@@ -60,7 +60,7 @@ export const FileAttachmentArea: FC<SimpleFileAttachmentContainerProps> = memo((
                     Select file or drag and drop here
                 </label>
                 <input
-                    className="file-upload--input"
+                    className="file-upload__input"
                     id="simple-file-attachment-container"
                     multiple
                     onChange={onChange}

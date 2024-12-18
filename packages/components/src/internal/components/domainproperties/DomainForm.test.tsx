@@ -138,7 +138,7 @@ describe('DomainForm', () => {
             renderWithAppContext(<DomainForm {...defaultProps()} domain={domain} />);
         });
 
-        expect(document.querySelectorAll('.file-upload--container')).toHaveLength(1);
+        expect(document.querySelectorAll('.file-upload__container')).toHaveLength(1);
         expect(document.querySelectorAll('.file-form-formats')).toHaveLength(1);
         expect(document.querySelectorAll('.domain-form-manual-section')).toHaveLength(1);
         expect(document.querySelectorAll('.domain-form-manual-btn')).toHaveLength(1);
@@ -238,7 +238,7 @@ describe('DomainForm', () => {
             container = renderWithAppContext(<DomainForm domain={domain} onChange={jest.fn()} />);
         });
 
-        expect(document.querySelectorAll('.file-upload--container')).toHaveLength(0);
+        expect(document.querySelectorAll('.file-upload__container')).toHaveLength(0);
         expect(document.querySelectorAll('.file-form-formats')).toHaveLength(0);
         expect(document.querySelectorAll('.domain-form-manual-section')).toHaveLength(0);
         expect(document.querySelectorAll('.domain-form-manual-btn')).toHaveLength(0);

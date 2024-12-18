@@ -296,7 +296,7 @@ describe('AssayDesignerPanels', () => {
         expect(document.querySelectorAll('.domain-form-no-field-panel')).toHaveLength(0);
         expect(document.querySelectorAll('.domain-form-add-btn')).toHaveLength(0);
         expect(document.querySelectorAll('.domain-form-manual-btn')).toHaveLength(3);
-        expect(document.querySelectorAll('.file-upload--container')).toHaveLength(3);
+        expect(document.querySelectorAll('.file-upload__container')).toHaveLength(3);
         expect(document.querySelectorAll('.form-buttons')).toHaveLength(1);
         expect(document.querySelectorAll('.save-button')).toHaveLength(1);
         expect(document.querySelector('.save-button').getAttribute('disabled')).toBe(null);
@@ -311,7 +311,7 @@ describe('AssayDesignerPanels', () => {
             expect(document.querySelectorAll('.domain-heading-collapsible')).toHaveLength(2);
         });
         setAssayName('Foo');
-        expect(document.querySelectorAll('.file-upload--container')).toHaveLength(1);
+        expect(document.querySelectorAll('.file-upload__container')).toHaveLength(1);
         expect(document.querySelector('.file-form-formats').textContent).toContain(
             shouldInfer ? 'include: .csv, .tsv, .txt, .xls, .xlsx, .json' : 'include: .json'
         );

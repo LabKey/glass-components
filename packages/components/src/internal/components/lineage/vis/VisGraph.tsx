@@ -157,7 +157,7 @@ export class VisGraph extends Component<VisGraphProps, VisGraphState> {
         }
     };
 
-    // move the node to the end of the list so it is drawn on top of any of it's neighbors
+    // move the node to the end of the list so it is drawn on top of it's neighbors
     private moveNodeToTop = (id: IdType): void => {
         const { nodeIndices } = this.network.body;
         const idx = nodeIndices.indexOf(id);
@@ -176,23 +176,21 @@ export class VisGraph extends Component<VisGraphProps, VisGraphState> {
     };
 
     fitGraph = (): void => {
-        // NK: This is a arbitrarily set heuristic for deciding when to focus vs when to fit to
+        const { seed } = this.props;
+
+        // NK: This is an arbitrarily set heuristic for deciding when to focus vs when to fit to
         // the entire graph. I'm trying to delineate "small" graphs from "large" graphs.
-        if (this.network.body.nodeIndices.length > 50) {
-            this.focusSeed();
+        if (this.network.body.nodeIndices.length > 50 && seed) {
+            // Focus on the seed (if set)
+            this.network.fit({ animation: false, nodes: [seed] });
+
+            // Zoom out a bit from the default fitted zoom level
+            const scale = this.network.getScale() - 0.25;
+            if (scale > 0) {
+                this.network.moveTo({ scale });
+            }
         } else {
             this.network.fit();
-        }
-    };
-
-    focusSeed = (): void => {
-        // Focus on the seed
-        this.network.fit({ animation: false, nodes: [this.props.seed] });
-
-        // Zoom out a bit from the default fitted zoom level
-        const scale = this.network.getScale() - 0.25;
-        if (scale > 0) {
-            this.network.moveTo({ scale });
         }
     };
 

@@ -12,6 +12,25 @@ Components, models, actions, and utility functions for LabKey applications and p
     - renamed to DropdownMenu
     - add asAnchor property to allow for version without `<a>` tag and href
 
+### version 6.6.1
+- merge forward v6.1.1 changes
+
+### version 6.6.0
+*Released*: 17 December 2024
+- Delete FileListing
+- Delete FileListingForm
+- FileAttachmentEntry: convert to FC, simplify props
+- Update file related styles
+  - Change class names to match BEM style
+- Remove duplicate CSS imports
+- Remove snapshot tests
+
+### version 6.5.4
+*Released*: 17 December 2024
+- Update `DateInput` to determine the default date/time from container configuration
+- Lineage: be defensive against seed not being set when focusing graph
+- Refactor `ColorPickerInput` to a functional component
+
 ### version 6.5.3
 *Released*: 16 December 2024
 - Add restrictions on names of domains
@@ -76,6 +95,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: 3 December 2024
 - Issue 51707: Change "Registry Source Type" to "Source Type" and "Registry" to "Registry Sources"
 - Issue 51775: Don't produce link for non-standard assay import if not supported
+
+### version 6.1.1
+*Released*: 17 December 2024
+- Issue 51864: Unexpected error when trying to add samples to an assay
 
 ### version 6.1.0
 *Released*: 29 November 2024

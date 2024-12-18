@@ -118,8 +118,6 @@ import { VerticalScrollPanel } from './internal/components/base/VerticalScrollPa
 import { FileAttachmentForm } from './public/files/FileAttachmentForm';
 import { TemplateDownloadButton } from './public/files/TemplateDownloadButton';
 import { DEFAULT_FILE } from './internal/components/files/models';
-import { FilesListing } from './internal/components/files/FilesListing';
-import { FilesListingForm } from './internal/components/files/FilesListingForm';
 import { FileAttachmentEntry } from './internal/components/files/FileAttachmentEntry';
 import {
     createWebDavDirectory,
@@ -1588,8 +1586,6 @@ export {
     DataTypeFoldersPanel,
     // file / webdav related items
     DEFAULT_FILE,
-    FilesListing,
-    FilesListingForm,
     FileAttachmentArea,
     FileAttachmentEntry,
     FileAttachmentForm,
