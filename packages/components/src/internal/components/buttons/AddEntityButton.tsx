@@ -7,10 +7,10 @@ export interface AddEntityElementProps {
     isAnother?: boolean;
 }
 
-export const AddEntityElement: FC<AddEntityElementProps> = memo(({ entity }) => {
+export const AddEntityElement: FC<AddEntityElementProps> = memo(({ entity, isAnother }) => {
     return (
         <>
-            <i className="fa fa-plus-circle container--addition-icon" /> Add {entity}
+            <i className="fa fa-plus-circle container--addition-icon" /> Add {isAnother ? ' Another ' : ''}{entity}
         </>
     );
 });
