@@ -150,12 +150,12 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
     }, [filterCriteriaFields, selectedFieldId]);
 
     const loading = isLoading(loadingState);
-    const hasFields = filterCriteriaFields !== undefined && filterCriteriaFields.length > 0;
 
     // If we're opening the modal to a specific field we only want to show that field and any related fields
     const fieldsToRender = filterCriteriaFields?.filter(
         field => openTo === undefined || field.propertyId === openTo || field.referencePropertyId === openTo
     );
+    const hasFields = fieldsToRender !== undefined && fieldsToRender.length > 0;
 
     return (
         <Modal bsSize="lg" title="Hit Selection Criteria" onCancel={onClose} onConfirm={onConfirm} confirmText="Apply">
@@ -169,7 +169,7 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                                 {!hasFields && (
                                     <div className="field-modal__empty-msg padding">No fields defined yet.</div>
                                 )}
-                                {fieldsToRender.map((field, index) => (
+                                {fieldsToRender?.map((field, index) => (
                                     <ChoicesListItem
                                         active={filterCriteriaFields[index].propertyId === selectedFieldId}
                                         index={index}
