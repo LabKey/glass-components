@@ -270,9 +270,7 @@ export class DomainRowExpandedOptions extends React.Component<Props> {
             domainFormDisplayOptions,
             getDomainFields,
         } = this.props;
-        const dataType = field.dataType.name;
-        const isNumber = dataType === 'double' || dataType === 'int';
-        const showFilterCriteria = domainFormDisplayOptions.showFilterCriteria && isNumber && field.measure;
+        const showFilterCriteria = domainFormDisplayOptions.showFilterCriteria && field.isFilterCriteriaField();
 
         return (
             <div className="domain-row-container">

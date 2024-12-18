@@ -38,7 +38,6 @@ import { FilterCriteriaContext } from './FilterCriteriaContext';
 
 const PROPERTIES_PANEL_INDEX = 0;
 const DOMAIN_PANEL_INDEX = 1;
-const resultsDomainPredicate = (domain: DomainDesign): boolean => domain.isNameSuffixMatch('Data');
 
 interface AssayDomainFormProps
     extends Omit<InjectedBaseDomainDesignerProps, 'onFinish' | 'setSubmitting' | 'submitting'> {
@@ -336,9 +335,11 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
     saveFilterCriteria = (filterCriteria: FilterCriteriaMap) => {
         this.setState(current => {
             const protocolModel = current.protocolModel;
-            const resultsIndex = current.protocolModel.domains.findIndex(resultsDomainPredicate);
+            const resultsIndex = current.protocolModel.domains.findIndex((domain: DomainDesign): boolean =>
+                domain.isNameSuffixMatch('Data')
+            );
             const domains = current.protocolModel.domains;
-            let resultsDomain = domains.find(resultsDomainPredicate);
+            let resultsDomain = domains.get(resultsIndex);
             // Clear the existing values first
             let fields = resultsDomain.fields.map(f => f.set('filterCriteria', []) as DomainField).toList();
 

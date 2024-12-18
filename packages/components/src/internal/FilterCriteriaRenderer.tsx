@@ -4,11 +4,6 @@ import { Filter } from '@labkey/api';
 
 import { DomainField } from './components/domainproperties/models';
 
-function getFilterDisplaySymbol(op: string) {
-    const filterType = Object.values(Filter.Types).find(ft => ft.getURLSuffix() === op);
-    return filterType.getDisplaySymbol();
-}
-
 interface FieldWithCriteria {
     field: DomainField;
 }
@@ -18,12 +13,13 @@ const FilterCriteriaField: FC<FieldWithCriteria> = memo(({ field }) => {
         <>
             {field.filterCriteria.map(criteria => (
                 <li className="hit-criteria-renderer__field-value" key={criteria.name + criteria.op + criteria.value}>
-                    {criteria.name} {getFilterDisplaySymbol(criteria.op)} {criteria.value}
+                    {criteria.name} {Filter.getFilterTypeForURLSuffix(criteria.op).getDisplaySymbol()} {criteria.value}
                 </li>
             ))}
         </>
     );
 });
+FilterCriteriaField.displayName = 'FilterCriteriaField';
 
 interface Props {
     fields: DomainField[];
@@ -52,3 +48,4 @@ export const FilterCriteriaRenderer: FC<Props> = memo(({ fields, renderEmptyMess
         </div>
     );
 });
+FilterCriteriaRenderer.displayName = 'FilterCriteriaRenderer';

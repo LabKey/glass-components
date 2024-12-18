@@ -1299,6 +1299,11 @@ export class DomainField
         return isFieldDeletable(this);
     }
 
+    isFilterCriteriaField(): boolean {
+        const { dataType, measure } = this;
+        return measure && (dataType.name === 'double' || dataType.name === 'int');
+    }
+
     static hasRangeValidation(field: DomainField): boolean {
         return (
             field.dataType === INTEGER_TYPE ||

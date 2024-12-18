@@ -35,16 +35,14 @@ function fieldLoaderFactory(
 ): FieldLoader {
     return async () => {
         const sourceFields = domain.fields
-            .filter(field => {
-                // Note: Maybe this logic should be in the APIWrapper.getFilterCriteriaColumns?
-                const dataType = field.dataType.name;
-                return field.measure && (dataType === 'double' || dataType === 'int');
-            })
+            .filter(field => field.isFilterCriteriaField())
             .map(field => field.name)
             .toArray();
+        // The API returns an error if you don't pass any fields, so we can skip the API request
+        if (sourceFields.length === 0) return [];
         const referenceFields = await fetch(protocolId, sourceFields, container);
 
-        return Object.keys(referenceFields).reduce((result, sourceName) => {
+        return Object.keys(referenceFields).reduce<FilterCriteriaField[]>((result, sourceName) => {
             const sourceField = domain.fields.find(field => field.name === sourceName);
             result.push({
                 name: sourceField.name,
@@ -59,7 +57,7 @@ function fieldLoaderFactory(
                     isKeyField: false,
                 }))
             );
-        }, [] as FilterCriteriaField[]);
+        }, []);
     };
 }
 
@@ -76,11 +74,7 @@ interface Props {
 export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, protocolModel }) => {
     const { api } = useAppContext();
     const { protocolId, container } = protocolModel;
-    const domain = useMemo(
-        () => protocolModel.domains.find(domain => domain.isNameSuffixMatch('Data')),
-        [protocolModel.domains]
-    );
-
+    const domain = useMemo(() => protocolModel.getDomainByNameSuffix('Data'), [protocolModel]);
     const [filterCriteria, setFilterCriteria] = useState<FilterCriteriaMap>(() => {
         return domain.fields.reduce((result, field) => {
             if (field.filterCriteria) result.set(field.propertyId, [...field.filterCriteria]);
