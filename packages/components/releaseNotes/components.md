@@ -5,6 +5,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD
 - Issue 51816: trim strings before validating
 - Update AddEntityButton with new parameter
+- Add `getMultipleDataTypeExcludedContainers` to `FolderAPI`.
 
 ### version 6.7.0
 *Released*: 18 December 2024
