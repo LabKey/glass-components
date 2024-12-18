@@ -1,8 +1,6 @@
 import React, { FC, memo, useMemo } from 'react';
 
-import { Filter } from '@labkey/api';
-
-import { DomainField } from './components/domainproperties/models';
+import { DomainField, filterCriteriaToStr } from './components/domainproperties/models';
 
 interface FieldWithCriteria {
     field: DomainField;
@@ -13,7 +11,7 @@ const FilterCriteriaField: FC<FieldWithCriteria> = memo(({ field }) => {
         <>
             {field.filterCriteria.map(criteria => (
                 <li className="hit-criteria-renderer__field-value" key={criteria.name + criteria.op + criteria.value}>
-                    {criteria.name} {Filter.getFilterTypeForURLSuffix(criteria.op).getDisplaySymbol()} {criteria.value}
+                    {filterCriteriaToStr(criteria)}
                 </li>
             ))}
         </>

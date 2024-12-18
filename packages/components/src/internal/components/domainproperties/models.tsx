@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { fromJS, List, Map as ImmutableMap, Record as ImmutableRecord } from 'immutable';
-import { ActionURL, Domain, getServerContext, Utils } from '@labkey/api';
+import { ActionURL, Domain, Filter, getServerContext, Utils } from '@labkey/api';
 import React, { ReactNode } from 'react';
 
 import { GRID_NAME_INDEX, GRID_SELECTION_INDEX } from '../../constants';
@@ -900,6 +900,10 @@ export interface FilterCriteria {
 }
 // Note: this is a regular Javascript Map, not an Immutable Map
 export type FilterCriteriaMap = Map<number, FilterCriteria[]>;
+
+export function filterCriteriaToStr(fc: FilterCriteria): string {
+    return `${fc.name} ${Filter.getFilterTypeForURLSuffix(fc.op).getDisplaySymbol()} ${fc.value}`;
+}
 
 export class DomainField
     extends ImmutableRecord({
