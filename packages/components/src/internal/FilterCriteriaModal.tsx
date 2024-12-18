@@ -27,10 +27,6 @@ type ReferenceFieldFetcher = (
     containerPath: string
 ) => Promise<FilterCriteriaColumns>;
 
-// This propertyIdCounter is strictly for reference properties. Starts at -100 so we don't conflict with new fields
-// which start at -1
-let propertyIdCounter = -100;
-
 function fieldLoaderFactory(
     protocolId: number,
     container: string,
@@ -56,9 +52,9 @@ function fieldLoaderFactory(
                 isKeyField: sourceField.isPrimaryKey || sourceField.isUniqueIdField(),
             });
             return result.concat(
-                referenceFields[sourceName].map(rawField => ({
+                referenceFields[sourceName].map((rawField, index) => ({
                     name: rawField.name,
-                    propertyId: rawField.propertyId === 0 ? propertyIdCounter-- : rawField.propertyId,
+                    propertyId: rawField.propertyId === 0 ? sourceField.propertyId * 100 + index : rawField.propertyId,
                     referencePropertyId: sourceField.propertyId,
                     isKeyField: false,
                 }))
