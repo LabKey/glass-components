@@ -109,7 +109,7 @@ const AssayDomainForm: FC<AssayDomainFormProps> = memo(props => {
             domainKindDisplayName: 'assay design',
             hideFilePropertyType,
             hideInferFromFile,
-            showFilterCriteria: isResultsDomain,
+            showFilterCriteria: isResultsDomain && protocolModel.plateMetadata,
             textChoiceLockedForDomain,
         };
     }, [
@@ -117,6 +117,7 @@ const AssayDomainForm: FC<AssayDomainFormProps> = memo(props => {
         domainFormDisplayOptions,
         protocolModel.editableResults,
         protocolModel.editableRuns,
+        protocolModel.plateMetadata,
         protocolModel.providerName,
     ]);
     return (
