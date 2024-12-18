@@ -1,8 +1,8 @@
-import { Ajax, Utils, RequestOptions } from '@labkey/api';
+import { Ajax, Utils } from '@labkey/api';
 
 import { handleRequestFailure } from './util/utils';
 
-type Options = Omit<RequestOptions, 'success' | 'failure'>;
+type Options = Omit<Ajax.RequestOptions, 'success' | 'failure'>;
 type RequestHandler = (request: XMLHttpRequest) => void;
 
 /**
