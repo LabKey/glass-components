@@ -344,7 +344,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
             filterCriteria.forEach((fieldCriteria, propertyId) => {
                 const domainFieldIdx = fields.findIndex(d => d.propertyId === propertyId);
 
-                if (!domainFieldIdx) {
+                if (domainFieldIdx < 0) {
                     console.warn(`Unable to find domain field with property id ${propertyId}`);
                     return;
                 }
