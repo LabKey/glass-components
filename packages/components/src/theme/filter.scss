@@ -135,15 +135,14 @@
         }
     }
 
-    .field-modal__empty-msg {
-        color: $gray-light;
-        font-size: 16px;
-        padding: 10px 10px;
-    }
-
     .field-value-bool-label {
         font-weight: normal;
     }
+}
+
+.field-modal__empty-msg {
+    color: $gray-light;
+    font-size: 16px;
 }
 
 .filter-expression__input-wrapper {

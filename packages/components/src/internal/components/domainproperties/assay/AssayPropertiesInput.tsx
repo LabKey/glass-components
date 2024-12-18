@@ -739,13 +739,13 @@ export const FilterCriteriaInput: FC<InputProps> = memo(({ model }) => {
 
     return (
         <AssayPropertiesInput label="Hit Selection Criteria">
-            <div className="hit-selection-criteria-input">
-                <div className="hit-selection-criteria-input__button">
+            <div className="filter-criteria-input">
+                <div className="filter-criteria-input__button">
                     <button className="btn btn-default" onClick={onClick} type="button">
                         Edit Criteria
                     </button>
                 </div>
-                <div className="hit-selection-criteria-input__criteria">
+                <div className="filter-criteria-input__criteria">
                     <FilterCriteriaRenderer fields={domain.fields.toArray()} renderEmptyMessage={false} />
                 </div>
             </div>
