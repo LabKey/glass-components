@@ -25,7 +25,7 @@ const DROPDOWN_MENU_CLASS = 'dropdown-menu';
  * There are a few narrow cases where clicking on something in a dropdown menu will trigger a click event on the actual
  * <ul> element. This handler cancels the event if the user triggers such an event.
  */
-function handleMenuClick(event: MouseEvent<HTMLUListElement>) {
+function handleMenuClick(event: MouseEvent<HTMLUListElement>): void {
     const target = event.target as HTMLElement;
 
     if (target.classList.contains(DROPDOWN_MENU_CLASS)) {
@@ -44,7 +44,7 @@ function useToggleState<T extends HTMLElement>(): ToggleState<T> {
     const toggleRef = useRef<T>();
     const [open, setOpen] = useState<boolean>(false);
     const onClick = useCallback(event => {
-        event.preventDefault(); // Needed so DropdownAnchor doesn't navigate to home page on click
+        event.preventDefault(); // Needed so DropdownMenu doesn't navigate to home page on click
         setOpen(o => !o);
     }, []);
 
@@ -72,7 +72,8 @@ function useToggleState<T extends HTMLElement>(): ToggleState<T> {
     return { onClick, open, setOpen, toggleRef };
 }
 
-interface DropdownAnchorProps extends PropsWithChildren {
+interface DropdownMenuProps extends PropsWithChildren {
+    asAnchor?: boolean;
     className?: string;
     label?: string;
     pullRight?: boolean;
@@ -82,29 +83,33 @@ interface DropdownAnchorProps extends PropsWithChildren {
 /**
  * See docs in docs/dropdowns.md
  */
-export const DropdownAnchor: FC<DropdownAnchorProps> = props => {
-    const { children, label, pullRight, title } = props;
+export const DropdownMenu: FC<DropdownMenuProps> = props => {
+    const { children, label, pullRight, title, asAnchor = true } = props;
     const id = useMemo(() => generateId('dropdown-anchor-'), []);
     const { onClick, open, toggleRef } = useToggleState<HTMLAnchorElement>();
     const className = classNames('lk-dropdown', 'dropdown', props.className, { open });
     const menuClassName = classNames(DROPDOWN_MENU_CLASS, { 'dropdown-menu-right': pullRight });
 
+    const elemProps = {
+        'aria-haspopup': true,
+        'aria-expanded': open,
+        className: 'dropdown-toggle',
+        id,
+        onClick,
+        ref: toggleRef,
+        role: 'button',
+        title: label,
+    };
+
     return (
         <div className={className}>
-            <a
-                aria-haspopup="true"
-                aria-expanded={open}
-                className="dropdown-toggle"
-                href="#"
-                id={id}
-                onClick={onClick}
-                ref={toggleRef}
-                role="button"
-                title={label}
-            >
-                {title}
-                <span className="caret" />
-            </a>
+            {asAnchor && (
+                <a {...elemProps} href="#">
+                    {title}
+                    <span className="caret" />
+                </a>
+            )}
+            {!asAnchor && <span {...elemProps}>{title}</span>}
 
             <ul className={menuClassName} onClick={handleMenuClick}>
                 {children}
@@ -112,7 +117,7 @@ export const DropdownAnchor: FC<DropdownAnchorProps> = props => {
         </div>
     );
 };
-DropdownAnchor.displayName = 'DropdownAnchor';
+DropdownMenu.displayName = 'DropdownMenu';
 
 interface DropdownButtonProps {
     bsStyle?: BSStyle;

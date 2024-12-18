@@ -8,7 +8,7 @@ import { Alert } from '../components/base/Alert';
 
 import { UserLink } from '../components/user/UserLink';
 
-import { DropdownAnchor, MenuItem } from '../dropdowns';
+import { DropdownMenu, MenuItem } from '../dropdowns';
 
 import { Modal } from '../Modal';
 
@@ -89,7 +89,7 @@ const ThreadBlockHeader: FC<ThreadBlockHeaderProps> = props => {
                     {isEdited ? ' (Edited)' : ''}
                 </span>
                 {(onDelete || onEdit) && (
-                    <DropdownAnchor
+                    <DropdownMenu
                         className="thread-block-header__menu"
                         title={<i className="fa fa-ellipsis-v" />}
                         pullRight
@@ -104,7 +104,7 @@ const ThreadBlockHeader: FC<ThreadBlockHeaderProps> = props => {
                                 Delete {isThread ? 'Thread' : 'Reply'}
                             </MenuItem>
                         )}
-                    </DropdownAnchor>
+                    </DropdownMenu>
                 )}
             </div>
             {showDeleteBSModal && isThread && <DeleteThreadModal cancel={onCancelDelete} onDelete={onDelete} />}

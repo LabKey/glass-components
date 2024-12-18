@@ -50,6 +50,7 @@ export interface EditableColumnMetadata {
     linkedColInd?: number; // TODO: change to linkedColFieldKey
     lookupValueFilters?: Filter.IFilter[];
     minWidth?: number;
+    onRemoveColumn?: (col: QueryColumn) => void;
     placeholder?: string;
     popoverClassName?: string;
     toolTip?: ReactNode;

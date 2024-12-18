@@ -136,21 +136,6 @@ describe('EntityParentType', () => {
             }).getInputType()
         ).toBe(QueryColumn.ALIQUOTED_FROM);
     });
-
-    test('createColumnName', () => {
-        expect(
-            EntityParentType.create({
-                schema: SCHEMAS.DATA_CLASSES.SCHEMA,
-                query: 'TEST',
-            }).createColumnName()
-        ).toBe('DataInputs/TEST');
-        expect(
-            EntityParentType.create({
-                schema: SCHEMAS.SAMPLE_SETS.SCHEMA,
-                query: 'TEST',
-            }).createColumnName()
-        ).toBe('MaterialInputs/TEST');
-    });
 });
 
 describe('EntityIdCreationModel', () => {

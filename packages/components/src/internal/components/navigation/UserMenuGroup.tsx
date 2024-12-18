@@ -31,7 +31,7 @@ import { getHelpLink } from '../../util/helpLinks';
 
 import { HELP_LINK_METRIC, RELEASE_NOTES_METRIC } from '../productnavigation/constants';
 
-import { DropdownAnchor, DropdownButton, MenuDivider, MenuHeader, MenuItem } from '../../dropdowns';
+import { DropdownMenu, DropdownButton, MenuDivider, MenuHeader, MenuItem } from '../../dropdowns';
 
 import { signIn as defaultSignIn, signOut as defaultSignOut } from './actions';
 import { MenuSectionModel } from './model';
@@ -129,7 +129,7 @@ export const UserMenuGroupImpl: FC<UserMenuProps & ImplProps> = props => {
     return (
         <>
             <div className="navbar-item pull-right">
-                <DropdownAnchor className="user-dropdown" title={userToggle} pullRight>
+                <DropdownMenu className="user-dropdown" title={userToggle} pullRight>
                     <div className="navbar-connector" />
                     {userMenuItems}
                     {extraUserItems}
@@ -139,7 +139,7 @@ export const UserMenuGroupImpl: FC<UserMenuProps & ImplProps> = props => {
                     ) : (
                         <MenuItem onClick={onSignIn}>Sign In</MenuItem>
                     )}
-                </DropdownAnchor>
+                </DropdownMenu>
             </div>
             {(adminMenuItems?.length > 0 || getServerContext().devMode) && (
                 <div className="navbar-item pull-right navbar-item__dropdown">

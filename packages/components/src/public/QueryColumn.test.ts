@@ -244,6 +244,13 @@ describe('QueryColumn', () => {
         expect(new QueryColumn({ name: 'MaterialInputs', lookup: 'lookHere' }).isMaterialInput()).toBeTruthy();
     });
 
+    test('isParentInput', () => {
+        expect(new QueryColumn({}).isParentInput).toBeFalsy();
+        expect(new QueryColumn({ name: 'test' }).isParentInput).toBeFalsy();
+        expect(new QueryColumn({ name: 'DataInputs', lookup: 'lookHere' }).isParentInput).toBeTruthy();
+        expect(new QueryColumn({ name: 'MaterialInputs', lookup: 'lookHere' }).isParentInput).toBeTruthy();
+    });
+
     test('isExpInput', () => {
         expect(new QueryColumn({}).isExpInput()).toBeFalsy();
         expect(new QueryColumn({ name: 'test' }).isExpInput()).toBeFalsy();

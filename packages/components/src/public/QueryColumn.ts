@@ -391,6 +391,10 @@ export class QueryColumn implements IQueryColumn {
         );
     }
 
+    get isParentInput(): boolean {
+        return this.isMaterialInput() || this.isDataInput();
+    }
+
     get isDetailColumn(): boolean {
         return !this.removeFromViews && this.shownInDetailsView === true;
     }

@@ -12,13 +12,13 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 
-import { generateId, handleFileInputChange } from '../util/utils';
+import { handleFileInputChange } from '../util/utils';
 import { isLoading, LoadingState } from '../../public/LoadingState';
 import { resolveErrorMessage } from '../util/messaging';
 import { LoadingSpinner } from '../components/base/LoadingSpinner';
 import { Key } from '../../public/useEnterEscape';
 
-import { DropdownAnchor, MenuItem } from '../dropdowns';
+import { DropdownMenu, MenuItem } from '../dropdowns';
 
 import { AnnouncementsAPIWrapper } from './APIWrapper';
 
@@ -188,10 +188,10 @@ const ThreadEditorToolbar: FC<ThreadEditorToolbarProps> = memo(({ inputRef, setB
     return (
         <div className="thread-editor-toolbar editor-toolbar">
             <div className="editor-toolbar__section insert-menu">
-                <DropdownAnchor title={view}>
+                <DropdownMenu title={view}>
                     <MenuItem onClick={setEditMode}>{EditorView.edit}</MenuItem>
                     <MenuItem onClick={setPreviewMode}>{EditorView.preview}</MenuItem>
-                </DropdownAnchor>
+                </DropdownMenu>
             </div>
 
             <div className="editor-toolbar__section">

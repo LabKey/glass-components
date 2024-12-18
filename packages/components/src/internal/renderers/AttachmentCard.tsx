@@ -5,7 +5,7 @@ import { Modal } from '../Modal';
 import { formatBytes, getIconFontCls, isImage } from '../util/utils';
 import { isLoading, LoadingState } from '../../public/LoadingState';
 import { LoadingSpinner } from '../components/base/LoadingSpinner';
-import { DropdownAnchor, MenuItem } from '../dropdowns';
+import { DropdownMenu, MenuItem } from '../dropdowns';
 
 const now = (): number => new Date().valueOf();
 
@@ -127,7 +127,7 @@ export const AttachmentCard: FC<AttachmentCardProps> = memo(props => {
                     </div>
                 </div>
                 {isLoaded && showMenu && (
-                    <DropdownAnchor
+                    <DropdownMenu
                         className="attachment-card__menu"
                         title={<i className="fa fa-ellipsis-v" />}
                         pullRight
@@ -135,7 +135,7 @@ export const AttachmentCard: FC<AttachmentCardProps> = memo(props => {
                         {onCopyLink && !unavailable && <MenuItem onClick={_onCopyLink}>Copy {copyNoun}</MenuItem>}
                         {allowDownload && !unavailable && <MenuItem onClick={_onDownload}>Download</MenuItem>}
                         {allowRemove && <MenuItem onClick={_onRemove}>Remove {noun}</MenuItem>}
-                    </DropdownAnchor>
+                    </DropdownMenu>
                 )}
             </div>
 
