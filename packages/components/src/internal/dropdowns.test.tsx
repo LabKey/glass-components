@@ -1,6 +1,8 @@
 import React from 'react';
-import {DropdownMenu} from "./dropdowns";
-import {render, screen} from "@testing-library/react";
+
+import { render } from '@testing-library/react';
+
+import { DropdownMenu } from './dropdowns';
 
 describe('DropdownMenu', () => {
     test('default props', () => {
