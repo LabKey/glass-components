@@ -154,6 +154,7 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
     }, [filterCriteriaFields, selectedFieldId]);
 
     const loading = isLoading(loadingState);
+    const hasFields = filterCriteriaFields !== undefined && filterCriteriaFields.length > 0;
 
     return (
         <Modal bsSize="lg" title="Hit Selection Criteria" onCancel={onClose} onConfirm={onConfirm} confirmText="Apply">
@@ -164,7 +165,8 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                         <div className="field-modal__col-title">Fields</div>
                         <div className="field-modal__col-content">
                             <div className="list-group">
-                                {filterCriteriaFields.map((column, index) => (
+                                {!hasFields && <div className="field-modal__empty-msg padding">No fields defined yet.</div>}
+                                {filterCriteriaFields?.map((column, index) => (
                                     <ChoicesListItem
                                         active={filterCriteriaFields[index].propertyId === selectedFieldId}
                                         index={index}
@@ -179,6 +181,7 @@ export const FilterCriteriaModal: FC<Props> = memo(({ onClose, onSave, openTo, p
                     <div className="col-sm-8 field-modal__col">
                         <div className="field-modal__col-title">Filter Criteria</div>
                         <div className="field-modal__col-content field-modal__values">
+                            {!currentColumn && <div className="field-modal__empty-msg">Select a field.</div>}
                             {currentColumn && (
                                 <FilterExpressionView
                                     field={currentColumn}
