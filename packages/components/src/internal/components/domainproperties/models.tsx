@@ -1205,13 +1205,6 @@ export class DomainField
             json.scale = UNLIMITED_TEXT_LENGTH;
         }
 
-        // Strip out the propertyIds used on the filterCrtieria if they are for new fields (which are negative indexed)
-        json.filterCriteria = json.filterCriteria.map(fc => ({
-            ...fc,
-            propertyId: fc.propertyId < 0 ? undefined : fc.propertyId,
-            referencePropertyId: fc.referencePropertyId < 0 ? undefined : fc.referencePropertyId,
-        }));
-
         // remove non-serializable fields
         delete json.dataType;
         delete json.lookupQueryValue;
