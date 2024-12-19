@@ -715,14 +715,13 @@ export const PlateMetadataInput: FC<InputProps> = memo(({ model, onChange }) => 
 
 export const FilterCriteriaInput: FC<InputProps> = memo(({ model }) => {
     const context = useFilterCriteriaContext();
-
-    if (!context) return null;
-
-    const { openModal } = context;
-    const onClick = useCallback(() => openModal(), [openModal]);
+    const onClick = useCallback(() => context.openModal(), [context?.openModal]);
     const domain = useMemo(() => model.domains.find(domain => domain.isNameSuffixMatch('Data')), [model.domains]);
+    const fields = useMemo(() => {
+        return domain?.fields.filter(df => df.isFilterCriteriaField()).toArray() ?? [];
+    }, [domain]);
 
-    if (!domain) return null;
+    if (!domain || !context) return null;
 
     const disabledMsg = model.plateMetadata ? undefined : 'Plate Metadata must be enabled';
 
@@ -735,7 +734,7 @@ export const FilterCriteriaInput: FC<InputProps> = memo(({ model }) => {
                     </DisableableButton>
                 </div>
                 <div className="filter-criteria-input__criteria">
-                    <FilterCriteriaRenderer fields={domain.fields.toArray()} renderEmptyMessage={false} />
+                    <FilterCriteriaRenderer fields={fields} renderEmptyMessage={false} />
                 </div>
             </div>
         </AssayPropertiesInput>
