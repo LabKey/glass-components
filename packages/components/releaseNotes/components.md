@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version ?.??.?
-*Released*: ?? December 2024
+### version 6.8.0
+*Released*: 19 December 2024
 - Add FilterCriteriaRenderer
 - Add FilterCriteriaModal
 - Add useLoadableState
