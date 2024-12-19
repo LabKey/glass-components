@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { FC, memo, ReactNode } from 'react';
+import React, {FC, Fragment, memo, ReactNode} from 'react';
 import { Map } from 'immutable';
 
 export interface MultiValueRendererProps {
@@ -48,6 +48,11 @@ export const MultiValueRenderer: FC<MultiValueRendererProps> = memo(({ data }) =
                 }
 
                 if (text === undefined || text === null || text === '') return null;
+
+                // If the string has \n characters, replace them with <br/> elements
+                if (typeof text === 'string' && text.indexOf('\n') > -1) {
+                    text = <>{text.split('\n').map((t, index) => (<Fragment key={index}>{t}<br/></Fragment>))}</>;
+                }
 
                 return (
                     // IntelliJ mistakenly presumes that key is an index.

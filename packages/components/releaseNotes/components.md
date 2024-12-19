@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- MultiValueRenderer update for string values wit \n characters, replace them with <br/> elements
+
 ### version 6.7.0
 *Released*: 18 December 2024
 - Parent type selector updates for adding and removing from EditableGrid
