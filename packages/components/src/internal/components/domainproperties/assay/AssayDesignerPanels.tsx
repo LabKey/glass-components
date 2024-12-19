@@ -45,6 +45,7 @@ interface AssayDomainFormProps
     appDomainHeaders: Map<string, HeaderRenderer>;
     domain: DomainDesign;
     domainFormDisplayOptions: IDomainFormDisplayOptions;
+    headerPrefix: string;
     hideAdvancedProperties?: boolean;
     index: number;
     onDomainChange: (
@@ -65,6 +66,7 @@ const AssayDomainForm: FC<AssayDomainFormProps> = memo(props => {
         domain,
         domainFormDisplayOptions,
         firstState,
+        headerPrefix,
         hideAdvancedProperties,
         index,
         onDomainChange,
@@ -126,7 +128,7 @@ const AssayDomainForm: FC<AssayDomainFormProps> = memo(props => {
             index={domain.domainId || index}
             domainIndex={index}
             domain={domain}
-            headerPrefix={protocolModel?.name}
+            headerPrefix={headerPrefix}
             controlledCollapse
             initCollapsed={currentPanelIndex !== index + DOMAIN_PANEL_INDEX}
             validate={validatePanel === index + DOMAIN_PANEL_INDEX}
@@ -385,6 +387,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
             appDomainHeaders,
             appPropertiesOnly,
             hideAdvancedProperties,
+            initModel,
             domainFormDisplayOptions,
             currentPanelIndex,
             validatePanel,
@@ -442,6 +445,7 @@ export class AssayDesignerPanelsImpl extends React.PureComponent<Props, State> {
                                 appDomainHeaders={appDomainHeaders}
                                 domain={domain}
                                 domainFormDisplayOptions={domainFormDisplayOptions}
+                                headerPrefix={initModel?.name}
                                 index={i}
                                 key={domain.name}
                                 onDomainChange={this.onDomainChange}
