@@ -236,6 +236,7 @@ export class DomainRow extends React.PureComponent<DomainRowProps, DomainRowStat
             value,
         });
 
+        // TODO: Why don't we make isLegalName return false if there is a space?
         if (isLegalName(value) && !value.includes(' ')) {
             // set value to undefined for field error
             nameAndErrorList = nameAndErrorList.push({

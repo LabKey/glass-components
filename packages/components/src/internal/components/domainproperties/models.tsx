@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fromJS, List, Map, Record as ImmutableRecord } from 'immutable';
-import { ActionURL, Domain, getServerContext, Utils } from '@labkey/api';
+import { fromJS, List, Map as ImmutableMap, Record as ImmutableRecord } from 'immutable';
+import { ActionURL, Domain, Filter, getServerContext, Utils } from '@labkey/api';
 import React, { ReactNode } from 'react';
 
 import { GRID_NAME_INDEX, GRID_SELECTION_INDEX } from '../../constants';
@@ -356,8 +356,8 @@ export class DomainDesign
         return this.getInvalidFields().size > 0;
     }
 
-    getInvalidFields(): Map<number, DomainField> {
-        let invalid = Map<number, DomainField>();
+    getInvalidFields(): ImmutableMap<number, DomainField> {
+        let invalid = ImmutableMap<number, DomainField>();
 
         for (let i = 0; i < this.fields.size; i++) {
             const field = this.fields.get(i);
@@ -427,7 +427,7 @@ export class DomainDesign
         return mapping;
     }
 
-    getGridData(appPropertiesOnly: boolean, hasOntologyModule: boolean): List<any> {
+    getGridData(appPropertiesOnly: boolean, hasOntologyModule: boolean, showFilterCriteria: boolean): List<any> {
         return this.fields
             .map((field, i) => {
                 let fieldSerial = DomainField.serialize(field);
@@ -445,7 +445,13 @@ export class DomainDesign
                 fieldSerial.selected = field.selected;
                 fieldSerial.visible = field.visible;
 
-                return Map(
+                if (showFilterCriteria) {
+                    fieldSerial.filterCriteria = field.filterCriteria.map(filterCriteriaToStr).join('\n');
+                } else {
+                    delete fieldSerial.filterCriteria;
+                }
+
+                return ImmutableMap(
                     Object.keys(fieldSerial).map(key => {
                         const rawVal = fieldSerial[key];
                         const valueType = typeof rawVal;
@@ -481,7 +487,8 @@ export class DomainDesign
         scrollFunction: (i: number) => void,
         domainKindName: string,
         appPropertiesOnly: boolean,
-        hasOntologyModule: boolean
+        hasOntologyModule: boolean,
+        showFilterCriteria: boolean
     ): List<GridColumn | DomainPropertiesGridColumn> {
         const selectionCol = new GridColumn({
             index: GRID_SELECTION_INDEX,
@@ -529,18 +536,16 @@ export class DomainDesign
 
         delete columns.name;
         columns = removeUnusedProperties(columns);
-        if (!hasOntologyModule) {
-            columns = removeUnusedOntologyProperties(columns);
-        }
-        if (appPropertiesOnly) {
-            columns = removeNonAppProperties(columns);
-        }
-        if (domainKindName !== VAR_LIST && domainKindName !== INT_LIST) {
-            delete columns.isPrimaryKey;
-        }
-        if (!(appPropertiesOnly && domainKindName === 'SampleSet')) {
-            delete columns.scannable;
-        }
+
+        if (!hasOntologyModule) columns = removeUnusedOntologyProperties(columns);
+
+        if (appPropertiesOnly) columns = removeNonAppProperties(columns);
+
+        if (domainKindName !== VAR_LIST && domainKindName !== INT_LIST) delete columns.isPrimaryKey;
+
+        if (!(appPropertiesOnly && domainKindName === 'SampleSet')) delete columns.scannable;
+
+        if (!showFilterCriteria) delete columns.filterCriteria;
 
         const unsortedColumns = List(
             Object.keys(columns).map(key => ({ index: key, caption: camelCaseToTitleCase(key), sortable: true }))
@@ -874,6 +879,37 @@ export interface IDomainField {
     visible: boolean;
 }
 
+/**
+ * name: Name of the field this criterion applies to. May not be the same as the field these filterCriteria are
+ * specified on. See "referencePropertyId".
+ *
+ * op: The filter operation for this criterion. This is accepted as the shorthand URL parameter for a LABKEY.Filter
+ * (e.g. "gt", "lt", etc.).
+ *
+ * propertyId: The propertyId of the property (field) this criterion applies to. When saving, if this is not specified,
+ * then it will be presumed to be the propertyId of the field on which the "filterCriteria" are specified.
+ *
+ * referencePropertyId: Reference property (field) identifier. All filter criterion specified on a field are referenced
+ * to the field, however, the criterion may be filtering against a different field. This makes it easier to determine
+ * which field a criterion is related to.
+ *
+ * value: The value of the filter. When saving the value can be a string, number, or boolean.The server always persists
+ * the value as a string. When retrieved the value will be a string.
+ */
+export interface FilterCriteria {
+    name: string;
+    op: string;
+    propertyId: number;
+    referencePropertyId?: number;
+    value: string | number | boolean;
+}
+// Note: this is a regular Javascript Map, not an Immutable Map
+export type FilterCriteriaMap = Map<number, FilterCriteria[]>;
+
+export function filterCriteriaToStr(fc: FilterCriteria): string {
+    return `${fc.name} ${Filter.getFilterTypeForURLSuffix(fc.op).getDisplaySymbol()} ${fc.value}`;
+}
+
 export class DomainField
     extends ImmutableRecord({
         conceptURI: undefined,
@@ -885,6 +921,7 @@ export class DomainField
         description: undefined,
         dimension: undefined,
         excludeFromShifting: false,
+        filterCriteria: [],
         format: undefined,
         hidden: false,
         importAliases: undefined,
@@ -945,6 +982,7 @@ export class DomainField
     declare description?: string;
     declare dimension?: boolean;
     declare excludeFromShifting?: boolean;
+    declare filterCriteria?: FilterCriteria[];
     declare format?: string;
     declare hidden?: boolean;
     declare importAliases?: string;
@@ -1270,6 +1308,11 @@ export class DomainField
         return isFieldDeletable(this);
     }
 
+    isFilterCriteriaField(): boolean {
+        const { dataType, measure } = this;
+        return measure && (dataType.name === 'double' || dataType.name === 'int');
+    }
+
     static hasRangeValidation(field: DomainField): boolean {
         return (
             field.dataType === INTEGER_TYPE ||
@@ -1486,7 +1529,7 @@ export function updateSampleField(field: Partial<DomainField>, sampleQueryValue?
 }
 
 function isFieldNew(field: Partial<IDomainField>): boolean {
-    return field.propertyId === undefined;
+    return field.propertyId === undefined || field.propertyId < 0;
 }
 
 function isFieldSaved(field: Partial<IDomainField>): boolean {
@@ -1875,7 +1918,7 @@ export class DomainException
         return this.errors.find(error => !error.get('fieldName') && !error.get('propertyId'))?.get('message');
     }
 
-    static clientValidationExceptions(exception: string, fields: Map<number, DomainField>): DomainException {
+    static clientValidationExceptions(exception: string, fields: ImmutableMap<number, DomainField>): DomainException {
         let fieldErrors = List<DomainFieldError>();
 
         fields.forEach((field, index) => {
@@ -2064,6 +2107,7 @@ export interface IDomainFormDisplayOptions {
     isDragDisabled?: boolean;
     phiLevelDisabled?: boolean;
     retainReservedFields?: boolean;
+    showFilterCriteria?: boolean;
     showScannableOption?: boolean;
     textChoiceLockedForDomain?: boolean;
     textChoiceLockedSqlFragment?: string;
@@ -2095,17 +2139,20 @@ export class DomainDetails extends ImmutableRecord({
     namePreviews: undefined,
 }) {
     declare domainDesign: DomainDesign;
-    declare options: Map<string, any>;
+    declare options: ImmutableMap<string, any>;
     declare domainKindName: string;
     declare nameReadOnly?: boolean;
     declare namePreviews?: string[];
 
-    static create(rawDesign: Map<string, any> = Map(), domainKindType: string = Domain.KINDS.UNKNOWN): DomainDetails {
+    static create(
+        rawDesign: ImmutableMap<string, any> = ImmutableMap(),
+        domainKindType: string = Domain.KINDS.UNKNOWN
+    ): DomainDetails {
         let design;
         if (rawDesign) {
             const domainDesign = DomainDesign.create(rawDesign.get('domainDesign'));
             const domainKindName = rawDesign.get('domainKindName', domainKindType);
-            const options = Map(rawDesign.get('options'));
+            const options = ImmutableMap(rawDesign.get('options'));
             const nameReadOnly = rawDesign.get('nameReadOnly');
             const namePreviews = rawDesign.get('namePreviews');
             design = new DomainDetails({ domainDesign, domainKindName, options, nameReadOnly, namePreviews });
@@ -2113,7 +2160,7 @@ export class DomainDetails extends ImmutableRecord({
             design = new DomainDetails({
                 domainDesign: DomainDesign.create(null),
                 domainKindName: domainKindType,
-                options: Map<string, any>(),
+                options: ImmutableMap<string, any>(),
             });
         }
 
