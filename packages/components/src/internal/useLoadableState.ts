@@ -27,6 +27,9 @@ export function useLoadableState<T>(loader: Loader<T>): LoadableState<T> {
             const result = await loader();
             setValue(result);
         } catch (e) {
+            // Note: it's important to log the error here, because if consumers don't use the error object returned here
+            // then you may not know an error happened, so this way we at least have some trace of an issue.
+            console.error(e);
             setError(resolveErrorMessage(e));
         } finally {
             setLoadingState(LoadingState.LOADED);

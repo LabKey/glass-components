@@ -6,6 +6,8 @@ import { AssayProtocolModel } from '../domainproperties/assay/models';
 
 import { request } from '../../request';
 
+import { DomainField } from '../domainproperties/models';
+
 import {
     checkForDuplicateAssayFiles,
     clearAssayDefinitionCache,
@@ -41,7 +43,7 @@ export class AssayServerAPIWrapper implements AssayAPIWrapper {
         columnNames: string[],
         containerPath: string
     ): Promise<FilterCriteriaColumns> => {
-        return request<FilterCriteriaColumns>(
+        const resp = await request<FilterCriteriaColumns>(
             {
                 url: ActionURL.buildURL('assay', 'filterCriteriaColumns.api', containerPath),
                 method: 'POST',
@@ -49,6 +51,10 @@ export class AssayServerAPIWrapper implements AssayAPIWrapper {
             },
             'Problem fetching filter criteria columns'
         );
+        return Object.keys(resp).reduce<FilterCriteriaColumns>((result, key) => {
+            result[key] = resp[key].map(rawField => DomainField.create(rawField));
+            return result;
+        }, {});
     };
     getProtocol = getProtocol;
     importAssayRun = importAssayRun;
