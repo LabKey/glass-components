@@ -33,9 +33,6 @@ export const getValidatedEditableGridValue = (origValue: any, col: QueryColumn):
     const isDateType = isDateTimeType && isDateOnlyColumn;
     let message;
     let value = origValue;
-    if (Utils.isString(value)) {
-        value = value.trim();
-    }
 
     // Issue 44398: match JSON dateTime format provided by LK server when submitting date values back for insert/update
     // Issue 45140: use QueryColumn date format for parseDate()
