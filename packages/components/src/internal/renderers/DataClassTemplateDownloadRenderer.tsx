@@ -1,9 +1,10 @@
-import { SchemaQuery } from '../../public/SchemaQuery';
-import { SCHEMAS } from '../schemas';
-
 import React, { ReactNode } from 'react';
 
 import { Map } from 'immutable';
+
+import { SchemaQuery } from '../../public/SchemaQuery';
+import { SCHEMAS } from '../schemas';
+
 import { getQueryDetails } from '../query/api';
 import { downloadAttachment } from '../util/utils';
 import { TemplateDownloadButton } from '../../public/files/TemplateDownloadButton';
@@ -32,23 +33,30 @@ export class DataClassTemplateDownloadRenderer extends React.PureComponent<Props
             });
     };
 
-    fetchTemplates = async () : Promise<ImportTemplate[]> => {
+    fetchTemplates = async (): Promise<ImportTemplate[]> => {
         const { row } = this.props;
         return new Promise((resolve, reject) => {
             getQueryDetails({
                 schemaName: SCHEMAS.DATA_CLASSES.SCHEMA,
                 queryName: row.getIn(['Name', 'value']) ?? row.getIn(['name', 'value']),
-            }).then(queryInfo => {
-                resolve(queryInfo.getCustomTemplates());
-            }).catch(error => {
-                reject(error);
             })
+                .then(queryInfo => {
+                    resolve(queryInfo.getCustomTemplates());
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     };
 
     render(): ReactNode {
-        return <TemplateDownloadButton
-            getExtraTemplates={this.fetchTemplates}
-            onDownloadDefault={this.onDownload} text="Download" className="button-small-padding" />;
+        return (
+            <TemplateDownloadButton
+                getExtraTemplates={this.fetchTemplates}
+                onDownloadDefault={this.onDownload}
+                text="Download"
+                className="button-small-padding"
+            />
+        );
     }
 }

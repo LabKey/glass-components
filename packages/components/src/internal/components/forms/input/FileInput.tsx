@@ -25,8 +25,9 @@ import { cancelEvent } from '../../../events';
 import { QueryColumn } from '../../../../public/QueryColumn';
 import { FileColumnRenderer } from '../../../renderers/FileColumnRenderer';
 
-import { DisableableInput, DisableableInputProps, DisableableInputState } from './DisableableInput';
 import { FILELINK_RANGE_URI } from '../../domainproperties/constants';
+
+import { DisableableInput, DisableableInputProps, DisableableInputState } from './DisableableInput';
 
 export interface FileInputProps extends DisableableInputProps {
     addLabelAsterisk?: boolean;
@@ -35,13 +36,13 @@ export interface FileInputProps extends DisableableInputProps {
     formsy?: boolean;
     initialValue?: any;
     labelClassName?: string;
+    maxFileSize?: number;
     name?: string;
     onChange?: (fileMap: Record<string, File>) => void;
     queryColumn?: QueryColumn;
     renderFieldLabel?: (queryColumn: QueryColumn, label?: string, description?: string) => ReactNode;
     showLabel?: boolean;
     toggleDisabledTooltip?: string;
-    maxFileSize?: number;
 }
 
 type FileInputImplProps = FileInputProps & FormsyInjectedProps<any>;
@@ -195,7 +196,11 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
             );
         } else if (data?.get('value')) {
             body = (
-                <FileColumnRenderer isFileLink={queryColumn?.rangeURI === FILELINK_RANGE_URI} data={data} onRemove={isDisabled ? undefined : this.onRemove} />
+                <FileColumnRenderer
+                    isFileLink={queryColumn?.rangeURI === FILELINK_RANGE_URI}
+                    data={data}
+                    onRemove={isDisabled ? undefined : this.onRemove}
+                />
             );
         } else {
             body = (

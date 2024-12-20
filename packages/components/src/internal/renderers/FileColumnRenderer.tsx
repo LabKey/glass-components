@@ -21,8 +21,8 @@ import { caseInsensitive, downloadAttachment, getIconFontCls, isImage } from '..
 import { AttachmentCard, AttachmentCardProps, IAttachment } from './AttachmentCard';
 
 interface OwnProps {
-    isFileLink?: boolean;
     data?: any;
+    isFileLink?: boolean;
     onRemove?: (attachment: IAttachment) => void;
 }
 
@@ -57,8 +57,7 @@ export const getAttachmentCardProp = (
         url = data.get('url');
         value = data.get('value');
         display = getFileDisplayValue(data.get('displayValue'));
-    }
-    else {
+    } else {
         url = caseInsensitive(data, 'url');
         value = caseInsensitive(data, 'value');
         display = getFileDisplayValue(caseInsensitive(data, 'displayValue'));

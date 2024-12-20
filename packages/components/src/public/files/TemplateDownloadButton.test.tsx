@@ -18,7 +18,9 @@ describe('TemplateDownloadButton', () => {
     });
 
     test('reader', () => {
-        const { container } = renderWithAppContext(<TemplateDownloadButton defaultTemplateUrl="" user={TEST_USER_READER} />);
+        const { container } = renderWithAppContext(
+            <TemplateDownloadButton defaultTemplateUrl="" user={TEST_USER_READER} />
+        );
         expect(container.textContent).toBe('');
     });
 

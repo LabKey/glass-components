@@ -507,6 +507,8 @@ export class QueryInfo {
     }
 
     getCustomTemplates(): ImportTemplate[] {
-        return this.importTemplates.filter(template => template.url.toLowerCase().indexOf('exportexceltemplate') === -1);
+        return this.importTemplates.filter(
+            template => template.url.toLowerCase().indexOf('exportexceltemplate') === -1
+        );
     }
 }

@@ -33,9 +33,10 @@ import { Progress } from '../../internal/components/base/Progress';
 
 import { inferDomainFromFile } from '../InferDomainResponse';
 
+import { SchemaQuery } from '../SchemaQuery';
+
 import { TemplateDownloadButton } from './TemplateDownloadButton';
 import { FileSizeLimitProps, FileGridPreviewProps } from './models';
-import { SchemaQuery } from '../SchemaQuery';
 
 export interface FileAttachmentFormProps {
     acceptedFormats?: string; // comma-separated list of allowed extensions i.e. '.png, .jpg, .jpeg'
@@ -69,8 +70,8 @@ export interface FileAttachmentFormProps {
     sizeLimits?: Map<string, FileSizeLimitProps>;
     sizeLimitsHelpText?: ReactNode;
     submitText?: string;
-    templateUrl?: string;
     templateSchemaQuery?: SchemaQuery;
+    templateUrl?: string;
 }
 
 interface State {
@@ -410,7 +411,10 @@ export class FileAttachmentForm extends PureComponent<FileAttachmentFormProps, S
                         <div className="col-md-3">
                             <div className="pull-right">
                                 {renderTemplateButton && (
-                                    <TemplateDownloadButton defaultTemplateUrl={this.props.templateUrl} schemaQuery={this.props.templateSchemaQuery}/>
+                                    <TemplateDownloadButton
+                                        defaultTemplateUrl={this.props.templateUrl}
+                                        schemaQuery={this.props.templateSchemaQuery}
+                                    />
                                 )}
                             </div>
                         </div>
