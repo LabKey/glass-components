@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { ComponentType, createContext, FC, PropsWithChildren, useContext, useMemo, useReducer } from 'react';
-import { getServerContext, LabKey } from '@labkey/api';
+import { getServerContext, LabKey, PermissionTypes } from '@labkey/api';
 
 import { Container } from './models/Container';
 import { User } from './models/User';
@@ -24,6 +24,8 @@ export type ModuleContext = Record<string, any>;
 export interface ServerContext extends LabKey {
     container: Container;
     moduleContext?: ModuleContext;
+    project: Container;
+    projectUser: User;
     user: User;
 }
 
@@ -72,10 +74,37 @@ export const useServerContextDispatch = (): AppLabKeyDispatch => {
 
 export const ServerContextConsumer = Context.Consumer;
 
+/**
+ * Applies the permissions on the container to the user. Only permission related User fields are mutated.
+ */
+export function applyPermissions(container: Container, user: User): User {
+    // Must set "isAdmin" and "permissionsList" prior to configuring
+    // permission bits (e.g. "canDelete", "canUpdate", etc).
+    const contextUser = new User({
+        ...user,
+        isAdmin: container.effectivePermissions.indexOf(PermissionTypes.Admin) > -1,
+        permissionsList: container.effectivePermissions,
+    }) as User;
+
+    return new User({
+        ...contextUser,
+        canDelete: contextUser.hasDeletePermission(),
+        canDeleteOwn: contextUser.hasDeletePermission(),
+        canInsert: contextUser.hasInsertPermission(),
+        canUpdate: contextUser.hasUpdatePermission(),
+        canUpdateOwn: contextUser.hasUpdatePermission(),
+    });
+}
+
 export const withAppUser = (ctx: LabKey): ServerContext => {
+    const project = new Container(ctx.project);
+    const user = new User(ctx.user);
+
     return Object.assign({}, ctx, {
         container: new Container(ctx.container),
-        user: new User(ctx.user),
+        project,
+        projectUser: applyPermissions(project, user),
+        user,
     });
 };
 

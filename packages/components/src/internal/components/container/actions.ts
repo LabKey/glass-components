@@ -1,35 +1,12 @@
 import { useEffect, useState } from 'react';
-import { PermissionTypes } from '@labkey/api';
 
 import { isLoading, LoadingState } from '../../../public/LoadingState';
 import { useAppContext } from '../../AppContext';
-import { useServerContext } from '../base/ServerContext';
+import { applyPermissions, useServerContext } from '../base/ServerContext';
 import { Container } from '../base/models/Container';
 import { User } from '../base/models/User';
 import { resolveErrorMessage } from '../../util/messaging';
 import { FetchContainerOptions } from '../security/APIWrapper';
-
-/**
- * Applies the permissions on the container to the user. Only permission related User fields are mutated.
- */
-function applyPermissions(container: Container, user: User): User {
-    // Must set "isAdmin" and "permissionsList" prior to configuring
-    // permission bits (e.g. "canDelete", "canUpdate", etc).
-    const contextUser = new User({
-        ...user,
-        isAdmin: container.effectivePermissions.indexOf(PermissionTypes.Admin) > -1,
-        permissionsList: container.effectivePermissions,
-    }) as User;
-
-    return new User({
-        ...contextUser,
-        canDelete: contextUser.hasDeletePermission(),
-        canDeleteOwn: contextUser.hasDeletePermission(),
-        canInsert: contextUser.hasInsertPermission(),
-        canUpdate: contextUser.hasUpdatePermission(),
-        canUpdateOwn: contextUser.hasUpdatePermission(),
-    });
-}
 
 export interface ContainerUser {
     container: Container;
