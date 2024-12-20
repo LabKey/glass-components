@@ -92,6 +92,7 @@ export type LookupResolver = (
 ) => URLMapperResolverValue;
 
 export class ActionMapper implements URLMapper {
+    // flag
     controller: string;
     action: string;
     resolver: LookupResolver;
@@ -539,6 +540,20 @@ export const STORAGE_BOX_MAPPER = new ActionMapper('query', 'detailsQueryRow', r
     return undefined;
 });
 
+// plate-isPlated.api?sampleId=100
+// map to /rd/samples/100/plates
+export const IS_PLATED_MAPPER = new ActionMapper('plate', 'IsPlated', row => {
+    const url = row.get('url');
+    if (url) {
+        const params = ActionURL.getParameters(url);
+        const sampleId = params.sampleId;
+
+        return AppURL.create('rd', 'samples', sampleId, 'plates');
+    }
+
+    return undefined;
+});
+
 export const URL_MAPPERS = {
     ASSAY_MAPPERS,
     DATA_CLASS_MAPPERS,
@@ -557,6 +572,7 @@ export const URL_MAPPERS = {
     PROJECT_MGMT_MAPPER,
     STORAGE_LOCATION_MAPPER,
     STORAGE_BOX_MAPPER,
+    IS_PLATED_MAPPER,
 };
 
 export class URLResolver {
