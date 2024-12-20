@@ -92,7 +92,6 @@ export type LookupResolver = (
 ) => URLMapperResolverValue;
 
 export class ActionMapper implements URLMapper {
-    // flag
     controller: string;
     action: string;
     resolver: LookupResolver;
