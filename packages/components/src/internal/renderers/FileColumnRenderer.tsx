@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 import React, { ReactNode, PureComponent } from 'react';
+import { Iterable } from 'immutable';
 
-import { downloadAttachment, getIconFontCls, isImage } from '../util/utils';
-import { FILELINK_RANGE_URI } from '../components/domainproperties/constants';
-
-import { QueryColumn } from '../../public/QueryColumn';
+import { caseInsensitive, downloadAttachment, getIconFontCls, isImage } from '../util/utils';
 
 import { AttachmentCard, AttachmentCardProps, IAttachment } from './AttachmentCard';
 
 interface OwnProps {
-    col?: QueryColumn;
+    isFileLink?: boolean;
     data?: any;
     onRemove?: (attachment: IAttachment) => void;
 }
@@ -49,14 +47,25 @@ const getFileDisplayValue = (rawDisplayValue: string): FileProp => {
 
 export const getAttachmentCardProp = (
     data?: any,
-    colRangeUri?: string,
+    isFileLink?: boolean,
     onRemove?: (attachment: IAttachment) => void
 ): AttachmentCardProps => {
     if (!data) return null;
 
-    const url = data.get('url');
-    const value = data.get('value');
-    const { filename, fileUnavailable } = getFileDisplayValue(data.get('displayValue'));
+    let url, value, display;
+    if (Iterable.isIterable(data)) {
+        url = data.get('url');
+        value = data.get('value');
+        display = getFileDisplayValue(data.get('displayValue'));
+    }
+    else {
+        url = caseInsensitive(data, 'url');
+        value = caseInsensitive(data, 'value');
+        display = getFileDisplayValue(caseInsensitive(data, 'displayValue'));
+    }
+
+    const filename = display.filename;
+    const fileUnavailable = display.fileUnavailable;
     const name = filename || value;
 
     if (!name) {
@@ -74,7 +83,7 @@ export const getAttachmentCardProp = (
     } as IAttachment;
 
     return {
-        noun: colRangeUri === FILELINK_RANGE_URI ? 'file' : 'attachment',
+        noun: isFileLink ? 'file' : 'attachment',
         attachment,
         imageURL: _isImage ? url : undefined,
         imageCls: 'attachment-card__img',
@@ -86,15 +95,15 @@ export const getAttachmentCardProp = (
 export class FileColumnRenderer extends PureComponent<OwnProps> {
     onDownload = (attachment: IAttachment): void => {
         const { data } = this.props;
-        const url = data?.get('url');
+        const url = Iterable.isIterable(data) ? data?.get('url') : caseInsensitive(data, 'url');
         if (url) {
             downloadAttachment(url, false, attachment.name);
         }
     };
 
     render(): ReactNode {
-        const { col, data, onRemove } = this.props;
-        const cardProps = getAttachmentCardProp(data, col?.rangeURI, onRemove);
+        const { isFileLink, data, onRemove } = this.props;
+        const cardProps = getAttachmentCardProp(data, isFileLink, onRemove);
         if (!cardProps) return null;
         return <AttachmentCard {...cardProps} onDownload={this.onDownload} />;
     }

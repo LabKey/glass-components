@@ -453,6 +453,10 @@ export function isCalculatedFieldsEnabled(moduleContext?: ModuleContext): boolea
         : !isCommunityDistribution(moduleContext);
 }
 
+export function isCustomImportTemplatesEnabled(moduleContext?: ModuleContext): boolean {
+    return isFeatureEnabled(ProductFeature.CustomImportTemplates, moduleContext);
+}
+
 export function isFeatureEnabled(flag: ProductFeature, moduleContext?: ModuleContext): boolean {
     return resolveModuleContext(moduleContext)?.core?.productFeatures?.indexOf(flag) >= 0;
 }

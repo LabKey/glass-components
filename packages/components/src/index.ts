@@ -745,6 +745,7 @@ import {
     isSharedContainer,
     isSourceTypeEnabled,
     isWorkflowEnabled,
+    isCustomImportTemplatesEnabled,
     limsIsPrimaryApp,
     setFolderDataExclusion,
     setProductFolders,
@@ -940,6 +941,7 @@ const App = {
     isNonstandardAssayEnabled,
     isRegistryEnabled,
     isSourceTypeEnabled,
+    isCustomImportTemplatesEnabled,
     isMediaEnabled,
     isWorkflowEnabled,
     isELNEnabled,
@@ -2002,3 +2004,4 @@ export type { InputRendererComponent } from './internal/components/forms/input/I
 export type { AppContextTestProviderProps } from './internal/test/testHelpers';
 export type { DisableableInputProps } from './internal/components/forms/input/DisableableInput';
 export type { ContainerFormats, DateTimeSettingProp } from './internal/util/Date';
+export type { ImportTemplate } from './public/QueryInfo';

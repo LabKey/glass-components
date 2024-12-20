@@ -7,6 +7,7 @@ import { Map } from 'immutable';
 import { getQueryDetails } from '../query/api';
 import { downloadAttachment } from '../util/utils';
 import { TemplateDownloadButton } from '../../public/files/TemplateDownloadButton';
+import { ImportTemplate } from '../../public/QueryInfo';
 
 interface Props {
     row?: Map<string, any>;
@@ -31,7 +32,23 @@ export class DataClassTemplateDownloadRenderer extends React.PureComponent<Props
             });
     };
 
+    fetchTemplates = async () : Promise<ImportTemplate[]> => {
+        const { row } = this.props;
+        return new Promise((resolve, reject) => {
+            getQueryDetails({
+                schemaName: SCHEMAS.DATA_CLASSES.SCHEMA,
+                queryName: row.getIn(['Name', 'value']) ?? row.getIn(['name', 'value']),
+            }).then(queryInfo => {
+                resolve(queryInfo.getCustomTemplates());
+            }).catch(error => {
+                reject(error);
+            })
+        });
+    };
+
     render(): ReactNode {
-        return <TemplateDownloadButton onClick={this.onDownload} text="Download" className="button-small-padding" />;
+        return <TemplateDownloadButton
+            getExtraTemplates={this.fetchTemplates}
+            onDownloadDefault={this.onDownload} text="Download" className="button-small-padding" />;
     }
 }

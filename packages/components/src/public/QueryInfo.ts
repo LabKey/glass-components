@@ -65,6 +65,10 @@ const QUERY_INFO_DEFAULTS = {
     plural: undefined, // defaults to value of queryLabel
 };
 
+export interface ImportTemplate {
+    label: string;
+    url: string;
+}
 // Commented out attributes are not used in app, but are returned by the server
 export class QueryInfo {
     declare appEditableTable: boolean; // use isAppEditable()
@@ -77,7 +81,7 @@ export class QueryInfo {
     declare domainContainerPath: string;
     // declare editDefinitionUrl: string;
     declare iconURL: string;
-    declare importTemplates: any[];
+    declare importTemplates: ImportTemplate[];
     // declare indices: Record<string, any>;
     // declare isInherited: boolean;
     declare isLoading: boolean;
@@ -500,5 +504,9 @@ export class QueryInfo {
 
     getFileColumnFieldKeys(): string[] {
         return this.columns.filter(col => col.isFileInput).valueArray.map(col => col.fieldKey);
+    }
+
+    getCustomTemplates(): ImportTemplate[] {
+        return this.importTemplates.filter(template => template.url.toLowerCase().indexOf('exportexceltemplate') === -1);
     }
 }

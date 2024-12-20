@@ -135,6 +135,7 @@ export enum ProductFeature {
     SampleManagement = 'SampleManagement',
     TransformScripts = 'TransformScripts',
     Workflow = 'Workflow',
+    CustomImportTemplates = 'CustomImportTemplates'
 }
 
 export const BIOLOGICS_APP_PROPERTIES: AppProperties = {

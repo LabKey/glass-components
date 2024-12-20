@@ -13,18 +13,18 @@ describe('TemplateDownloadButton', () => {
     });
 
     test('no onclick, empty templateUrl', () => {
-        const { container } = renderWithAppContext(<TemplateDownloadButton templateUrl="" />);
+        const { container } = renderWithAppContext(<TemplateDownloadButton defaultTemplateUrl="" />);
         expect(container.textContent).toBe('');
     });
 
     test('reader', () => {
-        const { container } = renderWithAppContext(<TemplateDownloadButton templateUrl="" user={TEST_USER_READER} />);
+        const { container } = renderWithAppContext(<TemplateDownloadButton defaultTemplateUrl="" user={TEST_USER_READER} />);
         expect(container.textContent).toBe('');
     });
 
     test('editor', () => {
         const { container } = renderWithAppContext(
-            <TemplateDownloadButton templateUrl="testUrl" user={TEST_USER_EDITOR} />,
+            <TemplateDownloadButton defaultTemplateUrl="testUrl" user={TEST_USER_EDITOR} />,
             {}
         );
         expect(container.textContent).toBe(' Template');
@@ -34,7 +34,7 @@ describe('TemplateDownloadButton', () => {
     test('editor, with custom properties', () => {
         const { container } = renderWithAppContext(
             <TemplateDownloadButton
-                onClick={jest.fn}
+                onDownloadDefault={jest.fn}
                 text="Test Text"
                 className="custom-styling"
                 user={TEST_USER_EDITOR}

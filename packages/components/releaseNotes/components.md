@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.X
+*Released*: X
+- Customizable File Templates for Sources, Sample Types & Assay Designs
+  - TODO
+
 ### version 6.8.0
 *Released*: 19 December 2024
 - Add FilterCriteriaRenderer
