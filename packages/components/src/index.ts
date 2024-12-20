@@ -907,6 +907,7 @@ import { BaseModal, Modal, ModalHeader } from './internal/Modal';
 import { Tab, Tabs } from './internal/Tabs';
 import { CheckboxLK } from './internal/Checkbox';
 import { ArchivedFolderTag } from './internal/components/folder/ArchivedFolderTag';
+import { FilterCriteriaRenderer } from './internal/FilterCriteriaRenderer';
 
 // See Immer docs for why we do this: https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
 enableMapSet();
@@ -1841,6 +1842,7 @@ export {
     CheckboxLK,
     // Custom labels
     getModuleCustomLabels,
+    FilterCriteriaRenderer,
 };
 
 //  Due to babel-loader & typescript babel plugins we need to export/import types separately. The babel plugins require

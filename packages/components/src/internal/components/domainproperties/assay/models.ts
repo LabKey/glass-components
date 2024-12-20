@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { List, Record } from 'immutable';
+import { List, Record as ImmutableRecord } from 'immutable';
 
 import { getServerContext, Utils } from '@labkey/api';
 
@@ -28,7 +28,7 @@ export enum Status {
     Archived = 'Archived',
 }
 
-export class AssayProtocolModel extends Record({
+export class AssayProtocolModel extends ImmutableRecord({
     allowBackgroundUpload: false,
     allowEditableResults: false,
     allowQCStates: false,
@@ -140,7 +140,6 @@ export class AssayProtocolModel extends Record({
         // only need to serialize the id and not the autoCopyTargetContainer object
         delete json.autoCopyTargetContainer;
         delete json.exception;
-
         return json;
     }
 
@@ -163,8 +162,8 @@ export class AssayProtocolModel extends Record({
         return this.isNew()
             ? getAppHomeFolderPath(container)
             : domainContainerId === container.id
-            ? container.path
-            : domainContainerId;
+              ? container.path
+              : domainContainerId;
     }
 
     get domainContainerId(): string {

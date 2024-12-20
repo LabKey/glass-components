@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { FC, memo, PropsWithChildren, ReactNode } from 'react';
+import React, { ChangeEvent, FC, memo, PropsWithChildren, ReactNode, useCallback } from 'react';
 import { List, Map } from 'immutable';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import classNames from 'classnames';
@@ -104,6 +104,106 @@ import { SystemFields } from './SystemFields';
 import { DomainPropertiesAPIWrapper } from './APIWrapper';
 import { Collapsible } from './Collapsible';
 
+interface DomainFormToolbarProps {
+    disableExport: boolean;
+    domainFormDisplayOptions?: IDomainFormDisplayOptions;
+    domainIndex: number;
+    fields: List<DomainField>;
+    onAddField: () => void;
+    onBulkDeleteClick: () => void;
+    onExportFields: () => void;
+    onSearch: (value: string) => void;
+    onToggleSummaryView: () => void;
+    search: string;
+    shouldShowImportExport: boolean;
+    summaryViewMode: boolean;
+    visibleSelection: Set<number>;
+}
+
+const DomainFormToolbar: FC<DomainFormToolbarProps> = memo(props => {
+    const {
+        disableExport,
+        domainFormDisplayOptions,
+        domainIndex,
+        fields,
+        search,
+        onAddField,
+        onBulkDeleteClick,
+        onExportFields,
+        onSearch,
+        onToggleSummaryView,
+        shouldShowImportExport,
+        summaryViewMode,
+        visibleSelection,
+    } = props;
+    const onSearchChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => onSearch(event.target.value),
+        [onSearch]
+    );
+    return (
+        <div className="row domain-field-toolbar">
+            <div className="col-xs-4">
+                {!domainFormDisplayOptions?.hideAddFieldsButton && (
+                    <AddEntityButton
+                        entity="Field"
+                        containerClass="container--toolbar-button"
+                        buttonClass="domain-toolbar-add-btn"
+                        onClick={onAddField}
+                    />
+                )}
+                <ActionButton
+                    containerClass="container--toolbar-button"
+                    buttonClass="domain-toolbar-delete-btn"
+                    onClick={onBulkDeleteClick}
+                    disabled={visibleSelection.size === 0}
+                >
+                    <i className="fa fa-trash domain-toolbar-export-btn-icon" /> Delete
+                </ActionButton>
+
+                {shouldShowImportExport && (
+                    <ActionButton
+                        containerClass="container--toolbar-button"
+                        buttonClass="domain-toolbar-export-btn"
+                        onClick={onExportFields}
+                        disabled={disableExport}
+                    >
+                        <i className="fa fa-download domain-toolbar-export-btn-icon" /> Export
+                    </ActionButton>
+                )}
+            </div>
+            <div className="col-xs-8">
+                <div className="pull-right domain-field-toolbar-right-aligned">
+                    {!valueIsEmpty(search) && (
+                        <span className="domain-search-text">
+                            Showing {fields.filter(f => f.visible).size} of {fields.size} {' '}
+                            field{fields.size > 1 ? 's' : ''}.
+                        </span>
+                    )}
+                    <input
+                        id={'domain-search-name-' + domainIndex}
+                        className="form-control domain-search-input"
+                        type="text"
+                        placeholder="Search Fields"
+                        onChange={onSearchChange}
+                    />
+
+                    <div className="domain-toolbar-toggle-summary">
+                        <span>Mode: </span>
+                        <ToggleButtons
+                            className=""
+                            first="Summary"
+                            second="Detail"
+                            active={summaryViewMode ? 'Summary' : 'Detail'}
+                            onClick={onToggleSummaryView}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+});
+DomainFormToolbar.displayName = 'DomainFormToolbar';
+
 export interface DomainFormProps extends PropsWithChildren {
     api?: DomainPropertiesAPIWrapper;
     appDomainHeaderRenderer?: HeaderRenderer;
@@ -188,6 +288,9 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
         domainIndex: 0,
         domainFormDisplayOptions: DEFAULT_DOMAIN_FORM_DISPLAY_OPTIONS, // add configurations options to DomainForm through this object
     };
+
+    // Negative index new propertyIds so we can easily differentiate between new and existing fields
+    propertyIdCounter = -1;
 
     constructor(props: DomainFormProps) {
         super(props);
@@ -591,7 +694,7 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
 
     applyAddField = (config?: Partial<IDomainField>): void => {
         const { newFieldConfig } = this.props;
-        const newConfig = config ? { ...config } : newFieldConfig;
+        const newConfig = Object.assign({}, config ? config : newFieldConfig, { propertyId: this.propertyIdCounter-- });
         const newDomain = addDomainField(this.props.domain, newConfig);
         this.onDomainChange(newDomain, true);
         this.setState({ selectAll: false, visibleFieldsCount: getVisibleFieldCount(newDomain) }, this.collapseRow);
@@ -1019,11 +1122,6 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
         this.setState(state => ({ summaryViewMode: !state.summaryViewMode }));
     };
 
-    onSearch = (evt): void => {
-        const { value } = evt.target;
-        this.updateFilteredFields(value);
-    };
-
     getFilteredFields = (domain: DomainDesign, value?: string): DomainDesign => {
         const filteredFields = domain.fields.map(field => {
             const fieldSearchMatch =
@@ -1247,6 +1345,7 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
         const disableExport = !hasFields || fields.filter(f => f.visible).size < 1;
         const hasException = domain.hasException();
         const isApp_ = isApp();
+        const showToolbar = hasFields || !(this.shouldShowInferFromFile() || this.shouldShowImportExport());
 
         return (
             <>
@@ -1284,68 +1383,21 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
                                         />
                                     )}
 
-                                    {(hasFields ||
-                                        !(this.shouldShowInferFromFile() || this.shouldShowImportExport())) && (
-                                        <div className="row domain-field-toolbar">
-                                            <div className="col-xs-4">
-                                                {!domainFormDisplayOptions?.hideAddFieldsButton && (
-                                                    <AddEntityButton
-                                                        entity="Field"
-                                                        containerClass="container--toolbar-button"
-                                                        buttonClass="domain-toolbar-add-btn"
-                                                        onClick={this.onAddField}
-                                                    />
-                                                )}
-                                                <ActionButton
-                                                    containerClass="container--toolbar-button"
-                                                    buttonClass="domain-toolbar-delete-btn"
-                                                    onClick={this.onBulkDeleteClick}
-                                                    disabled={visibleSelection.size === 0}
-                                                >
-                                                    <i className="fa fa-trash domain-toolbar-export-btn-icon" /> Delete
-                                                </ActionButton>
-
-                                                {this.shouldShowImportExport() && (
-                                                    <ActionButton
-                                                        containerClass="container--toolbar-button"
-                                                        buttonClass="domain-toolbar-export-btn"
-                                                        onClick={this.onExportFields}
-                                                        disabled={disableExport}
-                                                    >
-                                                        <i className="fa fa-download domain-toolbar-export-btn-icon" />{' '}
-                                                        Export
-                                                    </ActionButton>
-                                                )}
-                                            </div>
-                                            <div className="col-xs-8">
-                                                <div className="pull-right domain-field-toolbar-right-aligned">
-                                                    {!valueIsEmpty(search) && (
-                                                        <span className="domain-search-text">
-                                                            Showing {fields.filter(f => f.visible).size} of{' '}
-                                                            {fields.size} field{fields.size > 1 ? 's' : ''}.
-                                                        </span>
-                                                    )}
-                                                    <input
-                                                        id={'domain-search-name-' + domainIndex}
-                                                        className="form-control domain-search-input"
-                                                        type="text"
-                                                        placeholder="Search Fields"
-                                                        onChange={this.onSearch}
-                                                    />
-
-                                                    <div className="domain-toolbar-toggle-summary">
-                                                        <span>Mode: </span>
-                                                        <ToggleButtons
-                                                            className=""
-                                                            first="Summary"
-                                                            second="Detail"
-                                                            active={summaryViewMode ? 'Summary' : 'Detail'}
-                                                            onClick={this.onToggleSummaryView}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    {showToolbar && (
+                                        <DomainFormToolbar
+                                            disableExport={disableExport}
+                                            domainIndex={domainIndex}
+                                            fields={fields}
+                                            onAddField={this.onAddField}
+                                            onBulkDeleteClick={this.onBulkDeleteClick}
+                                            onExportFields={this.onExportFields}
+                                            onSearch={this.updateFilteredFields}
+                                            onToggleSummaryView={this.onToggleSummaryView}
+                                            search={search}
+                                            shouldShowImportExport={this.shouldShowImportExport()}
+                                            summaryViewMode={summaryViewMode}
+                                            visibleSelection={visibleSelection}
+                                        />
                                     )}
 
                                     <div className={helpTopic ? 'row domain-form-hdr-margins' : 'row'}>
@@ -1372,16 +1424,17 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
                                     {hasFields && summaryViewMode && (
                                         <div className="domain-form__summary-mode">
                                             <DomainPropertiesGrid
-                                                domain={domain}
-                                                search={search}
-                                                selectAll={selectAll}
                                                 actions={{
                                                     toggleSelectAll: this.toggleSelectAll,
                                                     scrollFunction: this.scrollFunction,
                                                     onFieldsChange: this.onFieldsChange,
                                                 }}
                                                 appPropertiesOnly={appPropertiesOnly}
+                                                domain={domain}
                                                 hasOntologyModule={hasModule(ONTOLOGY_MODULE_NAME)}
+                                                search={search}
+                                                selectAll={selectAll}
+                                                showFilterCriteria={domainFormDisplayOptions.showFilterCriteria}
                                             />
                                         </div>
                                     )}

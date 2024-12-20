@@ -269,7 +269,7 @@ class TargetTableSelectImpl extends React.Component<TargetTableSelectProps, ITar
                     const encoded = encodeLookup(q.name, q.type);
                     return (
                         <option
-                            key={encoded}
+                            key={encoded ?? ''}
                             value={encoded}
                             disabled={
                                 // Disable if it is the initial query and it is an invalid lookup
