@@ -17,6 +17,7 @@ import {
     sortCellKeys,
 } from './utils';
 import { initEditorModel } from './actions';
+import { Utils } from '@labkey/api';
 
 class MockEditableGridLoader implements EditableGridLoader {
     columns: QueryColumn[];
@@ -231,12 +232,15 @@ describe('getValidatedEditableGridValue', () => {
     test('int column', () => {
         const intCol = new QueryColumn({ jsonType: 'int' });
 
-        const validValues = [null, undefined, '', 0, -1, 100, 1.1e3, '100', '0.0'];
+        const validValues = [null, undefined, '', ' ', 0, -1, 100, 1.1e3, '100', '100 ', '0.0'];
         validValues.forEach(value => {
-            expect(getValidatedEditableGridValue(value, intCol)).toStrictEqual({ message: undefined, value });
+            expect(getValidatedEditableGridValue(value, intCol)).toStrictEqual({
+                message: undefined,
+                value: Utils.isString(value) ? value.trim() : value,
+            });
         });
 
-        const invalidValues = [1.11, ' ', 'Bogus', true, NaN];
+        const invalidValues = [1.11, 'Bogus', true, NaN];
         invalidValues.forEach(value => {
             expect(getValidatedEditableGridValue(value, intCol)).toStrictEqual({
                 message: {
@@ -274,12 +278,15 @@ describe('getValidatedEditableGridValue', () => {
             undefined,
             '',
             'true',
+            'true\r',
             't',
             'yes',
             'y',
             'on',
             '1',
             'false',
+            ' false',
+            ' false ',
             'f',
             'no',
             'n',
@@ -287,7 +294,9 @@ describe('getValidatedEditableGridValue', () => {
             '0',
         ];
         validValues.forEach(value => {
-            expect(getValidatedEditableGridValue(value, boolCol)).toStrictEqual({ message: undefined, value });
+            expect(getValidatedEditableGridValue(value, boolCol)).toStrictEqual({
+                message: undefined,
+                value: Utils.isString(value) ? value.trim() : value, });
         });
 
         const invalidValues = ['tr', 'correct', 'wrong', '-1', '0.0', 'fail', 'bogus'];
@@ -296,7 +305,7 @@ describe('getValidatedEditableGridValue', () => {
                 message: {
                     message: 'Invalid boolean',
                 },
-                value,
+                value
             });
         });
     });
