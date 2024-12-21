@@ -1,5 +1,3 @@
-import { Project } from '@labkey/api';
-
 import { Container, ContainerDateFormats } from './components/base/models/Container';
 import { AppContext } from './AppContext';
 import { getTestAPIWrapper } from './APIWrapper';
@@ -34,13 +32,11 @@ export const TEST_PROJECT_CONTAINER_ADMIN = new Container({
         'org.labkey.api.security.permissions.AddUserPermission',
     ],
 });
-export const TEST_PROJECT: Project = {
-    id: TEST_PROJECT_CONTAINER.id,
-    name: TEST_PROJECT_CONTAINER.name,
-    path: TEST_PROJECT_CONTAINER.path,
-    rootId: TEST_PROJECT_CONTAINER.parentId,
-    title: TEST_PROJECT_CONTAINER.title,
-};
+
+export const TEST_PROJECT = new Container({
+    ...TEST_PROJECT_CONTAINER_CONFIG,
+    rootId: TEST_PROJECT_CONTAINER_CONFIG.parentId,
+});
 
 const TEST_FOLDER_CONTAINER_CONFIG = {
     activeModules: ['a', 'b', 'c'],

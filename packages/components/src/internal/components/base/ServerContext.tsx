@@ -84,7 +84,7 @@ export function applyPermissions(container: Container, user: User): User {
         ...user,
         isAdmin: container.effectivePermissions.indexOf(PermissionTypes.Admin) > -1,
         permissionsList: container.effectivePermissions,
-    }) as User;
+    });
 
     return new User({
         ...contextUser,

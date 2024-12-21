@@ -51,6 +51,7 @@ export class Container implements IContainer {
     declare parentId: string;
     declare parentPath: string;
     declare path: string;
+    declare rootId: string;
     declare sortOrder: number;
     declare startUrl: string;
     declare title: string;

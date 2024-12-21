@@ -62,7 +62,7 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
     const [error, setError] = useState<string>();
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.INITIALIZED);
     const { api } = useAppContext();
-    const { user } = useServerContext();
+    const { container, project, projectUser, user } = useServerContext();
 
     useEffect(() => {
         if (!containerIdOrPath) return;
@@ -70,6 +70,24 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
         (async () => {
             setError(undefined);
             setLoadingState(LoadingState.LOADING);
+
+            if (!options) {
+                if (user && (containerIdOrPath === container.path || containerIdOrPath === container.id)) {
+                    setContainerUsers({
+                        [containerIdOrPath]: { container, user },
+                        [container.path]: { container, user },
+                    });
+                    setLoadingState(LoadingState.LOADED);
+                    return;
+                } else if (projectUser && (containerIdOrPath === project.path || containerIdOrPath === project.id)) {
+                    setContainerUsers({
+                        [containerIdOrPath]: { container: project, user: projectUser },
+                        [project.path]: { container: project, user: projectUser },
+                    });
+                    setLoadingState(LoadingState.LOADED);
+                    return;
+                }
+            }
 
             try {
                 const containers = await api.security.fetchContainers({
@@ -98,7 +116,7 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
             setLoadingState(LoadingState.LOADED);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps -- ignore options
-    }, [api, containerIdOrPath, user]);
+    }, [api, container, containerIdOrPath, project, projectUser, user]);
 
     return {
         container: containerUsers[containerIdOrPath]?.container,
