@@ -8,9 +8,11 @@ import { User } from '../base/models/User';
 import { resolveErrorMessage } from '../../util/messaging';
 import { FetchContainerOptions } from '../security/APIWrapper';
 
+export type ContainerUserMap = Record<string, ContainerUser>;
+
 export interface ContainerUser {
     container: Container;
-    containerUsers?: { [key: string]: ContainerUser };
+    containerUsers?: ContainerUserMap;
     user: User;
 }
 
@@ -20,6 +22,24 @@ export interface UseContainerUser extends ContainerUser {
 }
 
 export type UseContainerUserOptions = Omit<FetchContainerOptions, 'containerPath'>;
+
+function applyContainerUser(
+    containerIdOrPath: string,
+    container: Container,
+    user: User,
+    cu: ContainerUserMap = {},
+    addIdOrPathAsKey = true
+): ContainerUserMap {
+    if (addIdOrPathAsKey) {
+        cu[containerIdOrPath] = { container, user };
+    }
+    cu[container.path] = { container, user };
+    return cu;
+}
+
+function identifiesContainer(containerIdOrPath: string, container: Container): boolean {
+    return !!containerIdOrPath && (containerIdOrPath === container.path || containerIdOrPath === container.id);
+}
 
 /**
  * React hook that supplies the container, user, and the container-relative permissions for the user.
@@ -72,18 +92,14 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
             setLoadingState(LoadingState.LOADING);
 
             if (!options) {
-                if (user && (containerIdOrPath === container.path || containerIdOrPath === container.id)) {
-                    setContainerUsers({
-                        [containerIdOrPath]: { container, user },
-                        [container.path]: { container, user },
-                    });
+                if (user && identifiesContainer(containerIdOrPath, container)) {
+                    setContainerUsers(applyContainerUser(containerIdOrPath, container, user));
                     setLoadingState(LoadingState.LOADED);
                     return;
-                } else if (projectUser && (containerIdOrPath === project.path || containerIdOrPath === project.id)) {
-                    setContainerUsers({
-                        [containerIdOrPath]: { container: project, user: projectUser },
-                        [project.path]: { container: project, user: projectUser },
-                    });
+                }
+
+                if (projectUser && identifiesContainer(containerIdOrPath, project)) {
+                    setContainerUsers(applyContainerUser(containerIdOrPath, project, projectUser));
                     setLoadingState(LoadingState.LOADED);
                     return;
                 }
@@ -97,16 +113,10 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
                     containerPath: containerIdOrPath,
                 });
 
-                const containerUsers_ = containers.reduce<Record<string, ContainerUser>>((cu, c, i) => {
-                    const u = applyPermissions(c, user);
-
-                    if (i === 0) {
-                        cu[containerIdOrPath] = { container: c, user: u };
-                    }
-
-                    cu[c.path] = { container: c, user: u };
-                    return cu;
-                }, {});
+                const containerUsers_ = containers.reduce<ContainerUserMap>(
+                    (cu, c, i) => applyContainerUser(containerIdOrPath, c, applyPermissions(c, user), cu, i === 0),
+                    {}
+                );
 
                 setContainerUsers(containerUsers_);
             } catch (e) {
