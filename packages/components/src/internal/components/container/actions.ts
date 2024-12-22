@@ -23,24 +23,6 @@ export interface UseContainerUser extends ContainerUser {
 
 export type UseContainerUserOptions = Omit<FetchContainerOptions, 'containerPath'>;
 
-function applyContainerUser(
-    containerIdOrPath: string,
-    container: Container,
-    user: User,
-    cu: ContainerUserMap = {},
-    addIdOrPathAsKey = true
-): ContainerUserMap {
-    if (addIdOrPathAsKey) {
-        cu[containerIdOrPath] = { container, user };
-    }
-    cu[container.path] = { container, user };
-    return cu;
-}
-
-function identifiesContainer(containerIdOrPath: string, container: Container): boolean {
-    return !!containerIdOrPath && (containerIdOrPath === container.path || containerIdOrPath === container.id);
-}
-
 /**
  * React hook that supplies the container, user, and the container-relative permissions for the user.
  * @param containerIdOrPath The container id or container path to request.
@@ -78,11 +60,11 @@ function identifiesContainer(containerIdOrPath: string, container: Container): b
  * ```
  */
 export function useContainerUser(containerIdOrPath: string, options?: UseContainerUserOptions): UseContainerUser {
-    const [containerUsers, setContainerUsers] = useState<Record<string, ContainerUser>>({});
+    const [containerUsers, setContainerUsers] = useState<ContainerUserMap>({});
     const [error, setError] = useState<string>();
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.INITIALIZED);
     const { api } = useAppContext();
-    const { container, project, projectUser, user } = useServerContext();
+    const { user } = useServerContext();
 
     useEffect(() => {
         if (!containerIdOrPath) return;
@@ -90,20 +72,6 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
         (async () => {
             setError(undefined);
             setLoadingState(LoadingState.LOADING);
-
-            if (!options) {
-                if (user && identifiesContainer(containerIdOrPath, container)) {
-                    setContainerUsers(applyContainerUser(containerIdOrPath, container, user));
-                    setLoadingState(LoadingState.LOADED);
-                    return;
-                }
-
-                if (projectUser && identifiesContainer(containerIdOrPath, project)) {
-                    setContainerUsers(applyContainerUser(containerIdOrPath, project, projectUser));
-                    setLoadingState(LoadingState.LOADED);
-                    return;
-                }
-            }
 
             try {
                 const containers = await api.security.fetchContainers({
@@ -113,10 +81,16 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
                     containerPath: containerIdOrPath,
                 });
 
-                const containerUsers_ = containers.reduce<ContainerUserMap>(
-                    (cu, c, i) => applyContainerUser(containerIdOrPath, c, applyPermissions(c, user), cu, i === 0),
-                    {}
-                );
+                const containerUsers_ = containers.reduce<ContainerUserMap>((cu, c, i) => {
+                    const u = applyPermissions(c, user);
+
+                    if (i === 0) {
+                        cu[containerIdOrPath] = { container: c, user: u };
+                    }
+
+                    cu[c.path] = { container: c, user: u };
+                    return cu;
+                }, {});
 
                 setContainerUsers(containerUsers_);
             } catch (e) {
@@ -126,7 +100,7 @@ export function useContainerUser(containerIdOrPath: string, options?: UseContain
             setLoadingState(LoadingState.LOADED);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps -- ignore options
-    }, [api, container, containerIdOrPath, project, projectUser, user]);
+    }, [api, containerIdOrPath, user]);
 
     return {
         container: containerUsers[containerIdOrPath]?.container,
