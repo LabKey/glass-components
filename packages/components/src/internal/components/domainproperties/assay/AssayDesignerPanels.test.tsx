@@ -48,7 +48,7 @@ const EXISTING_MODEL = AssayProtocolModel.create({
             ],
         },
         {
-            name: 'Sample Fields',
+            name: 'Data Fields',
             fields: [
                 {
                     name: 'field1',
@@ -365,7 +365,7 @@ describe('AssayDesignerPanels', () => {
             <AssayDesignerPanels
                 {...getDefaultProps()}
                 initModel={EXISTING_MODEL}
-                appDomainHeaders={Map({ Sample: mockAppHeader })}
+                appDomainHeaders={Map({ Data: mockAppHeader })}
             />
         );
 

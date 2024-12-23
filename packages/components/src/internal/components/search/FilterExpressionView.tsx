@@ -43,7 +43,7 @@ export const FilterExpressionView: FC<Props> = memo(props => {
         const filterOptions = getFilterOptionsForType(field, includeAllAncestorFilter);
         setFieldFilterOptions(filterOptions);
         setActiveFilters(getFilterSelections(fieldFilters, filterOptions));
-    }, [field]); // leave fieldFilters out of deps list, fieldFilters is used to init once
+    }, [field]); // eslint-disable-line react-hooks/exhaustive-deps -- fieldFilters is used to init once
 
     const unusedFilterOptions = useCallback(
         (thisIndex: number): FieldFilterOption[] => {
@@ -115,7 +115,7 @@ export const FilterExpressionView: FC<Props> = memo(props => {
     );
 
     const onFieldFilterTypeChange = useCallback(
-        (fieldname: any, filterUrlSuffix: any, filterIndex: number) => {
+        (filterUrlSuffix: string, filterIndex: number) => {
             const newActiveFilterType = fieldFilterOptions?.find(option => option.value === filterUrlSuffix);
             const { shouldClear, filterSelection } = getUpdatedFilterSelection(
                 newActiveFilterType,
@@ -127,6 +127,18 @@ export const FilterExpressionView: FC<Props> = memo(props => {
             setExpandedOntologyKey(undefined);
         },
         [fieldFilterOptions, activeFilters]
+    );
+    const onUpdateFirstField = useCallback(
+        (_, filterUrlSuffix: string) => {
+            onFieldFilterTypeChange(filterUrlSuffix, 0);
+        },
+        [onFieldFilterTypeChange]
+    );
+    const onUpdateSecondField = useCallback(
+        (_, filterUrlSuffix: string) => {
+            onFieldFilterTypeChange(filterUrlSuffix, 1);
+        },
+        [onFieldFilterTypeChange]
     );
 
     const updateBooleanFilterFieldValue = useCallback(
@@ -400,9 +412,7 @@ export const FilterExpressionView: FC<Props> = memo(props => {
                 inputClass="filter-expression__input-select"
                 placeholder="Select a filter type..."
                 value={activeFilters[0]?.filterType?.value}
-                onChange={(fieldname: any, filterUrlSuffix: any) =>
-                    onFieldFilterTypeChange(fieldname, filterUrlSuffix, 0)
-                }
+                onChange={onUpdateFirstField}
                 options={unusedFilterOptions(0)}
                 disabled={disabled}
             />
@@ -417,9 +427,7 @@ export const FilterExpressionView: FC<Props> = memo(props => {
                         inputClass="filter-expression__input-select"
                         placeholder="Select a filter type..."
                         value={activeFilters[1]?.filterType?.value}
-                        onChange={(fieldname: any, filterUrlSuffix: any) =>
-                            onFieldFilterTypeChange(fieldname, filterUrlSuffix, 1)
-                        }
+                        onChange={onUpdateSecondField}
                         options={unusedFilterOptions(1)}
                         menuPosition="fixed"
                         disabled={disabled}

@@ -950,3 +950,18 @@
         height: 34px;
     }
 }
+
+.filter-criteria-input {
+    display: flex;
+    gap: 16px;
+}
+
+.field-modal__container.filter-criteria-modal-body .field-modal__col-content.field-modal__values {
+    padding: 16px;
+}
+
+.filter-criteria-renderer ul {
+    padding: 0;
+    margin: 0;
+    margin-left: 15px;
+}

@@ -34,6 +34,7 @@ import { TextChoiceOptions } from './TextChoiceOptions';
 import { FileAttachmentOptions } from './FileAttachmentOptions';
 import { CalculatedFieldOptions } from './CalculatedFieldOptions';
 import { CALCULATED_TYPE } from './PropDescType';
+import { FieldFilterCriteria } from './FieldFilterCriteria';
 
 interface Props {
     appPropertiesOnly?: boolean;
@@ -269,6 +270,7 @@ export class DomainRowExpandedOptions extends React.Component<Props> {
             domainFormDisplayOptions,
             getDomainFields,
         } = this.props;
+        const showFilterCriteria = domainFormDisplayOptions.showFilterCriteria && field.isFilterCriteriaField();
 
         return (
             <div className="domain-row-container">
@@ -324,6 +326,7 @@ export class DomainRowExpandedOptions extends React.Component<Props> {
                             />
                         </div>
                     )}
+                    {showFilterCriteria && <FieldFilterCriteria field={field} />}
                 </div>
             </div>
         );
