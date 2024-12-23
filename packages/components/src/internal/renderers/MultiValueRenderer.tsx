@@ -50,18 +50,9 @@ export const MultiValueRenderer: FC<MultiValueRendererProps> = memo(({ data }) =
 
                     if (text === undefined || text === null || text === '') return null;
 
-                    // If the string has \n characters, replace them with <br/> elements
+                    // If the string has \n characters, use whiteSpace style to preserve them
                     if (typeof text === 'string' && text.indexOf('\n') > -1) {
-                        text = (
-                            <>
-                                {text.split('\n').map((t, index) => (
-                                    <Fragment key={index}>
-                                        {t}
-                                        <br />
-                                    </Fragment>
-                                ))}
-                            </>
-                        );
+                        text = <span style={{ whiteSpace: 'pre-line' }}>{text}</span>;
                     }
 
                     return (

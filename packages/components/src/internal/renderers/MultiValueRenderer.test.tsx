@@ -38,8 +38,7 @@ describe('MultiValueRenderer', () => {
     test('data with new line', () => {
         const data = fromJS({ 24: { value: 'first\nsecond\nthird' } });
         render(<MultiValueRenderer data={data} />);
-        expect(document.body.textContent).toBe('firstsecondthird');
-        expect(document.querySelectorAll('br')).toHaveLength(3);
+        expect(document.body.textContent).toBe('first\nsecond\nthird');
     });
 
     test('multiple values', () => {
