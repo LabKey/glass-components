@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.8.1
+*Released*: 23 December 2024
+- MultiValueRenderer update for string values wit \n characters, to use white-space CSS to preserver them
+
 ### version 6.8.0
 *Released*: 19 December 2024
 - Add FilterCriteriaRenderer
