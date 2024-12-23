@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.8.1
+*Released*: 23 December 2024
 - MultiValueRenderer update for string values wit \n characters, replace them with <br/> elements
 
 ### version 6.8.0
