@@ -38,6 +38,7 @@ export interface FileInputProps extends DisableableInputProps {
     initialValue?: any;
     labelClassName?: string;
     maxFileSize?: number;
+    emptyFileNotAllowed?: boolean;
     name?: string;
     onChange?: (fileMap: Record<string, File>) => void;
     queryColumn?: QueryColumn;
@@ -99,7 +100,7 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
     }
 
     processFiles(fileList: FileList, transferItems?: DataTransferItemList): void {
-        const { acceptedFormats, maxFileSize } = this.props;
+        const { acceptedFormats, maxFileSize, emptyFileNotAllowed } = this.props;
         if (fileList.length > 1) {
             this.setState({ error: 'Only one file allowed' });
             return;
@@ -122,6 +123,10 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
 
         if (maxFileSize && file.size > maxFileSize) {
             this.setState({ error: 'File must not exceed acceptable size.' });
+            return;
+        }
+        if (emptyFileNotAllowed && file.size === 0) {
+            this.setState({ error: 'Empty file is not allowed.' });
             return;
         }
         this.setFormValue(file);
