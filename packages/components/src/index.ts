@@ -228,6 +228,7 @@ import {
     selectDistinctRows,
     selectRowsDeprecated,
     updateRows,
+    ensureAllFieldsInAllRows,
 } from './internal/query/api';
 import { processSchemas } from './internal/query/utils';
 import {
@@ -1152,6 +1153,7 @@ export {
     getQueryDetails,
     invalidateQueryDetailsCache,
     registerFilterType,
+    ensureAllFieldsInAllRows,
     BOX_SAMPLES_FILTER,
     LOCATION_SAMPLES_FILTER,
     COLUMN_IN_FILTER_TYPE,

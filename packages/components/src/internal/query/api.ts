@@ -929,7 +929,7 @@ export function insertRows(options: InsertRowsOptions): Promise<QueryCommandResp
 // TODO: make this method take plain JS objects so we can convert insertRows to take a plain JS array, nearly every
 //  caller of insertRows is converting a plain JS array to an immutable object in the method call, and insertRows
 //  converts it back to an array after this method is used, so the conversion is pretty uneccessary.
-function ensureAllFieldsInAllRows(rows: List<any>): List<any> {
+export function ensureAllFieldsInAllRows(rows: List<any>): List<any> {
     let masterRecord = Map<string, any>().asMutable();
 
     rows.forEach(row => {

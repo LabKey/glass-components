@@ -7,6 +7,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Update AddEntityButton with new parameter
 - Add `getMultipleDataTypeExcludedContainers` to `FolderAPI`.
 - Add optional `className` prop to `DeleteIcon`
+- export ensureAllFieldsInAllRows for usage in saveRowsByContainer
 
 ### version 6.8.1
 *Released*: 23 December 2024
