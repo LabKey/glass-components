@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { FC, memo, ReactNode } from 'react';
+import React, { FC, Fragment, memo, ReactNode } from 'react';
 import { Map } from 'immutable';
 
 export interface MultiValueRendererProps {
@@ -28,37 +28,44 @@ export const MultiValueRenderer: FC<MultiValueRendererProps> = memo(({ data }) =
     let i = -1;
     return (
         <div>
-            {data.map((item, key) => {
-                let text: ReactNode;
-                let url: string;
+            {data
+                .map((item, key) => {
+                    let text: ReactNode;
+                    let url: string;
 
-                if (Map.isMap(item)) {
-                    if (item.has('formattedValue')) {
-                        text = item.get('formattedValue');
+                    if (Map.isMap(item)) {
+                        if (item.has('formattedValue')) {
+                            text = item.get('formattedValue');
+                        } else {
+                            const o = item.has('displayValue') ? item.get('displayValue') : item.get('value');
+                            text = o !== null && o !== undefined ? o.toString() : null;
+                        }
+
+                        url = item.get('url');
+                    } else if (item !== undefined && item !== null) {
+                        text = item.toString();
                     } else {
-                        const o = item.has('displayValue') ? item.get('displayValue') : item.get('value');
-                        text = o !== null && o !== undefined ? o.toString() : null;
+                        return null;
                     }
 
-                    url = item.get('url');
-                } else if (item !== undefined && item !== null) {
-                    text = item.toString();
-                } else {
-                    return null;
-                }
+                    if (text === undefined || text === null || text === '') return null;
 
-                if (text === undefined || text === null || text === '') return null;
+                    // If the string has \n characters, use whiteSpace style to preserve them
+                    if (typeof text === 'string' && text.indexOf('\n') > -1) {
+                        text = <span style={{ whiteSpace: 'pre-line' }}>{text}</span>;
+                    }
 
-                return (
-                    // IntelliJ mistakenly presumes that key is an index.
-                    // In fact, it is the key of the map which is unique.
-                    // eslint-disable-next-line react/no-array-index-key
-                    <span key={key}>
-                        {++i > 0 ? ', ' : ''}
-                        {url ? <a href={url}>{text}</a> : text}
-                    </span>
-                );
-            }).toArray()}
+                    return (
+                        // IntelliJ mistakenly presumes that key is an index.
+                        // In fact, it is the key of the map which is unique.
+                        // eslint-disable-next-line react/no-array-index-key
+                        <span key={key}>
+                            {++i > 0 ? ', ' : ''}
+                            {url ? <a href={url}>{text}</a> : text}
+                        </span>
+                    );
+                })
+                .toArray()}
         </div>
     );
 });
