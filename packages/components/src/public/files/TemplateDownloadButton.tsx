@@ -31,6 +31,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         user,
     } = props;
     const [customTemplates, setCustomTemplates] = useState<ImportTemplate[]>();
+    const [loadingTemplates, setLoadingTemplates] = useState<boolean>(false);
     const { api } = useAppContext();
 
     useEffect(() => {
@@ -38,6 +39,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
 
         (async () => {
             try {
+                setLoadingTemplates(true);
                 const queryInfo = await api.query.getQueryDetails({
                     schemaName: schemaQuery.schemaName,
                     queryName: schemaQuery.queryName,
@@ -45,9 +47,11 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                 setCustomTemplates(queryInfo.getCustomTemplates());
             } catch (reason) {
                 console.error(reason);
+            } finally {
+                setLoadingTemplates(false);
             }
         })();
-    }, [schemaQuery]);
+    }, [schemaQuery, setLoadingTemplates]);
 
     const showDropdown = useMemo(() => {
         return customTemplates?.length > 0 || (!!getExtraTemplates && !customTemplates);
@@ -55,11 +59,12 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
 
     const fetchTemplates = useCallback(async () => {
         if (customTemplates || !getExtraTemplates) return;
-
+        setLoadingTemplates(true);
         const templates_ = await getExtraTemplates();
         setCustomTemplates(templates_ ?? []);
         if (!templates_ || templates_.length === 0) onDownloadDefault();
-    }, [getExtraTemplates, onDownloadDefault, customTemplates]);
+        setLoadingTemplates(false);
+    }, [getExtraTemplates, onDownloadDefault, customTemplates, setLoadingTemplates]);
 
     const dropdownTitle = useMemo(() => {
         return (
@@ -105,7 +110,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                             Default Template
                         </MenuItem>
                     )}
-                    {!customTemplates && <LoadingSpinner />}
+                    {loadingTemplates && <LoadingSpinner />}
                     {customTemplates?.map((template, ind) => (
                         <MenuItem key={ind + 1} href={template.url} rel="noopener noreferrer" target="_blank">
                             {template.label}
