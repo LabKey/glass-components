@@ -8,6 +8,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Add `getMultipleDataTypeExcludedContainers` to `FolderAPI`.
 - Add optional `className` prop to `DeleteIcon`
 
+### version 6.8.1
+*Released*: 23 December 2024
+- MultiValueRenderer update for string values wit \n characters, to use white-space CSS to preserve them
+
 ### version 6.8.0
 *Released*: 19 December 2024
 - Add FilterCriteriaRenderer
