@@ -111,3 +111,30 @@
     margin: 0 auto;
     max-width: 100%;
 }
+
+.file-listing-header {
+    height: 40px;
+}
+.file-listing-row--container {
+    border: 1px #cccccc solid;
+    margin-bottom: -1px;
+    background-color: white;
+    outline: none;
+    float: left;
+    width: 100%;
+    position: relative;
+    min-height: 42px;
+
+    &.file-error {
+        min-height: 75px;
+    }
+
+    input, .form-group, .default-template, .error-msg {
+        position: relative;
+        top: 8px
+    }
+}
+
+.add-file-list-btn {
+    display: inline-block;
+}

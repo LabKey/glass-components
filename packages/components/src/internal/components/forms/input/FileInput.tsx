@@ -28,6 +28,7 @@ import { FileColumnRenderer } from '../../../renderers/FileColumnRenderer';
 import { FILELINK_RANGE_URI } from '../../domainproperties/constants';
 
 import { DisableableInput, DisableableInputProps, DisableableInputState } from './DisableableInput';
+import { fileMatchesAcceptedFormat } from '../../files/actions';
 
 export interface FileInputProps extends DisableableInputProps {
     addLabelAsterisk?: boolean;
@@ -43,6 +44,7 @@ export interface FileInputProps extends DisableableInputProps {
     renderFieldLabel?: (queryColumn: QueryColumn, label?: string, description?: string) => ReactNode;
     showLabel?: boolean;
     toggleDisabledTooltip?: string;
+    acceptedFormats?: string;
 }
 
 type FileInputImplProps = FileInputProps & FormsyInjectedProps<any>;
@@ -97,6 +99,7 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
     }
 
     processFiles(fileList: FileList, transferItems?: DataTransferItemList): void {
+        const { acceptedFormats, maxFileSize } = this.props;
         if (fileList.length > 1) {
             this.setState({ error: 'Only one file allowed' });
             return;
@@ -107,11 +110,21 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
             return;
         }
 
-        if (this.props.maxFileSize && fileList[0].size > this.props.maxFileSize) {
+        const file = fileList[0];
+        if (acceptedFormats) {
+            const formatCheck = fileMatchesAcceptedFormat(file.name, acceptedFormats);
+            if(!formatCheck.isMatch) {
+                this.setState({ error: 'Invalid file type.' });
+                return;
+            }
+
+        }
+
+        if (maxFileSize && file.size > maxFileSize) {
             this.setState({ error: 'File must not exceed acceptable size.' });
             return;
         }
-        this.setFormValue(fileList[0]);
+        this.setFormValue(file);
     }
 
     setFormValue(file: File): void {
