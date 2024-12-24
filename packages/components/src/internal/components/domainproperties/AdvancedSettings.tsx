@@ -57,6 +57,7 @@ interface AdvancedSettingsProps {
     onApply: (any) => any;
     onHide: () => any;
     showDefaultValueSettings: boolean;
+    supportsPhiLevel: boolean;
 }
 
 interface AdvancedSettingsState {
@@ -352,7 +353,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
     };
 
     renderMiscOptions = () => {
-        const { index, field, domainIndex, domainFormDisplayOptions, allowUniqueConstraintProperties } = this.props;
+        const { index, field, domainIndex, domainFormDisplayOptions, allowUniqueConstraintProperties, supportsPhiLevel } = this.props;
         const {
             measure,
             dimension,
@@ -365,6 +366,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
         } = this.state;
         const currentValueExists = phiLevels?.find(level => level.value === PHI) !== undefined;
         const disablePhiSelect =
+            !supportsPhiLevel ||
             domainFormDisplayOptions.phiLevelDisabled ||
             field.disablePhiLevel ||
             (PHI !== undefined && !currentValueExists);

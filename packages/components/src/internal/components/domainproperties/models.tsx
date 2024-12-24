@@ -167,6 +167,7 @@ interface IDomainDesign {
     queryName?: string;
     schemaName?: string;
     showDefaultValueSettings: boolean;
+    supportsPhiLevel: boolean;
 }
 
 export class DomainDesign
@@ -230,6 +231,7 @@ export class DomainDesign
     declare schemaName: string;
     declare queryName: string;
     declare disabledSystemFields?: string[];
+    declare supportsPhiLevel: boolean;
 
     static create(rawModel: any, exception?: any): DomainDesign {
         let fields = List<DomainField>();

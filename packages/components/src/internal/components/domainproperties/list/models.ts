@@ -40,6 +40,7 @@ export interface AdvancedSettingsForm extends EachItemSettings, EntireListSettin
     eachItemIndex: boolean;
     entireListIndex: boolean;
     fileAttachmentIndex: boolean;
+    multiFolder: boolean;
     titleColumn: string;
 }
 
@@ -74,6 +75,7 @@ export class ListModel extends Record({
     eachItemBodySetting: undefined,
     eachItemBodyTemplate: undefined,
     fileAttachmentIndex: undefined,
+    multiFolder: undefined,
     listId: undefined,
     discussionSettingEnum: undefined,
     containerPath: undefined,
@@ -103,6 +105,7 @@ export class ListModel extends Record({
     declare eachItemBodySetting: number;
     declare eachItemBodyTemplate: string;
     declare fileAttachmentIndex: false;
+    declare multiFolder: false;
     declare listId: number;
     declare discussionSettingEnum: string;
     declare containerPath: string;

@@ -99,6 +99,7 @@ export interface DomainRowProps {
     queryName?: string;
     schemaName?: string;
     showDefaultValueSettings: boolean;
+    supportsPhiLevel: boolean;
 }
 
 interface DomainRowState {
@@ -380,6 +381,7 @@ export class DomainRow extends React.PureComponent<DomainRowProps, DomainRowStat
             domainContainerPath,
             schemaName,
             queryName,
+            supportsPhiLevel,
         } = this.props;
         const { selected } = field;
         const draggableId = createFormInputId('domaindrag', domainIndex, index);
@@ -420,6 +422,7 @@ export class DomainRow extends React.PureComponent<DomainRowProps, DomainRowStat
                                     defaultDefaultValueType={defaultDefaultValueType}
                                     defaultValueOptions={defaultValueOptions}
                                     domainFormDisplayOptions={domainFormDisplayOptions}
+                                    supportsPhiLevel={supportsPhiLevel}
                                 />
                             )}
                             <div
