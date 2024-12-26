@@ -3,7 +3,6 @@ Components, models, actions, and utility functions for LabKey applications and p
 
 ### version TBD
 *Released*: TBD
-- Issue 51816: trim strings before validating
 - Update AddEntityButton with new parameter
 - Add `getMultipleDataTypeExcludedContainers` to `FolderAPI`.
 - Add optional `className` prop to `DeleteIcon`
