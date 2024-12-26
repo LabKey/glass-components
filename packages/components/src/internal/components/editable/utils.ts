@@ -1,4 +1,4 @@
-import { Filter, Utils } from '@labkey/api';
+import { Filter } from '@labkey/api';
 
 import { Operation, QueryColumn } from '../../../public/QueryColumn';
 
