@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "6.9.0-fb-importTemplates.4",
+  "version": "6.9.0-fb-importTemplates.5",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [

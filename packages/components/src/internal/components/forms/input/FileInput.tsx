@@ -209,7 +209,7 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
                     <span className="fa fa-times-circle attached-file__remove-icon" onClick={this.onRemove} />
                     <span className="fa fa-file-text attached-file--icon" />
                     <span>{file.name}</span>
-                    <span className="file-upload__error-message">{this.state.error}</span>
+                    <div className="file-upload__error-message">{this.state.error}</div>
                 </div>
             );
         } else if (data?.get('value')) {
@@ -249,7 +249,7 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
                         <i className="fa fa-cloud-upload" aria-hidden="true" />
                         &nbsp;
                         <span>Select file or drag and drop here.</span>
-                        <span className="file-upload__error-message">{this.state.error}</span>
+                        <div className="file-upload__error-message">{this.state.error}</div>
                     </label>
                 </>
             );
