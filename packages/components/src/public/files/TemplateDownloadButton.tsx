@@ -68,9 +68,9 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
 
     const dropdownTitle = useMemo(() => {
         return (
-            <>
+            <span title="Download Template">
                 <span className="fa fa-download" /> {text}
-            </>
+            </span>
         );
     }, [text]);
 
@@ -111,11 +111,21 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                         </MenuItem>
                     )}
                     {loadingTemplates && <LoadingSpinner />}
-                    {customTemplates?.map((template, ind) => (
-                        <MenuItem key={ind + 1} href={template.url} rel="noopener noreferrer" target="_blank">
-                            {template.label}
-                        </MenuItem>
-                    ))}
+                    {customTemplates?.map((template, ind) => {
+                        if (template.url.endsWith("(unavailable)"))
+                            return (
+                                <MenuItem disabled key={ind + 1} title="File not found">
+                                    {template.label}
+                                </MenuItem>
+                            );
+
+                            return (
+                                <MenuItem key={ind + 1} href={template.url} rel="noopener noreferrer" target="_blank">
+                                    {template.label}
+                                </MenuItem>
+                            );
+                        }
+                    )}
                 </DropdownButton>
             )}
         </RequiresPermission>
