@@ -4,7 +4,9 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version 6.X
 *Released*: X
 - Customizable File Templates for Sources, Sample Types & Assay Designs
-  - TODO
+  - Add `ProductFeature.CustomImportTemplates`
+  - Modify `FileInput` to support file size validation
+  - Update TemplateDownloadButton and TemplateDownloadRenderer to query for saved custom templates
 
 ### version 6.8.1
 *Released*: 23 December 2024
