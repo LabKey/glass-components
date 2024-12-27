@@ -122,7 +122,7 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
         }
 
         if (maxFileSize && file.size > maxFileSize) {
-            this.setState({ error: 'File must not exceed acceptable size.' });
+            this.setState({ error: `File size must not exceed ${Math.round(maxFileSize / 1024).toLocaleString()} KB.` });
             return;
         }
         if (emptyFileNotAllowed && file.size === 0) {
