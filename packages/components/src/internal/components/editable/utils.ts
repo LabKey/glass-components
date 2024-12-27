@@ -1,4 +1,4 @@
-import { Filter } from '@labkey/api';
+import { Filter, Utils } from '@labkey/api';
 
 import { Operation, QueryColumn } from '../../../public/QueryColumn';
 
@@ -33,6 +33,10 @@ export const getValidatedEditableGridValue = (origValue: any, col: QueryColumn):
     const isDateType = isDateTimeType && isDateOnlyColumn;
     let message;
     let value = origValue;
+    // Issue 51816: pasted values from spreadsheet retain new lines and look invalid
+    if (Utils.isString(value)) {
+        value = value.trim();
+    }
 
     // Issue 44398: match JSON dateTime format provided by LK server when submitting date values back for insert/update
     // Issue 45140: use QueryColumn date format for parseDate()
