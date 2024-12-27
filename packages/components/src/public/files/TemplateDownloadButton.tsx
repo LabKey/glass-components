@@ -13,9 +13,9 @@ import { useAppContext } from '../../internal/AppContext';
 interface Props {
     className?: string;
     defaultTemplateUrl?: string;
+    isGridRenderer?: boolean;
     onDownloadDefault?: () => void;
     schemaQuery?: SchemaQuery;
-    isGridRenderer?: boolean;
     text?: string;
     user?: User;
 }
@@ -42,7 +42,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         })();
     }, [schemaQuery, setLoadingTemplates, isGridRenderer]);
 
-    const loadTemplates = useCallback(async () : Promise<boolean> => {
+    const loadTemplates = useCallback(async (): Promise<boolean> => {
         try {
             setLoadingTemplates(true);
             const queryInfo = await api.query.getQueryDetails({
@@ -52,11 +52,9 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
             const customTemplates_ = queryInfo.getCustomTemplates();
             setCustomTemplates(customTemplates_);
             return customTemplates_?.length > 0;
-        }
-        catch (reason) {
+        } catch (reason) {
             console.error(reason);
-        }
-        finally {
+        } finally {
             setLoadingTemplates(false);
         }
     }, [schemaQuery, setLoadingTemplates]);
@@ -117,20 +115,19 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                     )}
                     {loadingTemplates && <LoadingSpinner />}
                     {customTemplates?.map((template, ind) => {
-                        if (template.url.endsWith("(unavailable)"))
+                        if (template.url.endsWith('(unavailable)'))
                             return (
                                 <MenuItem disabled key={ind + 1} title="File not found">
                                     {template.label}
                                 </MenuItem>
                             );
 
-                            return (
-                                <MenuItem key={ind + 1} href={template.url} rel="noopener noreferrer" target="_blank">
-                                    {template.label}
-                                </MenuItem>
-                            );
-                        }
-                    )}
+                        return (
+                            <MenuItem key={ind + 1} href={template.url} rel="noopener noreferrer" target="_blank">
+                                {template.label}
+                            </MenuItem>
+                        );
+                    })}
                 </DropdownButton>
             )}
         </RequiresPermission>

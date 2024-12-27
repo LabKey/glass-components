@@ -27,25 +27,26 @@ import { FileColumnRenderer } from '../../../renderers/FileColumnRenderer';
 
 import { FILELINK_RANGE_URI } from '../../domainproperties/constants';
 
-import { DisableableInput, DisableableInputProps, DisableableInputState } from './DisableableInput';
 import { fileMatchesAcceptedFormat } from '../../files/actions';
 
+import { DisableableInput, DisableableInputProps, DisableableInputState } from './DisableableInput';
+
 export interface FileInputProps extends DisableableInputProps {
+    acceptedFormats?: string;
     addLabelAsterisk?: boolean;
     changeDebounceInterval?: number;
     elementWrapperClassName?: string;
+    emptyFileNotAllowed?: boolean;
     formsy?: boolean;
     initialValue?: any;
     labelClassName?: string;
     maxFileSize?: number;
-    emptyFileNotAllowed?: boolean;
     name?: string;
-    onChange?: (fileMap: Record<string, File>) => void;
     queryColumn?: QueryColumn;
     renderFieldLabel?: (queryColumn: QueryColumn, label?: string, description?: string) => ReactNode;
     showLabel?: boolean;
     toggleDisabledTooltip?: string;
-    acceptedFormats?: string;
+    onChange?: (fileMap: Record<string, File>) => void;
 }
 
 type FileInputImplProps = FileInputProps & FormsyInjectedProps<any>;
@@ -114,11 +115,10 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
         const file = fileList[0];
         if (acceptedFormats) {
             const formatCheck = fileMatchesAcceptedFormat(file.name, acceptedFormats);
-            if(!formatCheck.isMatch) {
+            if (!formatCheck.isMatch) {
                 this.setState({ error: 'Invalid file type.' });
                 return;
             }
-
         }
 
         if (maxFileSize && file.size > maxFileSize) {
