@@ -9,6 +9,7 @@ import { ImportTemplate } from '../QueryInfo';
 import { LoadingSpinner } from '../../internal/components/base/LoadingSpinner';
 import { SchemaQuery } from '../SchemaQuery';
 import { useAppContext } from '../../internal/AppContext';
+import { downloadAttachment } from '../../internal/util/utils';
 
 interface Props {
     className?: string;
@@ -18,6 +19,7 @@ interface Props {
     schemaQuery?: SchemaQuery;
     text?: string;
     user?: User;
+    dropDownClassName?: string;
 }
 
 export const TemplateDownloadButton: FC<Props> = memo(props => {
@@ -29,18 +31,19 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         defaultTemplateUrl,
         text = 'Template',
         user,
+        dropDownClassName,
     } = props;
     const [customTemplates, setCustomTemplates] = useState<ImportTemplate[]>();
     const [loadingTemplates, setLoadingTemplates] = useState<boolean>(false);
     const { api } = useAppContext();
 
     useEffect(() => {
-        if (!schemaQuery || isGridRenderer) return;
+        if (!schemaQuery || isGridRenderer || customTemplates) return;
 
         (async () => {
             await loadTemplates();
         })();
-    }, [schemaQuery, setLoadingTemplates, isGridRenderer]);
+    }, [schemaQuery, isGridRenderer]);
 
     const loadTemplates = useCallback(async (): Promise<boolean> => {
         try {
@@ -66,8 +69,13 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
     const fetchTemplates = useCallback(async () => {
         if (customTemplates || !isGridRenderer) return;
         const hasCustomTemplates = await loadTemplates();
-        if (!hasCustomTemplates) onDownloadDefault();
-    }, [isGridRenderer, onDownloadDefault, customTemplates, setLoadingTemplates]);
+        if (!hasCustomTemplates) {
+            if (onDownloadDefault)
+                onDownloadDefault();
+            else
+                downloadAttachment(defaultTemplateUrl, true);
+        }
+    }, [isGridRenderer, onDownloadDefault, customTemplates, setLoadingTemplates, defaultTemplateUrl]);
 
     const dropdownTitle = useMemo(() => {
         return (
@@ -100,7 +108,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                     bsStyle="info"
                     noCaret={!customTemplates || customTemplates.length === 0}
                     className="small-right-spacing"
-                    buttonClassName={isGridRenderer ? 'button-small-padding' : ''}
+                    buttonClassName={dropDownClassName ?? (isGridRenderer ? 'button-small-padding' : '')}
                 >
                     {customTemplates?.length > 0 && (
                         <MenuItem
