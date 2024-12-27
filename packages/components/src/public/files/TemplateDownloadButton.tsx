@@ -13,9 +13,9 @@ import { useAppContext } from '../../internal/AppContext';
 interface Props {
     className?: string;
     defaultTemplateUrl?: string;
-    getExtraTemplates?: () => Promise<ImportTemplate[]>;
     onDownloadDefault?: () => void;
     schemaQuery?: SchemaQuery;
+    isGridRenderer?: boolean;
     text?: string;
     user?: User;
 }
@@ -23,7 +23,7 @@ interface Props {
 export const TemplateDownloadButton: FC<Props> = memo(props => {
     const {
         schemaQuery,
-        getExtraTemplates,
+        isGridRenderer,
         className,
         onDownloadDefault,
         defaultTemplateUrl,
@@ -35,36 +35,41 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
     const { api } = useAppContext();
 
     useEffect(() => {
-        if (!schemaQuery) return;
+        if (!schemaQuery || isGridRenderer) return;
 
         (async () => {
-            try {
-                setLoadingTemplates(true);
-                const queryInfo = await api.query.getQueryDetails({
-                    schemaName: schemaQuery.schemaName,
-                    queryName: schemaQuery.queryName,
-                });
-                setCustomTemplates(queryInfo.getCustomTemplates());
-            } catch (reason) {
-                console.error(reason);
-            } finally {
-                setLoadingTemplates(false);
-            }
+            await loadTemplates();
         })();
+    }, [schemaQuery, setLoadingTemplates, isGridRenderer]);
+
+    const loadTemplates = useCallback(async () : Promise<boolean> => {
+        try {
+            setLoadingTemplates(true);
+            const queryInfo = await api.query.getQueryDetails({
+                schemaName: schemaQuery.schemaName,
+                queryName: schemaQuery.queryName,
+            });
+            const customTemplates_ = queryInfo.getCustomTemplates();
+            setCustomTemplates(customTemplates_);
+            return customTemplates_?.length > 0;
+        }
+        catch (reason) {
+            console.error(reason);
+        }
+        finally {
+            setLoadingTemplates(false);
+        }
     }, [schemaQuery, setLoadingTemplates]);
 
     const showDropdown = useMemo(() => {
-        return customTemplates?.length > 0 || (!!getExtraTemplates && !customTemplates);
-    }, [customTemplates, getExtraTemplates]);
+        return customTemplates?.length > 0 || (isGridRenderer && !customTemplates);
+    }, [customTemplates, isGridRenderer]);
 
     const fetchTemplates = useCallback(async () => {
-        if (customTemplates || !getExtraTemplates) return;
-        setLoadingTemplates(true);
-        const templates_ = await getExtraTemplates();
-        setCustomTemplates(templates_ ?? []);
-        if (!templates_ || templates_.length === 0) onDownloadDefault();
-        setLoadingTemplates(false);
-    }, [getExtraTemplates, onDownloadDefault, customTemplates, setLoadingTemplates]);
+        if (customTemplates || !isGridRenderer) return;
+        const hasCustomTemplates = await loadTemplates();
+        if (!hasCustomTemplates) onDownloadDefault();
+    }, [isGridRenderer, onDownloadDefault, customTemplates, setLoadingTemplates]);
 
     const dropdownTitle = useMemo(() => {
         return (
@@ -97,7 +102,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                     bsStyle="info"
                     noCaret={!customTemplates || customTemplates.length === 0}
                     className="small-right-spacing"
-                    buttonClassName={getExtraTemplates ? 'button-small-padding' : ''}
+                    buttonClassName={isGridRenderer ? 'button-small-padding' : ''}
                 >
                     {customTemplates?.length > 0 && (
                         <MenuItem

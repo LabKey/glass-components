@@ -33,26 +33,17 @@ export class DataClassTemplateDownloadRenderer extends React.PureComponent<Props
             });
     };
 
-    fetchTemplates = async (): Promise<ImportTemplate[]> => {
-        const { row } = this.props;
-        return new Promise((resolve, reject) => {
-            getQueryDetails({
-                schemaName: SCHEMAS.DATA_CLASSES.SCHEMA,
-                queryName: row.getIn(['Name', 'value']) ?? row.getIn(['name', 'value']),
-            })
-                .then(queryInfo => {
-                    resolve(queryInfo.getCustomTemplates());
-                })
-                .catch(error => {
-                    reject(error);
-                });
-        });
-    };
-
     render(): ReactNode {
+        const { row } = this.props;
+        const schemaQuery = new SchemaQuery(
+            SCHEMAS.DATA_CLASSES.SCHEMA,
+            row.getIn(['Name', 'value']) ?? row.getIn(['name', 'value'])
+        );
+
         return (
             <TemplateDownloadButton
-                getExtraTemplates={this.fetchTemplates}
+                isGridRenderer
+                schemaQuery={schemaQuery}
                 onDownloadDefault={this.onDownload}
                 text="Download"
                 className="button-small-padding"
