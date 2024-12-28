@@ -91,7 +91,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         <RequiresPermission perms={[PermissionTypes.Insert, PermissionTypes.Update]} permissionCheck="any" user={user}>
             {!showDropdown && (
                 <a
-                    className={'btn btn-info ' + className}
+                    className={'btn btn-info ' + (className ?? '')}
                     title="Download Template"
                     onClick={onDownloadDefault}
                     href={defaultTemplateUrl}
