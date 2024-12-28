@@ -631,7 +631,7 @@ export class Lineage {
 export class LineageGridModel {
     [immerable] = true;
 
-    readonly columns: List<string | GridColumn> = LINEAGE_GRID_COLUMNS;
+    readonly columns: GridColumn[] = LINEAGE_GRID_COLUMNS;
     readonly data: List<LineageNode> = List();
     readonly distance: number = DEFAULT_LINEAGE_DISTANCE;
     readonly isError: boolean = false;

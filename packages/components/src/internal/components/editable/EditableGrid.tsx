@@ -851,30 +851,31 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
         }
     };
 
-    generateColumns = (): List<GridColumn> => {
+    generateColumns = (): GridColumn[] => {
         const { containerFilter, editorModel, forUpdate, hideCountCol, rowNumColumn, readonlyRows, containerPath } =
             this.props;
-
-        let gridColumns = List<GridColumn>();
+        const gridColumns: GridColumn[] = [];
         const showCheckboxes = this.showSelectionCheckboxes();
 
         if (showCheckboxes) {
-            const selColumn = new GridColumn({
-                index: GRID_SELECTION_INDEX,
-                title: '&nbsp;',
-                cell: (selected: boolean, row) => (
-                    <input
-                        className="grid-panel__checkbox"
-                        checked={this.state.selected.contains(row.get(GRID_EDIT_INDEX))}
-                        type="checkbox"
-                        onChange={this.select.bind(this, row)}
-                    />
-                ),
-            });
-            gridColumns = gridColumns.push(selColumn);
+            gridColumns.push(
+                new GridColumn({
+                    index: GRID_SELECTION_INDEX,
+                    title: '&nbsp;',
+                    cell: (selected: boolean, row) => (
+                        <input
+                            className="grid-panel__checkbox"
+                            checked={this.state.selected.contains(row.get(GRID_EDIT_INDEX))}
+                            type="checkbox"
+                            onChange={this.select.bind(this, row)}
+                        />
+                    ),
+                })
+            );
         }
+
         if (!hideCountCol) {
-            gridColumns = gridColumns.push(rowNumColumn ? rowNumColumn : COUNT_COL);
+            gridColumns.push(rowNumColumn ? rowNumColumn : COUNT_COL);
         }
 
         editorModel.orderedColumns.forEach(fieldKey => {
@@ -888,8 +889,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                     width = metadata.minWidth;
                 }
             }
-            const hideTooltip = metadata?.hideTitleTooltip ?? qCol.hasHelpTipData;
-            gridColumns = gridColumns.push(
+            gridColumns.push(
                 new GridColumn({
                     align: qCol.align,
                     cell: inputCellFactory(
@@ -909,7 +909,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
                     raw: qCol,
                     title: metadata?.caption ?? qCol.caption,
                     width,
-                    hideTooltip,
+                    hideTooltip: metadata?.hideTitleTooltip ?? qCol.hasHelpTipData,
                     tableCell: true,
                 })
             );

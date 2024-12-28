@@ -2,7 +2,7 @@
  * Copyright (c) 2016-2020 LabKey Corporation. All rights reserved. No portion of this work may be reproduced in
  * any form or by any electronic or mechanical means without written permission from LabKey Corporation.
  */
-import { List, Map } from 'immutable';
+import { Map } from 'immutable';
 import React from 'react';
 
 import { AppURL } from '../../url/AppURL';
@@ -36,7 +36,7 @@ export const DEFAULT_LINEAGE_OPTIONS: LineageOptions = {
     urlResolver: LineageURLResolvers.App,
 };
 
-export const LINEAGE_GRID_COLUMNS = List([
+export const LINEAGE_GRID_COLUMNS: GridColumn[] = [
     new GridColumn({
         index: 'name',
         title: 'ID',
@@ -145,20 +145,8 @@ export const LINEAGE_GRID_COLUMNS = List([
             );
         },
     }),
-    new GridColumn({
-        index: 'displayType',
-        title: 'Type',
-    }),
-    new GridColumn({
-        index: 'date',
-        title: 'Creation Date',
-    }),
-    new GridColumn({
-        index: 'description',
-        title: 'Description',
-    }),
-    new GridColumn({
-        index: 'label',
-        title: 'Alias',
-    }),
-]);
+    new GridColumn({ index: 'displayType', title: 'Type' }),
+    new GridColumn({ index: 'date', title: 'Creation Date' }),
+    new GridColumn({ index: 'description', title: 'Description' }),
+    new GridColumn({ index: 'label', title: 'Alias' }),
+];

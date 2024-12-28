@@ -1,5 +1,4 @@
 import React, { FC, memo, ReactNode, useCallback, useMemo, useState } from 'react';
-import { List } from 'immutable';
 
 import classNames from 'classnames';
 
@@ -54,12 +53,12 @@ export const SystemFields: FC<Props> = memo(({ fields, disabledSystemFields, onS
     const [collapsed, setCollapsed] = useState<boolean>(false);
 
     const onToggle = useCallback(() => {
-        setCollapsed(!collapsed);
-    }, [collapsed]);
+        setCollapsed(c => !c);
+    }, []);
 
-    const gridData: SystemField[] = useMemo(() => {
+    const gridData = useMemo<SystemField[]>(() => {
         const data: SystemField[] = [];
-        const disabledFieldsLc = [];
+        const disabledFieldsLc: string[] = [];
         disabledSystemFields?.forEach(field => {
             disabledFieldsLc.push(field.toLowerCase());
         });
@@ -72,7 +71,7 @@ export const SystemFields: FC<Props> = memo(({ fields, disabledSystemFields, onS
         return data;
     }, [fields, disabledSystemFields]);
 
-    const systemFieldColumns: List<any> = useMemo(() => {
+    const systemFieldColumns = useMemo<GridColumn[]>(() => {
         const enabledColumn = new GridColumn({
             index: 'Enabled',
             title: 'Enabled',
@@ -94,7 +93,7 @@ export const SystemFields: FC<Props> = memo(({ fields, disabledSystemFields, onS
                 );
             },
         });
-        return List([enabledColumn, ...SYSTEM_FIELD_GRID_COLS]);
+        return [enabledColumn, ...SYSTEM_FIELD_GRID_COLS];
     }, [onSystemFieldEnable]);
 
     return (
@@ -112,11 +111,12 @@ export const SystemFields: FC<Props> = memo(({ fields, disabledSystemFields, onS
 
             <Collapsible expanded={!collapsed}>
                 <div className="domain-system-fields__grid">
-                    <Grid data={gridData} condensed={true} columns={systemFieldColumns} />
+                    <Grid data={gridData} condensed columns={systemFieldColumns} />
                 </div>
             </Collapsible>
 
-            <div className="domain-custom-fields-header__text"> Custom Fields </div>
+            <div className="domain-custom-fields-header__text">Custom Fields</div>
         </>
     );
 });
+SystemFields.displayName = 'SystemFields';

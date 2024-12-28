@@ -3,7 +3,6 @@
  * any form or by any electronic or mechanical means without written permission from LabKey Corporation.
  */
 import React, { FunctionComponent, PureComponent, ReactNode } from 'react';
-import { List } from 'immutable';
 
 import { GridColumn } from '../base/models/GridColumn';
 import { Grid } from '../base/Grid';
@@ -11,7 +10,7 @@ import { Grid } from '../base/Grid';
 import { InjectedLineage, withLineage } from './withLineage';
 
 class CountsWithLineageImpl extends PureComponent<InjectedLineage> {
-    private readonly columns = List([
+    private readonly columns = [
         new GridColumn({
             index: 'name',
             title: 'Sample Type',
@@ -24,7 +23,7 @@ class CountsWithLineageImpl extends PureComponent<InjectedLineage> {
             index: 'modified',
             title: 'Most Recent (Date)',
         }),
-    ]);
+    ];
 
     render(): ReactNode {
         const { lineage } = this.props;

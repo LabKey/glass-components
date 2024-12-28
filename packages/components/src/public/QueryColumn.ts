@@ -15,6 +15,8 @@ import { SCHEMAS } from '../internal/schemas';
 import { isAllSamplesSchema } from '../internal/components/samples/utils';
 import { SAMPLES_WITH_TYPES_FILTER } from '../internal/components/samples/constants';
 
+import { GridColumnCellRenderer, GridColumnProps } from '../internal/components/base/models/GridColumn';
+
 import { SchemaQuery } from './SchemaQuery';
 
 export enum Operation {
@@ -182,7 +184,7 @@ export interface IQueryColumn {
     validValues: string[];
 }
 
-export class QueryColumn implements IQueryColumn {
+export class QueryColumn implements IQueryColumn, GridColumnProps {
     declare align: string;
     // declare autoIncrement: boolean;
     // declare calculated: boolean;
@@ -250,7 +252,7 @@ export class QueryColumn implements IQueryColumn {
     declare valueExpression: string;
     declare wrappedColumnName: string;
 
-    declare cell: Function;
+    declare cell: GridColumnCellRenderer;
     declare columnRenderer: string;
     declare detailRenderer: string;
     declare helpTipRenderer: string;

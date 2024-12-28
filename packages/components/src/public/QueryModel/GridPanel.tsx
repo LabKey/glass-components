@@ -35,11 +35,11 @@ import { QueryColumn } from '../QueryColumn';
 
 import { QuerySort } from '../QuerySort';
 
-import { GridColumn } from '../../internal/components/base/models/GridColumn';
+import { GridColumn, GridColumnProps } from '../../internal/components/base/models/GridColumn';
 
 import { LoadingSpinner } from '../../internal/components/base/LoadingSpinner';
 
-import { Grid } from '../../internal/components/base/Grid';
+import { Grid, GridProps } from '../../internal/components/base/Grid';
 
 import { Alert } from '../../internal/components/base/Alert';
 
@@ -745,10 +745,7 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
     };
 
     addColumn = (selectedColumn: QueryColumn): void => {
-        this.setState({
-            selectedColumn,
-            showCustomizeViewModal: true,
-        });
+        this.setState({ selectedColumn, showCustomizeViewModal: true });
     };
 
     onColumnTitleEdit = (): void => {
@@ -756,7 +753,6 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
     };
 
     updateColumnTitle = (updatedCol: QueryColumn): void => {
-        const { model } = this.props;
         this.saveAsSessionView({}, updatedCol);
         this.setState({ disableColumnDrag: false });
     };
@@ -792,9 +788,7 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
     afterViewChange = (reloadTotalCount?: boolean): void => {
         const { actions, model, allowSelections } = this.props;
         actions.loadModel(model.id, allowSelections, reloadTotalCount);
-        this.setState({
-            errorMsg: undefined,
-        });
+        this.setState({ errorMsg: undefined });
     };
 
     onSaveCurrentView = async (canSaveShared: boolean): Promise<void> => {
@@ -951,37 +945,37 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
         }
     };
 
-    getGridColumns = (): List<GridColumn | QueryColumn> => {
+    getGridColumns = (): GridColumnProps[] => {
         const { allowSelections, model } = this.props;
-        const { isLoading, isLoadingSelections } = model;
 
-        let columns: List<GridColumn | QueryColumn> = model?.displayColumns ? List(model.displayColumns) : List();
-        columns.forEach(col => {
-            if (!(col instanceof GridColumn)) {
-                if (!col.helpTipRenderer && col.hasHelpTipData) {
-                    col.helpTipRenderer = DOMAIN_FIELD;
-                }
-            }
-        });
+        const columns: GridColumnProps[] = [];
         if (allowSelections) {
-            const selectColumn = new GridColumn({
-                index: GRID_SELECTION_INDEX,
-                title: '',
-                showHeader: true,
-                cell: (selected: boolean, row: Map<string, any>): ReactNode => {
-                    return (
+            const disabled = model.isLoading || model.isLoadingSelections;
+
+            columns.push(
+                new GridColumn({
+                    index: GRID_SELECTION_INDEX,
+                    title: '',
+                    showHeader: true,
+                    cell: (selected: boolean, row: Map<string, any>): ReactNode => (
                         <input
                             checked={selected === true}
                             className="grid-panel__row-checkbox"
-                            disabled={isLoading || isLoadingSelections}
+                            disabled={disabled}
                             onChange={this.selectRow.bind(this, row)} // eslint-disable-line
                             type="checkbox"
                         />
-                    );
-                },
-            });
-            columns = columns.insert(0, selectColumn);
+                    ),
+                })
+            );
         }
+
+        model.displayColumns.forEach(col => {
+            if (!col.helpTipRenderer && col.hasHelpTipData) {
+                col = col.mutate({ helpTipRenderer: DOMAIN_FIELD });
+            }
+            columns.push(col);
+        });
 
         return columns;
     };

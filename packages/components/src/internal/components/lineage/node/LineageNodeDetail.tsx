@@ -3,7 +3,6 @@
  * any form or by any electronic or mechanical means without written permission from LabKey Corporation.
  */
 import React, { FC, memo, PureComponent, ReactNode, useCallback, useMemo, useState } from 'react';
-import { List } from 'immutable';
 
 import { Tab, Tabs } from '../../../Tabs';
 import { LineageSummary } from '../LineageSummary';
@@ -200,6 +199,7 @@ const RunStepNodeDetail: FC<RunStepNodeDetailProps> = memo(props => {
         </div>
     );
 });
+RunStepNodeDetail.displayName = 'RunStepNodeDetail';
 
 const provenanceCellRenderer = (data, row) => {
     const name = data?.get('name');
@@ -210,7 +210,7 @@ const provenanceCellRenderer = (data, row) => {
     return name;
 };
 
-const PROVENANCE_MAP_COLS = List([
+const PROVENANCE_MAP_COLS = [
     new GridColumn({
         index: 'from',
         title: 'From',
@@ -221,7 +221,7 @@ const PROVENANCE_MAP_COLS = List([
         title: 'To',
         cell: provenanceCellRenderer,
     }),
-]);
+];
 
 export interface RunStepProvenanceMapProps {
     item: LineageIOWithMetadata;
@@ -230,3 +230,4 @@ export interface RunStepProvenanceMapProps {
 const RunStepProvenanceMap: FC<RunStepProvenanceMapProps> = memo(({ item }) => {
     return <Grid columns={PROVENANCE_MAP_COLS} data={item?.provenanceMap ?? []} />;
 });
+RunStepProvenanceMap.displayName = 'RunStepProvenanceMap';

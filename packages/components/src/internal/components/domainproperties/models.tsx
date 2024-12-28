@@ -30,7 +30,7 @@ import {
     isQueryMetadataEditor,
 } from '../../app/utils';
 
-import { GridColumn } from '../base/models/GridColumn';
+import { GridColumn, GridColumnProps } from '../base/models/GridColumn';
 
 import { SCHEMAS } from '../../schemas';
 
@@ -129,12 +129,6 @@ export interface ITypeDependentProps {
 export interface FieldDetails {
     detailsInfo: { [key: string]: string };
     ontologyLookupIndices: number[];
-}
-
-export interface DomainPropertiesGridColumn {
-    caption: string;
-    index: string;
-    sortable: boolean;
 }
 
 export const SAMPLE_TYPE_OPTION_VALUE = `${SAMPLE_TYPE.rangeURI}|all`;
@@ -489,48 +483,48 @@ export class DomainDesign
         appPropertiesOnly: boolean,
         hasOntologyModule: boolean,
         showFilterCriteria: boolean
-    ): List<GridColumn | DomainPropertiesGridColumn> {
-        const selectionCol = new GridColumn({
-            index: GRID_SELECTION_INDEX,
-            title: GRID_SELECTION_INDEX,
-            width: 20,
-            cell: (data, row) => {
-                const domainIndex = row.get('domainIndex');
-                const fieldIndex = row.get('fieldIndex');
-                const selected = row.get('selected');
-                const formInputId = createFormInputId(DOMAIN_FIELD_SELECTED, domainIndex, fieldIndex);
+    ): GridColumnProps[] {
+        const specialCols: GridColumnProps[] = [
+            new GridColumn({
+                index: GRID_SELECTION_INDEX,
+                title: GRID_SELECTION_INDEX,
+                width: 20,
+                cell: (_, row) => {
+                    const domainIndex = row.get('domainIndex');
+                    const fieldIndex = row.get('fieldIndex');
+                    const selected = row.get('selected');
+                    const formInputId = createFormInputId(DOMAIN_FIELD_SELECTED, domainIndex, fieldIndex);
 
-                const changes = List.of({ id: formInputId, value: !selected });
-                return (
-                    <DomainDesignerCheckbox
-                        className="domain-summary-selection"
-                        id={formInputId}
-                        checked={selected}
-                        onChange={() => {
-                            onFieldsChange(changes, fieldIndex, false);
-                        }}
-                    />
-                );
-            },
-        });
+                    const changes = List.of({ id: formInputId, value: !selected });
+                    return (
+                        <DomainDesignerCheckbox
+                            className="domain-summary-selection"
+                            id={formInputId}
+                            checked={selected}
+                            onChange={() => {
+                                onFieldsChange(changes, fieldIndex, false);
+                            }}
+                        />
+                    );
+                },
+            }),
+            new GridColumn({
+                index: GRID_NAME_INDEX,
+                title: GRID_NAME_INDEX,
+                raw: { index: 'name', caption: 'Name' },
+                cell: (_, row) => {
+                    const text = row.get('name');
+                    const fieldIndex = row.get('fieldIndex');
 
-        const nameCol = new GridColumn({
-            index: GRID_NAME_INDEX,
-            title: GRID_NAME_INDEX,
-            raw: { index: 'name', caption: 'Name', sortable: true },
-            cell: (data, row) => {
-                const text = row.get('name');
-                const fieldIndex = row.get('fieldIndex');
+                    return (
+                        <a onClick={() => scrollFunction(fieldIndex)} className="clickable">
+                            {text}
+                        </a>
+                    );
+                },
+            }),
+        ];
 
-                return (
-                    <a onClick={() => scrollFunction(fieldIndex)} className="clickable">
-                        {text}
-                    </a>
-                );
-            },
-        });
-
-        const specialCols = List([selectionCol, nameCol]);
         const firstField = this.fields.get(0);
         let columns = DomainField.serialize(firstField);
 
@@ -547,10 +541,8 @@ export class DomainDesign
 
         if (!showFilterCriteria) delete columns.filterCriteria;
 
-        const unsortedColumns = List(
-            Object.keys(columns).map(key => ({ index: key, caption: camelCaseToTitleCase(key), sortable: true }))
-        );
-        return specialCols.concat(unsortedColumns.sort(reorderSummaryColumns)).toList();
+        const unsortedColumns = Object.keys(columns).map(key => ({ index: key, title: camelCaseToTitleCase(key) }));
+        return specialCols.concat(unsortedColumns.sort(reorderSummaryColumns));
     }
 }
 

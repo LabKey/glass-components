@@ -22,36 +22,36 @@ import { HelpTipRenderer } from '../forms/HelpTipRenderer';
 import { GRID_SELECTION_INDEX, GRID_HEADER_CELL_BODY } from '../../constants';
 
 import { LabelHelpTip } from './LabelHelpTip';
-import { GridColumn } from './models/GridColumn';
+import { GridColumnProps, GridColumn } from './models/GridColumn';
 
-function processColumns(columns: List<any>): List<GridColumn> {
-    return columns
-        .map(c => {
-            if (c instanceof GridColumn) {
-                return c;
-            } else if (typeof c === 'string') {
-                return new GridColumn({
-                    index: c,
+function processColumns(columns: GridColumns): GridColumn[] {
+    const cols: GridColumn[] = [];
+
+    columns.forEach(c => {
+        if (c instanceof GridColumn) {
+            cols.push(c);
+        } else if (typeof c === 'string') {
+            cols.push(new GridColumn({ index: c, raw: c, title: c }));
+        } else {
+            cols.push(
+                new GridColumn({
+                    align: c.align,
+                    cell: c.cell,
+                    fixedWidth: c.fixedWidth,
+                    format: c.jsonType === 'float' || c.jsonType === 'int' ? c.format : undefined,
+                    helpTipRenderer: c.helpTipRenderer,
+                    hideTooltip: c.helpTipRenderer !== undefined,
+                    index: c.index,
                     raw: c,
-                    title: c,
-                });
-            }
+                    tableCell: c.tableCell,
+                    title: c.title || c.caption,
+                    width: c.width,
+                })
+            );
+        }
+    });
 
-            return new GridColumn({
-                align: c.align,
-                cell: c.cell,
-                format: c.jsonType === 'float' || c.jsonType === 'int' ? c.format : undefined,
-                helpTipRenderer: c.helpTipRenderer,
-                hideTooltip: c.helpTipRenderer !== undefined,
-                index: c.index,
-                fixedWidth: c.fixedWidth,
-                raw: c,
-                tableCell: c.tableCell,
-                title: c.title || c.caption,
-                width: c.width,
-            });
-        })
-        .toList();
+    return cols;
 }
 
 function processData(data: GridData): List<Map<string, any>> {
@@ -66,15 +66,15 @@ function processData(data: GridData): List<Map<string, any>> {
     return List();
 }
 
-function resolveColumns(data: List<Map<string, any>>): List<GridColumn> {
-    const columns = List<GridColumn>().asMutable();
+function resolveColumns(data: List<Map<string, any>>): GridColumn[] {
+    const columns: GridColumn[] = [];
     if (data.count() > 0) {
         data.get(0).map((value, title: string) => {
             columns.push(new GridColumn({ index: title, title }));
         });
     }
 
-    return columns.asImmutable();
+    return columns;
 }
 
 // export for jest testing
@@ -97,7 +97,7 @@ export function getColumnHoverText(info: any): string {
 
 interface GridHeaderProps {
     calcWidths?: boolean;
-    columns: List<GridColumn>;
+    columns: GridColumn[];
     headerCell?: any;
     onColumnDrop?: (sourceIndex: string, targetIndex: string) => void;
     showHeader?: boolean;
@@ -202,7 +202,7 @@ export class GridHeader extends PureComponent<GridHeaderProps, State> {
                                     onDragEnd={this.handleDragEnd}
                                     onClick={this.handleHeaderClick}
                                 >
-                                    {headerCell ? headerCell(column, i, columns.size) : title}
+                                    {headerCell ? headerCell(column, i, columns.length) : title}
                                     {/* headerCell will render the helpTip, so only render here if not using headerCell() */}
                                     {!headerCell && column.helpTipRenderer && (
                                         <LabelHelpTip title={title} popoverClassName="label-help-arrow-top">
@@ -213,7 +213,7 @@ export class GridHeader extends PureComponent<GridHeaderProps, State> {
                             );
                         }
                         return <th key={index} style={{ minWidth: style?.minWidth }} />;
-                    }, this).toArray()}
+                    }, this)}
                 </tr>
             </thead>
         );
@@ -226,19 +226,20 @@ interface GridMessagesProps {
 
 const GridMessages: FC<GridMessagesProps> = memo(({ messages }) => (
     <div className="grid-messages">
-        {messages.map((message: Map<string, string>, i) => {
-            return (
+        {messages
+            .map((message, i) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <div className={classNames('grid-message', message.get('type'))} key={i}>
                     {message.get('content')}
                 </div>
-            );
-        }).toArray()}
+            ))
+            .toArray()}
     </div>
 ));
+GridMessages.displayName = 'GridMessages';
 
 interface GridRowProps {
-    columns: List<GridColumn>;
+    columns: GridColumn[];
     highlight: boolean;
     row: Map<string, any>;
     rowIdx: number;
@@ -255,7 +256,7 @@ const GridRow: FC<GridRowProps> = memo(({ columns, highlight, row, rowIdx }) => 
                 'grid-row': rowIdx % 2 === 1,
             })}
         >
-            {columns.map((column: GridColumn, c: number) =>
+            {columns.map((column, c) =>
                 column.tableCell ? (
                     <Fragment key={column.index}>{column.cell(row.get(column.index), row, column, rowIdx, c)}</Fragment>
                 ) : (
@@ -263,7 +264,7 @@ const GridRow: FC<GridRowProps> = memo(({ columns, highlight, row, rowIdx }) => 
                         {column.cell(row.get(column.index), row, column, rowIdx, c)}
                     </td>
                 )
-            ).toArray()}
+            )}
         </tr>
     );
 });
@@ -284,7 +285,7 @@ const EmptyGridRow: FC<EmptyGridRowProps> = memo(({ colSpan, emptyText, isLoadin
 EmptyGridRow.displayName = 'EmptyGridRow';
 
 interface GridBodyProps {
-    columns: List<GridColumn>;
+    columns: GridColumn[];
     data: List<Map<string, any>>;
     emptyText: string;
     highlightRowIndexes?: List<number>;
@@ -298,15 +299,17 @@ const GridBody: FC<GridBodyProps> = memo(props => {
 
     return (
         <tbody>
-            {data.map((row, ind) => {
-                const highlight = highlightRowIndexes && highlightRowIndexes.contains(ind);
-                const key = rowKey ? row.get(rowKey) : ind;
-                return <GridRow columns={columns} highlight={highlight} key={key} row={row} rowIdx={ind} />;
-            }).toArray()}
+            {data
+                .map((row, ind) => {
+                    const highlight = highlightRowIndexes && highlightRowIndexes.contains(ind);
+                    const key = rowKey ? row.get(rowKey) : ind;
+                    return <GridRow columns={columns} highlight={highlight} key={key} row={row} rowIdx={ind} />;
+                })
+                .toArray()}
 
             {data.isEmpty() && (
                 <EmptyGridRow
-                    colSpan={columns.count()}
+                    colSpan={columns.length}
                     emptyText={emptyText}
                     isLoading={isLoading}
                     loadingText={loadingText}
@@ -315,14 +318,16 @@ const GridBody: FC<GridBodyProps> = memo(props => {
         </tbody>
     );
 });
+GridBody.displayName = 'GridBody';
 
 export type GridData = Array<Record<string, any>> | List<Map<string, any>>;
+export type GridColumns = Array<string | GridColumn | GridColumnProps>; // | List<string | GridColumn | GridColumnProps>;
 
 export interface GridProps {
     bordered?: boolean;
     calcWidths?: boolean;
     cellular?: boolean;
-    columns?: List<any>;
+    columns?: GridColumns;
     condensed?: boolean;
     data?: GridData;
     emptyText?: string;
@@ -370,23 +375,6 @@ export const Grid: FC<GridProps> = memo(props => {
     } = props;
     const gridData = processData(data);
     const gridColumns = columns !== undefined ? processColumns(columns) : resolveColumns(gridData);
-    const headerProps: GridHeaderProps = {
-        calcWidths,
-        columns: gridColumns,
-        headerCell,
-        onColumnDrop,
-        showHeader,
-    };
-
-    const bodyProps: GridBodyProps = {
-        columns: gridColumns,
-        data: gridData,
-        emptyText,
-        isLoading,
-        loadingText,
-        rowKey,
-        highlightRowIndexes,
-    };
 
     const tableClasses = classNames({
         table: !cellular,
@@ -407,9 +395,24 @@ export const Grid: FC<GridProps> = memo(props => {
             <GridMessages messages={messages} />
 
             <table className={tableClasses} ref={tableRef}>
-                <GridHeader {...headerProps} />
-                <GridBody {...bodyProps} />
+                <GridHeader
+                    calcWidths={calcWidths}
+                    columns={gridColumns}
+                    headerCell={headerCell}
+                    onColumnDrop={onColumnDrop}
+                    showHeader={showHeader}
+                />
+                <GridBody
+                    columns={gridColumns}
+                    data={gridData}
+                    emptyText={emptyText}
+                    highlightRowIndexes={highlightRowIndexes}
+                    isLoading={isLoading}
+                    loadingText={loadingText}
+                    rowKey={rowKey}
+                />
             </table>
         </div>
     );
 });
+Grid.displayName = 'Grid';

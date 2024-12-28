@@ -1,4 +1,4 @@
-import React, { PureComponent, ReactNode } from 'react';
+import React, { FC, memo, PureComponent, ReactNode } from 'react';
 import { fromJS, List } from 'immutable';
 
 import { SchemaQuery } from '../../public/SchemaQuery';
@@ -27,38 +27,37 @@ interface PreviewGridState {
 
 type StatelessPreviewGridProps = PreviewGridProps & PreviewGridState;
 
-export class StatelessPreviewGrid extends PureComponent<StatelessPreviewGridProps> {
-    render() {
-        const { loading, data, error, queryInfo, numCols, numRows, schemaQuery } = this.props;
-        let body = <LoadingSpinner />;
+export const StatelessPreviewGrid: FC<StatelessPreviewGridProps> = memo(props => {
+    const { loading, data, error, queryInfo, numCols, numRows, schemaQuery } = props;
+    let body = <LoadingSpinner />;
 
-        if (loading === false && data !== null) {
-            const { viewName } = schemaQuery;
-            const allColumns = queryInfo.getDisplayColumns(viewName);
-            const columns = allColumns.slice(0, numCols);
-            const slicedData = data.slice(0, numRows).toList();
-            let rowStats = '';
+    if (loading === false && data !== null) {
+        const { viewName } = schemaQuery;
+        const allColumns = queryInfo.getDisplayColumns(viewName);
+        const columns = allColumns.slice(0, numCols);
+        const slicedData = data.slice(0, numRows).toList();
+        let rowStats = '';
 
-            if (slicedData.size === 1) {
-                rowStats = ' first row and';
-            } else if (slicedData.size > 1) {
-                rowStats = ` first ${slicedData.size} rows and`;
-            }
-
-            const stats = `Previewing${rowStats} ${columns.length} of ${allColumns.length} columns.`;
-            body = (
-                <>
-                    <p>{stats}</p>
-                    <Grid bordered={true} columns={List(columns)} data={slicedData} />
-                </>
-            );
-        } else if (loading === false && error !== null) {
-            body = <Alert>{error}</Alert>;
+        if (slicedData.size === 1) {
+            rowStats = ' first row and';
+        } else if (slicedData.size > 1) {
+            rowStats = ` first ${slicedData.size} rows and`;
         }
 
-        return <div className="preview-grid">{body}</div>;
+        const stats = `Previewing${rowStats} ${columns.length} of ${allColumns.length} columns.`;
+        body = (
+            <>
+                <p>{stats}</p>
+                <Grid bordered columns={columns} data={slicedData} />
+            </>
+        );
+    } else if (loading === false && error !== null) {
+        body = <Alert>{error}</Alert>;
     }
-}
+
+    return <div className="preview-grid">{body}</div>;
+});
+StatelessPreviewGrid.displayName = 'StatelessPreviewGrid';
 
 export class PreviewGrid extends PureComponent<PreviewGridProps, PreviewGridState> {
     constructor(props) {

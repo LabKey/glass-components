@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { fromJS, List } from 'immutable';
+import { fromJS } from 'immutable';
 
 import { GridColumn } from '../base/models/GridColumn';
 
@@ -24,15 +24,15 @@ const DATA = fromJS([
     },
 ]);
 
-const COLUMNS = List<GridColumn>([
+const COLUMNS = [
     new GridColumn({ index: 'col1', title: 'First Column' }),
     new GridColumn({ index: 'col2', title: 'Second Column' }),
     new GridColumn({ index: 'col3', title: 'Third Column' }),
-]);
+];
 
 // NOTE that the previewCount prop here is not used by FilePreviewGrid but by FileAttachmentForm
 
-describe('<FilePreviewGrid/>', () => {
+describe('FilePreviewGrid', () => {
     test('no data', () => {
         const component = <FilePreviewGrid data={fromJS([])} previewCount={null} />;
         const { container } = render(component);

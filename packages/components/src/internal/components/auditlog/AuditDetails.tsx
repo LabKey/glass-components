@@ -120,9 +120,9 @@ export class AuditDetails extends Component<Props> {
         );
     }
 
-    getGridColumns = (): List<GridColumn> => {
+    getGridColumns = (): GridColumn[] => {
         const { user, gridColumnRenderer } = this.props;
-        return List<GridColumn>([
+        return [
             new GridColumn({
                 index: 'field',
                 title: 'Field',
@@ -147,7 +147,7 @@ export class AuditDetails extends Component<Props> {
                     return display;
                 },
             }),
-        ]);
+        ];
     };
 
     render() {

@@ -19,7 +19,7 @@ import { GRID_NAME_INDEX, GRID_SELECTION_INDEX } from '../../constants';
 
 import { CONCEPT_CACHE } from '../ontology/actions';
 
-import { GridColumn } from '../base/models/GridColumn';
+import { GridColumn, GridColumnProps } from '../base/models/GridColumn';
 
 import { ConceptModel } from '../ontology/models';
 
@@ -171,95 +171,49 @@ const gridDataConstWithOntology = [
 
 const noop: any = () => {};
 
-const selectionCol = new GridColumn({
-    index: GRID_SELECTION_INDEX,
-    title: GRID_SELECTION_INDEX,
-    width: 20,
-    cell: noop,
-});
-const nameCol = new GridColumn({
-    index: GRID_NAME_INDEX,
-    title: GRID_NAME_INDEX,
-    raw: { index: 'name', caption: 'Name', sortable: true },
-    cell: noop,
-});
-const gridColumnsConst = [
-    selectionCol,
-    nameCol,
-    { index: 'URL', caption: 'URL', sortable: true },
-    { index: 'PHI', caption: 'PHI', sortable: true },
-    { index: 'rangeURI', caption: 'Range URI', sortable: true },
-    { index: 'required', caption: 'Required', sortable: true },
-    { index: 'lockType', caption: 'Lock Type', sortable: true },
-    {
-        index: 'lookupContainer',
-        caption: 'Lookup Container',
-        sortable: true,
-    },
-    { index: 'lookupSchema', caption: 'Lookup Schema', sortable: true },
-    { index: 'lookupQuery', caption: 'Lookup Query', sortable: true },
-    { index: 'format', caption: 'Format', sortable: true },
-    { index: 'defaultScale', caption: 'Default Scale', sortable: true },
-    { index: 'conceptURI', caption: 'Concept URI', sortable: true },
-    { index: 'scale', caption: 'Scale', sortable: true },
-    { index: 'description', caption: 'Description', sortable: true },
-    { index: 'label', caption: 'Label', sortable: true },
-    { index: 'importAliases', caption: 'Import Aliases', sortable: true },
-    {
-        index: 'conditionalFormats',
-        caption: 'Conditional Formats',
-        sortable: true,
-    },
-    {
-        index: 'propertyValidators',
-        caption: 'Property Validators',
-        sortable: true,
-    },
-    {
-        index: 'valueExpression',
-        caption: 'Value Expression',
-        sortable: true,
-    },
-    { index: 'hidden', caption: 'Hidden', sortable: true },
-    {
-        index: 'shownInUpdateView',
-        caption: 'Shown In Update View',
-        sortable: true,
-    },
-    {
-        index: 'shownInInsertView',
-        caption: 'Shown In Insert View',
-        sortable: true,
-    },
-    {
-        index: 'shownInDetailsView',
-        caption: 'Shown In Details View',
-        sortable: true,
-    },
-    {
-        index: 'defaultValueType',
-        caption: 'Default Value Type',
-        sortable: true,
-    },
-    { index: 'defaultValue', caption: 'Default Value', sortable: true },
-    {
-        index: 'defaultDisplayValue',
-        caption: 'Default Display Value',
-        sortable: true,
-    },
-    {
-        index: 'excludeFromShifting',
-        caption: 'Exclude From Shifting',
-        sortable: true,
-    },
-    { index: 'measure', caption: 'Measure', sortable: true },
-    { index: 'dimension', caption: 'Dimension', sortable: true },
-    {
-        index: 'recommendedVariable',
-        caption: 'Recommended Variable',
-        sortable: true,
-    },
-    { index: 'mvEnabled', caption: 'Mv Enabled', sortable: true },
+const gridColumnsConst: GridColumnProps[] = [
+    new GridColumn({
+        index: GRID_SELECTION_INDEX,
+        title: GRID_SELECTION_INDEX,
+        width: 20,
+        cell: noop,
+    }),
+    new GridColumn({
+        index: GRID_NAME_INDEX,
+        title: GRID_NAME_INDEX,
+        raw: { index: 'name', caption: 'Name' },
+        cell: noop,
+    }),
+    { index: 'URL', title: 'URL' },
+    { index: 'PHI', title: 'PHI' },
+    { index: 'rangeURI', title: 'Range URI' },
+    { index: 'required', title: 'Required' },
+    { index: 'lockType', title: 'Lock Type' },
+    { index: 'lookupContainer', title: 'Lookup Container' },
+    { index: 'lookupSchema', title: 'Lookup Schema' },
+    { index: 'lookupQuery', title: 'Lookup Query' },
+    { index: 'format', title: 'Format' },
+    { index: 'defaultScale', title: 'Default Scale' },
+    { index: 'conceptURI', title: 'Concept URI' },
+    { index: 'scale', title: 'Scale' },
+    { index: 'description', title: 'Description' },
+    { index: 'label', title: 'Label' },
+    { index: 'importAliases', title: 'Import Aliases' },
+    { index: 'conditionalFormats', title: 'Conditional Formats' },
+    { index: 'propertyValidators', title: 'Property Validators' },
+    { index: 'valueExpression', title: 'Value Expression' },
+    { index: 'hidden', title: 'Hidden' },
+    { index: 'shownInUpdateView', title: 'Shown In Update View' },
+    { index: 'shownInInsertView', title: 'Shown In Insert View' },
+    { index: 'shownInDetailsView', title: 'Shown In Details View' },
+    { index: 'defaultValueType', title: 'Default Value Type' },
+    { index: 'defaultValue', title: 'Default Value' },
+    { index: 'defaultDisplayValue', title: 'Default Display Value' },
+    { index: 'excludeFromShifting', title: 'Exclude From Shifting' },
+    { index: 'measure', title: 'Measure' },
+    { index: 'dimension', title: 'Dimension' },
+    { index: 'recommendedVariable', title: 'Recommended Variable' },
+    { index: 'mvEnabled', title: 'Mv Enabled' },
 ];
 
 beforeEach(() => {
@@ -767,19 +721,19 @@ describe('DomainDesign', () => {
             ],
         }).getGridColumns(jest.fn(), jest.fn(), 'domainKindName', false, false, false);
 
-        expect(gridColumns.toJS().slice(2)).toStrictEqual(gridColumnsConst.slice(2));
+        expect(gridColumns.slice(2)).toStrictEqual(gridColumnsConst.slice(2));
 
         // Testing selection column. Must be handled especially due to cell function equality matching
-        const selectionColTest = gridColumns.toJS()[0];
+        const selectionColTest = gridColumns[0];
         delete selectionColTest.cell;
-        const selectionColConstTest = gridColumnsConst[0] as GridColumn;
+        const selectionColConstTest = gridColumnsConst[0];
         delete selectionColConstTest.cell;
         expect(selectionColTest).toStrictEqual(selectionColConstTest);
 
         // Testing name column. Must be handled especially due to cell function equality matching
-        const nameColTest = gridColumns.toJS()[1];
+        const nameColTest = gridColumns[1];
         delete nameColTest.cell;
-        const nameColConstTest = gridColumnsConst[1] as GridColumn;
+        const nameColConstTest = gridColumnsConst[1];
         delete nameColConstTest.cell;
         expect(nameColTest).toStrictEqual(nameColConstTest);
 
@@ -789,8 +743,8 @@ describe('DomainDesign', () => {
                 { name: 'b', rangeURI: TEXT_TYPE.rangeURI },
             ],
         }).getGridColumns(jest.fn(), jest.fn(), 'domainKindName', false, false, true);
-        const expectedFilterCriteriaColumn = { index: 'filterCriteria', caption: 'Filter Criteria', sortable: true };
-        expect(gridColumnsWithFilterCriteria.toJS().find(c => c.index === 'filterCriteria')).toStrictEqual(
+        const expectedFilterCriteriaColumn = { index: 'filterCriteria', title: 'Filter Criteria' };
+        expect(gridColumnsWithFilterCriteria.find(c => c.index === 'filterCriteria')).toStrictEqual(
             expectedFilterCriteriaColumn
         );
     });

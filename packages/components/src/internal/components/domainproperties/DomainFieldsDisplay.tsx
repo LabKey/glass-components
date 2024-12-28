@@ -14,39 +14,20 @@
  * limitations under the License.
  */
 import React, { FC } from 'react';
-import { List } from 'immutable';
 
 import { GridColumn } from '../base/models/GridColumn';
 import { Grid } from '../base/Grid';
 
 import { DomainDesign } from './models';
 
-export const DOMAIN_FIELD_COLS = List([
-    new GridColumn({
-        index: 'name',
-        title: 'Name',
-    }),
-    new GridColumn({
-        index: 'label',
-        title: 'Label',
-    }),
-    new GridColumn({
-        index: 'rangeURI',
-        title: 'Range URI',
-    }),
-    new GridColumn({
-        index: 'conceptURI',
-        title: 'Concept URI',
-    }),
-    new GridColumn({
-        index: 'required',
-        title: 'Required',
-    }),
-    new GridColumn({
-        index: 'scale',
-        title: 'Scale',
-    }),
-]);
+export const DOMAIN_FIELD_COLS = [
+    new GridColumn({ index: 'name', title: 'Name' }),
+    new GridColumn({ index: 'label', title: 'Label' }),
+    new GridColumn({ index: 'rangeURI', title: 'Range URI' }),
+    new GridColumn({ index: 'conceptURI', title: 'Concept URI' }),
+    new GridColumn({ index: 'required', title: 'Required' }),
+    new GridColumn({ index: 'scale', title: 'Scale' }),
+];
 
 type Props = {
     domain: DomainDesign;

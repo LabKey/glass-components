@@ -15,10 +15,10 @@
  */
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { fromJS, List } from 'immutable';
+import { fromJS } from 'immutable';
 
 import { getColumnHoverText, Grid, GridHeader } from './Grid';
-import { GridColumn } from './models/GridColumn';
+import { GridColumn, GridColumnProps } from './models/GridColumn';
 
 const gridData = fromJS([
     {
@@ -51,7 +51,7 @@ const gridMessages = fromJS([
     },
 ]);
 
-const gridColumns = List([
+const gridColumns: GridColumnProps[] = [
     {
         index: 'name',
         caption: 'Player Name',
@@ -78,10 +78,10 @@ const gridColumns = List([
             return `<${posNumber}>`;
         },
     }),
-]);
+];
 
 describe('Grid', () => {
-    function validateHasData(hasData = true) {
+    function validateHasData(hasData = true): void {
         expect(document.querySelectorAll('tr')).toHaveLength(hasData ? 5 : 2);
         expect(document.querySelectorAll('th')).toHaveLength(3);
         expect(document.querySelectorAll('td')).toHaveLength(hasData ? 12 : 1);
@@ -94,13 +94,13 @@ describe('Grid', () => {
         }
     }
 
-    function validateHeaderCells(useCaption = true) {
+    function validateHeaderCells(useCaption = true): void {
         expect(screen.getByText(useCaption ? 'Player Name' : 'name')).toBeInTheDocument();
         expect(screen.getByText(useCaption ? 'Number' : 'number')).toBeInTheDocument();
         expect(screen.getByText(useCaption ? 'Position' : 'position')).toBeInTheDocument();
     }
 
-    function validatePositionCells(posName = true) {
+    function validatePositionCells(posName = true): void {
         expect(screen.getByText(posName ? '2B' : '4')).toBeInTheDocument();
         expect(screen.getByText(posName ? 'C' : '2')).toBeInTheDocument();
         expect(screen.getByText(posName ? '3B' : '5')).toBeInTheDocument();
@@ -154,21 +154,17 @@ describe('Grid', () => {
     });
 
     test('header title and calcWidths', () => {
-        render(
-            <Grid
-                data={gridData}
-                columns={List([
-                    {
-                        index: 'name',
-                        caption: 'Player Name',
-                        showHeader: true,
-                        title: 'My test grid title',
-                        phiProtected: true,
-                    },
-                ])}
-                calcWidths
-            />
-        );
+        const columns = [
+            {
+                index: 'name',
+                caption: 'Player Name',
+                showHeader: true,
+                title: 'My test grid title',
+                phiProtected: true,
+            },
+        ];
+
+        render(<Grid data={gridData} columns={columns} calcWidths />);
 
         expect(document.querySelector('.grid-header-cell').getAttribute('style')).toBe('min-width: 189px;');
         expect(document.querySelector('.grid-header-cell')).not.toBeNull();
@@ -176,7 +172,7 @@ describe('Grid', () => {
     });
 
     test('rendering with fixedWidth and width', () => {
-        const columns = List([
+        const columns: GridColumnProps[] = [
             {
                 index: 'name',
                 showHeader: true,
@@ -193,7 +189,7 @@ describe('Grid', () => {
                 showHeader: true,
                 fixedWidth: 567,
             },
-        ]);
+        ];
         render(<Grid data={gridData} columns={columns} />);
         const headerCells = document.querySelectorAll('.grid-header-cell');
         expect(headerCells).toHaveLength(3);
@@ -212,7 +208,8 @@ describe('Grid', () => {
     });
 
     test('with phi data', () => {
-        let columns = gridColumns.push(
+        const columns = [
+            ...gridColumns,
             new GridColumn({
                 index: 'age',
                 title: 'Age',
@@ -220,27 +217,21 @@ describe('Grid', () => {
                     phiProtected: true,
                     description: 'Your age',
                 },
-            })
-        );
-        columns = columns.push(
+            }),
             new GridColumn({
                 index: 'teamPlayer',
                 title: 'Team Player',
                 raw: {
                     description: 'Are you a team player?',
                 },
-            })
-        );
-        columns = columns.push(
+            }),
             new GridColumn({
                 index: 'lefty',
                 title: 'Lefty',
                 raw: {
                     phiProtected: true,
                 },
-            })
-        );
-        columns = columns.push(
+            }),
             new GridColumn({
                 index: 'weight',
                 title: 'Weight',
@@ -248,8 +239,9 @@ describe('Grid', () => {
                     description: 'Your weight',
                 },
                 hideTooltip: true,
-            })
-        );
+            }),
+        ];
+
         render(<Grid data={gridData} columns={columns} />);
 
         validateHeaderCells();
@@ -267,7 +259,8 @@ describe('Grid', () => {
     });
 
     test('show field key for lookups in tooltip', () => {
-        const columns = gridColumns.push(
+        const columns = [
+            ...gridColumns,
             new GridColumn({
                 index: 'Ancestors/Sources/Lab/Name',
                 title: 'Issue 46256',
@@ -275,8 +268,9 @@ describe('Grid', () => {
                     index: 'Ancestors/Sources/Lab/Name',
                     fieldKeyPath: 'Ancestors/Sources/Lab/Name',
                 },
-            })
-        );
+            }),
+        ];
+
         render(<Grid data={gridData} columns={columns} />);
 
         validateHeaderCells();
@@ -287,7 +281,8 @@ describe('Grid', () => {
     });
 
     test('hide tooltip', () => {
-        const columns = gridColumns.push(
+        const columns = [
+            ...gridColumns,
             new GridColumn({
                 index: 'weight',
                 title: 'Weight',
@@ -295,8 +290,9 @@ describe('Grid', () => {
                     description: 'Your weight',
                 },
                 hideTooltip: true,
-            })
-        );
+            }),
+        ];
+
         render(<Grid data={gridData} columns={columns} />);
         validateHeaderCells();
         expect(screen.getByText('Weight')).toBeInTheDocument();
@@ -307,16 +303,12 @@ describe('Grid', () => {
 });
 
 describe('GridHeader', () => {
-    beforeAll(() => {
-        global.console.error = jest.fn();
-    });
-
     const DEFAULT_PROPS = {
         showHeader: true,
-        columns: List.of(
+        columns: [
             new GridColumn({ index: 'a', title: 'A', showHeader: true }),
-            new GridColumn({ index: 'b', title: 'B', showHeader: true })
-        ),
+            new GridColumn({ index: 'b', title: 'B', showHeader: true }),
+        ],
     };
 
     function validate(columnCount: number, labelHelpTipCount = 0, draggable = 'false'): void {
@@ -338,10 +330,10 @@ describe('GridHeader', () => {
         render(
             <GridHeader
                 {...DEFAULT_PROPS}
-                columns={List.of(
+                columns={[
                     new GridColumn({ index: 'a', title: 'A', showHeader: true }),
-                    new GridColumn({ index: 'b', title: 'B', showHeader: false })
-                )}
+                    new GridColumn({ index: 'b', title: 'B', showHeader: false }),
+                ]}
             />
         );
         validate(1);
@@ -356,10 +348,10 @@ describe('GridHeader', () => {
         render(
             <GridHeader
                 {...DEFAULT_PROPS}
-                columns={List.of(
+                columns={[
                     new GridColumn({ index: 'a', title: 'A', showHeader: true }),
-                    new GridColumn({ index: 'b', title: 'B', showHeader: true, helpTipRenderer: 'TestRenderer' })
-                )}
+                    new GridColumn({ index: 'b', title: 'B', showHeader: true, helpTipRenderer: 'TestRenderer' }),
+                ]}
             />
         );
         validate(2, 1);
