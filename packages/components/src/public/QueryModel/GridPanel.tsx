@@ -10,7 +10,7 @@ import React, {
     useState,
 } from 'react';
 import classNames from 'classnames';
-import { fromJS, List, Map, Set } from 'immutable';
+import { List, Map, Set } from 'immutable';
 import { Filter, getServerContext, Query } from '@labkey/api';
 
 import { EXPORT_TYPES, GRID_CHECKBOX_OPTIONS, GRID_SELECTION_INDEX } from '../../internal/constants';
@@ -1033,12 +1033,12 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
         );
     };
 
-    getHighlightRowIndexes(): List<number> {
+    getHighlightRowIndexes(): number[] {
         const { highlightLastSelectedRow, model } = this.props;
         if (!highlightLastSelectedRow || !model.hasSelections) return undefined;
 
         const lastSelectedId = Array.from(model.selections).pop();
-        return List<number>([model.orderedRows.indexOf(lastSelectedId)]);
+        return [model.orderedRows.indexOf(lastSelectedId)];
     }
 
     render(): ReactNode {
@@ -1174,7 +1174,7 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
                                     emptyText={gridEmptyText}
                                     fixedHeight
                                     gridId={id}
-                                    messages={fromJS(messages)}
+                                    messages={messages}
                                     columns={this.getGridColumns()}
                                     data={model.gridData}
                                     highlightRowIndexes={this.getHighlightRowIndexes()}

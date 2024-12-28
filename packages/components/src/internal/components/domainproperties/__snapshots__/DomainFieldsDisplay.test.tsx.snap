@@ -19,9 +19,6 @@ exports[`DomainFieldsDisplay with empty domain design 1`] = `
       <div
         class="table-responsive"
       >
-        <div
-          class="grid-messages"
-        />
         <table
           class="table table-striped table-bordered"
         >
@@ -110,9 +107,6 @@ exports[`DomainFieldsDisplay with title 1`] = `
       <div
         class="table-responsive"
       >
-        <div
-          class="grid-messages"
-        />
         <table
           class="table table-striped table-bordered"
         >
@@ -201,9 +195,6 @@ exports[`DomainFieldsDisplay without title 1`] = `
       <div
         class="table-responsive"
       >
-        <div
-          class="grid-messages"
-        />
         <table
           class="table table-striped table-bordered"
         >

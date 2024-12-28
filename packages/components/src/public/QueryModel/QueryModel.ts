@@ -63,8 +63,8 @@ function searchFiltersFromString(searchStr: string): Filter.IFilter[] {
 /**
  * Returns true if a given location has queryParams that would conflict with savedSettings: filters, sorts, view,
  * page offset, pageSize.
- * @param prefix: the QueryModel prefix
- * @param searchParams: The URLSearchParams returned by the react-router useSearchParams hook
+ * @param prefix the QueryModel prefix
+ * @param searchParams The URLSearchParams returned by the react-router useSearchParams hook
  */
 export function locationHasQueryParamSettings(prefix: string, searchParams?: URLSearchParams): boolean {
     if (searchParams === undefined) return false;
@@ -88,7 +88,7 @@ export function locationHasQueryParamSettings(prefix: string, searchParams?: URL
  * Creates a QueryModel ID for a given SchemaQuery. The id is just the SchemaQuery snake-cased as
  * schemaName.queryName.
  *
- * @param schemaQuery: SchemaQuery
+ * @param schemaQuery SchemaQuery
  */
 export function createQueryModelId(schemaQuery: SchemaQuery): string {
     const { schemaName, queryName } = schemaQuery;
@@ -824,7 +824,7 @@ export class QueryModel {
 
     /**
      * Gets a column by fieldKey.
-     * @param fieldKey: string
+     * @param fieldKey string
      */
     getColumnByFieldKey(fieldKey: string): QueryColumn {
         const locFieldKey = fieldKey.toLowerCase();
@@ -833,7 +833,7 @@ export class QueryModel {
 
     /**
      * Gets a column by name. Implementation adapted from parseColumns in grid/utils.ts.
-     * @param name: string
+     * @param name string
      */
     getColumn(name: string): QueryColumn {
         const lowered = name.toLowerCase();
@@ -1154,8 +1154,8 @@ export class QueryModel {
 
     /**
      * Returns the model attributes given a set of queryParams from the URL. Used for URL Binding.
-     * @param searchParams: The URLSearchParams from the react-router useSearchParams hook
-     * @param useExistingValues: Set to true if you want to use the values on the model as the default values.
+     * @param searchParams The URLSearchParams from the react-router useSearchParams hook
+     * @param useExistingValues Set to true if you want to use the values on the model as the default values.
      * Typically, this should be false, because you want to treat the URL as the single source of truth, but when we
      * initialize models we may programmatically want to set an initial value (e.g. a default sort).
      */

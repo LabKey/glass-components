@@ -30,9 +30,6 @@ exports[`PreviewGrid render PreviewGrid with data 1`] = `
     <div
       class="table-responsive"
     >
-      <div
-        class="grid-messages"
-      />
       <table
         class="table table-striped table-bordered"
       >
@@ -213,9 +210,6 @@ exports[`PreviewGrid render PreviewGrid with different numCols and numRows 1`] =
     <div
       class="table-responsive"
     >
-      <div
-        class="grid-messages"
-      />
       <table
         class="table table-striped table-bordered"
       >

@@ -220,22 +220,31 @@ export class GridHeader extends PureComponent<GridHeaderProps, State> {
     }
 }
 
-interface GridMessagesProps {
-    messages: List<Map<string, string>>;
+// TODO: Currently copied from QueryModel.ts. Seems like this has been made a Grid interface so this should likely take over.
+export interface GridMessage {
+    area?: string;
+    content: ReactNode;
+    type?: string;
 }
 
-const GridMessages: FC<GridMessagesProps> = memo(({ messages }) => (
-    <div className="grid-messages">
-        {messages
-            .map((message, i) => (
+interface GridMessagesProps {
+    messages: GridMessage[];
+}
+
+const GridMessages: FC<GridMessagesProps> = memo(({ messages }) => {
+    if (!messages) return null;
+
+    return (
+        <div className="grid-messages">
+            {messages.map((message, i) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <div className={classNames('grid-message', message.get('type'))} key={i}>
-                    {message.get('content')}
+                <div className={classNames('grid-message', message.type)} key={i}>
+                    {message.content}
                 </div>
-            ))
-            .toArray()}
-    </div>
-));
+            ))}
+        </div>
+    );
+});
 GridMessages.displayName = 'GridMessages';
 
 interface GridRowProps {
@@ -288,7 +297,7 @@ interface GridBodyProps {
     columns: GridColumn[];
     data: List<Map<string, any>>;
     emptyText: string;
-    highlightRowIndexes?: List<number>;
+    highlightRowIndexes?: number[];
     isLoading: boolean;
     loadingText: ReactNode;
     rowKey: string;
@@ -301,7 +310,7 @@ const GridBody: FC<GridBodyProps> = memo(props => {
         <tbody>
             {data
                 .map((row, ind) => {
-                    const highlight = highlightRowIndexes && highlightRowIndexes.contains(ind);
+                    const highlight = highlightRowIndexes?.indexOf(ind) > -1;
                     const key = rowKey ? row.get(rowKey) : ind;
                     return <GridRow columns={columns} highlight={highlight} key={key} row={row} rowIdx={ind} />;
                 })
@@ -334,10 +343,10 @@ export interface GridProps {
     fixedHeight?: boolean;
     gridId?: string;
     headerCell?: any;
-    highlightRowIndexes?: List<number>;
+    highlightRowIndexes?: number[];
     isLoading?: boolean;
     loadingText?: ReactNode;
-    messages?: List<Map<string, string>>;
+    messages?: GridMessage[];
     onColumnDrop?: (sourceIndex: string, targetIndex: string) => void;
     responsive?: boolean;
     /**
@@ -360,7 +369,7 @@ export const Grid: FC<GridProps> = memo(props => {
         emptyText = 'No data available.',
         isLoading = false,
         loadingText = 'Loading...',
-        messages = List<Map<string, string>>(),
+        messages,
         responsive = true,
         showHeader = true,
         striped = true,

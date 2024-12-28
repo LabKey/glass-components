@@ -43,13 +43,13 @@ const gridData = fromJS([
     },
 ]);
 
-const gridMessages = fromJS([
+const gridMessages = [
     {
         area: 'view',
         type: 'WARNING',
         content: 'There are 1 rows not shown due to unapproved QC state',
     },
-]);
+];
 
 const gridColumns: GridColumnProps[] = [
     {
@@ -199,12 +199,18 @@ describe('Grid', () => {
     });
 
     test('render with messages', () => {
-        render(<Grid data={gridData} messages={gridMessages} />);
+        const message = {
+            area: 'view',
+            content: 'There are 1 rows not shown due to unapproved QC state',
+            type: 'WARNING',
+        };
+
+        render(<Grid data={gridData} messages={[message]} />);
         validateHasData();
         validateHeaderCells(false);
         validatePositionCells(false);
 
-        expect(screen.getByText('There are 1 rows not shown due to unapproved QC state')).toBeInTheDocument();
+        expect(screen.getByText(message.content)).toBeInTheDocument();
     });
 
     test('with phi data', () => {
