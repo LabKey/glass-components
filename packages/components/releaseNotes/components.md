@@ -1,12 +1,19 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 6.X
-*Released*: X
+### version 6.10.0
+*Released*: 30 December 2024
 - Customizable File Templates for Sources, Sample Types & Assay Designs
   - Add `ProductFeature.CustomImportTemplates`
   - Modify `FileInput` to support file size validation
   - Update TemplateDownloadButton and TemplateDownloadRenderer to query for saved custom templates
+
+### version 6.9.0
+*Released*: 30 December 2024
+- Update AddEntityButton with new parameter
+- Add `getMultipleDataTypeExcludedContainers` to `FolderAPI`.
+- Add optional `className` prop to `DeleteIcon`
+- export ensureAllFieldsInAllRows for usage in saveRowsByContainer
 
 ### version 6.8.2
 *Released*: 27 December 2024

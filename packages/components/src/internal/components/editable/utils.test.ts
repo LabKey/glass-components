@@ -273,7 +273,7 @@ describe('getValidatedEditableGridValue', () => {
     test('boolean column', () => {
         const boolCol = new QueryColumn({ jsonType: 'boolean' });
 
-        const validValues = [
+        const validValues: string[] = [
             null,
             undefined,
             '',

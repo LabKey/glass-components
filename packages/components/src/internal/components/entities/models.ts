@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AuditBehaviorTypes, Filter, Query } from '@labkey/api';
+import { Filter, Query } from '@labkey/api';
 import { List, Map, Record } from 'immutable';
 
 import { immerable } from 'immer';
@@ -27,12 +27,9 @@ import { capitalizeFirstChar, caseInsensitive, generateId } from '../../util/uti
 import { QueryColumn, QueryLookup } from '../../../public/QueryColumn';
 import { SCHEMAS } from '../../schemas';
 import { EntityCreationType } from '../samples/models';
-import { EditorModel } from '../editable/models';
-import { QueryCommandResponse } from '../../query/api';
 import { QueryInfo } from '../../../public/QueryInfo';
 import { ViewInfo } from '../../ViewInfo';
 import { FieldFilter } from '../search/models';
-import { ComponentsAPIWrapper } from '../../APIWrapper';
 
 export interface EntityInputProps {
     role: string;
@@ -369,35 +366,6 @@ export class EntityIdCreationModel extends Record({
     getSchemaQuery(): SchemaQuery {
         const entityTypeName = this.getTargetEntityTypeValue();
         return entityTypeName ? new SchemaQuery(this.entityDataType.instanceSchemaName, entityTypeName) : undefined;
-    }
-
-    postEntityGrid(
-        api: ComponentsAPIWrapper,
-        editorModel: EditorModel,
-        containerPath?: string,
-        extraColumnsToInclude?: string[],
-        auditUserComment?: string
-    ): Promise<QueryCommandResponse> {
-        const rows = editorModel
-            .getDataForServerUpload(false)
-            .valueSeq()
-            .reduce((rows_, row) => {
-                let map = row.toMap();
-                extraColumnsToInclude?.forEach(col => {
-                    map = map.set(col, undefined);
-                });
-                rows_ = rows_.push(map);
-                return rows_;
-            }, List<Map<string, any>>());
-
-        return api.query.insertRows({
-            auditBehavior: AuditBehaviorTypes.DETAILED,
-            auditUserComment,
-            fillEmptyFields: true,
-            rows,
-            schemaQuery: this.getSchemaQuery(),
-            containerPath,
-        });
     }
 
     getGridValues(queryInfo: QueryInfo, separateParents?: boolean): Map<any, any> {
