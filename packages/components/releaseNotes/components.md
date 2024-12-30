@@ -8,9 +8,13 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Modify `FileInput` to support file size validation
   - Update TemplateDownloadButton and TemplateDownloadRenderer to query for saved custom templates
 
+### version 6.8.2
+*Released*: 27 December 2024
+- Issue 51816: pasted values from spreadsheet retain new lines and look invalid
+
 ### version 6.8.1
 *Released*: 23 December 2024
-- MultiValueRenderer update for string values wit \n characters, to use white-space CSS to preserver them
+- MultiValueRenderer update for string values wit \n characters, to use white-space CSS to preserve them
 
 ### version 6.8.0
 *Released*: 19 December 2024
