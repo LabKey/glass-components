@@ -8,6 +8,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Add optional `className` prop to `DeleteIcon`
 - export ensureAllFieldsInAllRows for usage in saveRowsByContainer
 
+### version 6.8.2
+*Released*: 27 December 2024
+- Issue 51816: pasted values from spreadsheet retain new lines and look invalid
+
 ### version 6.8.1
 *Released*: 23 December 2024
 - MultiValueRenderer update for string values wit \n characters, to use white-space CSS to preserve them

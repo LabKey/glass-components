@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "6.8.2-multiTypeCreation.1",
+  "version": "6.8.3-multiTypeCreation.1",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [
