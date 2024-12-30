@@ -10,6 +10,7 @@ import { LoadingSpinner } from '../../internal/components/base/LoadingSpinner';
 import { SchemaQuery } from '../SchemaQuery';
 import { useAppContext } from '../../internal/AppContext';
 import { downloadAttachment } from '../../internal/util/utils';
+import { DisableableMenuItem } from '../../internal/components/samples/DisableableMenuItem';
 
 interface Props {
     className?: string;
@@ -43,7 +44,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         (async () => {
             await loadTemplates();
         })();
-    }, [schemaQuery, isGridRenderer]);
+    }, [schemaQuery, isGridRenderer, customTemplates]);
 
     const loadTemplates = useCallback(async (): Promise<boolean> => {
         try {
@@ -60,7 +61,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         } finally {
             setLoadingTemplates(false);
         }
-    }, [schemaQuery, setLoadingTemplates]);
+    }, [schemaQuery, setLoadingTemplates, setCustomTemplates]);
 
     const showDropdown = useMemo(() => {
         return customTemplates?.length > 0 || (isGridRenderer && !customTemplates);
@@ -75,7 +76,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
             else
                 downloadAttachment(defaultTemplateUrl, true);
         }
-    }, [isGridRenderer, onDownloadDefault, customTemplates, setLoadingTemplates, defaultTemplateUrl]);
+    }, [isGridRenderer, onDownloadDefault, customTemplates, loadTemplates, defaultTemplateUrl]);
 
     const dropdownTitle = useMemo(() => {
         return (
@@ -125,9 +126,9 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                     {customTemplates?.map((template, ind) => {
                         if (template.url.endsWith('(unavailable)'))
                             return (
-                                <MenuItem disabled key={ind + 1} title="File not found">
+                                <DisableableMenuItem disabled disabledMessage="File not found">
                                     {template.label}
-                                </MenuItem>
+                                </DisableableMenuItem>
                             );
 
                         return (
