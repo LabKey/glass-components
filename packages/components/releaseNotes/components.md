@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.9.0
+*Released*: 30 December 2024
 - Update AddEntityButton with new parameter
 - Add `getMultipleDataTypeExcludedContainers` to `FolderAPI`.
 - Add optional `className` prop to `DeleteIcon`
