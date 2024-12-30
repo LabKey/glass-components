@@ -53,15 +53,29 @@ describe('AddEntityButton', () => {
         await userEvent.click(screen.getByText('Add Something'));
         expect(onClick).toHaveBeenCalledTimes(0);
     });
+
+    test('isAnother prop', async () => {
+        const onClick = jest.fn();
+        render(<AddEntityButton entity="EntityName" onClick={onClick} isAnother />);
+        expect(document.querySelectorAll('.container--action-button')).toHaveLength(1);
+        expect(document.querySelector('.container--action-button').textContent).toBe(' Add  Another EntityName');
+    });
 });
 
 describe('AddEntityElement', () => {
-    test('default props', async () => {
+    test('default props', () => {
         render(<AddEntityElement entity="EntityName" />);
-
         expect(document.querySelectorAll('.container--action-button')).toHaveLength(0);
         expect(document.querySelectorAll('.container--addition-icon')).toHaveLength(1);
         expect(document.querySelectorAll('.fa-plus-circle')).toHaveLength(1);
         expect(document.body.textContent).toBe(' Add EntityName');
+    });
+
+    test('isAnother prop', () => {
+        render(<AddEntityElement entity="EntityName" isAnother />);
+        expect(document.querySelectorAll('.container--action-button')).toHaveLength(0);
+        expect(document.querySelectorAll('.container--addition-icon')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-plus-circle')).toHaveLength(1);
+        expect(document.body.textContent).toBe(' Add  Another EntityName');
     });
 });
