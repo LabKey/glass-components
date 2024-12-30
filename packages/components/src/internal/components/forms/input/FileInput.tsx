@@ -25,21 +25,28 @@ import { cancelEvent } from '../../../events';
 import { QueryColumn } from '../../../../public/QueryColumn';
 import { FileColumnRenderer } from '../../../renderers/FileColumnRenderer';
 
+import { FILELINK_RANGE_URI } from '../../domainproperties/constants';
+
+import { fileMatchesAcceptedFormat } from '../../files/actions';
+
 import { DisableableInput, DisableableInputProps, DisableableInputState } from './DisableableInput';
 
 export interface FileInputProps extends DisableableInputProps {
+    acceptedFormats?: string;
     addLabelAsterisk?: boolean;
     changeDebounceInterval?: number;
     elementWrapperClassName?: string;
+    emptyFileNotAllowed?: boolean;
     formsy?: boolean;
     initialValue?: any;
     labelClassName?: string;
+    maxFileSize?: number;
     name?: string;
-    onChange?: (fileMap: Record<string, File>) => void;
     queryColumn?: QueryColumn;
     renderFieldLabel?: (queryColumn: QueryColumn, label?: string, description?: string) => ReactNode;
     showLabel?: boolean;
     toggleDisabledTooltip?: string;
+    onChange?: (fileMap: Record<string, File>) => void;
 }
 
 type FileInputImplProps = FileInputProps & FormsyInjectedProps<any>;
@@ -94,6 +101,7 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
     }
 
     processFiles(fileList: FileList, transferItems?: DataTransferItemList): void {
+        const { acceptedFormats, maxFileSize, emptyFileNotAllowed } = this.props;
         if (fileList.length > 1) {
             this.setState({ error: 'Only one file allowed' });
             return;
@@ -104,7 +112,24 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
             return;
         }
 
-        this.setFormValue(fileList[0]);
+        const file = fileList[0];
+        if (acceptedFormats) {
+            const formatCheck = fileMatchesAcceptedFormat(file.name, acceptedFormats);
+            if (!formatCheck.isMatch) {
+                this.setState({ error: 'Invalid file type.' });
+                return;
+            }
+        }
+
+        if (maxFileSize && file.size > maxFileSize) {
+            this.setState({ error: `File size must not exceed ${Math.round(maxFileSize / 1024).toLocaleString()} KB.` });
+            return;
+        }
+        if (emptyFileNotAllowed && file.size === 0) {
+            this.setState({ error: 'Empty file is not allowed.' });
+            return;
+        }
+        this.setFormValue(file);
     }
 
     setFormValue(file: File): void {
@@ -184,12 +209,16 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
                     <span className="fa fa-times-circle attached-file__remove-icon" onClick={this.onRemove} />
                     <span className="fa fa-file-text attached-file--icon" />
                     <span>{file.name}</span>
-                    <span className="file-upload__error-message">{this.state.error}</span>
+                    <div className="file-upload__error-message">{this.state.error}</div>
                 </div>
             );
         } else if (data?.get('value')) {
             body = (
-                <FileColumnRenderer col={queryColumn} data={data} onRemove={isDisabled ? undefined : this.onRemove} />
+                <FileColumnRenderer
+                    isFileLink={queryColumn?.rangeURI === FILELINK_RANGE_URI}
+                    data={data}
+                    onRemove={isDisabled ? undefined : this.onRemove}
+                />
             );
         } else {
             body = (
@@ -220,7 +249,7 @@ class FileInputImpl extends DisableableInput<FileInputImplProps, State> {
                         <i className="fa fa-cloud-upload" aria-hidden="true" />
                         &nbsp;
                         <span>Select file or drag and drop here.</span>
-                        <span className="file-upload__error-message">{this.state.error}</span>
+                        <div className="file-upload__error-message">{this.state.error}</div>
                     </label>
                 </>
             );

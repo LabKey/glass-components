@@ -1,12 +1,14 @@
-import { SchemaQuery } from '../../public/SchemaQuery';
-import { SCHEMAS } from '../schemas';
-
 import React, { ReactNode } from 'react';
 
 import { Map } from 'immutable';
+
+import { SchemaQuery } from '../../public/SchemaQuery';
+import { SCHEMAS } from '../schemas';
+
 import { getQueryDetails } from '../query/api';
 import { downloadAttachment } from '../util/utils';
 import { TemplateDownloadButton } from '../../public/files/TemplateDownloadButton';
+import { ImportTemplate } from '../../public/QueryInfo';
 
 interface Props {
     row?: Map<string, any>;
@@ -32,6 +34,20 @@ export class DataClassTemplateDownloadRenderer extends React.PureComponent<Props
     };
 
     render(): ReactNode {
-        return <TemplateDownloadButton onClick={this.onDownload} text="Download" className="button-small-padding" />;
+        const { row } = this.props;
+        const schemaQuery = new SchemaQuery(
+            SCHEMAS.DATA_CLASSES.SCHEMA,
+            row.getIn(['Name', 'value']) ?? row.getIn(['name', 'value'])
+        );
+
+        return (
+            <TemplateDownloadButton
+                isGridRenderer
+                schemaQuery={schemaQuery}
+                onDownloadDefault={this.onDownload}
+                text="Download"
+                className="button-small-padding"
+            />
+        );
     }
 }
