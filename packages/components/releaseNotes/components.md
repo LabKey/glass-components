@@ -1,6 +1,13 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.9.0
+*Released*: 30 December 2024
+- Update AddEntityButton with new parameter
+- Add `getMultipleDataTypeExcludedContainers` to `FolderAPI`.
+- Add optional `className` prop to `DeleteIcon`
+- export ensureAllFieldsInAllRows for usage in saveRowsByContainer
+
 ### version 6.8.2
 *Released*: 27 December 2024
 - Issue 51816: pasted values from spreadsheet retain new lines and look invalid

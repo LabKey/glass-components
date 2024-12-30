@@ -51,6 +51,10 @@ export interface FolderAPIWrapper {
     ) => Promise<Container[]>;
     getDataTypeExcludedContainers: (dataType: FolderConfigurableDataType, dataTypeRowId: number) => Promise<string[]>;
     getFolderDataTypeExclusions: (excludedContainer?: string, reload?: boolean) => Promise<{ [key: string]: number[] }>;
+    getMultipleDataTypeExcludedContainers: (
+        dataType: FolderConfigurableDataType,
+        dataTypeRowIds: number[]
+    ) => Promise<string[]>;
     renameFolder: (options: FolderSettingsOptions, containerPath?: string) => Promise<Container>;
     setAuditCommentsRequired: (isRequired: boolean, containerPath?: string) => Promise<void>;
     updateContainerDataExclusions: (options: FolderSettingsOptions, containerPath?: string) => Promise<void>;
@@ -202,6 +206,37 @@ export class ServerFolderAPIWrapper implements FolderAPIWrapper {
         });
     };
 
+    getMultipleDataTypeExcludedContainers = (
+        dataType: FolderConfigurableDataType,
+        dataTypeRowIds: number[]
+    ): Promise<string[]> => {
+        if (!dataType || !dataTypeRowIds || !dataTypeRowIds.length) {
+            return Promise.resolve(undefined);
+        }
+
+        return new Promise((resolve, reject) => {
+            const promises = [];
+
+            dataTypeRowIds.forEach(id => {
+                promises.push(this.getDataTypeExcludedContainers(dataType, id));
+            });
+            const excludedFolderSet = new Set();
+            Promise.all(promises)
+                .then(results => {
+                    results.forEach(exclusions => exclusions.forEach(e => excludedFolderSet.add(e)));
+                    const folderList = [];
+                    excludedFolderSet.forEach(f => {
+                        folderList.push(f);
+                    });
+                    resolve(folderList);
+                })
+                .catch(reason => {
+                    console.error('Unable to retrieve data type exclusions', reason);
+                    reject(reason);
+                });
+        });
+    };
+
     getContainers = (
         container?: Container,
         moduleContext?: ModuleContext,
@@ -267,6 +302,7 @@ export function getFolderTestAPIWrapper(
         updateContainerDataExclusions: mockFn(),
         getDataTypeExcludedContainers: mockFn(),
         getFolderDataTypeExclusions: mockFn(),
+        getMultipleDataTypeExcludedContainers: mockFn(),
         updateContainerLookAndFeelSettings: mockFn(),
         getContainers: mockFn(),
         ...overrides,

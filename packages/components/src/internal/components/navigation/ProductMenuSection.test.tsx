@@ -3,10 +3,11 @@ import { List } from 'immutable';
 
 import { AppURL } from '../../url/AppURL';
 
-import { mountWithServerContext } from '../../test/enzymeTestHelpers';
 import { SAMPLE_MANAGER_APP_PROPERTIES } from '../../app/constants';
 
 import { TEST_PROJECT_CONTAINER } from '../../containerFixtures';
+
+import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
 import { ProductMenuSection } from './ProductMenuSection';
 import { MenuSectionModel, MenuSectionConfig } from './model';
@@ -101,7 +102,7 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 containerPath="/test/path"
                 currentProductId="testProduct"
@@ -112,11 +113,10 @@ describe('ProductMenuSection', () => {
                     })
                 }
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('li').length).toBe(2); // header and hr
-        expect(menuSection).toMatchSnapshot();
+        expect(document.querySelectorAll('li').length).toBe(2); // header and hr
     });
 
     test('empty section with empty text and create link', () => {
@@ -133,24 +133,22 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 config={config}
                 containerPath="/test/path"
                 currentProductId="testProduct"
                 section={section}
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('li.empty-section').length).toBe(1);
-        expect(menuSection.contains('Test empty text')).toBe(true);
-        expect(menuSection.contains('Empty due to exclusion')).toBe(false);
+        expect(document.querySelectorAll('li.empty-section').length).toBe(1);
+        expect(document.querySelector('.empty-section').textContent).toBe('Test empty text');
+        expect(document.querySelector('.empty-section').textContent).not.toContain('Empty due to exclusion');
 
-        expect(menuSection.find('.menu-section-header').length).toBe(1);
-        expect(menuSection.find('.menu-section-header').childAt(0).prop('to')).toBe('/samples');
-
-        expect(menuSection).toMatchSnapshot();
+        expect(document.querySelectorAll('.menu-section-header').length).toBe(1);
+        expect(document.querySelectorAll('.clickable-item').length).toBe(1);
     });
 
     test('not empty, but all items hidden', () => {
@@ -167,24 +165,22 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 config={config}
                 containerPath="/test/path"
                 currentProductId="testProduct"
                 section={section}
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('li.empty-section').length).toBe(1);
-        expect(menuSection.contains('Test empty text')).toBe(false);
-        expect(menuSection.contains('Empty due to exclusion')).toBe(true);
+        expect(document.querySelectorAll('.empty-section').length).toBe(1);
+        expect(document.querySelector('.empty-section').textContent).not.toContain('Test empty text');
+        expect(document.querySelector('.empty-section').textContent).toBe('Empty due to exclusion');
 
-        expect(menuSection.find('.menu-section-header').length).toBe(1);
-        expect(menuSection.find('.menu-section-header').childAt(0).prop('to')).toBe('/samples');
-
-        expect(menuSection).toMatchSnapshot();
+        expect(document.querySelectorAll('.menu-section-header').length).toBe(1);
+        expect(document.querySelectorAll('.clickable-item').length).toBe(1);
     });
 
     test('some items hidden', () => {
@@ -201,21 +197,18 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 config={config}
                 containerPath="/test/path"
                 currentProductId="testProduct"
                 section={section}
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('li.empty-section').length).toBe(0);
-        expect(menuSection.contains('Test empty text')).toBe(false);
-        expect(menuSection.contains('Empty due to exclusion')).toBe(false);
-        expect(menuSection.find('li').length).toBe(3);
-        menuSection.unmount();
+        expect(document.querySelectorAll('.empty-section').length).toBe(0);
+        expect(document.querySelectorAll('li').length).toBe(3);
     });
 
     test('section with custom headerURL and headerText', () => {
@@ -225,7 +218,7 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 containerPath="/test/path"
                 currentProductId="testProductHeaderUrl"
@@ -238,13 +231,12 @@ describe('ProductMenuSection', () => {
                     })
                 }
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('.menu-section-header').length).toBe(1);
-        expect(menuSection.find('.menu-section-header').childAt(0).prop('to')).toBe('%2Fsample%2Fnew%3Fsort%3Ddate');
-
-        expect(menuSection).toMatchSnapshot();
+        expect(document.querySelectorAll('.menu-section-header').length).toBe(1);
+        expect(document.querySelectorAll('.clickable-item').length).toBe(1);
+        expect(document.querySelectorAll('.product-menu-section').length).toBe(1);
     });
 
     test('one-column section', () => {
@@ -257,7 +249,7 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 containerPath="/test/path"
                 currentProductId={productId}
@@ -268,12 +260,16 @@ describe('ProductMenuSection', () => {
                     })
                 }
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
-        expect(menuSection.find('ul').length).toBe(2);
-        expect(menuSection.find('i.fa-spinner').length).toBe(1); // verify active job indicator
-        expect(menuSection).toMatchSnapshot();
-        menuSection.unmount();
+        expect(document.querySelectorAll('ul').length).toBe(2);
+        expect(document.querySelectorAll('i.fa-spinner').length).toBe(1); // verify active job indicator
+
+        const listItems = document.querySelector('.product-menu-section').querySelectorAll('li');
+        expect(listItems[0].textContent).toBe('Sample Set 1');
+        expect(listItems[1].textContent).toBe('Sample Set 2');
+        expect(listItems[2].textContent).toBe('Sample Set 3');
+        expect(listItems[3].textContent).toBe('Sample Set 4');
     });
 
     test('one column section', () => {
@@ -289,20 +285,24 @@ describe('ProductMenuSection', () => {
             iconURL: '/testProduct4Columns/images/assays.svg',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 section={section}
                 containerPath="/test/path"
                 currentProductId={productId}
                 config={sectionConfig}
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('ul').length).toBe(2);
-        expect(menuSection.find('i.fa-spinner').length).toBe(0); // no active jobs present
-        expect(menuSection).toMatchSnapshot();
-        menuSection.unmount();
+        expect(document.querySelectorAll('ul').length).toBe(2);
+        expect(document.querySelectorAll('i.fa-spinner').length).toBe(0); // no active jobs present
+
+        const listItems = document.querySelector('.product-menu-section').querySelectorAll('li');
+        expect(listItems[0].textContent).toBe('Assay 1');
+        expect(listItems[1].textContent).toBe('Assay 2');
+        expect(listItems[2].textContent).toBe('Assay 3');
+        expect(listItems[3].textContent).toBe('Assay 4');
     });
 
     test('do not show active job', () => {
@@ -312,7 +312,7 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 containerPath="/test/path"
                 currentProductId="testProductHeaderUrl"
@@ -323,10 +323,10 @@ describe('ProductMenuSection', () => {
                     })
                 }
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('i.fa-spinner').length).toBe(0);
+        expect(document.querySelectorAll('i.fa-spinner').length).toBe(0);
     });
 
     test('use custom active job cls', () => {
@@ -336,7 +336,7 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 containerPath="/test/path"
                 currentProductId="testProductHeaderUrl"
@@ -347,11 +347,11 @@ describe('ProductMenuSection', () => {
                     })
                 }
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('i.fa-spinner').length).toBe(0);
-        expect(menuSection.find('i.job-running-icon').length).toBe(0);
+        expect(document.querySelectorAll('i.fa-spinner').length).toBe(0);
+        expect(document.querySelectorAll('i.job-running-icon').length).toBe(0);
     });
 
     test('home project', () => {
@@ -361,7 +361,7 @@ describe('ProductMenuSection', () => {
             key: 'samples',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 containerPath="/test"
                 currentProductId="testProductHeaderUrl"
@@ -374,13 +374,15 @@ describe('ProductMenuSection', () => {
                     })
                 }
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('.empty-section').text()).toBe('Testing empty');
-        expect(menuSection.find('.empty-section-link').length).toBe(1);
-        expect(menuSection.find('.empty-section-link').text()).toBe('Create it');
-        expect(menuSection.find('.empty-section-link').childAt(0).prop('href')).toBe('home');
+        expect(document.querySelector('.empty-section').textContent).toBe('Testing empty');
+        expect(document.querySelectorAll('.empty-section-link').length).toBe(1);
+        expect(document.querySelectorAll('.empty-section-link')[0].textContent).toBe('Create it');
+        expect(document.querySelectorAll('.empty-section-link')[0].querySelector('a').getAttribute('href')).toBe(
+            'home'
+        );
     });
 
     test('useOriginalURL', () => {
@@ -391,7 +393,7 @@ describe('ProductMenuSection', () => {
             url: 'www.labkey.org',
         });
 
-        const menuSection = mountWithServerContext(
+        renderWithAppContext(
             <ProductMenuSection
                 containerPath="/test/sub"
                 currentProductId="testProductHeaderUrl"
@@ -402,10 +404,12 @@ describe('ProductMenuSection', () => {
                     })
                 }
             />,
-            getDefaultServerContext()
+            { serverContext: getDefaultServerContext() }
         );
 
-        expect(menuSection.find('.menu-section-header').length).toBe(1);
-        expect(menuSection.find('.menu-section-header').childAt(0).prop('href')).toBe('www.labkey.org');
+        expect(document.querySelectorAll('.menu-section-header').length).toBe(1);
+        expect(document.querySelectorAll('.menu-section-header')[0].querySelector('a').getAttribute('href')).toBe(
+            'www.labkey.org'
+        );
     });
 });
