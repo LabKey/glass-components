@@ -909,6 +909,7 @@ import { Tab, Tabs } from './internal/Tabs';
 import { CheckboxLK } from './internal/Checkbox';
 import { ArchivedFolderTag } from './internal/components/folder/ArchivedFolderTag';
 import { FilterCriteriaRenderer } from './internal/FilterCriteriaRenderer';
+import { getQueryTestAPIWrapper } from './internal/query/APIWrapper';
 
 // See Immer docs for why we do this: https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
 enableMapSet();
@@ -972,6 +973,7 @@ const App = {
     getFolderTestAPIWrapper,
     getLabelsTestAPIWrapper,
     getSecurityTestAPIWrapper,
+    getQueryTestAPIWrapper,
     hasPremiumModule,
     hasProductFolders,
     hasModule,
