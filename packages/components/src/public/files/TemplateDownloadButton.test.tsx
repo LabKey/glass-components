@@ -1,28 +1,35 @@
 import React, { act } from 'react';
 
+import { userEvent } from '@testing-library/user-event';
+
 import { TEST_USER_EDITOR, TEST_USER_READER } from '../../internal/userFixtures';
 
 import { renderWithAppContext } from '../../internal/test/reactTestLibraryHelpers';
 
-import { TemplateDownloadButton } from './TemplateDownloadButton';
 import { SchemaQuery } from '../SchemaQuery';
 import { getTestAPIWrapper } from '../../internal/APIWrapper';
 import { getQueryTestAPIWrapper } from '../../internal/query/APIWrapper';
 import { QueryInfo } from '../QueryInfo';
-import { userEvent } from '@testing-library/user-event';
+
+import { TemplateDownloadButton } from './TemplateDownloadButton';
 
 const TEMPLATES = [
-    {label: 'default', url: '/labkey/query-exportExcelTemplate.view?schemaName=samples&query.queryName=NameExpr&headerType=DisplayFieldKey'},
-    {label: 'template1', url: '/samples/temp1.csv'},
-    {label: 'temp2', url: '/samples/bloodtemplate.csv'}
+    {
+        label: 'default',
+        url: '/labkey/query-exportExcelTemplate.view?schemaName=samples&query.queryName=NameExpr&headerType=DisplayFieldKey',
+    },
+    { label: 'template1', url: '/samples/temp1.csv' },
+    { label: 'temp2', url: '/samples/bloodtemplate.csv' },
 ];
 
 const APP_CONTEXT = {
     api: getTestAPIWrapper(jest.fn, {
         query: getQueryTestAPIWrapper(jest.fn, {
-            getQueryDetails: jest.fn().mockResolvedValue(QueryInfo.fromJsonForTests({
-                importTemplates: TEMPLATES
-            })),
+            getQueryDetails: jest.fn().mockResolvedValue(
+                QueryInfo.fromJsonForTests({
+                    importTemplates: TEMPLATES,
+                })
+            ),
         }),
     }),
 };
@@ -59,10 +66,10 @@ describe('TemplateDownloadButton', () => {
             renderWithAppContext(
                 <TemplateDownloadButton
                     defaultTemplateUrl="testUrl"
-                    schemaQuery={new SchemaQuery("a", "b")}
+                    schemaQuery={new SchemaQuery('a', 'b')}
                     user={TEST_USER_EDITOR}
                 />,
-                {appContext: APP_CONTEXT},
+                { appContext: APP_CONTEXT }
             );
         });
         expect(document.querySelectorAll('span.fa-download')).toHaveLength(1);
@@ -89,10 +96,10 @@ describe('TemplateDownloadButton', () => {
             renderWithAppContext(
                 <TemplateDownloadButton
                     onDownloadDefault={jest.fn()}
-                    schemaQuery={new SchemaQuery("a", "b")}
+                    schemaQuery={new SchemaQuery('a', 'b')}
                     user={TEST_USER_EDITOR}
                 />,
-                {appContext: APP_CONTEXT},
+                { appContext: APP_CONTEXT }
             );
         });
         expect(document.querySelectorAll('span.fa-download')).toHaveLength(1);
@@ -119,10 +126,10 @@ describe('TemplateDownloadButton', () => {
                 <TemplateDownloadButton
                     isGridRenderer
                     defaultTemplateUrl="testUrl"
-                    schemaQuery={new SchemaQuery("a", "b")}
+                    schemaQuery={new SchemaQuery('a', 'b')}
                     user={TEST_USER_EDITOR}
                 />,
-                {appContext: APP_CONTEXT},
+                { appContext: APP_CONTEXT }
             );
         });
         expect(document.querySelectorAll('span.fa-download')).toHaveLength(1);
@@ -130,7 +137,7 @@ describe('TemplateDownloadButton', () => {
         expect(document.querySelectorAll('.dropdown')).toHaveLength(1);
         expect(document.querySelectorAll('.caret')).toHaveLength(0);
         const dropdown = document.querySelector('.dropdown');
-        let menuItems = dropdown.querySelectorAll('li');
+        const menuItems = dropdown.querySelectorAll('li');
         expect(menuItems).toHaveLength(0);
         let downloadLinks = dropdown.querySelectorAll('a');
         expect(downloadLinks).toHaveLength(0);

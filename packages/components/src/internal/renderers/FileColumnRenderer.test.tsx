@@ -65,66 +65,35 @@ describe('getAttachmentCardProp', () => {
 
     test('file rangeURI, unavailable', () => {
         const data = { name: 'test.txt', displayValue: 'test.txt (unavailable)' };
-        validate(
-            getAttachmentCardProp(
-                fromJS(data),
-                true
-            ),
-            true,
-            'file',
-            false,
-            undefined,
-            {
-                name: 'test.txt',
-                title: 'test.txt',
-                iconFontCls: 'fa fa-exclamation-triangle',
-                unavailable: true,
-            }
-        );
+        validate(getAttachmentCardProp(fromJS(data), true), true, 'file', false, undefined, {
+            name: 'test.txt',
+            title: 'test.txt',
+            iconFontCls: 'fa fa-exclamation-triangle',
+            unavailable: true,
+        });
 
-        validate(
-            getAttachmentCardProp(data, true),
-            true,
-            'file',
-            false,
-            undefined,
-            {
-                name: 'test.txt',
-                title: 'test.txt',
-                iconFontCls: 'fa fa-exclamation-triangle',
-                unavailable: true,
-            }
-        );
+        validate(getAttachmentCardProp(data, true), true, 'file', false, undefined, {
+            name: 'test.txt',
+            title: 'test.txt',
+            iconFontCls: 'fa fa-exclamation-triangle',
+            unavailable: true,
+        });
     });
 
     test('isImage', () => {
         const data = { url: 'testurl', value: 'test.png', displayValue: 'Test.png' };
-        validate(
-            getAttachmentCardProp(data),
-            true,
-            'attachment',
-            false,
-            'testurl',
-            {
-                name: 'Test.png',
-                title: 'Test.png',
-                iconFontCls: 'fa fa-file-image-o',
-                unavailable: false,
-            }
-        );
-        validate(
-            getAttachmentCardProp(fromJS(data)),
-            true,
-            'attachment',
-            false,
-            'testurl',
-            {
-                name: 'Test.png',
-                title: 'Test.png',
-                iconFontCls: 'fa fa-file-image-o',
-                unavailable: false,
-            }
-        );
+        validate(getAttachmentCardProp(data), true, 'attachment', false, 'testurl', {
+            name: 'Test.png',
+            title: 'Test.png',
+            iconFontCls: 'fa fa-file-image-o',
+            unavailable: false,
+        });
+        validate(getAttachmentCardProp(fromJS(data)), true, 'attachment', false, 'testurl', {
+            name: 'Test.png',
+            title: 'Test.png',
+            iconFontCls: 'fa fa-file-image-o',
+            unavailable: false,
+        });
     });
 
     test('allowRemove', () => {

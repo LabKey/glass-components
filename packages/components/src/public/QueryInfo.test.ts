@@ -95,8 +95,8 @@ describe('QueryInfo', () => {
 
     describe('importTemplate', () => {
         test('getCustomTemplates', () => {
-            expect(queryInfo.importTemplates).toHaveLength(1)
-            expect(queryInfo.getCustomTemplates()).toHaveLength(0)
+            expect(queryInfo.importTemplates).toHaveLength(1);
+            expect(queryInfo.getCustomTemplates()).toHaveLength(0);
         });
     });
 
