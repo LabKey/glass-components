@@ -141,7 +141,8 @@ export class GridHeader extends PureComponent<GridHeaderProps, State> {
         // Issue 48610: app grid column header <th> element to trigger click on child <div>
         const childEl = e.target.getElementsByClassName(GRID_HEADER_CELL_BODY);
         if (childEl?.length === 1) {
-            e.target.getElementsByClassName(GRID_HEADER_CELL_BODY)[0].click();
+            childEl[0].click();
+            e.stopPropagation(); // Issue 51879
         }
     };
 
