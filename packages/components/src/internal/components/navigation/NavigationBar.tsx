@@ -99,7 +99,7 @@ export const NavigationBar: FC<Props> = memo(props => {
                     <div className="row">
                         <div className="navbar-left col-xs-6 col-md-6">
                             <span className="navbar-item navbar-left-icon pull-left">{brand}</span>
-                            {showNavMenu && !isAdminPage && (
+                            {showNavMenu && (
                                 <span className="navbar-item navbar-left-menu">
                                     <ProductMenuButton
                                         key={folderMenuContext.key} // re-render and reload folderItems when folder added
@@ -108,7 +108,6 @@ export const NavigationBar: FC<Props> = memo(props => {
                                     />
                                 </span>
                             )}
-                            {isAdminPage && <div className="navbar-left-sub">Administration</div>}
                         </div>
                         <div className="navbar-right col-xs-6 col-md-6">
                             {!!user && (

@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Issue 49044: Add mega-menu back to Admin pages
+
 ### version 6.10.0
 *Released*: 30 December 2024
 - Customizable File Templates for Sources, Sample Types & Assay Designs
