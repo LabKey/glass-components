@@ -15,12 +15,12 @@ import { DisableableMenuItem } from '../../internal/components/samples/Disableab
 interface Props {
     className?: string;
     defaultTemplateUrl?: string;
+    dropDownClassName?: string;
     isGridRenderer?: boolean;
     onDownloadDefault?: () => void;
     schemaQuery?: SchemaQuery;
     text?: string;
     user?: User;
-    dropDownClassName?: string;
 }
 
 export const TemplateDownloadButton: FC<Props> = memo(props => {
@@ -71,10 +71,8 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         if (customTemplates || !isGridRenderer) return;
         const hasCustomTemplates = await loadTemplates();
         if (!hasCustomTemplates) {
-            if (onDownloadDefault)
-                onDownloadDefault();
-            else
-                downloadAttachment(defaultTemplateUrl, true);
+            if (onDownloadDefault) onDownloadDefault();
+            else downloadAttachment(defaultTemplateUrl, true);
         }
     }, [isGridRenderer, onDownloadDefault, customTemplates, loadTemplates, defaultTemplateUrl]);
 
@@ -123,16 +121,21 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
                         </MenuItem>
                     )}
                     {loadingTemplates && <LoadingSpinner />}
-                    {customTemplates?.map((template, ind) => {
+                    {customTemplates?.map(template => {
                         if (template.url.endsWith('(unavailable)'))
                             return (
-                                <DisableableMenuItem disabled disabledMessage="File not found">
+                                <DisableableMenuItem key={template.label} disabled disabledMessage="File not found">
                                     {template.label}
                                 </DisableableMenuItem>
                             );
 
                         return (
-                            <MenuItem key={ind + 1} href={template.url} rel="noopener noreferrer" target="_blank">
+                            <MenuItem
+                                key={template.label}
+                                href={template.url}
+                                rel="noopener noreferrer"
+                                target="_blank"
+                            >
                                 {template.label}
                             </MenuItem>
                         );
