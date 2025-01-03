@@ -1919,7 +1919,12 @@ export type {
     SelectInputProps,
 } from './internal/components/forms/input/SelectInput';
 export type { ISelectInitData } from './internal/components/forms/model';
-export type { QuerySelectChange, QuerySelectOwnProps } from './internal/components/forms/QuerySelect';
+export type {
+    QuerySelectChange,
+    QuerySelectOptionComponent,
+    QuerySelectOptionProps,
+    QuerySelectOwnProps,
+} from './internal/components/forms/QuerySelect';
 export type {
     EntityCreationTypeModel,
     SampleStatus,
