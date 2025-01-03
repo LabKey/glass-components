@@ -11,6 +11,8 @@ import { SchemaQuery } from '../SchemaQuery';
 import { useAppContext } from '../../internal/AppContext';
 import { downloadAttachment } from '../../internal/util/utils';
 import { DisableableMenuItem } from '../../internal/components/samples/DisableableMenuItem';
+import { useServerContext } from '../../internal/components/base/ServerContext';
+import { getAppHomeFolderPath } from '../../internal/app/utils';
 
 interface Props {
     className?: string;
@@ -36,6 +38,9 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
     } = props;
     const [customTemplates, setCustomTemplates] = useState<ImportTemplate[]>();
     const [loadingTemplates, setLoadingTemplates] = useState<boolean>(false);
+    const { container, moduleContext } = useServerContext();
+    const homeFolderPath = getAppHomeFolderPath(container, moduleContext);
+
     const { api } = useAppContext();
 
     useEffect(() => {
@@ -52,6 +57,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
             const queryInfo = await api.query.getQueryDetails({
                 schemaName: schemaQuery.schemaName,
                 queryName: schemaQuery.queryName,
+                containerPath: homeFolderPath
             });
             const customTemplates_ = queryInfo.getCustomTemplates();
             setCustomTemplates(customTemplates_);
@@ -61,7 +67,7 @@ export const TemplateDownloadButton: FC<Props> = memo(props => {
         } finally {
             setLoadingTemplates(false);
         }
-    }, [schemaQuery, setLoadingTemplates, setCustomTemplates]);
+    }, [schemaQuery, setLoadingTemplates, setCustomTemplates, homeFolderPath]);
 
     const showDropdown = useMemo(() => {
         return customTemplates?.length > 0 || (isGridRenderer && !customTemplates);
