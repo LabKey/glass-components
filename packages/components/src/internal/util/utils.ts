@@ -20,8 +20,6 @@ import { ChangeEvent } from 'react';
 import { hasParameter, toggleParameter } from '../url/ActionURL';
 import { encodePart } from '../../public/SchemaQuery';
 
-const emptyList = List<string>();
-
 // Case-insensitive Object reference. Returns undefined if either object or prop does not resolve.
 // If both casings exist (e.g. 'x' and 'X' are props) then either value may be returned.
 export function caseInsensitive(obj: Record<string, any>, prop: string): any {
@@ -43,22 +41,6 @@ export function caseInsensitive(obj: Record<string, any>, prop: string): any {
 }
 
 /**
- * Returns a case-insensitive intersection of two List<string>.
- * @param a
- * @param b
- */
-export function intersect(a: List<string>, b: List<string>): List<string> {
-    if (!a || !b || a.size === 0 || b.size === 0) {
-        return emptyList;
-    }
-
-    const sa = a.reduce(toLowerReducer, ImmutableSet<string>().asMutable()).asImmutable();
-    const sb = b.reduce(toLowerReducer, ImmutableSet<string>().asMutable()).asImmutable();
-
-    return sa.intersect(sb).toList();
-}
-
-/**
  * Returns a new string in which the first character of the given string is capitalized.  If
  * the value is, empty, undefined, or not a string returns the value.
  * @param value string to convert
@@ -71,7 +53,7 @@ export function capitalizeFirstChar(value: string): string {
 }
 
 /**
- * Returns a new string in which the first character of the given string is uncapitalized.  If
+ * Returns a new string in which the first character of the given string is not capitalized.  If
  * the value is, empty, undefined, or not a string returns the value.
  * @param value string to convert
  */
@@ -116,14 +98,7 @@ export function toLowerSafe(a: string[]): string[] {
     return [];
 }
 
-function toLowerReducer(s: ImmutableSet<string>, v: string): ImmutableSet<string> {
-    if (typeof v === 'string') {
-        s.add(v.toLowerCase());
-    }
-    return s;
-}
-
-export function camelCaseToTitleCase(text: string) {
+export function camelCaseToTitleCase(text: string): string {
     const camelEdges = /([A-Z](?=[A-Z][a-z])|[^A-Z](?=[A-Z])|[a-zA-Z](?=[^a-zA-Z]))/g;
     const saferText = text.replace(camelEdges, '$1 ');
     return saferText.charAt(0).toUpperCase() + saferText.slice(1);
@@ -206,10 +181,10 @@ export function unorderedEqual(array1: any[], array2: any[]): boolean {
 }
 
 /**
- * Returns true if value is undefined, an empty string, or an empty array.  Otherwise returns false.
+ * Returns true if value is undefined, an empty string, or an empty array.  Otherwise, returns false.
  * @param value
  */
-export function valueIsEmpty(value): boolean {
+export function valueIsEmpty(value: any): boolean {
     if (!value) return true;
     if (typeof value === 'string' && value === '') return true;
     return Array.isArray(value) && value.length === 0;
@@ -569,7 +544,7 @@ export function getIconFontCls(value: string, unavailable?: boolean): string {
 }
 
 /**
- * Formats number of bytes into a human readable string.
+ * Formats number of bytes into a human-readable string.
  * Example:
  * ```
  * formatBytes(1024);       // 1 KB
@@ -720,12 +695,12 @@ export function parseCsvString(value: string, delimiter: string, removeQuotes?: 
     return parsedValues;
 }
 
-export function quoteValueWithDelimiters(value: any, delimiter: string) {
+export function quoteValueWithDelimiters(value: any, delimiter: string): string {
     if (!value || !Utils.isString(value)) {
         return value;
     }
     if (!delimiter) {
-        throw 'Delimiter is required.';
+        throw new Error('Delimiter is required.');
     }
     if (value.indexOf(delimiter) === -1) return value; // nothing to do for a string that doesn't contain the delimiter
     if (value.indexOf('"') !== -1) {
@@ -739,7 +714,7 @@ export function isQuotedWithDelimiters(value: any, delimiter: string): boolean {
         return false;
     }
     if (!delimiter) {
-        throw 'Delimiter is required.';
+        throw new Error('Delimiter is required.');
     }
 
     const strVal = value + '';
