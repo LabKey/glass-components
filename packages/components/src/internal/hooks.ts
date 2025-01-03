@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const useNotAuthorized = (identifier?: any, initialState = false) => {
     const [notAuthorized, setNotAuthorized] = useState(initialState);
@@ -78,4 +78,33 @@ export function usePortalRef(portalId): HTMLDivElement {
     }, []);
 
     return portalElementRef.current;
+}
+
+export interface UseTimeout {
+    clear: () => void;
+    set: (handler: TimerHandler, timeout?: number) => void;
+}
+
+export function useTimeout(): UseTimeout {
+    const ref = useRef<number>(undefined);
+
+    const clear = useCallback(() => {
+        if (ref.current !== undefined) {
+            clearTimeout(ref.current);
+            ref.current = undefined;
+        }
+    }, []);
+
+    const set = useCallback(
+        (handler: TimerHandler, timeout?: number): void => {
+            clear();
+            ref.current = setTimeout(handler, timeout);
+        },
+        [clear]
+    );
+
+    // Cancel the timeout when unmounted
+    useEffect(() => clear, [clear]);
+
+    return useMemo(() => ({ clear, set }), [clear, set]);
 }
