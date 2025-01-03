@@ -75,20 +75,16 @@ function getValue(model: QuerySelectModel, multiple: boolean): any {
 // when fetching async query results. They have already been filtered.
 const noopFilterOptions = options => options;
 
-export interface QuerySelectOptionProps {
-    label: string | number;
+export interface QuerySelectOptionProps extends Pick<SelectInputOption, 'label' | 'value'> {
     queryInfo: QueryInfo;
     row: Row;
-    value: any;
 }
 
 export type QuerySelectOptionComponent = ComponentType<QuerySelectOptionProps>;
 
-interface OptionRendererProps {
+interface OptionRendererProps extends Pick<SelectInputOption, 'label' | 'value'> {
     OptionComponent?: QuerySelectOptionComponent;
-    label: any;
     model: QuerySelectModel;
-    value: any;
 }
 
 const OptionRenderer: FC<OptionRendererProps> = props => {
@@ -163,7 +159,7 @@ type InheritedSelectInputProps = Omit<
     | 'loadOptions'
     | 'onChange' // overridden by QuerySelect. See onQSChange().
     | 'options'
-    | 'optionRenderer'
+    | 'optionRenderer' // overridden by QuerySelect. Use "OptionComponent" instead.
     | 'selectedOptions'
     | 'valueKey'
 >;
@@ -392,7 +388,6 @@ export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
             <SelectInput
                 filterOption={noopFilterOptions}
                 label={label !== undefined ? label : model.queryInfo.title}
-                optionRenderer={optionRenderer}
                 {...selectInputProps}
                 allowCreate={false}
                 autoValue={false} // QuerySelect directly controls value of SelectInput via "selectedOptions"
@@ -403,6 +398,7 @@ export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
                 loadOptions={loadOptions}
                 onChange={onChange}
                 onFocus={onFocus}
+                optionRenderer={optionRenderer}
                 options={undefined} // prevent override
                 selectedOptions={model.selectedOptions}
                 value={getValue(model, multiple)} // needed to initialize the Formsy "value" properly
@@ -438,5 +434,4 @@ export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
 
     return null;
 });
-
 QuerySelect.displayName = 'QuerySelect';
