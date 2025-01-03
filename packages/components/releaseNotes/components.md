@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.11.0
+*Released*: 3 January 2025
 - Issue 51879: App grid column header click area above column title should open the menu
 
 ### version 6.10.0
