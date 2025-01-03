@@ -860,7 +860,7 @@ import { Discussions } from './internal/announcements/Discussions';
 import { Thread } from './internal/announcements/Thread';
 import { ThreadBlock } from './internal/announcements/ThreadBlock';
 import { ThreadEditor } from './internal/announcements/ThreadEditor';
-import { useNotAuthorized, useNotFound, usePortalRef } from './internal/hooks';
+import { useNotAuthorized, useNotFound, usePortalRef, useTimeout } from './internal/hooks';
 import {
     TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT,
     TEST_BIO_LIMS_STARTER_MODULE_CONTEXT,
@@ -1821,6 +1821,7 @@ export {
     PrintLabelsModal,
     useLabelPrintingContext,
     usePortalRef,
+    useTimeout,
     ExtendedMap,
     FormButtons,
     ModalButtons,
@@ -2007,3 +2008,4 @@ export type { AppContextTestProviderProps } from './internal/test/testHelpers';
 export type { DisableableInputProps } from './internal/components/forms/input/DisableableInput';
 export type { ContainerFormats, DateTimeSettingProp } from './internal/util/Date';
 export type { ImportTemplate } from './public/QueryInfo';
+export type { UseTimeout } from './internal/hooks';
