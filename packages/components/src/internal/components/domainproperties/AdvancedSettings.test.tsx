@@ -60,7 +60,7 @@ describe('AdvancedSettings', () => {
         field: field1,
         onHide: jest.fn(),
         onApply: jest.fn(),
-        phiLevelDisabled: false,
+        phiLevelEnabled: true,
         phiLevelDisabledReason: null,
         showDefaultValueSettings: true,
         allowUniqueConstraintProperties: true,

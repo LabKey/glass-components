@@ -1288,7 +1288,7 @@ export class DomainFormImpl extends React.PureComponent<DomainFormProps, State> 
                                                 domainContainerPath={domain.container}
                                                 schemaName={schemaName ?? domain.schemaName}
                                                 queryName={queryName ?? domain.queryName}
-                                                phiLevelDisabled={domain.phiLevelDisabled}
+                                                phiLevelEnabled={domain.phiLevelEnabled}
                                                 phiLevelDisabledReason={domain.phiLevelDisabledReason}
                                             />
                                         );

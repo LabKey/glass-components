@@ -56,8 +56,8 @@ interface AdvancedSettingsProps {
     maxPhiLevel: string;
     onApply: (any) => any;
     onHide: () => any;
-    phiLevelDisabled: boolean;
     phiLevelDisabledReason: string;
+    phiLevelEnabled: boolean;
     showDefaultValueSettings: boolean;
 }
 
@@ -360,7 +360,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
             domainIndex,
             domainFormDisplayOptions,
             allowUniqueConstraintProperties,
-            phiLevelDisabled,
+            phiLevelEnabled,
             phiLevelDisabledReason,
         } = this.props;
         const {
@@ -375,7 +375,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
         } = this.state;
         const currentValueExists = phiLevels?.find(level => level.value === PHI) !== undefined;
         const disablePhiSelect =
-            phiLevelDisabled || field.disablePhiLevel || (PHI !== undefined && !currentValueExists);
+            !phiLevelEnabled || field.disablePhiLevel || (PHI !== undefined && !currentValueExists);
 
         return (
             <>
@@ -383,7 +383,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
                 {!field.isCalculatedField() && (
                     <div className="row">
                         <div className="col-xs-3">
-                            <DomainFieldLabel label="PHI Level" helpTipBody={phiLevelDisabled ? phiLevelDisabledReason : this.getPhiHelpText()} />
+                            <DomainFieldLabel label="PHI Level" helpTipBody={!phiLevelEnabled ? phiLevelDisabledReason : this.getPhiHelpText()} />
                         </div>
                         <div className="col-xs-6">
                             <select
