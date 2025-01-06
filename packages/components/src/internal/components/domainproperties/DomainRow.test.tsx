@@ -98,6 +98,8 @@ describe('DomainRow', () => {
             onChange: jest.fn(),
             onDelete: jest.fn(),
             onExpand: jest.fn(),
+            phiLevelDisabled: false,
+            phiLevelDisabledReason: null,
             showDefaultValueSettings: true,
         };
     }

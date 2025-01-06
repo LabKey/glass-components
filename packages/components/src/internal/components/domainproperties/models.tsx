@@ -164,10 +164,11 @@ interface IDomainDesign {
     name: string;
     // set of fields to initialize a manually created design
     newDesignFields?: List<DomainField>;
+    phiLevelDisabled: boolean;
+    phiLevelDisabledReason?: string;
     queryName?: string;
     schemaName?: string;
     showDefaultValueSettings: boolean;
-    supportsPhiLevel: boolean;
 }
 
 export class DomainDesign
@@ -200,6 +201,8 @@ export class DomainDesign
         schemaName: undefined,
         queryName: undefined,
         disabledSystemFields: undefined,
+        phiLevelDisabled: false,
+        phiLevelDisabledReason: undefined,
     })
     implements IDomainDesign
 {
@@ -231,7 +234,8 @@ export class DomainDesign
     declare schemaName: string;
     declare queryName: string;
     declare disabledSystemFields?: string[];
-    declare supportsPhiLevel: boolean;
+    declare phiLevelDisabled: boolean;
+    declare phiLevelDisabledReason?: string;
 
     static create(rawModel: any, exception?: any): DomainDesign {
         let fields = List<DomainField>();
@@ -2107,7 +2111,6 @@ export interface IDomainFormDisplayOptions {
     hideTextOptions?: boolean;
     hideValidators?: boolean;
     isDragDisabled?: boolean;
-    phiLevelDisabled?: boolean;
     retainReservedFields?: boolean;
     showFilterCriteria?: boolean;
     showScannableOption?: boolean;

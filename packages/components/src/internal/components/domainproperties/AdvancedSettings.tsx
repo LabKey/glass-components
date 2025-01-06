@@ -56,8 +56,9 @@ interface AdvancedSettingsProps {
     maxPhiLevel: string;
     onApply: (any) => any;
     onHide: () => any;
+    phiLevelDisabled: boolean;
+    phiLevelDisabledReason: string;
     showDefaultValueSettings: boolean;
-    supportsPhiLevel: boolean;
 }
 
 interface AdvancedSettingsState {
@@ -353,7 +354,15 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
     };
 
     renderMiscOptions = () => {
-        const { index, field, domainIndex, domainFormDisplayOptions, allowUniqueConstraintProperties, supportsPhiLevel } = this.props;
+        const {
+            index,
+            field,
+            domainIndex,
+            domainFormDisplayOptions,
+            allowUniqueConstraintProperties,
+            phiLevelDisabled,
+            phiLevelDisabledReason,
+        } = this.props;
         const {
             measure,
             dimension,
@@ -366,10 +375,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
         } = this.state;
         const currentValueExists = phiLevels?.find(level => level.value === PHI) !== undefined;
         const disablePhiSelect =
-            !supportsPhiLevel ||
-            domainFormDisplayOptions.phiLevelDisabled ||
-            field.disablePhiLevel ||
-            (PHI !== undefined && !currentValueExists);
+            phiLevelDisabled || field.disablePhiLevel || (PHI !== undefined && !currentValueExists);
 
         return (
             <>
@@ -377,7 +383,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
                 {!field.isCalculatedField() && (
                     <div className="row">
                         <div className="col-xs-3">
-                            <DomainFieldLabel label="PHI Level" helpTipBody={this.getPhiHelpText()} />
+                            <DomainFieldLabel label="PHI Level" helpTipBody={phiLevelDisabled ? phiLevelDisabledReason : this.getPhiHelpText()} />
                         </div>
                         <div className="col-xs-6">
                             <select

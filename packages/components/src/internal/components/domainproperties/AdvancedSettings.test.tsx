@@ -60,6 +60,8 @@ describe('AdvancedSettings', () => {
         field: field1,
         onHide: jest.fn(),
         onApply: jest.fn(),
+        phiLevelDisabled: false,
+        phiLevelDisabledReason: null,
         showDefaultValueSettings: true,
         allowUniqueConstraintProperties: true,
         defaultDefaultValueType: DOMAIN_EDITABLE_DEFAULT,
