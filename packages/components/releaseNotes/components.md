@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Support 'isActive' prop for NavItem and ITab
+
 ### version 6.11.1
 *Released*: 3 January 2025
 - Issue 49044: Add mega-menu back to Admin pages
