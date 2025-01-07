@@ -81,6 +81,7 @@ export interface EditorModelProps {
     // which are necessary when updating data. If you need the visible columns use orderedColumns.
     columnMap: Map<string, QueryColumn>;
     columnMetadata: Map<string, EditableColumnMetadata>;
+    deletedIds: ImmutableSet<any>;
     focusColIdx: number;
     focusRowIdx: number;
     focusValue: List<ValueDescriptor>;
