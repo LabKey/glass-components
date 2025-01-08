@@ -35,7 +35,9 @@ export const DISPLAY_TITLE_TIP = (
 );
 export const DISCUSSION_LINKS_TIP =
     'Optionally allow one or more discussion links to be shown on the details view of each list item.';
-export const SEARCH_INDEXING_TIP = 'Controls how this list is indexed for search within LabKey Server.';
+export const SEARCH_INDEXING_TIP = 'Controls how this list is indexed for full-text search.';
+export const MULTI_FOLDER_TIP =
+    'Allows data in this list to span multiple folders. Note that multi-folder lists do not allow PHI annotations on their fields.';
 
 interface DisplayTitleProps {
     model: ListModel;
@@ -259,6 +261,29 @@ export const SeparateDocumentIndexFields: FC<SeparateDocumentIndexFieldsProps> =
     );
 });
 
+interface FolderSettingsProps {
+    multiFolder: boolean;
+    onCheckboxChange: (name, checked) => void;
+}
+
+export const FolderSettings: FC<FolderSettingsProps> = memo(({ multiFolder, onCheckboxChange }) => {
+    const onMultiFolderChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>): void => {
+            onCheckboxChange('multiFolder', event.target.checked);
+        },
+        [onCheckboxChange]
+    );
+
+    return (
+        <div className="list__advanced-settings-modal__index-checkbox">
+            <label>
+                <input checked={multiFolder} type="checkbox" onChange={onMultiFolderChange} />
+                Multi-folder <LabelHelpTip title="Multi-folder">{MULTI_FOLDER_TIP}</LabelHelpTip>
+            </label>
+        </div>
+    );
+});
+
 interface CollapsibleFieldsProps extends PropsWithChildren {
     checked: boolean;
     collapseFields: () => void;
@@ -383,7 +408,7 @@ export const SearchIndexing: FC<SearchIndexingProps> = memo(props => {
 });
 
 interface SettingsContainerProps extends PropsWithChildren {
-    tipBody: string | JSX.Element;
+    tipBody?: string | JSX.Element;
     tipTitle?: string;
     title: string;
 }
@@ -392,7 +417,7 @@ const SettingsContainer: FC<SettingsContainerProps> = memo(({ children, title, t
     <div className="list__advanced-settings-modal__section-container">
         <div className="list__advanced-settings-modal__heading">
             <span className="list__bold-text"> {title} </span>
-            <LabelHelpTip title={tipTitle || title}>{tipBody}</LabelHelpTip>
+            {tipBody && <LabelHelpTip title={tipTitle || title}>{tipBody}</LabelHelpTip>}
         </div>
 
         {children}
@@ -445,6 +470,8 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
             // index
             eachItemBodySetting: model.eachItemBodySetting,
             eachItemBodyTemplate: model.eachItemBodyTemplate,
+
+            multiFolder: model.multiFolder,
         };
     };
 
@@ -505,6 +532,7 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
             titleColumn,
             entireListBodyTemplate,
             eachItemBodyTemplate,
+            multiFolder,
         } = this.state;
         const { title, model } = this.props;
         const entireListIndexSettings = {
@@ -576,6 +604,10 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
                                 eachItemIndexSettings={eachItemIndexSettings}
                                 fileAttachmentIndex={fileAttachmentIndex}
                             />
+                        </SettingsContainer>
+
+                        <SettingsContainer title="Folder settings">
+                            <FolderSettings multiFolder={multiFolder} onCheckboxChange={this.onCheckboxChange} />
                         </SettingsContainer>
                     </Modal>
                 )}

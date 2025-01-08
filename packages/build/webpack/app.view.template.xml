@@ -15,11 +15,11 @@
     </permissions>
     <% } %>
     <% if (htmlWebpackPlugin.options.permissionClasses) { %>
-    <permissionClasses>
+    <requiresPermissions>
         <% htmlWebpackPlugin.options.permissionClasses.forEach((permissionClass) => { %>
         <permissionClass name="<%= permissionClass %>"/>
         <% }); %>
-    </permissionClasses>
+    </requiresPermissions>
     <% } %>
     <% if (htmlWebpackPlugin.options.requiresLogin) { %>
     <requiresLogin/>
