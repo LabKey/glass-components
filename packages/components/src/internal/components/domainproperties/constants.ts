@@ -209,8 +209,6 @@ export const DEFAULT_DOMAIN_FORM_DISPLAY_OPTIONS = {
     hideValidators: false,
     isDragDisabled: false,
     hideTextOptions: false,
-    phiLevelEnabled: true,
-    phiLevelDisabledReason: null,
     hideAddFieldsButton: false,
     disableMvEnabled: false,
     hideImportData: false,
