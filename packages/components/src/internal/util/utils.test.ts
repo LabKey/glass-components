@@ -22,7 +22,6 @@ import {
     findMissingValues,
     formatBytes,
     getCommonDataValues,
-    getDisambiguatedSelectInputOptions,
     getIconFontCls,
     getUpdatedData,
     handleRequestFailure,
@@ -462,7 +461,7 @@ describe('getUpdatedData', () => {
     });
 
     test('empty updates', () => {
-        const updatedData = getUpdatedData(originalData, {}, List<string>(['RowId']));
+        const updatedData = getUpdatedData(originalData, {}, ['RowId']);
         expect(updatedData).toHaveLength(0);
     });
 
@@ -473,7 +472,7 @@ describe('getUpdatedData', () => {
                 Data: 'data1',
                 And$SAgain: 'again',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(0);
     });
@@ -487,7 +486,7 @@ describe('getUpdatedData', () => {
                 And$SAgain: 'again',
                 Other: 'other3',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(3);
         expect(updatedData[0]).toStrictEqual({
@@ -515,7 +514,7 @@ describe('getUpdatedData', () => {
                 And$SAgain: 'again2',
                 Other: 'not another',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(4);
         expect(updatedData[0]).toStrictEqual({
@@ -556,7 +555,7 @@ describe('getUpdatedData', () => {
                 And$SAgain: undefined,
                 Other: 'not another',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(4);
         expect(updatedData[0]).toStrictEqual({
@@ -600,7 +599,7 @@ describe('getUpdatedData', () => {
             {
                 IntValue: '123',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(0);
     });
@@ -622,7 +621,7 @@ describe('getUpdatedData', () => {
             {
                 IntValue: '234',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(1);
         expect(updatedData[0]).toStrictEqual({
@@ -650,7 +649,7 @@ describe('getUpdatedData', () => {
             {
                 Alias: ['alias3'],
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(1);
         expect(updatedData[0]).toStrictEqual({
@@ -678,7 +677,7 @@ describe('getUpdatedData', () => {
             {
                 Alias: [2],
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(1);
         expect(updatedData[0]).toStrictEqual({
@@ -706,7 +705,7 @@ describe('getUpdatedData', () => {
             {
                 Alias: [],
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData).toHaveLength(1);
         expect(updatedData[0]).toStrictEqual({
@@ -723,8 +722,8 @@ describe('getUpdatedData', () => {
                 And$SAgain: 'again',
                 Other: 'other3',
             },
-            List<string>(['RowId']),
-            ['Data']
+            ['RowId'],
+            new Set(['Data'])
         );
         expect(updatedData).toHaveLength(3);
         expect(updatedData[0]).toStrictEqual({
@@ -783,7 +782,7 @@ describe('getUpdatedData', () => {
                 And$SAgain: 'again',
                 Other: 'other3',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData[0]).toStrictEqual({
             RowId: 448,
@@ -830,7 +829,7 @@ describe('getUpdatedData', () => {
                 And$SAgain: 'again',
                 Other: 'other3',
             },
-            List<string>(['RowId'])
+            ['RowId']
         );
         expect(updatedData[0]).toStrictEqual({
             RowId: 448,
@@ -855,93 +854,6 @@ describe('CaseInsensitive', () => {
         expect(caseInsensitive({ x: -1, xX: -2 }, 'X')).toEqual(-1);
         expect(caseInsensitive({ 'special-key': 42 }, 'special key')).toBeUndefined();
         expect(caseInsensitive({ 'special-key': 42 }, 'special-key')).toEqual(42);
-    });
-});
-
-const sourceOptions = [
-    {
-        value: 'urn:lsid:labkey.com:Data.Folder-8:81c1e0b7-c884-1038-ba3d-f653126805a6',
-        label: 'Source-1 (sourceType1)',
-    },
-    {
-        value: 'urn:lsid:labkey.com:Data.Folder-8:3d55fee0-d81c-1038-b2c8-93ec7daaff14',
-        label: 'Source-1 (sourceType2)',
-    },
-    {
-        value: 'urn:lsid:labkey.com:Data.Folder-8:81c1e0c4-c884-1038-ba3d-f653126805a6',
-        label: 'Source-2',
-    },
-];
-
-describe('getDisambiguatedSelectInputOptions', () => {
-    test('from QueryGridModel data', () => {
-        const rows = [
-            {
-                links: null,
-                lsid: { value: 'urn:lsid:labkey.com:Data.Folder-8:81c1e0b7-c884-1038-ba3d-f653126805a6' },
-                SourceType: { url: '#/rd/dataclass/sourceType1', value: 'sourceType1' },
-                rowId: { value: 57 },
-                Name: { value: 'Source-1' },
-            },
-            {
-                links: null,
-                lsid: { value: 'urn:lsid:labkey.com:Data.Folder-8:81c1e0c4-c884-1038-ba3d-f653126805a6' },
-                SourceType: { url: '#/rd/dataclass/sourceType1', value: 'sourceType1' },
-                rowId: { value: 58 },
-                Name: { value: 'Source-2' },
-            },
-            {
-                links: null,
-                lsid: { value: 'urn:lsid:labkey.com:Data.Folder-8:3d55fee0-d81c-1038-b2c8-93ec7daaff14' },
-                SourceType: { url: '#/rd/dataclass/sourceType2', value: 'sourceType2' },
-                rowId: { value: 65 },
-                Name: { value: 'Source-1' },
-            },
-        ];
-
-        expect(getDisambiguatedSelectInputOptions(fromJS(rows), 'lsid', 'Name', 'SourceType')).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining(sourceOptions[0]),
-                expect.objectContaining(sourceOptions[1]),
-                expect.objectContaining(sourceOptions[2]),
-            ])
-        );
-    });
-
-    test('from selectRows result', () => {
-        const rows = {
-            '0': {
-                lsid: { value: 'urn:lsid:labkey.com:Data.Folder-8:81c1e0b7-c884-1038-ba3d-f653126805a6' },
-                SourceType: {
-                    value: 'sourceType1',
-                },
-                rowId: { value: 57 },
-                Name: { value: 'Source-1' },
-            },
-            '1': {
-                lsid: { value: 'urn:lsid:labkey.com:Data.Folder-8:81c1e0c4-c884-1038-ba3d-f653126805a6' },
-                SourceType: {
-                    value: 'sourceType1',
-                },
-                rowId: { value: 58 },
-                Name: { value: 'Source-2' },
-            },
-            '2': {
-                lsid: { value: 'urn:lsid:labkey.com:Data.Folder-8:3d55fee0-d81c-1038-b2c8-93ec7daaff14' },
-                SourceType: {
-                    value: 'sourceType2',
-                },
-                rowId: { value: 65 },
-                Name: { value: 'Source-1' },
-            },
-        };
-        expect(getDisambiguatedSelectInputOptions(rows, 'lsid', 'Name', 'SourceType')).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining(sourceOptions[0]),
-                expect.objectContaining(sourceOptions[1]),
-                expect.objectContaining(sourceOptions[2]),
-            ])
-        );
     });
 });
 
@@ -1410,15 +1322,15 @@ describe('getValueFromRow', () => {
     });
 
     test('returns value from array', () => {
-        let row = { Name: ['test1', 'test2'] };
-        expect(getValueFromRow(row, 'Name')).toEqual(undefined);
-        expect(getValueFromRow(row, 'name')).toEqual(undefined);
-        expect(getValueFromRow(row, 'bogus')).toEqual(undefined);
+        const flatRow = { Name: ['test1', 'test2'] };
+        expect(getValueFromRow(flatRow, 'Name')).toEqual(undefined);
+        expect(getValueFromRow(flatRow, 'name')).toEqual(undefined);
+        expect(getValueFromRow(flatRow, 'bogus')).toEqual(undefined);
 
-        row = { Name: [{ value: 'test1' }, { value: 'test2' }] };
-        expect(getValueFromRow(row, 'Name')).toEqual('test1');
-        expect(getValueFromRow(row, 'name')).toEqual('test1');
-        expect(getValueFromRow(row, 'bogus')).toEqual(undefined);
+        const nestedRow = { Name: [{ value: 'test1' }, { value: 'test2' }] };
+        expect(getValueFromRow(nestedRow, 'Name')).toEqual('test1');
+        expect(getValueFromRow(nestedRow, 'name')).toEqual('test1');
+        expect(getValueFromRow(nestedRow, 'bogus')).toEqual(undefined);
     });
 });
 
