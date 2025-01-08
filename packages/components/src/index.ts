@@ -41,6 +41,7 @@ import { SCHEMAS } from './internal/schemas';
 import { isLoading, LoadingState } from './public/LoadingState';
 import { ExtendedMap } from './public/ExtendedMap';
 import { useContainerUser } from './internal/components/container/actions';
+import { request } from './internal/request';
 
 import {
     ServerContextConsumer,
@@ -1663,6 +1664,7 @@ export {
     encodePart,
     decodePart,
     DATE_FORMATS_TOPIC,
+    request,
     useRequestHandler,
     // devTools functions
     applyDevTools,
@@ -2013,4 +2015,6 @@ export type { AppContextTestProviderProps } from './internal/test/testHelpers';
 export type { DisableableInputProps } from './internal/components/forms/input/DisableableInput';
 export type { ContainerFormats, DateTimeSettingProp } from './internal/util/Date';
 export type { ImportTemplate } from './public/QueryInfo';
+export type { RequestHandler, RequestOptions } from './internal/request';
+export type { UseRequestHandler } from './internal/util/RequestHandler';
 export type { UseTimeout } from './internal/hooks';

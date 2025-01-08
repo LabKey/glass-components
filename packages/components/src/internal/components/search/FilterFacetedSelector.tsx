@@ -13,6 +13,8 @@ import { useRequestHandler } from '../../util/RequestHandler';
 
 import { FolderColumnRenderer } from '../../renderers/FolderColumnRenderer';
 
+import { useTimeout } from '../../hooks';
+
 import { ALL_VALUE_DISPLAY, EMPTY_VALUE_DISPLAY, getCheckedFilterValues, getUpdatedChooseValuesFilter } from './utils';
 
 const MAX_DISTINCT_FILTER_OPTIONS = 250;
@@ -45,7 +47,6 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
         showSearchLength = 20,
     } = props;
 
-    const timerRef = useRef(undefined);
     const [fieldDistinctValues, setFieldDistinctValues] = useState<string[]>(undefined);
     const [searchDistinctValues, setSearchDistinctValues] = useState<string[]>(undefined);
     const [error, setError] = useState<string>(undefined);
@@ -53,13 +54,8 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
     const [allShown, setAllShown] = useState<boolean>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
     const [isFolderField, setIsFolderField] = useState<boolean>(false);
-
+    const timer = useTimeout();
     const { requestHandler, resetRequestHandler } = useRequestHandler();
-
-    const resetTimeout = useCallback(() => {
-        clearTimeout(timerRef.current);
-        timerRef.current = undefined;
-    }, []);
 
     useEffect(() => {
         setDistinctValues(true);
@@ -72,7 +68,8 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
         ) {
             setIsFolderField(true);
         }
-    }, [fieldKey]); // on fieldKey change, reload selection values
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- only on fieldKey change, reload selection values
+    }, [fieldKey]);
 
     const setDistinctValues = useCallback(
         async (checkForAll: boolean, searchStr?: string) => {
@@ -80,7 +77,7 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
             try {
                 setLoading(true);
                 setError(undefined);
-                resetTimeout();
+                timer.clear();
 
                 const filterArray = searchStr
                     ? [Filter.create(fieldKey, searchStr, Filter.Types.CONTAINS)].concat(
@@ -142,25 +139,21 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
                 }
             } finally {
                 if (!aborted) {
-                    resetTimeout();
+                    timer.clear();
                     setLoading(false);
                 }
             }
         },
-        [api.query, canBeBlank, fieldKey, requestHandler, resetRequestHandler, resetTimeout, selectDistinctOptions]
+        [api.query, canBeBlank, fieldKey, requestHandler, resetRequestHandler, selectDistinctOptions, timer]
     );
 
     const setDistinctValuesForSearch = useCallback(
-        async (searchStr?: string) => {
-            if (timerRef.current !== undefined) {
-                resetTimeout();
-            }
-
-            timerRef.current = setTimeout(async () => {
-                setDistinctValues(false, searchStr);
+        (input?: string) => {
+            timer.set(() => {
+                setDistinctValues(false, input);
             }, 500);
         },
-        [resetTimeout, setDistinctValues]
+        [setDistinctValues, timer]
     );
 
     const checkedValues = useMemo(() => {
@@ -284,7 +277,7 @@ export const FilterFacetedSelector: FC<Props> = memo(props => {
                         <div className="col-xs-6">
                             <div className="filter-faceted__tags-title">Selected</div>
                             <ul className="nav nav-stacked labkey-wizard-pills filter-faceted__tags-div">
-                                {taggedValues?.map((value, index) => {
+                                {taggedValues.map((value, index) => {
                                     let displayValue = value;
 
                                     if (value === null || value === undefined) displayValue = '[blank]';

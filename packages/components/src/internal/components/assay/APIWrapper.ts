@@ -43,14 +43,12 @@ export class AssayServerAPIWrapper implements AssayAPIWrapper {
         columnNames: string[],
         containerPath: string
     ): Promise<FilterCriteriaColumns> => {
-        const resp = await request<FilterCriteriaColumns>(
-            {
-                url: ActionURL.buildURL('assay', 'filterCriteriaColumns.api', containerPath),
-                method: 'POST',
-                jsonData: { protocolId, columnNames },
-            },
-            'Problem fetching filter criteria columns'
-        );
+        const resp = await request<FilterCriteriaColumns>({
+            url: ActionURL.buildURL('assay', 'filterCriteriaColumns.api', containerPath),
+            method: 'POST',
+            jsonData: { protocolId, columnNames },
+            errorLogMsg: 'Problem fetching filter criteria columns',
+        });
         return Object.keys(resp).reduce<FilterCriteriaColumns>((result, key) => {
             result[key] = resp[key].map(rawField => DomainField.create(rawField));
             return result;
