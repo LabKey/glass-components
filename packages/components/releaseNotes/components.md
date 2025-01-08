@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.??.?
+*Released*: ? January 2025
+- Remove getDisambiguatedSelectInputOptions
+    - It is no longer used
+
 ### version 6.13.0
 *Released*: 16 January 2025
 - Add `OptionComponent` prop to `QuerySelect` in replacement of the `optionRenderer` prop which furnishes more useful props to the option rendering component.
