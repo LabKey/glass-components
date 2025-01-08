@@ -41,7 +41,7 @@ export class InferDomainResponse extends Record({
             data,
             fields,
             reservedFields,
-            commentLineCount: rawModel.commentLineCount
+            commentLineCount: rawModel.commentLineCount,
         });
     }
 }
