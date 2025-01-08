@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.11.2
+*Released*: 8 January 2025
+- Merge from release25.1-SNAPSHOT to develop
+    - includes changes from 6.10.1 #1678
+
 ### version 6.11.1
 *Released*: 3 January 2025
 - Issue 49044: Add mega-menu back to Admin pages
@@ -8,6 +13,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version 6.11.0
 *Released*: 3 January 2025
 - Issue 51879: App grid column header click area above column title should open the menu
+
+### version 6.10.1
+*Released*: 3 January 2025
+- Fix cross folder import templates
 
 ### version 6.10.0
 *Released*: 30 December 2024
