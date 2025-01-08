@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.??.?
+*Released*: ? January 2025
+- Remove getDisambiguatedSelectInputOptions
+    - It is no longer used
+
 ### version 6.11.5
 *Released*: 10 January 2025
 - Issue 51824: TSV/CSV file import ignore lines that start with #
