@@ -3,7 +3,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 
 ### version 6.X
 *Released*: X January 2025
-- Issue 51824: TSV/CSV file import ignore lines that starts with #
+- Issue 51824: TSV/CSV file import ignore lines that start with #
 - Issue 51918: : Sample Manager: default import template downloaded from samples types listing grids doesn't include import alias column
 
 ### version 6.11.2

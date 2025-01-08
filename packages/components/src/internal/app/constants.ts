@@ -138,8 +138,8 @@ export enum ProductFeature {
     Workflow = 'Workflow',
 }
 
-const LKB_SAMPLES_EXCLUDED_EXPORT_COLUMNS = ['flag', 'Ancestors', 'RawAmount', 'RawUnits']; // StorageStatus as well?
-const SAMPLES_EXCLUDED_EXPORT_COLUMNS = ['flag', 'alias', 'StorageStatus', 'Ancestors', 'RawAmount', 'RawUnits'];
+const LKB_SAMPLES_EXCLUDED_EXPORT_COLUMNS = ['flag', 'Ancestors', 'RawAmount', 'RawUnits', 'StorageStatus'];
+const SAMPLES_EXCLUDED_EXPORT_COLUMNS = [...LKB_SAMPLES_EXCLUDED_EXPORT_COLUMNS, 'alias'];
 export const BIOLOGICS_APP_PROPERTIES: AppProperties = {
     productId: BIOLOGICS_PRODUCT_ID,
     name: BIOLOGICS_PRODUCT_NAME,
@@ -152,7 +152,7 @@ export const BIOLOGICS_APP_PROPERTIES: AppProperties = {
     dataClassUrlPart: REGISTRY_KEY,
     releaseNoteLink: 'bioReleaseNotes',
     baseProductHelpLinkPrefix: BASE_APP_HELP_LINK,
-    excludedSamplesExportColumns: LKB_SAMPLES_EXCLUDED_EXPORT_COLUMNS,
+    excludedSamplesTemplateColumns: LKB_SAMPLES_EXCLUDED_EXPORT_COLUMNS,
 };
 
 export const LIMS_APP_PROPERTIES: AppProperties = {
@@ -166,7 +166,7 @@ export const LIMS_APP_PROPERTIES: AppProperties = {
     searchPlaceholder: SAMPLE_MANAGER_SEARCH_PLACEHOLDER,
     dataClassUrlPart: SOURCES_KEY,
     releaseNoteLink: 'releaseNotes',
-    excludedSamplesExportColumns: SAMPLES_EXCLUDED_EXPORT_COLUMNS,
+    excludedSamplesTemplateColumns: SAMPLES_EXCLUDED_EXPORT_COLUMNS,
 };
 
 export const SAMPLE_MANAGER_APP_PROPERTIES: AppProperties = {
@@ -180,7 +180,7 @@ export const SAMPLE_MANAGER_APP_PROPERTIES: AppProperties = {
     searchPlaceholder: SAMPLE_MANAGER_SEARCH_PLACEHOLDER,
     dataClassUrlPart: SOURCES_KEY,
     releaseNoteLink: 'releaseNotes',
-    excludedSamplesExportColumns: SAMPLES_EXCLUDED_EXPORT_COLUMNS,
+    excludedSamplesTemplateColumns: SAMPLES_EXCLUDED_EXPORT_COLUMNS,
 };
 
 export const FREEZER_MANAGER_APP_PROPERTIES: AppProperties = {

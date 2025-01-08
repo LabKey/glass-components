@@ -41,7 +41,7 @@ export interface AppProperties {
     baseProductHelpLinkPrefix?: string;
     controllerName: string;
     dataClassUrlPart?: string;
-    excludedSamplesExportColumns?: string[];
+    excludedSamplesTemplateColumns?: string[];
     logoBadgeColorImageUrl: string;
     logoBadgeImageUrl: string;
     logoWithTextImageUrl: string;
