@@ -49,6 +49,7 @@ export interface AppProperties {
     productId: string;
     releaseNoteLink?: string;
     searchPlaceholder?: string;
+    excludedSamplesExportColumns?: string[];
 }
 
 // Note: this should stay in sync with the eln/src/ReferencingNotebooks.tsx props

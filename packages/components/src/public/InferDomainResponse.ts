@@ -11,10 +11,12 @@ export class InferDomainResponse extends Record({
     data: List<any>(),
     fields: List<QueryColumn>(),
     reservedFields: List<QueryColumn>(),
+    commentLineCount: undefined,
 }) {
     declare data: List<any>;
     declare fields: List<QueryColumn>;
     declare reservedFields: List<QueryColumn>;
+    declare commentLineCount?: number;
 
     static create(rawModel): InferDomainResponse {
         let data = List<any>();
@@ -39,6 +41,7 @@ export class InferDomainResponse extends Record({
             data,
             fields,
             reservedFields,
+            commentLineCount: rawModel.commentLineCount
         });
     }
 }
@@ -51,6 +54,7 @@ export function inferDomainFromFile(
     return new Promise((resolve, reject) => {
         const form = new FormData();
         form.append('file', file);
+        form.append('checkCommentLineCount', 'true');
         form.append('numLinesToInclude', numLinesToInclude ? (numLinesToInclude + 1).toString() : undefined);
         if (domainKindName) {
             form.append('domainKindName', domainKindName);
