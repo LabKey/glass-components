@@ -18,7 +18,7 @@ import classNames from 'classnames';
 import { generateId } from './util/utils';
 import { cancelEvent } from './events';
 
-export type BSStyle = 'success' | 'danger' | 'default' | 'primary';
+export type BSStyle = 'success' | 'danger' | 'default' | 'primary' | 'info';
 const DROPDOWN_MENU_CLASS = 'dropdown-menu';
 
 /**

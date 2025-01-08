@@ -23,6 +23,7 @@ export const TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT = {
             ProductFeature.ApiKeys,
             ProductFeature.CalculatedFields,
             ProductFeature.DataChangeCommentRequirement,
+            ProductFeature.CustomImportTemplates,
         ],
     },
 };
@@ -87,6 +88,7 @@ export const TEST_BIO_LIMS_STARTER_MODULE_CONTEXT = {
             ProductFeature.ApiKeys,
             ProductFeature.CalculatedFields,
             ProductFeature.DataChangeCommentRequirement,
+            ProductFeature.CustomImportTemplates,
         ],
     },
     inventory: {
@@ -113,6 +115,7 @@ export const TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT = {
             ProductFeature.CalculatedFields,
             ProductFeature.DataChangeCommentRequirement,
             ProductFeature.Media,
+            ProductFeature.CustomImportTemplates,
         ],
     },
     inventory: {

@@ -93,6 +93,13 @@ describe('getColumnFieldKeys', () => {
 describe('QueryInfo', () => {
     const queryInfo = QueryInfo.fromJsonForTests(sampleSetQueryInfo);
 
+    describe('importTemplate', () => {
+        test('getCustomTemplates', () => {
+            expect(queryInfo.importTemplates).toHaveLength(1);
+            expect(queryInfo.getCustomTemplates()).toHaveLength(0);
+        });
+    });
+
     describe('getUpdateColumns', () => {
         test('without readOnly columns', () => {
             const columns = queryInfo.getUpdateColumns();

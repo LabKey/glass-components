@@ -40,6 +40,7 @@ import { UserDetailsRenderer } from '../../../renderers/UserDetailsRenderer';
 import { ExpirationDateColumnRenderer } from '../../../renderers/ExpirationDateColumnRenderer';
 import { getContainerFilterForLookups } from '../../../query/api';
 import { FolderColumnRenderer } from '../../../renderers/FolderColumnRenderer';
+import { FILELINK_RANGE_URI } from '../../domainproperties/constants';
 
 export type Renderer = (data: any, row?: any) => ReactNode;
 
@@ -456,7 +457,7 @@ export function resolveDetailRenderer(column: QueryColumn): Renderer {
                 renderer = d => <LabelColorRenderer data={d} />;
                 break;
             case 'filecolumnrenderer':
-                renderer = d => <FileColumnRenderer data={d} col={column} />;
+                renderer = d => <FileColumnRenderer data={d} isFileLink={column.rangeURI === FILELINK_RANGE_URI} />;
                 break;
             case 'foldercolumnrenderer':
                 renderer = d => <FolderColumnRenderer data={d} />;

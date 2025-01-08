@@ -228,6 +228,7 @@ import {
     selectDistinctRows,
     selectRowsDeprecated,
     updateRows,
+    ensureAllFieldsInAllRows,
 } from './internal/query/api';
 import { processSchemas } from './internal/query/utils';
 import {
@@ -745,6 +746,7 @@ import {
     isSharedContainer,
     isSourceTypeEnabled,
     isWorkflowEnabled,
+    isCustomImportTemplatesEnabled,
     limsIsPrimaryApp,
     setFolderDataExclusion,
     setProductFolders,
@@ -908,6 +910,7 @@ import { Tab, Tabs } from './internal/Tabs';
 import { CheckboxLK } from './internal/Checkbox';
 import { ArchivedFolderTag } from './internal/components/folder/ArchivedFolderTag';
 import { FilterCriteriaRenderer } from './internal/FilterCriteriaRenderer';
+import { getQueryTestAPIWrapper } from './internal/query/APIWrapper';
 
 // See Immer docs for why we do this: https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
 enableMapSet();
@@ -940,6 +943,7 @@ const App = {
     isNonstandardAssayEnabled,
     isRegistryEnabled,
     isSourceTypeEnabled,
+    isCustomImportTemplatesEnabled,
     isMediaEnabled,
     isWorkflowEnabled,
     isELNEnabled,
@@ -970,6 +974,7 @@ const App = {
     getFolderTestAPIWrapper,
     getLabelsTestAPIWrapper,
     getSecurityTestAPIWrapper,
+    getQueryTestAPIWrapper,
     hasPremiumModule,
     hasProductFolders,
     hasModule,
@@ -1152,6 +1157,7 @@ export {
     getQueryDetails,
     invalidateQueryDetailsCache,
     registerFilterType,
+    ensureAllFieldsInAllRows,
     BOX_SAMPLES_FILTER,
     LOCATION_SAMPLES_FILTER,
     COLUMN_IN_FILTER_TYPE,
@@ -2002,3 +2008,4 @@ export type { InputRendererComponent } from './internal/components/forms/input/I
 export type { AppContextTestProviderProps } from './internal/test/testHelpers';
 export type { DisableableInputProps } from './internal/components/forms/input/DisableableInput';
 export type { ContainerFormats, DateTimeSettingProp } from './internal/util/Date';
+export type { ImportTemplate } from './public/QueryInfo';

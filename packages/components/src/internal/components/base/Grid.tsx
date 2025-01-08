@@ -141,7 +141,8 @@ export class GridHeader extends PureComponent<GridHeaderProps, State> {
         // Issue 48610: app grid column header <th> element to trigger click on child <div>
         const childEl = e.target.getElementsByClassName(GRID_HEADER_CELL_BODY);
         if (childEl?.length === 1) {
-            e.target.getElementsByClassName(GRID_HEADER_CELL_BODY)[0].click();
+            childEl[0].click();
+            e.stopPropagation(); // Issue 51879
         }
     };
 
@@ -157,63 +158,65 @@ export class GridHeader extends PureComponent<GridHeaderProps, State> {
         return (
             <thead>
                 <tr>
-                    {columns.map((column, i) => {
-                        const { headerCls, index, fixedWidth, raw, title, width, hideTooltip } = column;
-                        const draggable = onColumnDrop !== undefined;
+                    {columns
+                        .map((column, i) => {
+                            const { headerCls, index, fixedWidth, raw, title, width, hideTooltip } = column;
+                            const draggable = onColumnDrop !== undefined;
 
-                        let style: CSSProperties;
-                        if (fixedWidth) {
-                            style = {
-                                width: `${fixedWidth}px`,
-                            };
-                        }
+                            let style: CSSProperties;
+                            if (fixedWidth) {
+                                style = {
+                                    width: `${fixedWidth}px`,
+                                };
+                            }
 
-                        let colMinWidth = width;
-                        if (colMinWidth === undefined) {
-                            // the additional 45px is to account for the grid column header icons for sort/filter and the dropdown toggle
-                            colMinWidth = calcWidths && title ? Math.max(45 + title.length * 8, 150) : undefined;
-                        }
-                        if (!fixedWidth && colMinWidth !== undefined) {
-                            if (!style) style = {};
-                            style.minWidth = `${colMinWidth}px`;
-                        }
+                            let colMinWidth = width;
+                            if (colMinWidth === undefined) {
+                                // the additional 45px is to account for the grid column header icons for sort/filter and the dropdown toggle
+                                colMinWidth = calcWidths && title ? Math.max(45 + title.length * 8, 150) : undefined;
+                            }
+                            if (!fixedWidth && colMinWidth !== undefined) {
+                                if (!style) style = {};
+                                style.minWidth = `${colMinWidth}px`;
+                            }
 
-                        if (column.showHeader) {
-                            const className = classNames(headerCls, {
-                                'grid-header-cell': headerCls === undefined,
-                                'phi-protected': raw?.phiProtected === true,
-                                'grid-header-draggable': draggable && index !== GRID_SELECTION_INDEX,
-                                'grid-header-drag-over': dragTarget === index,
-                            });
-                            const description = getColumnHoverText(raw);
+                            if (column.showHeader) {
+                                const className = classNames(headerCls, {
+                                    'grid-header-cell': headerCls === undefined,
+                                    'phi-protected': raw?.phiProtected === true,
+                                    'grid-header-draggable': draggable && index !== GRID_SELECTION_INDEX,
+                                    'grid-header-drag-over': dragTarget === index,
+                                });
+                                const description = getColumnHoverText(raw);
 
-                            return (
-                                <th
-                                    id={index}
-                                    key={index}
-                                    className={className}
-                                    style={style}
-                                    title={hideTooltip ? undefined : description}
-                                    draggable={draggable}
-                                    onDragStart={this.handleDragStart}
-                                    onDragOver={this.handleDragOver}
-                                    onDrop={this.handleDrop}
-                                    onDragEnter={this.handleDragEnter}
-                                    onDragEnd={this.handleDragEnd}
-                                    onClick={this.handleHeaderClick}
-                                >
-                                    {headerCell ? headerCell(column, i, columns.size) : title}
-                                    {/* headerCell will render the helpTip, so only render here if not using headerCell() */}
-                                    {!headerCell && column.helpTipRenderer && (
-                                        <LabelHelpTip title={title} popoverClassName="label-help-arrow-top">
-                                            <HelpTipRenderer type={column.helpTipRenderer} />
-                                        </LabelHelpTip>
-                                    )}
-                                </th>
-                            );
-                        }
-                        return <th key={index} style={{ minWidth: style?.minWidth }} />;
-                    }, this).toArray()}
+                                return (
+                                    <th
+                                        id={index}
+                                        key={index}
+                                        className={className}
+                                        style={style}
+                                        title={hideTooltip ? undefined : description}
+                                        draggable={draggable}
+                                        onDragStart={this.handleDragStart}
+                                        onDragOver={this.handleDragOver}
+                                        onDrop={this.handleDrop}
+                                        onDragEnter={this.handleDragEnter}
+                                        onDragEnd={this.handleDragEnd}
+                                        onClick={this.handleHeaderClick}
+                                    >
+                                        {headerCell ? headerCell(column, i, columns.size) : title}
+                                        {/* headerCell will render the helpTip, so only render here if not using headerCell() */}
+                                        {!headerCell && column.helpTipRenderer && (
+                                            <LabelHelpTip title={title} popoverClassName="label-help-arrow-top">
+                                                <HelpTipRenderer type={column.helpTipRenderer} />
+                                            </LabelHelpTip>
+                                        )}
+                                    </th>
+                                );
+                            }
+                            return <th key={index} style={{ minWidth: style?.minWidth }} />;
+                        }, this)
+                        .toArray()}
                 </tr>
             </thead>
         );
@@ -226,14 +229,16 @@ interface GridMessagesProps {
 
 const GridMessages: FC<GridMessagesProps> = memo(({ messages }) => (
     <div className="grid-messages">
-        {messages.map((message: Map<string, string>, i) => {
-            return (
-                // eslint-disable-next-line react/no-array-index-key
-                <div className={classNames('grid-message', message.get('type'))} key={i}>
-                    {message.get('content')}
-                </div>
-            );
-        }).toArray()}
+        {messages
+            .map((message: Map<string, string>, i) => {
+                return (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <div className={classNames('grid-message', message.get('type'))} key={i}>
+                        {message.get('content')}
+                    </div>
+                );
+            })
+            .toArray()}
     </div>
 ));
 
@@ -255,15 +260,19 @@ const GridRow: FC<GridRowProps> = memo(({ columns, highlight, row, rowIdx }) => 
                 'grid-row': rowIdx % 2 === 1,
             })}
         >
-            {columns.map((column: GridColumn, c: number) =>
-                column.tableCell ? (
-                    <Fragment key={column.index}>{column.cell(row.get(column.index), row, column, rowIdx, c)}</Fragment>
-                ) : (
-                    <td key={column.index} style={{ textAlign: column.align || 'left' } as any}>
-                        {column.cell(row.get(column.index), row, column, rowIdx, c)}
-                    </td>
+            {columns
+                .map((column: GridColumn, c: number) =>
+                    column.tableCell ? (
+                        <Fragment key={column.index}>
+                            {column.cell(row.get(column.index), row, column, rowIdx, c)}
+                        </Fragment>
+                    ) : (
+                        <td key={column.index} style={{ textAlign: column.align || 'left' } as any}>
+                            {column.cell(row.get(column.index), row, column, rowIdx, c)}
+                        </td>
+                    )
                 )
-            ).toArray()}
+                .toArray()}
         </tr>
     );
 });
@@ -298,11 +307,13 @@ const GridBody: FC<GridBodyProps> = memo(props => {
 
     return (
         <tbody>
-            {data.map((row, ind) => {
-                const highlight = highlightRowIndexes && highlightRowIndexes.contains(ind);
-                const key = rowKey ? row.get(rowKey) : ind;
-                return <GridRow columns={columns} highlight={highlight} key={key} row={row} rowIdx={ind} />;
-            }).toArray()}
+            {data
+                .map((row, ind) => {
+                    const highlight = highlightRowIndexes && highlightRowIndexes.contains(ind);
+                    const key = rowKey ? row.get(rowKey) : ind;
+                    return <GridRow columns={columns} highlight={highlight} key={key} row={row} rowIdx={ind} />;
+                })
+                .toArray()}
 
             {data.isEmpty() && (
                 <EmptyGridRow

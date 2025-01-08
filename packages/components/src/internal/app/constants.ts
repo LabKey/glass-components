@@ -126,6 +126,7 @@ export enum ProductFeature {
     BiologicsRegistry = 'BiologicsRegistry',
     CalculatedFields = 'CalculatedFields',
     ChartBuilding = 'ChartBuilding',
+    CustomImportTemplates = 'CustomImportTemplates',
     DataChangeCommentRequirement = 'DataChangeCommentRequirement',
     ELN = 'ELN',
     Folders = 'Folders',
