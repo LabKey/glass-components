@@ -5,6 +5,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD January 2025
 - Issue 51679: App grid header click to find parent TH element if hovering over child element
 
+### version 6.11.3
+*Released*: 9 January 2025
+- Support 'isActive' prop for NavItem and ITab
+
 ### version 6.11.2
 *Released*: 8 January 2025
 - Merge from release25.1-SNAPSHOT to develop
