@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD January 2025
+- Issue 51679: App grid header click to find parent TH element if hovering over child element
+
 ### version 6.11.2
 *Released*: 8 January 2025
 - Merge from release25.1-SNAPSHOT to develop
