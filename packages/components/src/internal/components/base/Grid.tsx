@@ -125,8 +125,17 @@ export class GridHeader extends PureComponent<GridHeaderProps, State> {
         this.setState({ dragTarget: undefined });
     };
     handleDragEnter = (e): void => {
-        if (e.target?.tagName.toLowerCase() === 'th' && e.target.id !== GRID_SELECTION_INDEX) {
-            this.setState({ dragTarget: e.target.id });
+        // Issue 51679: find parent TH element if hovering over child element
+        let target = e.target;
+        if (target?.tagName.toLowerCase() === 'div' && target.classNames?.indexOf('grid-header-cell__body') > -1) {
+            target = target.parentElement;
+        } else if (target?.tagName.toLowerCase() === 'span') {
+            target = target.parentElement.parentElement;
+        }
+
+        const targetId = target?.tagName.toLowerCase() === 'th' ? target.id : undefined;
+        if (targetId !== undefined && targetId !== '' && targetId !== GRID_SELECTION_INDEX) {
+            this.setState({ dragTarget: targetId });
         }
     };
     handleDrop = (e): void => {
