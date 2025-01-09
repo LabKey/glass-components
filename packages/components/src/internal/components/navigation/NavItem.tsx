@@ -19,11 +19,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { AppURL } from '../../url/AppURL';
 
 interface NavItemProps extends PropsWithChildren {
+    isActive?: boolean;
     onActive?: (activeEl: HTMLElement) => void;
     to?: string | AppURL;
 }
 
-export const NavItem: FC<NavItemProps> = memo(({ children, onActive, to }) => {
+export const NavItem: FC<NavItemProps> = memo(({ children, onActive, to, isActive }) => {
     const location = useLocation();
     const href = to instanceof AppURL ? to.toString() : to;
     const itemRef = useRef<HTMLLIElement>();
@@ -33,24 +34,24 @@ export const NavItem: FC<NavItemProps> = memo(({ children, onActive, to }) => {
         if (to && location) {
             const toString = to.toString();
             const paramIndex = toString.indexOf('?');
-            const isActive =
-                location.pathname.toLowerCase() ===
-                toString.substring(0, paramIndex < 0 ? toString.length : paramIndex).toLowerCase();
-            setActive(isActive);
+            const _isActive =
+                isActive !== undefined
+                    ? isActive
+                    : location.pathname.toLowerCase() ===
+                      toString.substring(0, paramIndex < 0 ? toString.length : paramIndex).toLowerCase();
+            setActive(_isActive);
 
-            if (isActive) {
+            if (_isActive) {
                 onActive?.(itemRef.current);
             }
         } else {
             setActive(false);
         }
-    }, [location, to]);
+    }, [isActive, location, to]);
 
     return (
         <li className={active ? 'active' : null} ref={itemRef}>
-            <Link to={href}>
-                {children}
-            </Link>
+            <Link to={href}>{children}</Link>
         </li>
     );
 });

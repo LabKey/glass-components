@@ -1,6 +1,7 @@
 import { AppURL } from '../../url/AppURL';
 
 export interface ITab {
+    isActive?: boolean;
     text: string;
     url?: string | AppURL;
 }
