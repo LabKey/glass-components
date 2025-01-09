@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.11.3
+*Released*: 9 January 2025
 - Support 'isActive' prop for NavItem and ITab
 
 ### version 6.11.2
