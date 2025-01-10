@@ -1,10 +1,18 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 6.X
-*Released*: X January 2025
+### version 6.11.5
+*Released*: 10 January 2025
 - Issue 51824: TSV/CSV file import ignore lines that start with #
 - Issue 51918: : Sample Manager: default import template downloaded from samples types listing grids doesn't include import alias column
+
+### version 6.11.4
+*Released*: 9 January 2025
+- Issue 51679: App grid header click to find parent TH element if hovering over child element
+
+### version 6.11.3
+*Released*: 9 January 2025
+- Support 'isActive' prop for NavItem and ITab
 
 ### version 6.11.2
 *Released*: 8 January 2025

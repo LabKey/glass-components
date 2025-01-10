@@ -95,10 +95,10 @@ const SubNavImpl: FC<Props> = ({ noun, tabs }) => {
                     <ul className="nav navbar-nav">
                         {tabs
                             .filter(tab => !!tab.text)
-                            .map(({ text, url }, i) => (
+                            .map(({ text, url, isActive }, i) => (
                                 // neither "text" nor "url" are consistently unique
                                 // eslint-disable-next-line react/no-array-index-key
-                                <NavItem key={i} to={url} onActive={onItemActivate}>
+                                <NavItem key={i} to={url} onActive={onItemActivate} isActive={isActive}>
                                     {text}
                                 </NavItem>
                             ))}
