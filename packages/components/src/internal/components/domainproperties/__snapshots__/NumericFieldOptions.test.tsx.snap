@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NumericFieldOptions Numeric data type 1`] = `
+<div>
+  <div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-field-section-heading"
+        >
+          Numeric Field Options
+        </div>
+      </div>
+    </div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-3"
+      >
+        <div
+          class="domain-field-label"
+        >
+          Format for 
+          <span
+            class="domain-no-wrap"
+          >
+            Numbers
+            <div
+              class="overlay-trigger"
+            >
+              <span
+                class="label-help-target"
+              >
+                <span
+                  class="label-help-icon fa fa-question-circle"
+                />
+              </span>
+            </div>
+          </span>
+        </div>
+      </div>
+      <div
+        class="col-xs-2"
+      >
+        <div
+          class="domain-field-label"
+        >
+          Default Scale Type
+        </div>
+      </div>
+    </div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-3"
+      >
+        <input
+          class="form-control"
+          id="domainpropertiesrow-format-1-1"
+          name="domainpropertiesrow-format"
+          type="text"
+          value="0.00"
+        />
+      </div>
+      <div
+        class="col-xs-2"
+      >
+        <select
+          class="form-control"
+          id="domainpropertiesrow-defaultScale-1-1"
+          name="domainpropertiesrow-defaultScale"
+        >
+          <option
+            value="LINEAR"
+          >
+            Linear
+          </option>
+          <option
+            value="LOG"
+          >
+            Log
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+`;
