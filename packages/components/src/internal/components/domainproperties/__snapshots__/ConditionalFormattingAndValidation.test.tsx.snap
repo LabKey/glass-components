@@ -1,0 +1,285 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConditionalFormattingAndValidation Multiple validators or formats, conditional format 1`] = `
+<div>
+  <div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-field-section-heading domain-field-section-hdr"
+        >
+          Conditional Formatting and Validation Options
+        </div>
+      </div>
+    </div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-validation-group"
+        >
+          <div
+            class="domain-field-label domain-no-wrap"
+          >
+            Create Conditional Format 
+            <span
+              class="domain-no-wrap"
+            >
+              Criteria
+              <div
+                class="overlay-trigger"
+              >
+                <span
+                  class="label-help-target"
+                >
+                  <span
+                    class="label-help-icon fa fa-question-circle"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+          <div>
+            <button
+              class="domain-validation-button btn btn-default"
+              id="domainpropertiesrow-conditionalFormat-1-1"
+              name="domainpropertiesrow-conditionalFormat"
+              type="button"
+            >
+              Edit Formats
+            </button>
+            <a
+              class="domain-validator-link"
+            >
+              2 Active formats
+            </a>
+          </div>
+        </div>
+        <div
+          class="domain-validation-group"
+        >
+          <div
+            class="domain-field-label domain-no-wrap"
+          >
+            Create Regular Expression 
+            <span
+              class="domain-no-wrap"
+            >
+              Validator
+              <div
+                class="overlay-trigger"
+              >
+                <span
+                  class="label-help-target"
+                >
+                  <span
+                    class="label-help-icon fa fa-question-circle"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+          <div>
+            <button
+              class="domain-validation-button btn btn-default"
+              id="domainpropertiesrow-regexValidator-1-1"
+              name="domainpropertiesrow-regexValidator"
+              type="button"
+            >
+              Add Regex
+            </button>
+            <span
+              class="domain-text-label"
+            >
+              None Set
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConditionalFormattingAndValidation No validators 1`] = `
+<div>
+  <div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-field-section-heading domain-field-section-hdr"
+        >
+          Conditional Formatting Options
+        </div>
+      </div>
+    </div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-validation-group"
+        >
+          <div
+            class="domain-field-label domain-no-wrap"
+          >
+            Create Conditional Format 
+            <span
+              class="domain-no-wrap"
+            >
+              Criteria
+              <div
+                class="overlay-trigger"
+              >
+                <span
+                  class="label-help-target"
+                >
+                  <span
+                    class="label-help-icon fa fa-question-circle"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+          <div>
+            <button
+              class="domain-validation-button btn btn-default"
+              id="domainpropertiesrow-conditionalFormat-1-1"
+              name="domainpropertiesrow-conditionalFormat"
+              type="button"
+            >
+              Add Format
+            </button>
+            <span
+              class="domain-text-label"
+            >
+              None Set
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConditionalFormattingAndValidation string field 1`] = `
+<div>
+  <div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-field-section-heading domain-field-section-hdr"
+        >
+          Conditional Formatting and Validation Options
+        </div>
+      </div>
+    </div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-validation-group"
+        >
+          <div
+            class="domain-field-label domain-no-wrap"
+          >
+            Create Conditional Format 
+            <span
+              class="domain-no-wrap"
+            >
+              Criteria
+              <div
+                class="overlay-trigger"
+              >
+                <span
+                  class="label-help-target"
+                >
+                  <span
+                    class="label-help-icon fa fa-question-circle"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+          <div>
+            <button
+              class="domain-validation-button btn btn-default"
+              id="domainpropertiesrow-conditionalFormat-1-1"
+              name="domainpropertiesrow-conditionalFormat"
+              type="button"
+            >
+              Add Format
+            </button>
+            <span
+              class="domain-text-label"
+            >
+              None Set
+            </span>
+          </div>
+        </div>
+        <div
+          class="domain-validation-group"
+        >
+          <div
+            class="domain-field-label domain-no-wrap"
+          >
+            Create Regular Expression 
+            <span
+              class="domain-no-wrap"
+            >
+              Validator
+              <div
+                class="overlay-trigger"
+              >
+                <span
+                  class="label-help-target"
+                >
+                  <span
+                    class="label-help-icon fa fa-question-circle"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+          <div>
+            <button
+              class="domain-validation-button btn btn-default"
+              id="domainpropertiesrow-regexValidator-1-1"
+              name="domainpropertiesrow-regexValidator"
+              type="button"
+            >
+              Add Regex
+            </button>
+            <span
+              class="domain-text-label"
+            >
+              None Set
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

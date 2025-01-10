@@ -1,6 +1,7 @@
 import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
 import { Filter } from '@labkey/api';
+
+import { render } from '@testing-library/react';
 
 import { ExtendedMap } from '../public/ExtendedMap';
 
@@ -16,9 +17,7 @@ import { QueryInfo } from '../public/QueryInfo';
 
 import { EditableColumnTitle, HeaderCellDropdown, isFilterColumnNameMatch } from './renderers';
 import { GridColumn } from './components/base/models/GridColumn';
-import { LabelHelpTip } from './components/base/LabelHelpTip';
 import { ViewInfo } from './ViewInfo';
-import { DisableableMenuItem } from './components/samples/DisableableMenuItem';
 
 describe('isFilterColumnNameMatch', () => {
     const filter = Filter.create('Column', 'Value');
@@ -76,50 +75,46 @@ describe('HeaderCellDropdown', () => {
         handleFilter: jest.fn,
     };
 
-    function validate(wrapper: ReactWrapper, gridColHeaderIcons: number, menuItemCount: number): void {
-        expect(wrapper.find('.grid-panel__col-header-icon')).toHaveLength(gridColHeaderIcons);
-        expect(wrapper.find(LabelHelpTip)).toHaveLength(0);
-        expect(wrapper.find('.dropdown-menu')).toHaveLength(menuItemCount > 0 ? 1 : 0);
-        expect(wrapper.find('.grid-panel__menu-toggle .fa-chevron-circle-down')).toHaveLength(
+    function validate(gridColHeaderIcons: number, menuItemCount: number): void {
+        expect(document.querySelectorAll('.grid-panel__col-header-icon')).toHaveLength(gridColHeaderIcons);
+        expect(document.querySelectorAll('.label-help-target')).toHaveLength(0);
+        expect(document.querySelectorAll('.dropdown-menu')).toHaveLength(menuItemCount > 0 ? 1 : 0);
+        expect(document.querySelectorAll('.grid-panel__menu-toggle .fa-chevron-circle-down')).toHaveLength(
             menuItemCount > 0 ? 1 : 0
         );
-        expect(wrapper.find('MenuItem')).toHaveLength(menuItemCount);
+        expect(document.querySelectorAll('.lk-menu-item')).toHaveLength(menuItemCount);
     }
 
     test('default props', () => {
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} />);
-        validate(wrapper, 0, 5);
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} />);
+        validate(0, 5);
         // 3 with icons, 2 with spacers, and 1 menu separators
-        expect(wrapper.find('.grid-panel__menu-icon')).toHaveLength(3);
-        expect(wrapper.find('.grid-panel__menu-icon-spacer')).toHaveLength(2);
+        expect(document.querySelectorAll('.grid-panel__menu-icon')).toHaveLength(3);
+        expect(document.querySelectorAll('.grid-panel__menu-icon-spacer')).toHaveLength(2);
         // the two remove/clear options should be disabled
-        const menuItems = wrapper.find('MenuItem');
-        const removeFilterItem = menuItems.at(1);
-        expect(removeFilterItem.text()).toContain('Remove filter');
-        expect(removeFilterItem.prop('disabled')).toBe(true);
-        const clearSortItem = menuItems.at(4);
-        expect(clearSortItem.text()).toContain('Clear sort');
-        expect(clearSortItem.prop('disabled')).toBe(true);
+        const menuItems = document.querySelectorAll('.lk-menu-item');
+        const removeFilterItem = menuItems[1];
+        expect(removeFilterItem.textContent).toContain('Remove filter');
+        expect(removeFilterItem.classList.contains('disabled')).toBe(true);
+        const clearSortItem = menuItems[4];
+        expect(clearSortItem.textContent).toContain('Clear sort');
+        expect(clearSortItem.classList.contains('disabled')).toBe(true);
         // sort asc and sort desc should be enabled
-        const sortAscItem = menuItems.at(2);
-        expect(sortAscItem.text()).toContain('Sort ascending');
-        expect(sortAscItem.prop('disabled')).toBe(false);
-        const sortDescItem = menuItems.at(3);
-        expect(sortDescItem.text()).toContain('Sort descending');
-        expect(sortDescItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        const sortAscItem = menuItems[2];
+        expect(sortAscItem.textContent).toContain('Sort ascending');
+        expect(sortAscItem.classList.contains('disabled')).toBe(false);
+        const sortDescItem = menuItems[3];
+        expect(sortDescItem.textContent).toContain('Sort descending');
+        expect(sortDescItem.classList.contains('disabled')).toBe(false);
     });
 
     test('no col', () => {
-        const wrapper = mount(
-            <HeaderCellDropdown {...DEFAULT_PROPS} column={new GridColumn({ index: 'column', title: 'Column' })} />
-        );
-        expect(wrapper.find('span')).toHaveLength(0);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} column={new GridColumn({ index: 'column', title: 'Column' })} />);
+        expect(document.querySelectorAll('span')).toHaveLength(0);
     });
 
     test('column not sortable or filterable', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -131,12 +126,11 @@ describe('HeaderCellDropdown', () => {
                 }
             />
         );
-        validate(wrapper, 0, 0);
-        wrapper.unmount();
+        validate(0, 0);
     });
 
     test('column not sortable or filterable but customizable', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -150,12 +144,11 @@ describe('HeaderCellDropdown', () => {
                 handleHideColumn={jest.fn}
             />
         );
-        validate(wrapper, 0, 3);
-        wrapper.unmount();
+        validate(0, 3);
     });
 
     test('column not sortable or filterable, can add and hide', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -169,15 +162,13 @@ describe('HeaderCellDropdown', () => {
                 handleHideColumn={jest.fn}
             />
         );
-        validate(wrapper, 0, 3);
-        expect(wrapper.find(DisableableMenuItem)).toHaveLength(1);
-        expect(wrapper.find(DisableableMenuItem).text()).toContain('Hide Column');
-        expect(wrapper.find(DisableableMenuItem).prop('disabled')).toBe(false);
-        wrapper.unmount();
+        validate(0, 3);
+        expect(document.querySelectorAll('.lk-menu-item')[2].textContent).toContain('Hide Column');
+        expect(document.querySelectorAll('.lk-menu-item')[2].classList.contains('disabled')).toBe(false);
     });
 
     test('column not sortable or filterable, can add but not hide', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -191,15 +182,13 @@ describe('HeaderCellDropdown', () => {
                 handleHideColumn={undefined}
             />
         );
-        validate(wrapper, 0, 3);
-        expect(wrapper.find(DisableableMenuItem)).toHaveLength(1);
-        expect(wrapper.find(DisableableMenuItem).text()).toContain('Hide Column');
-        expect(wrapper.find(DisableableMenuItem).prop('operationPermitted')).toBe(undefined);
-        wrapper.unmount();
+        validate(0, 3);
+        expect(document.querySelectorAll('.lk-menu-item')[2].textContent).toContain('Hide Column');
+        expect(document.querySelectorAll('.lk-menu-item')[2].classList.contains('disabled')).toBe(true);
     });
 
     test('column sortable, not filterable', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -211,12 +200,11 @@ describe('HeaderCellDropdown', () => {
                 }
             />
         );
-        validate(wrapper, 0, 3);
-        wrapper.unmount();
+        validate(0, 3);
     });
 
     test('column sortable, not filterable, customizable', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -229,12 +217,11 @@ describe('HeaderCellDropdown', () => {
                 handleHideColumn={jest.fn}
             />
         );
-        validate(wrapper, 0, 5);
-        wrapper.unmount();
+        validate(0, 5);
     });
 
     test('column filterable, not sortable', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -246,12 +233,11 @@ describe('HeaderCellDropdown', () => {
                 }
             />
         );
-        validate(wrapper, 0, 2);
-        wrapper.unmount();
+        validate(0, 2);
     });
 
     test('column filterable, not sortable, but customizable', () => {
-        const wrapper = mount(
+        render(
             <HeaderCellDropdown
                 {...DEFAULT_PROPS}
                 column={
@@ -264,37 +250,32 @@ describe('HeaderCellDropdown', () => {
                 handleHideColumn={jest.fn}
             />
         );
-        validate(wrapper, 0, 4);
-        wrapper.unmount();
+        validate(0, 4);
     });
 
     test('without handleSort and handleFilter', () => {
-        const wrapper = mount(
-            <HeaderCellDropdown {...DEFAULT_PROPS} handleSort={undefined} handleFilter={undefined} />
-        );
-        validate(wrapper, 0, 0);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} handleSort={undefined} handleFilter={undefined} />);
+        validate(0, 0);
     });
 
     test('isSortAsc', () => {
         const model = makeTestQueryModel(new SchemaQuery('schema', 'query')).mutate({
             sorts: [new QuerySort({ fieldKey: 'column', dir: '' })],
         });
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
-        validate(wrapper, 1, 5);
-        expect(wrapper.find('.fa-filter')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-asc')).toHaveLength(2);
-        expect(wrapper.find('.fa-sort-amount-desc')).toHaveLength(1);
-        const sortAscItem = wrapper.find('MenuItem').at(2);
-        expect(sortAscItem.text()).toContain('Sort ascending');
-        expect(sortAscItem.prop('disabled')).toBe(true);
-        const sortDescItem = wrapper.find('MenuItem').at(3);
-        expect(sortDescItem.text()).toContain('Sort descending');
-        expect(sortDescItem.prop('disabled')).toBe(false);
-        const clearSortItem = wrapper.find('MenuItem').at(4);
-        expect(clearSortItem.text()).toContain('Clear sort');
-        expect(clearSortItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
+        validate(1, 5);
+        expect(document.querySelectorAll('.fa-filter')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-asc')).toHaveLength(2);
+        expect(document.querySelectorAll('.fa-sort-amount-desc')).toHaveLength(1);
+        const sortAscItem = document.querySelectorAll('.lk-menu-item')[2];
+        expect(sortAscItem.textContent).toContain('Sort ascending');
+        expect(sortAscItem.classList.contains('disabled')).toBe(true);
+        const sortDescItem = document.querySelectorAll('.lk-menu-item')[3];
+        expect(sortDescItem.textContent).toContain('Sort descending');
+        expect(sortDescItem.classList.contains('disabled')).toBe(false);
+        const clearSortItem = document.querySelectorAll('.lk-menu-item')[4];
+        expect(clearSortItem.textContent).toContain('Clear sort');
+        expect(clearSortItem.classList.contains('disabled')).toBe(false);
     });
 
     test('isSortAsc via view sort', () => {
@@ -307,42 +288,40 @@ describe('HeaderCellDropdown', () => {
         const model = makeTestQueryModel(new SchemaQuery('schema', 'query'), queryInfo).mutate({
             sorts: [],
         });
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
-        validate(wrapper, 1, 5);
-        expect(wrapper.find('.fa-filter')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-asc')).toHaveLength(2);
-        expect(wrapper.find('.fa-sort-amount-desc')).toHaveLength(1);
-        const sortAscItem = wrapper.find('MenuItem').at(2);
-        expect(sortAscItem.text()).toContain('Sort ascending');
-        expect(sortAscItem.prop('disabled')).toBe(true);
-        const sortDescItem = wrapper.find('MenuItem').at(3);
-        expect(sortDescItem.text()).toContain('Sort descending');
-        expect(sortDescItem.prop('disabled')).toBe(false);
-        const clearSortItem = wrapper.find('MenuItem').at(4);
-        expect(clearSortItem.text()).toContain('Clear sort');
-        expect(clearSortItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
+        validate(1, 5);
+        expect(document.querySelectorAll('.fa-filter')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-asc')).toHaveLength(2);
+        expect(document.querySelectorAll('.fa-sort-amount-desc')).toHaveLength(1);
+        const sortAscItem = document.querySelectorAll('.lk-menu-item')[2];
+        expect(sortAscItem.textContent).toContain('Sort ascending');
+        expect(sortAscItem.classList.contains('disabled')).toBe(true);
+        const sortDescItem = document.querySelectorAll('.lk-menu-item')[3];
+        expect(sortDescItem.textContent).toContain('Sort descending');
+        expect(sortDescItem.classList.contains('disabled')).toBe(false);
+        const clearSortItem = document.querySelectorAll('.lk-menu-item')[4];
+        expect(clearSortItem.textContent).toContain('Clear sort');
+        expect(clearSortItem.classList.contains('disabled')).toBe(false);
     });
 
     test('isSortDesc', () => {
         const model = makeTestQueryModel(new SchemaQuery('schema', 'query')).mutate({
             sorts: [new QuerySort({ fieldKey: 'column', dir: '-' })],
         });
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
-        validate(wrapper, 1, 5);
-        expect(wrapper.find('.fa-filter')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-asc')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-desc')).toHaveLength(2);
-        const sortAscItem = wrapper.find('MenuItem').at(2);
-        expect(sortAscItem.text()).toContain('Sort ascending');
-        expect(sortAscItem.prop('disabled')).toBe(false);
-        const sortDescItem = wrapper.find('MenuItem').at(3);
-        expect(sortDescItem.text()).toContain('Sort descending');
-        expect(sortDescItem.prop('disabled')).toBe(true);
-        const clearSortItem = wrapper.find('MenuItem').at(4);
-        expect(clearSortItem.text()).toContain('Clear sort');
-        expect(clearSortItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
+        validate(1, 5);
+        expect(document.querySelectorAll('.fa-filter')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-asc')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-desc')).toHaveLength(2);
+        const sortAscItem = document.querySelectorAll('.lk-menu-item')[2];
+        expect(sortAscItem.textContent).toContain('Sort ascending');
+        expect(sortAscItem.classList.contains('disabled')).toBe(false);
+        const sortDescItem = document.querySelectorAll('.lk-menu-item')[3];
+        expect(sortDescItem.textContent).toContain('Sort descending');
+        expect(sortDescItem.classList.contains('disabled')).toBe(true);
+        const clearSortItem = document.querySelectorAll('.lk-menu-item')[4];
+        expect(clearSortItem.textContent).toContain('Clear sort');
+        expect(clearSortItem.classList.contains('disabled')).toBe(false);
     });
 
     test('isSortDesc via view sort', () => {
@@ -355,36 +334,34 @@ describe('HeaderCellDropdown', () => {
         const model = makeTestQueryModel(new SchemaQuery('schema', 'query'), queryInfo).mutate({
             sorts: [],
         });
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
-        validate(wrapper, 1, 5);
-        expect(wrapper.find('.fa-filter')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-asc')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-desc')).toHaveLength(2);
-        const sortAscItem = wrapper.find('MenuItem').at(2);
-        expect(sortAscItem.text()).toContain('Sort ascending');
-        expect(sortAscItem.prop('disabled')).toBe(false);
-        const sortDescItem = wrapper.find('MenuItem').at(3);
-        expect(sortDescItem.text()).toContain('Sort descending');
-        expect(sortDescItem.prop('disabled')).toBe(true);
-        const clearSortItem = wrapper.find('MenuItem').at(4);
-        expect(clearSortItem.text()).toContain('Clear sort');
-        expect(clearSortItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
+        validate(1, 5);
+        expect(document.querySelectorAll('.fa-filter')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-asc')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-desc')).toHaveLength(2);
+        const sortAscItem = document.querySelectorAll('.lk-menu-item')[2];
+        expect(sortAscItem.textContent).toContain('Sort ascending');
+        expect(sortAscItem.classList.contains('disabled')).toBe(false);
+        const sortDescItem = document.querySelectorAll('.lk-menu-item')[3];
+        expect(sortDescItem.textContent).toContain('Sort descending');
+        expect(sortDescItem.classList.contains('disabled')).toBe(true);
+        const clearSortItem = document.querySelectorAll('.lk-menu-item')[4];
+        expect(clearSortItem.textContent).toContain('Clear sort');
+        expect(clearSortItem.classList.contains('disabled')).toBe(false);
     });
 
     test('one colFilters', () => {
         const model = makeTestQueryModel(new SchemaQuery('schema', 'query')).mutate({
             filterArray: [Filter.create('column', 'value', Filter.Types.EQUALS)],
         });
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
-        validate(wrapper, 1, 5);
-        expect(wrapper.find('.fa-filter')).toHaveLength(2);
-        expect(wrapper.find('.fa-sort-amount-asc')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-desc')).toHaveLength(1);
-        const removeFilterItem = wrapper.find('MenuItem').at(1);
-        expect(removeFilterItem.text()).toBe('Remove filter');
-        expect(removeFilterItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
+        validate(1, 5);
+        expect(document.querySelectorAll('.fa-filter')).toHaveLength(2);
+        expect(document.querySelectorAll('.fa-sort-amount-asc')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-desc')).toHaveLength(1);
+        const removeFilterItem = document.querySelectorAll('.lk-menu-item')[1];
+        expect(removeFilterItem.textContent).toBe('Remove filter');
+        expect(removeFilterItem.classList.contains('disabled')).toBe(false);
     });
 
     test('view filter', () => {
@@ -397,15 +374,14 @@ describe('HeaderCellDropdown', () => {
         const model = makeTestQueryModel(new SchemaQuery('schema', 'query'), queryInfo).mutate({
             filterArray: [],
         });
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
-        validate(wrapper, 1, 5);
-        expect(wrapper.find('.fa-filter')).toHaveLength(2);
-        expect(wrapper.find('.fa-sort-amount-asc')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-desc')).toHaveLength(1);
-        const removeFilterItem = wrapper.find('MenuItem').at(1);
-        expect(removeFilterItem.text()).toBe('Remove filter');
-        expect(removeFilterItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
+        validate(1, 5);
+        expect(document.querySelectorAll('.fa-filter')).toHaveLength(2);
+        expect(document.querySelectorAll('.fa-sort-amount-asc')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-desc')).toHaveLength(1);
+        const removeFilterItem = document.querySelectorAll('.lk-menu-item')[1];
+        expect(removeFilterItem.textContent).toBe('Remove filter');
+        expect(removeFilterItem.classList.contains('disabled')).toBe(false);
     });
 
     test('multiple colFilters, one being a view filter', () => {
@@ -418,15 +394,14 @@ describe('HeaderCellDropdown', () => {
         const model = makeTestQueryModel(new SchemaQuery('schema', 'query'), queryInfo).mutate({
             filterArray: [Filter.create('column', 'value', Filter.Types.EQUALS)],
         });
-        const wrapper = mount(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
-        validate(wrapper, 1, 5);
-        expect(wrapper.find('.fa-filter')).toHaveLength(2);
-        expect(wrapper.find('.fa-sort-amount-asc')).toHaveLength(1);
-        expect(wrapper.find('.fa-sort-amount-desc')).toHaveLength(1);
-        const removeFilterItem = wrapper.find('MenuItem').at(1);
-        expect(removeFilterItem.text()).toBe('Remove filters');
-        expect(removeFilterItem.prop('disabled')).toBe(false);
-        wrapper.unmount();
+        render(<HeaderCellDropdown {...DEFAULT_PROPS} model={model} />);
+        validate(1, 5);
+        expect(document.querySelectorAll('.fa-filter')).toHaveLength(2);
+        expect(document.querySelectorAll('.fa-sort-amount-asc')).toHaveLength(1);
+        expect(document.querySelectorAll('.fa-sort-amount-desc')).toHaveLength(1);
+        const removeFilterItem = document.querySelectorAll('.lk-menu-item')[1];
+        expect(removeFilterItem.textContent).toBe('Remove filters');
+        expect(removeFilterItem.classList.contains('disabled')).toBe(false);
     });
 });
 
@@ -436,40 +411,37 @@ describe('EditableColumnTitle', () => {
             caption: 'Test Column',
             name: 'Testing',
         });
-        const wrapper = mount(<EditableColumnTitle column={column} onChange={jest.fn()} onCancel={jest.fn()} />);
-        expect(wrapper.find('input').exists()).toBe(false);
-        expect(wrapper.text()).toBe(column.caption);
-        wrapper.unmount();
+        render(<EditableColumnTitle column={column} onChange={jest.fn()} onCancel={jest.fn()} />);
+        expect(document.querySelectorAll('input')).toHaveLength(0);
+        expect(document.body.textContent).toBe(column.caption);
     });
 
     test('Not editing, no caption', () => {
-        const wrapper = mount(
+        render(
             <EditableColumnTitle
                 column={new QueryColumn({ name: 'TestName' })}
                 onChange={jest.fn()}
                 onCancel={jest.fn()}
             />
         );
-        expect(wrapper.find('input').exists()).toBe(false);
-        expect(wrapper.text()).toBe('TestName');
-        wrapper.unmount();
+        expect(document.querySelectorAll('input')).toHaveLength(0);
+        expect(document.body.textContent).toBe('TestName');
     });
 
     test('Not editing with nbsp', () => {
-        const wrapper = mount(
+        render(
             <EditableColumnTitle
                 column={new QueryColumn({ name: 'TestName', caption: '&nbsp;' })}
                 onChange={jest.fn()}
                 onCancel={jest.fn()}
             />
         );
-        expect(wrapper.find('input').exists()).toBe(false);
-        expect(wrapper.text()).toBe('');
-        wrapper.unmount();
+        expect(document.querySelectorAll('input')).toHaveLength(0);
+        expect(document.body.textContent).toBe('');
     });
 
     test('Editing with nbsp', () => {
-        const wrapper = mount(
+        render(
             <EditableColumnTitle
                 column={new QueryColumn({ name: 'TestName', caption: '&nbsp;' })}
                 onChange={jest.fn()}
@@ -477,9 +449,8 @@ describe('EditableColumnTitle', () => {
                 editing
             />
         );
-        expect(wrapper.find('input').exists()).toBe(false);
-        expect(wrapper.text()).toBe('');
-        wrapper.unmount();
+        expect(document.querySelectorAll('input')).toHaveLength(0);
+        expect(document.body.textContent).toBe('');
     });
 
     test('Editing', async () => {
@@ -489,12 +460,9 @@ describe('EditableColumnTitle', () => {
         });
         const changeFn = jest.fn();
         const editToggleFn = jest.fn();
-        const wrapper = mount(
-            <EditableColumnTitle column={column} onChange={changeFn} onCancel={editToggleFn} editing />
-        );
-        const inputField = wrapper.find('input');
-        expect(inputField.exists()).toBe(true);
-        expect(inputField.prop('defaultValue')).toBe(column.caption);
-        wrapper.unmount();
+        render(<EditableColumnTitle column={column} onChange={changeFn} onCancel={editToggleFn} editing />);
+        const inputField = document.querySelectorAll('input');
+        expect(inputField).toHaveLength(1);
+        expect(inputField[0].value).toBe(column.caption);
     });
 });

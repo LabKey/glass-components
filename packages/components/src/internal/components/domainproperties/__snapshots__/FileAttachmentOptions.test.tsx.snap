@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FileAttachmentOptions Attachment data type download 1`] = `
+<div>
+  <div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-field-section-heading"
+        >
+          Attachment Behavior
+          <div
+            class="overlay-trigger"
+          >
+            <span
+              class="label-help-target"
+            >
+              <span
+                class="label-help-icon fa fa-question-circle"
+              />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row domain-field-label"
+    >
+      <div
+        class="col-xs-2"
+      >
+        <select
+          class="form-control"
+          id="domainpropertiesrow-format-1-1"
+          name="domainpropertiesrow-format"
+        >
+          <option
+            value="inline"
+          >
+            Show Attachment in Browser
+          </option>
+          <option
+            value="attachment"
+          >
+            Download Attachment
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FileAttachmentOptions File data type inline 1`] = `
+<div>
+  <div>
+    <div
+      class="row"
+    >
+      <div
+        class="col-xs-12"
+      >
+        <div
+          class="domain-field-section-heading"
+        >
+          File Behavior
+          <div
+            class="overlay-trigger"
+          >
+            <span
+              class="label-help-target"
+            >
+              <span
+                class="label-help-icon fa fa-question-circle"
+              />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row domain-field-label"
+    >
+      <div
+        class="col-xs-2"
+      >
+        <select
+          class="form-control"
+          id="domainpropertiesrow-format-1-1"
+          name="domainpropertiesrow-format"
+        >
+          <option
+            value="inline"
+          >
+            Show File in Browser
+          </option>
+          <option
+            value="attachment"
+          >
+            Download File
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+`;

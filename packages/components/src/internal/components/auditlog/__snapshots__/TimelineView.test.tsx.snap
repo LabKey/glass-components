@@ -1,0 +1,2037 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TimelineView /> Disable selection 1`] = `
+<div>
+  <table
+    class="timeline-grid timeline-grid-no-selection"
+  >
+    <tbody>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 21:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="samples"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/samples.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Sample Registered
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-05 22:58
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="storage_insert"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_insert.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to storage
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                xyang
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-08 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="assay"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/assay.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Assay Data Uploaded
+            <span>
+               - 
+            </span>
+            <a
+              href="#/assays/general/xlsx%20assay"
+            >
+              XLSX Assay
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 18:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 19:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Removed from job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 20:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Completed job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-05-04 23:00
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="storage_checkout"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_checkout.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Checked out
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <span
+                class="gray-text"
+                title="User may have been deleted from the system."
+              >
+                &lt;unknown user&gt;
+              </span>
+            </div>
+             
+            <div
+              class="overlay-trigger"
+            >
+              <span
+                class="label-help-target"
+              >
+                <i
+                  class="timeline-comments-icon fa fa-comments"
+                />
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
+
+exports[`<TimelineView /> Hide user link 1`] = `
+<div>
+  <table
+    class="timeline-grid timeline-grid-no-selection"
+  >
+    <tbody>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 21:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="samples"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/samples.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Sample Registered
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-05 22:58
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="storage_insert"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_insert.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to storage
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                xyang
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-08 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="assay"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/assay.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Assay Data Uploaded
+            <span>
+               - 
+            </span>
+            <a
+              href="#/assays/general/xlsx%20assay"
+            >
+              XLSX Assay
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 18:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 19:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Removed from job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 20:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Completed job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-05-04 23:00
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="storage_checkout"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_checkout.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Checked out
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <span
+                class="gray-text"
+                title="User may have been deleted from the system."
+              >
+                &lt;unknown user&gt;
+              </span>
+            </div>
+             
+            <div
+              class="overlay-trigger"
+            >
+              <span
+                class="label-help-target"
+              >
+                <i
+                  class="timeline-comments-icon fa fa-comments"
+                />
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
+
+exports[`<TimelineView /> with selection, completed entity 1`] = `
+<div>
+  <table
+    class="timeline-grid timeline-grid-no-selection"
+  >
+    <tbody>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 21:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="samples"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/samples.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Sample Registered
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row timeline-row-selected"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div
+                class="timeline-vline vline-short"
+              />
+              <div>
+                <span
+                  class="timeline-circle"
+                />
+                <span
+                  class="timeline-hline hline-short"
+                />
+              </div>
+              <div
+                class="timeline-vline vline-short line-highlight"
+              />
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow_orange.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-05 22:58
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long line-highlight"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="storage_insert"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_insert.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to storage
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                xyang
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-08 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long line-highlight"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="assay"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/assay.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Assay Data Uploaded
+            <span>
+               - 
+            </span>
+            <a
+              href="#/assays/general/xlsx%20assay"
+            >
+              XLSX Assay
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 18:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long line-highlight"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 19:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div
+                class="timeline-vline vline-short line-highlight"
+              />
+              <div>
+                <span
+                  class="timeline-circle"
+                />
+                <span
+                  class="timeline-hline hline-short"
+                />
+              </div>
+              <div
+                class="timeline-vline vline-short"
+              />
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Removed from job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 20:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Completed job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-05-04 23:00
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="storage_checkout"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_checkout.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Checked out
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <span
+                class="gray-text"
+                title="User may have been deleted from the system."
+              >
+                &lt;unknown user&gt;
+              </span>
+            </div>
+             
+            <div
+              class="overlay-trigger"
+            >
+              <span
+                class="label-help-target"
+              >
+                <i
+                  class="timeline-comments-icon fa fa-comments"
+                />
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
+
+exports[`<TimelineView /> with selection, open entity 1`] = `
+<div>
+  <table
+    class="timeline-grid timeline-grid-no-selection"
+  >
+    <tbody>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 21:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="samples"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/samples.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Sample Registered
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-04 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-05 22:58
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div
+                class="timeline-vline vline-short"
+              />
+              <div>
+                <span
+                  class="timeline-circle timeline-circle-open"
+                />
+                <span
+                  class="timeline-hline hline-short"
+                />
+              </div>
+              <div
+                class="timeline-vline vline-short line-highlight"
+              />
+            </div>
+            <img
+              alt="storage_insert"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_insert.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to storage
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                xyang
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-08 22:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long line-highlight"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="assay"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/assay.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Assay Data Uploaded
+            <span>
+               - 
+            </span>
+            <a
+              href="#/assays/general/xlsx%20assay"
+            >
+              XLSX Assay
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 18:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long line-highlight"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Added to job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 19:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long line-highlight"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Removed from job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/688"
+            >
+              job-3
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Test Lab User
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-04-09 20:57
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div>
+                <span
+                  class="timeline-vline vline-long line-highlight"
+                />
+                <span
+                  class="timeline-hline hline-long"
+                />
+              </div>
+            </div>
+            <img
+              alt="workflow"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/workflow.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Completed job
+            <span>
+               - 
+            </span>
+            <a
+              href="#/workflow/687"
+            >
+              job-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <a
+                class="clickable user-link"
+              >
+                Vader
+              </a>
+            </div>
+             
+          </div>
+        </td>
+      </tr>
+      <tr
+        class="timeline-event-row timeline-row-selected"
+      >
+        <td
+          class="display-light timeline-timestamp-col"
+        >
+          2020-05-04 23:00
+        </td>
+        <td
+          class="icon-col"
+        >
+          <div>
+            <div
+              class="timeline-line"
+            >
+              <div
+                class="timeline-vline vline-short line-highlight"
+              />
+              <div>
+                <span
+                  class="timeline-circle timeline-circle-open"
+                />
+                <span
+                  class="timeline-hline hline-short"
+                />
+              </div>
+              <div
+                class="timeline-vline vline-short"
+              />
+            </div>
+            <img
+              alt="storage_checkout"
+              class="timeline-event-icon"
+              height="100%"
+              src="/labkey/_images/storage_checkout_orange.svg"
+              width="100%"
+            />
+          </div>
+        </td>
+        <td
+          class="detail-col"
+        >
+          <div>
+            Checked out
+            <span>
+               - 
+            </span>
+            <a
+              href="/labkey/inventory0804/experiment-showMaterial.view?rowId=6"
+            >
+              S-1
+            </a>
+          </div>
+          <div>
+            <div
+              class="field-text-nowrap"
+            >
+              <span
+                class="gray-text"
+                title="User may have been deleted from the system."
+              >
+                &lt;unknown user&gt;
+              </span>
+            </div>
+             
+            <div
+              class="overlay-trigger"
+            >
+              <span
+                class="label-help-target"
+              >
+                <i
+                  class="timeline-comments-icon fa fa-comments"
+                />
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
