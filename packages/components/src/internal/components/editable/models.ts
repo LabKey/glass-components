@@ -345,11 +345,14 @@ export class EditorModel
                 }
             } else if (col.jsonType === 'time') {
                 row = row.set(col.name, values.size === 1 ? values.first().raw : undefined);
-            } else if (col.jsonType === 'date') {
-                row = row.set(col.name, values.size === 1 ? values.first().raw?.toString().trim() : undefined);
             } else {
                 let val = values.size === 1 ? values.first().raw : undefined;
-                if (!useRawValues) val = getValidatedEditableGridValue(val?.toString().trim(), col).value;
+                if (!useRawValues) {
+                    // Issue 51967: Resolve the formatted/validated value.
+                    // Specifically, for dates this will strip time zone context.
+                    const origValue = col.jsonType === 'date' ? val : val?.toString().trim();
+                    val = getValidatedEditableGridValue(origValue, col).value;
+                }
                 row = row.set(col.name, val);
             }
         });
@@ -747,7 +750,7 @@ export class EditorModel
         const pkFieldKey = this.pkFieldKey;
         const queryInfo = this.queryInfo;
         const updatedRows: UpdatedRow[] = [];
-        editorRows.forEach(editedRow => {
+        editorRows.forEach((editedRow, idx) => {
             const id = editedRow.get(pkFieldKey);
             const altIds = {};
             queryInfo.altUpdateKeys?.forEach(altIdField => {
@@ -826,10 +829,13 @@ export class EditorModel
                         }
                     } else if (!(originalValue == undefined && value == undefined) && originalValue !== value) {
                         // only update if the value has changed
+                        // Issue 51967: We need to ensure that we get the processed/formatted value of the row
+                        const formattedRow = this.getRowValue(idx, false);
+                        const formattedValue = formattedRow.get(key);
 
                         // if the value is 'undefined', it will be removed from the update rows, so in order to
                         // erase an existing value we set the value to null in our update data
-                        row[key] = value === undefined ? null : value;
+                        row[key] = formattedValue === undefined ? null : formattedValue;
                     }
                     return row;
                 }, {});
