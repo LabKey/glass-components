@@ -782,6 +782,51 @@ describe('EditorModel', () => {
             expect(updatedRows[0].Folder).toEqual('fake folder');
             expect(updatedRows[1].Folder).toEqual('fake child folder');
         });
+        test('dates strip time zone context', () => {
+            // Issue 51967: Regression coverage to ensure date timezone information is not
+            // passed along to the server.
+            const dateColumn = new QueryColumn({
+                caption: 'Expiration Date',
+                fieldKey: 'ExpirationDate',
+                fieldKeyArray: ['ExpirationDate'],
+                jsonType: 'date',
+                name: 'ExpirationDate',
+                shownInInsertView: true,
+                shownInUpdateView: true,
+                required: false,
+                userEditable: true,
+            });
+            const dateColFk = dateColumn.fieldKey.toLowerCase();
+            const date = new Date('2025-01-01T00:00:00Z');
+
+            const cellValues = fromJS({
+                [genCellKey(dateColFk, 0)]: List<ValueDescriptor>([{ display: undefined, raw: undefined }]),
+                [genCellKey(dateColFk, 1)]: List<ValueDescriptor>([
+                    {
+                        display: '2025-01-01 00:00:00.000',
+                        raw: date,
+                    },
+                ]),
+            });
+
+            const editorModel = modifyEm({
+                cellValues: basicEditorModel.cellValues.merge(cellValues),
+                columnMap: basicEditorModel.columnMap.set(dateColFk, dateColumn),
+                orderedColumns: basicEditorModel.orderedColumns.push(dateColFk),
+                rowCount: 2,
+            });
+
+            const updatedRows = editorModel.getUpdatedData();
+            expect(updatedRows).toHaveLength(1);
+            const [updatedRow] = updatedRows;
+
+            expect(editorModel.getRowValue(1, true).get(dateColumn.fieldKey)).toEqual(date);
+            expect(editorModel.getRowValue(1, false).get(dateColumn.fieldKey)).toEqual('2025-01-01 00:00:00');
+
+            // Formerly, this would have .toString() the date which would end up with:
+            // "Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)"
+            expect(updatedRow[dateColumn.fieldKey]).toEqual('2025-01-01 00:00:00');
+        });
     });
 
     describe('utils', () => {
