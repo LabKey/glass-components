@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.20.5
+*Released*: 13 January 2025
+- Issue 51967: Submit formatted date value from editable grid
+
 ### version 5.20.4
 *Released*: 9 November 2024
 - Use userId instead of email for password related APIs
