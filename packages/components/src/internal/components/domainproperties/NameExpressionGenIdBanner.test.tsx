@@ -1,7 +1,8 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
 
-import { sleep } from '../../test/testHelpers';
+import { render } from '@testing-library/react';
+
+import { waitFor } from '@testing-library/dom';
 
 import { getTestAPIWrapper } from '../../APIWrapper';
 
@@ -14,7 +15,7 @@ import { getDomainPropertiesTestAPIWrapper } from './APIWrapper';
 
 describe('NameExpressionGenIdBanner', () => {
     test('with existing data', async () => {
-        const tree = renderer.create(
+        const { container } = render(
             <NotificationsContextProvider>
                 <NameExpressionGenIdBanner
                     dataTypeName="Data1"
@@ -31,14 +32,14 @@ describe('NameExpressionGenIdBanner', () => {
                 />
             </NotificationsContextProvider>
         );
-        await sleep();
-        await sleep(); // wait for 2 async calls
-        expect(tree).toMatchSnapshot();
-        tree.unmount();
+        await waitFor(() => {
+            expect(document.querySelectorAll('.genid-alert').length).toEqual(1);
+        });
+        expect(container).toMatchSnapshot();
     });
 
     test('without existing data, genId = 1 (0)', async () => {
-        const tree = renderer.create(
+        const { container } = render(
             <NotificationsContextProvider>
                 <NameExpressionGenIdBanner
                     dataTypeName="Data1"
@@ -55,14 +56,14 @@ describe('NameExpressionGenIdBanner', () => {
                 />
             </NotificationsContextProvider>
         );
-        await sleep();
-        await sleep();
-        expect(tree).toMatchSnapshot();
-        tree.unmount();
+        await waitFor(() => {
+            expect(document.querySelectorAll('.genid-alert').length).toEqual(1);
+        });
+        expect(container).toMatchSnapshot();
     });
 
     test('without existing data, genId > 1', async () => {
-        const tree = renderer.create(
+        const { container } = render(
             <NotificationsContextProvider>
                 <NameExpressionGenIdBanner
                     dataTypeName="Data1"
@@ -79,9 +80,9 @@ describe('NameExpressionGenIdBanner', () => {
                 />
             </NotificationsContextProvider>
         );
-        await sleep();
-        await sleep();
-        expect(tree).toMatchSnapshot();
-        tree.unmount();
+        await waitFor(() => {
+            expect(document.querySelectorAll('.genid-alert').length).toEqual(1);
+        });
+        expect(container).toMatchSnapshot();
     });
 });

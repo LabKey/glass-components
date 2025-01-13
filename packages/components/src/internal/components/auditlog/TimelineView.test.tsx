@@ -1,12 +1,10 @@
 import React from 'react';
 
-import { shallow } from 'enzyme';
-
 import { TIMELINE_DATA } from '../../../test/data/constants';
 
 import { TEST_USER_APP_ADMIN } from '../../userFixtures';
-import { mountWithAppServerContext } from '../../test/enzymeTestHelpers';
-import { UserLink } from '../user/UserLink';
+
+import { renderWithAppContext } from '../../test/reactTestLibraryHelpers';
 
 import { TimelineEventModel } from './models';
 import { TimelineView } from './TimelineView';
@@ -16,7 +14,7 @@ TIMELINE_DATA.forEach(event => events.push(TimelineEventModel.create(event, 'UTC
 
 describe('<TimelineView />', () => {
     test('Disable selection', () => {
-        const wrapper = shallow(
+        const component = (
             <TimelineView
                 events={events}
                 showRecentFirst={false}
@@ -27,11 +25,12 @@ describe('<TimelineView />', () => {
             />
         );
 
-        expect(wrapper).toMatchSnapshot();
+        const { container } = renderWithAppContext(component, { serverContext: { user: TEST_USER_APP_ADMIN } });
+        expect(container).toMatchSnapshot();
     });
 
     test('Hide user link', () => {
-        const wrapper = shallow(
+        const component = (
             <TimelineView
                 events={events}
                 showRecentFirst={false}
@@ -42,11 +41,12 @@ describe('<TimelineView />', () => {
             />
         );
 
-        expect(wrapper).toMatchSnapshot();
+        const { container } = renderWithAppContext(component, { serverContext: { user: TEST_USER_APP_ADMIN } });
+        expect(container).toMatchSnapshot();
     });
 
     test('with selection, completed entity', () => {
-        const wrapper = shallow(
+        const component = (
             <TimelineView
                 events={events}
                 showRecentFirst={false}
@@ -57,11 +57,12 @@ describe('<TimelineView />', () => {
             />
         );
 
-        expect(wrapper).toMatchSnapshot();
+        const { container } = renderWithAppContext(component, { serverContext: { user: TEST_USER_APP_ADMIN } });
+        expect(container).toMatchSnapshot();
     });
 
     test('with selection, open entity', () => {
-        const wrapper = shallow(
+        const component = (
             <TimelineView
                 events={events}
                 showRecentFirst={false}
@@ -72,8 +73,9 @@ describe('<TimelineView />', () => {
             />
         );
 
-        expect(wrapper.find('.timeline-info-icon')).toHaveLength(0);
-        expect(wrapper).toMatchSnapshot();
+        expect(document.querySelectorAll('.timeline-info-icon')).toHaveLength(0);
+        const { container } = renderWithAppContext(component, { serverContext: { user: TEST_USER_APP_ADMIN } });
+        expect(container).toMatchSnapshot();
     });
 
     test('with getInfoBubbleContent', () => {
@@ -83,7 +85,7 @@ describe('<TimelineView />', () => {
                 content: <span>hello</span>,
             };
         };
-        const wrapper = mountWithAppServerContext(
+        renderWithAppContext(
             <TimelineView
                 events={events}
                 showRecentFirst={false}
@@ -93,19 +95,15 @@ describe('<TimelineView />', () => {
                 selectedEntityConnectionInfo={null}
                 getInfoBubbleContent={getInfoBubbleContent}
             />,
-            {},
-            { user: TEST_USER_APP_ADMIN }
+            { serverContext: { user: TEST_USER_APP_ADMIN } }
         );
 
-        expect(wrapper.find('.timeline-info-icon')).toHaveLength(8);
-        expect(wrapper.find(UserLink)).toHaveLength(8);
+        expect(document.querySelectorAll('.timeline-info-icon')).toHaveLength(8);
+        expect(document.querySelectorAll('.user-link')).toHaveLength(7);
+        expect(document.querySelectorAll('.field-text-nowrap')).toHaveLength(8);
 
         // test unknown user display
-        expect(wrapper.find(UserLink).first().prop('userDisplayValue')).toBe('Vader');
-        expect(wrapper.find(UserLink).first().prop('unknown')).toBeFalsy();
-        expect(wrapper.find(UserLink).last().prop('userDisplayValue')).toBeUndefined();
-        expect(wrapper.find(UserLink).last().prop('unknown')).toBeTruthy();
-
-        wrapper.unmount();
+        expect(document.querySelectorAll('.user-link')[0].textContent).toBe('Vader');
+        expect(document.querySelectorAll('.field-text-nowrap')[7].textContent).toBe('<unknown user>');
     });
 });

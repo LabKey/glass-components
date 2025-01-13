@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import { DomainPropertiesGrid } from './DomainPropertiesGrid';
 
@@ -23,7 +23,7 @@ const ACTIONS = {
 
 describe('DomainPropertiesGrid', () => {
     test('default view', () => {
-        const domainPropertiesGrid = mount(
+        render(
             <DomainPropertiesGrid
                 domain={DOMAIN}
                 search="searchStr"
@@ -33,7 +33,7 @@ describe('DomainPropertiesGrid', () => {
                 hasOntologyModule={false}
             />
         );
-        const text = domainPropertiesGrid.text();
+        const text = document.body.textContent;
 
         expect(text).toContain('URL');
         expect(text).toContain('Range URI');
@@ -51,12 +51,10 @@ describe('DomainPropertiesGrid', () => {
         expect(text).not.toContain('Property URI');
         // Ontology-only
         expect(text).not.toContain('Source Ontology');
-
-        domainPropertiesGrid.unmount();
     });
 
     test('with appPropertiesOnly', () => {
-        const domainPropertiesGrid = mount(
+        render(
             <DomainPropertiesGrid
                 domain={DOMAIN}
                 search="searchStr"
@@ -66,7 +64,7 @@ describe('DomainPropertiesGrid', () => {
                 hasOntologyModule={false}
             />
         );
-        const text = domainPropertiesGrid.text();
+        const text = document.body.textContent;
 
         expect(text).toContain('URL');
         expect(text).toContain('Range URI');
@@ -78,12 +76,10 @@ describe('DomainPropertiesGrid', () => {
 
         expect(text).not.toContain('Property URI');
         expect(text).not.toContain('Source Ontology');
-
-        domainPropertiesGrid.unmount();
     });
 
     test('with ontology module', () => {
-        const domainPropertiesGrid = mount(
+        render(
             <DomainPropertiesGrid
                 domain={DOMAIN}
                 search="searchStr"
@@ -93,7 +89,7 @@ describe('DomainPropertiesGrid', () => {
                 hasOntologyModule={true}
             />
         );
-        const text = domainPropertiesGrid.text();
+        const text = document.body.textContent;
 
         expect(text).toContain('Source Ontology');
         expect(text).toContain('Concept Import Column');
@@ -101,7 +97,5 @@ describe('DomainPropertiesGrid', () => {
         expect(text).toContain('Principal Concept Code');
 
         expect(text).not.toContain('Property URI');
-
-        domainPropertiesGrid.unmount();
     });
 });

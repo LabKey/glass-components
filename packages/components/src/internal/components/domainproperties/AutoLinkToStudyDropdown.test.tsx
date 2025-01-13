@@ -1,10 +1,10 @@
 import React from 'react';
-import { mount } from 'enzyme';
 import { List } from 'immutable';
+
+import { render } from '@testing-library/react';
 
 import getValidPublishTargetsJson from '../../../test/data/assay-getValidPublishTargets.json';
 
-import { LoadingSpinner } from '../base/LoadingSpinner';
 import { Container } from '../base/models/Container';
 
 import { AutoLinkToStudyDropdown } from './AutoLinkToStudyDropdown';
@@ -18,18 +18,16 @@ const BASE_PROPS = {
 
 describe('<AutoLinkToStudyDropdown/>', () => {
     test('default props', async () => {
-        const wrapper = mount(<AutoLinkToStudyDropdown {...BASE_PROPS} containers={CONTAINERS} />);
+        render(<AutoLinkToStudyDropdown {...BASE_PROPS} containers={CONTAINERS} />);
 
-        expect(wrapper.find(LoadingSpinner)).toHaveLength(0);
-        expect(wrapper.find('option')).toHaveLength(8);
-        wrapper.unmount();
+        expect(document.querySelectorAll('.fa-spinner')).toHaveLength(0);
+        expect(document.querySelectorAll('option')).toHaveLength(8);
     });
 
     test('loading', async () => {
-        const wrapper = mount(<AutoLinkToStudyDropdown {...BASE_PROPS} containers={undefined} />);
+        render(<AutoLinkToStudyDropdown {...BASE_PROPS} containers={undefined} />);
 
-        expect(wrapper.find(LoadingSpinner)).toHaveLength(1);
-        expect(wrapper.find('option')).toHaveLength(0);
-        wrapper.unmount();
+        expect(document.querySelectorAll('.fa-spinner')).toHaveLength(1);
+        expect(document.querySelectorAll('option')).toHaveLength(0);
     });
 });

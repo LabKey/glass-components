@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NameExpressionGenIdBanner with existing data 1`] = `
+<div>
+  <div
+    class="genid-alert alert alert-info"
+    role="alert"
+  >
+    Current genId: 
+    124
+    <button
+      class="pull-right alert-button edit-genid-btn btn btn-info"
+      type="button"
+    >
+      Edit genId
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NameExpressionGenIdBanner without existing data, genId = 1 (0) 1`] = `
+<div>
+  <div
+    class="genid-alert alert alert-info"
+    role="alert"
+  >
+    Current genId: 
+    1
+    <button
+      class="pull-right alert-button edit-genid-btn btn btn-info"
+      type="button"
+    >
+      Edit genId
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NameExpressionGenIdBanner without existing data, genId > 1 1`] = `
+<div>
+  <div
+    class="genid-alert alert alert-info"
+    role="alert"
+  >
+    Current genId: 
+    124
+    <button
+      class="pull-right alert-button edit-genid-btn btn btn-info"
+      type="button"
+    >
+      Edit genId
+    </button>
+    <button
+      class="pull-right alert-button reset-genid-btn btn btn-info"
+      type="button"
+    >
+      Reset genId
+    </button>
+  </div>
+</div>
+`;
