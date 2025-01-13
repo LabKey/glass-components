@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Issue 51908: increase precision for stored amounts to nanoliters and nanograms
+
 ### version 6.11.5
 *Released*: 10 January 2025
 - Issue 51824: TSV/CSV file import ignore lines that start with #
