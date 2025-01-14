@@ -11,6 +11,7 @@ import { useAppContext } from '../../../AppContext';
 import { resolveErrorMessage } from '../../../util/messaging';
 
 import { SelectInput, SelectInputOption, SelectInputProps } from './SelectInput';
+import { getProjectPath } from '../../../app/utils';
 
 function generateKey(permissions?: string | string[], containerPath?: string): string {
     let key = 'allPermissions';
@@ -34,6 +35,8 @@ interface UserSelectInputProps extends Omit<SelectInputProps, 'delimiter' | 'loa
     notifyList?: boolean;
     permissions?: string | string[];
     useEmail?: boolean;
+    includeGroups?: boolean;
+    includeSiteGroups?: boolean;
 }
 
 export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
@@ -44,6 +47,8 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
         notifyList = false,
         permissions,
         useEmail = false,
+        includeGroups = false,
+        includeSiteGroups = false,
         ...selectInputProps
     } = props;
     const key = useMemo(() => generateKey(permissions, containerPath), [containerPath, permissions]);
@@ -52,12 +57,12 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
 
     const loadOptions = useCallback(
         async (input: string) => {
-            let options: SelectInputOption[];
+            let userOptions: SelectInputOption[];
             const sanitizedInput = input?.trim().toLowerCase();
 
             try {
                 const users = await api.security.getUsersWithPermissions(permissions, containerPath, includeInactive);
-                options = users
+                userOptions = users
                     ?.filter(v => {
                         if (sanitizedInput) {
                             return v.displayName?.toLowerCase().indexOf(sanitizedInput) > -1;
@@ -69,11 +74,37 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
                         label: v.displayName,
                         value: notifyList ? v.displayName : useEmail ? v.email : v.userId,
                     }));
+                if (includeGroups) {
+                    const groups = await api.security.fetchGroups(getProjectPath(containerPath), permissions, true);
+                    const groupOptions = groups
+                        .filter(group => {
+                            if (includeSiteGroups)
+                                return true;
+                            return group.isProjectGroup;
+                        })
+                        .map(v => ({
+                            label: v.name,
+                            value: v.id,
+                        }));
+                    if (groupOptions?.length > 0) {
+                        return [
+                            {
+                                label: 'Project Groups',
+                                options: groupOptions,
+                            },
+                            {
+                                label: 'Users',
+                                options: userOptions,
+                            }
+                        ];
+                    }
+                }
+
             } catch (e) {
                 setError(resolveErrorMessage(e) ?? 'Failed to load users');
             }
 
-            return options;
+            return userOptions;
         },
         [api, containerPath, includeInactive, notifyList, permissions, useEmail]
     );

@@ -58,7 +58,7 @@ export interface SecurityAPIWrapper {
     deleteGroup: (id: number, projectPath: string) => Promise<DeleteGroupResponse>;
     deletePolicy: (resourceId: string, containerPath?: string) => Promise<any>;
     fetchContainers: (options: FetchContainerOptions) => Promise<Container[]>;
-    fetchGroups: (projectPath: string) => Promise<FetchedGroup[]>;
+    fetchGroups: (projectPath: string, permissions?: string | string[], checkIsAdmin?: boolean, permissionCheck?: 'any' | 'all') => Promise<FetchedGroup[]>;
     fetchPolicy: (
         containerId: string,
         principalsById?: Map<number, Principal>,
@@ -184,12 +184,32 @@ export class ServerSecurityAPIWrapper implements SecurityAPIWrapper {
 
     fetchContainers = fetchContainers;
 
-    fetchGroups = (projectPath: string): Promise<FetchedGroup[]> => {
+    fetchGroups = (projectPath: string, permissions?: string | string[], checkIsAdmin?: boolean, permissionCheck?: 'all' | 'any'): Promise<FetchedGroup[]> => {
         return new Promise((resolve, reject) => {
             Security.getGroupPermissions({
                 containerPath: projectPath,
                 success: data => {
-                    resolve(data?.container?.groups);
+                    const groups = data?.container?.groups;
+                    if (!permissions)
+                        resolve(groups);
+
+                    const perms = typeof permissions === 'string' ? [permissions] : permissions;
+                    const groupsWithPerm = groups?.filter((group) => {
+                        if (checkIsAdmin && group.id === -1) {
+                            return perms?.length > 0;
+                        } else if (perms) {
+                            const allPerms = group.effectivePermissions ?? [];
+
+                            if (permissionCheck === 'any') {
+                                return perms.some(p => allPerms.indexOf(p) > -1);
+                            } else {
+                                return perms.every(p => allPerms.indexOf(p) > -1);
+                            }
+                        }
+
+                        return false;
+                    });
+                    resolve(groupsWithPerm);
                 },
                 failure: error => {
                     console.error('Failed to fetch group permissions', error);

@@ -2,6 +2,7 @@ import { ActionURL, PermissionTypes, UserWithPermissions } from '@labkey/api';
 
 interface IUserProps extends UserWithPermissions {
     permissionsList: string[];
+    groups?: number[];
 }
 
 const defaultUser: IUserProps = {
@@ -29,6 +30,8 @@ const defaultUser: IUserProps = {
 
     maxAllowedPhi: undefined,
     permissionsList: undefined,
+
+    groups: undefined,
 };
 
 /**
@@ -59,6 +62,8 @@ export class User implements IUserProps {
 
     declare maxAllowedPhi: string;
     declare permissionsList: string[];
+
+    declare groups: number[];
 
     constructor(props) {
         Object.assign(this, defaultUser, props);

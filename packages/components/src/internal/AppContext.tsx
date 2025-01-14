@@ -79,7 +79,8 @@ export interface SampleTypeAppContext {
     getWorkflowGridQueryConfigs?: (
         visibleTabs: string[],
         gridPrefix: string,
-        user: User,
+        userId: number,
+        userGroupIds: number[],
         schemaQuery?: SchemaQuery,
         initialFilters?: Filter.IFilter[],
         sampleLSID?: string,
