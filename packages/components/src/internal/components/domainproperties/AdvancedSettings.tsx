@@ -383,16 +383,17 @@ export class AdvancedSettings extends React.PureComponent<AdvancedSettingsProps,
                 {!field.isCalculatedField() && (
                     <div className="row">
                         <div className="col-xs-3">
-                            <DomainFieldLabel label="PHI Level" helpTipBody={!phiLevelEnabled ? phiLevelDisabledReason : this.getPhiHelpText()} />
+                            <DomainFieldLabel label="PHI Level" helpTipBody={this.getPhiHelpText()} />
                         </div>
-                        <div className="col-xs-6">
+                        <div className="col-xs-7">
+                            {!phiLevelEnabled && phiLevelDisabledReason && phiLevelDisabledReason + (PHI !== "NotPHI" ? ". Change this PHI Level to \"Not PHI\" before saving." : "")}
                             <select
                                 className="form-control"
                                 name={createFormInputName(DOMAIN_FIELD_PHI)}
                                 id={createFormInputId(DOMAIN_FIELD_PHI, domainIndex, index)}
                                 onChange={this.handleChange}
                                 value={PHI}
-                                disabled={disablePhiSelect}
+                                disabled={disablePhiSelect && PHI === "NotPHI"} // Keep it enabled if PHI values are disallowed but something other than NotPHI is current set
                             >
                                 {!currentValueExists && (
                                     <option key={PHI} value={PHI}>

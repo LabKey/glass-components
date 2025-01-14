@@ -56,7 +56,7 @@ const watchPort = process.env.WATCH_PORT || 3001;
 
 // These minification options are a re-declaration of the default minification options
 // for the HtmlWebpackPlugin with the addition of `caseSensitive` because LabKey's
-// view templates can contain case-sensitive elements (e.g. `<permissionClasses>`).
+// view templates can contain case-sensitive elements (e.g. `<requiresPermissions>`).
 // For more information see https://github.com/jantimon/html-webpack-plugin#minification.
 const minifyTemplateOptions = {
     caseSensitive: true,
