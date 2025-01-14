@@ -10,8 +10,9 @@ import { useAppContext } from '../../../AppContext';
 
 import { resolveErrorMessage } from '../../../util/messaging';
 
-import { SelectInput, SelectInputOption, SelectInputProps } from './SelectInput';
 import { getProjectPath } from '../../../app/utils';
+
+import { SelectInput, SelectInputOption, SelectInputProps } from './SelectInput';
 
 function generateKey(permissions?: string | string[], containerPath?: string): string {
     let key = 'allPermissions';
@@ -30,13 +31,13 @@ function generateKey(permissions?: string | string[], containerPath?: string): s
 
 interface UserSelectInputProps extends Omit<SelectInputProps, 'delimiter' | 'loadOptions'> {
     containerPath?: string;
+    includeGroups?: boolean;
     includeInactive?: boolean;
+    includeSiteGroups?: boolean;
     // specify whether this Select should correspond with a NotifyList on the server
     notifyList?: boolean;
     permissions?: string | string[];
     useEmail?: boolean;
-    includeGroups?: boolean;
-    includeSiteGroups?: boolean;
 }
 
 export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
@@ -78,8 +79,7 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
                     const groups = await api.security.fetchGroups(getProjectPath(containerPath), permissions, true);
                     const groupOptions = groups
                         .filter(group => {
-                            if (includeSiteGroups)
-                                return true;
+                            if (includeSiteGroups) return true;
                             return group.isProjectGroup;
                         })
                         .map(v => ({
@@ -95,11 +95,10 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
                             {
                                 label: 'Users',
                                 options: userOptions,
-                            }
+                            },
                         ];
                     }
                 }
-
             } catch (e) {
                 setError(resolveErrorMessage(e) ?? 'Failed to load users');
             }

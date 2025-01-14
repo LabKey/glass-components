@@ -1,8 +1,8 @@
 import { ActionURL, PermissionTypes, UserWithPermissions } from '@labkey/api';
 
 interface IUserProps extends UserWithPermissions {
-    permissionsList: string[];
     groups?: number[];
+    permissionsList: string[];
 }
 
 const defaultUser: IUserProps = {

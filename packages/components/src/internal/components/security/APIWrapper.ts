@@ -58,7 +58,12 @@ export interface SecurityAPIWrapper {
     deleteGroup: (id: number, projectPath: string) => Promise<DeleteGroupResponse>;
     deletePolicy: (resourceId: string, containerPath?: string) => Promise<any>;
     fetchContainers: (options: FetchContainerOptions) => Promise<Container[]>;
-    fetchGroups: (projectPath: string, permissions?: string | string[], checkIsAdmin?: boolean, permissionCheck?: 'any' | 'all') => Promise<FetchedGroup[]>;
+    fetchGroups: (
+        projectPath: string,
+        permissions?: string | string[],
+        checkIsAdmin?: boolean,
+        permissionCheck?: 'any' | 'all'
+    ) => Promise<FetchedGroup[]>;
     fetchPolicy: (
         containerId: string,
         principalsById?: Map<number, Principal>,
@@ -184,17 +189,21 @@ export class ServerSecurityAPIWrapper implements SecurityAPIWrapper {
 
     fetchContainers = fetchContainers;
 
-    fetchGroups = (projectPath: string, permissions?: string | string[], checkIsAdmin?: boolean, permissionCheck?: 'all' | 'any'): Promise<FetchedGroup[]> => {
+    fetchGroups = (
+        projectPath: string,
+        permissions?: string | string[],
+        checkIsAdmin?: boolean,
+        permissionCheck?: 'all' | 'any'
+    ): Promise<FetchedGroup[]> => {
         return new Promise((resolve, reject) => {
             Security.getGroupPermissions({
                 containerPath: projectPath,
                 success: data => {
                     const groups = data?.container?.groups;
-                    if (!permissions)
-                        resolve(groups);
+                    if (!permissions) resolve(groups);
 
                     const perms = typeof permissions === 'string' ? [permissions] : permissions;
-                    const groupsWithPerm = groups?.filter((group) => {
+                    const groupsWithPerm = groups?.filter(group => {
                         if (checkIsAdmin && group.id === -1) {
                             return perms?.length > 0;
                         } else if (perms) {

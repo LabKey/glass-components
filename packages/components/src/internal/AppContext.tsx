@@ -48,9 +48,9 @@ import {
 } from './sampleModels';
 
 export interface AdminAppContext {
-    NotebookNotificationSettingsComponent: NotebookNotificationSettings;
-    NotebookContainerSettingsComponent: NotebookContainerSettings;
     FolderStorageSelectionComponent?: FolderStorageSelection;
+    NotebookContainerSettingsComponent: NotebookContainerSettings;
+    NotebookNotificationSettingsComponent: NotebookNotificationSettings;
     WorkflowNotificationSettingsComponent: WorkflowNotificationSettings;
     extraPermissionRoles: string[][];
     folderDataTypes?: EntityDataType[];
