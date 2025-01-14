@@ -1,6 +1,14 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.X
+*Released*: X January 2025
+- Workflow, Group Assignment & Notifications
+  - Add `groups` to User model
+  - Fix `SelectInput.initOptions` when options have subgroups
+  - Modify `FetchGroups` to check permissions
+  - Modify `UserSelectInput` to include groups
+
 ### version 6.11.5
 *Released*: 10 January 2025
 - Issue 51824: TSV/CSV file import ignore lines that start with #
