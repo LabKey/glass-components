@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const useNotAuthorized = (identifier?: any, initialState = false) => {
     const [notAuthorized, setNotAuthorized] = useState(initialState);
@@ -78,4 +78,73 @@ export function usePortalRef(portalId): HTMLDivElement {
     }, []);
 
     return portalElementRef.current;
+}
+
+export interface UseTimeout {
+    clear: () => void;
+    set: (handler: TimerHandler, timeout?: number) => void;
+}
+
+/**
+ * Hook that provides timeout functionality. This utilizes a React.Ref to track a timeout and provides
+ * analogous functions to `clear()` (wraps `clearTimeout()`) and `set()` (wraps `setTimeout()`).
+ * Notes:
+ * - Automatically clears the timeout on upon dismount of the hook.
+ * - Nothing will change in the timeout after it is established so it is safe to include
+ *   in hook dependency lists (e.g. `useEffect(() => {}, [timeout])`) and know it will not cause
+ *   further execution of the hook.
+ *
+ * Example:
+ * ```tsx
+ * const SomeComponent: FC = (props) => {
+ *     const { mutatedProp } = props;
+ *     const [result, setResult] = useState();
+ *
+ *     // Instantiate the hook to access the timeout interface
+ *     const timeout = useTimeout();
+ *
+ *     // Function that is called when the timeout as completed
+ *     const debouncedLoad = useCallback(async () => {
+ *         const result_ = await api.load(mutatedProp);
+ *         setResult(result_);
+ *     }, [mutatedProp]);
+ *
+ *     useEffect(() => {
+ *         // The mutatedProp has changed and is not available.
+ *         // Ensure no subsequent calls to the timeout callback are invoked.
+ *         if (!mutatedProp) {
+ *             timeout.clear();
+ *             return;
+ *         }
+ *
+ *         // Set the callback and start the timeout.
+ *         timeout.set(debouncedLoad, 1_000);
+ *     }, [mutatedProp, timeout]);
+ *
+ *     return <div />;
+ * };
+ * ```
+ */
+export function useTimeout(): UseTimeout {
+    const ref = useRef<number>(undefined);
+
+    const clear = useCallback(() => {
+        if (ref.current !== undefined) {
+            clearTimeout(ref.current);
+            ref.current = undefined;
+        }
+    }, []);
+
+    const set = useCallback(
+        (handler: TimerHandler, timeout?: number): void => {
+            clear();
+            ref.current = setTimeout(handler, timeout);
+        },
+        [clear]
+    );
+
+    // Cancel the timeout when unmounted
+    useEffect(() => clear, [clear]);
+
+    return useMemo(() => ({ clear, set }), [clear, set]);
 }

@@ -2,8 +2,12 @@ import { Ajax, Utils } from '@labkey/api';
 
 import { handleRequestFailure } from './util/utils';
 
-type Options = Omit<Ajax.RequestOptions, 'success' | 'failure'>;
-type RequestHandler = (request: XMLHttpRequest) => void;
+export type RequestHandler = (request: XMLHttpRequest) => void;
+
+export interface RequestOptions extends Omit<Ajax.RequestOptions, 'failure' | 'scope' | 'success'> {
+    errorLogMsg?: string;
+    requestHandler?: RequestHandler;
+}
 
 /**
  * This is a light wrapper around Ajax.request that takes the same options, minus success and failure. Instead of
@@ -15,14 +19,12 @@ type RequestHandler = (request: XMLHttpRequest) => void;
  *     // handle error here
  * }
  */
-export function request<T>(
-    options: Options,
-    errorLogMsg = 'Error making ajax request',
-    requestHandler?: RequestHandler
-): Promise<T> {
+export function request<T>(options: RequestOptions): Promise<T> {
+    const { errorLogMsg = 'Error making ajax request', requestHandler, ...ajaxOptions } = options;
+
     return new Promise((resolve, reject) => {
         const xmlHttpRequest = Ajax.request({
-            ...options,
+            ...ajaxOptions,
             success: Utils.getCallbackWrapper((res: T) => resolve(res)),
             failure: handleRequestFailure(reject, errorLogMsg),
         });

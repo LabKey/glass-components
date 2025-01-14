@@ -26,7 +26,6 @@ import {
     getIconFontCls,
     getUpdatedData,
     handleRequestFailure,
-    intersect,
     isImage,
     isInteger,
     isIntegerInRange,
@@ -57,21 +56,6 @@ beforeAll(() => {
             numberFormat: '#.##',
         },
     };
-});
-
-describe('intersect', () => {
-    test('with matches', () => {
-        expect(intersect(List<string>(['a', 'b', 'abc']), List<string>(['A', 'Z', 'aBC']))).toEqual(
-            List<string>(['a', 'abc'])
-        );
-        expect(intersect(List(['fun', 'times']), List(['funny', 'times']))).toEqual(List(['times']));
-    });
-
-    test('without matches', () => {
-        expect(intersect(List<string>(['one', 'two']), List(['sun', 'moon']))).toEqual(emptyList);
-        expect(intersect(emptyList, List(['fun', 'times']))).toEqual(emptyList);
-        expect(intersect(List(['fun', 'times']), emptyList)).toEqual(emptyList);
-    });
 });
 
 describe('toLowerSafe', () => {
