@@ -122,7 +122,7 @@ function initOptionFromPrimitive(value: string | number, props: SelectInputProps
     const result = options?.find(o => o[valueKey] === value);
     if (result) return result;
 
-    // if there are subgroups in the options
+    // if there are grouped options
     if (options?.[0]?.options?.length > 0) {
         let subResult;
         options.forEach(optionGroup => {

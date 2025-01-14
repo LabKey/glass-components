@@ -13,6 +13,8 @@ import { resolveErrorMessage } from '../../../util/messaging';
 import { getProjectPath } from '../../../app/utils';
 
 import { SelectInput, SelectInputOption, SelectInputProps } from './SelectInput';
+import { FetchedGroup } from '../../security/APIWrapper';
+import { User } from '@labkey/api';
 
 function generateKey(permissions?: string | string[], containerPath?: string): string {
     let key = 'allPermissions';
@@ -40,6 +42,57 @@ interface UserSelectInputProps extends Omit<SelectInputProps, 'delimiter' | 'loa
     useEmail?: boolean;
 }
 
+export const getUserGroupOptions = (users: User[], groups?: FetchedGroup[], input?: string, notifyList?: boolean, useEmail?: boolean, includeSiteGroups?: boolean) : SelectInputOption[] => {
+    let userOptions: SelectInputOption[];
+    const sanitizedInput = input?.trim().toLowerCase();
+    userOptions = users?.filter(v => {
+            if (sanitizedInput) {
+                return v.displayName?.toLowerCase().indexOf(sanitizedInput) > -1;
+            }
+
+            return true;
+        })
+        .map(v => ({
+            label: v.displayName,
+            value: notifyList ? v.displayName : useEmail ? v.email : v.userId,
+        }));
+    if (groups?.length > 0) {
+        const groupedUserOptions = {
+            label: 'Users',
+            options: userOptions,
+        };
+        const groupOptions = groups
+            .filter(group => {
+                if (sanitizedInput && group.name?.toLowerCase().indexOf(sanitizedInput) === -1) {
+                    return false;
+                }
+
+                if (includeSiteGroups) return true;
+                return group.isProjectGroup;
+            })
+            .map(v => ({
+                label: v.name,
+                value: v.id,
+            }));
+        if (groupOptions?.length > 0) {
+            const groupedGroupOptions = {
+                label: 'Project Groups',
+                options: groupOptions,
+            };
+            if (userOptions?.length > 0) {
+                return [groupedGroupOptions, groupedUserOptions,];
+            } else {
+                return [groupedGroupOptions];
+            }
+        }
+        else {
+            return [groupedUserOptions];
+        }
+    }
+
+    return userOptions;
+}
+
 export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
     const {
         clearCacheOnChange = false,
@@ -58,52 +111,17 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
 
     const loadOptions = useCallback(
         async (input: string) => {
-            let userOptions: SelectInputOption[];
-            const sanitizedInput = input?.trim().toLowerCase();
-
             try {
                 const users = await api.security.getUsersWithPermissions(permissions, containerPath, includeInactive);
-                userOptions = users
-                    ?.filter(v => {
-                        if (sanitizedInput) {
-                            return v.displayName?.toLowerCase().indexOf(sanitizedInput) > -1;
-                        }
+                let groups : FetchedGroup[];
+                if (includeGroups)
+                    groups = await api.security.fetchGroups(getProjectPath(containerPath), permissions, true);
 
-                        return true;
-                    })
-                    .map(v => ({
-                        label: v.displayName,
-                        value: notifyList ? v.displayName : useEmail ? v.email : v.userId,
-                    }));
-                if (includeGroups) {
-                    const groups = await api.security.fetchGroups(getProjectPath(containerPath), permissions, true);
-                    const groupOptions = groups
-                        .filter(group => {
-                            if (includeSiteGroups) return true;
-                            return group.isProjectGroup;
-                        })
-                        .map(v => ({
-                            label: v.name,
-                            value: v.id,
-                        }));
-                    if (groupOptions?.length > 0) {
-                        return [
-                            {
-                                label: 'Project Groups',
-                                options: groupOptions,
-                            },
-                            {
-                                label: 'Users',
-                                options: userOptions,
-                            },
-                        ];
-                    }
-                }
+                return getUserGroupOptions(users, groups, input, notifyList, useEmail, includeSiteGroups);
+
             } catch (e) {
                 setError(resolveErrorMessage(e) ?? 'Failed to load users');
             }
-
-            return userOptions;
         },
         [api, containerPath, includeInactive, notifyList, permissions, useEmail]
     );

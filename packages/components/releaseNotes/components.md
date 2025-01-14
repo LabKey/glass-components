@@ -4,7 +4,10 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version 6.X
 *Released*: X January 2025
 - Workflow, Group Assignment & Notifications
-  - TODO
+  - Add `groups` to User model
+  - Fix `SelectInput.initOptions` when options have subgroups
+  - Modify `FetchGroups` to check permissions
+  - Modify `UserSelectInput` to include groups
 
 ### version 6.11.5
 *Released*: 10 January 2025

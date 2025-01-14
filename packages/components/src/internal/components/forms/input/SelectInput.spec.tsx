@@ -151,5 +151,18 @@ describe('SelectInput', () => {
                 number: 99,
             });
         });
+
+        test('grouped options', () => {
+            const options = [
+                {"label": "Project Groups", "options": [{"label": "group1", "value": 1008}, {"label": "groupLimitedPerm", "value": 1017}]},
+                {"label": "Users", "options": [{"label": "editorjob", "value": 1016}, {"label": "readerjob", "value": 1015}, {"label": "user1", "value": 1006}]}
+            ];
+
+            expect(initOptions({ options, value: 1008 })).toEqual({"label": "group1", "value": 1008});
+            expect(initOptions({ options, value: 1015 })).toEqual({"label": "readerjob", "value": 1015});
+            expect(initOptions({ options, value: 99 })).toEqual({ label: 99, value: 99 });
+            expect(initOptions({ options, value: 1008, labelKey: 'name' })).toEqual({"label": "group1", "value": 1008});
+
+        });
     });
 });
