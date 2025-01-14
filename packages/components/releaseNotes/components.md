@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.10.2
+*Released*: 14 January 2025
+- Merge from release24.11-SNAPSHOT to release25.1-SNAPSHOT
+  - includes changes from 5.20.5 #1686
+
 ### version 6.10.1
 *Released*: 3 January 2025
 - Fix cross folder import templates
