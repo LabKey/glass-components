@@ -12,6 +12,7 @@ export interface DisableableInputState {
     isDisabled?: boolean;
 }
 
+// TODO: convert this to a hook, use the hook instead of inheriting from this class
 export class DisableableInput<P extends DisableableInputProps, S extends DisableableInputState> extends React.Component<
     P,
     S
