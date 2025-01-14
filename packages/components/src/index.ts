@@ -63,7 +63,6 @@ import {
     downloadAttachment,
     findMissingValues,
     generateId,
-    getDisambiguatedSelectInputOptions,
     getValueFromRow,
     getValuesSummary,
     handleFileInputChange,
@@ -1603,7 +1602,6 @@ export {
     createWebDavDirectory,
     deleteWebDavResource,
     // util functions
-    getDisambiguatedSelectInputOptions,
     isDateBetween,
     formatDate,
     formatDateTime,
