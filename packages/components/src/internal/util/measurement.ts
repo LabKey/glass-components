@@ -46,7 +46,7 @@ export class UnitModel {
         }
 
         const newValue = this.value * (this.unit.ratio / newUnit.ratio);
-        return new UnitModel(parseFloat(newValue.toFixed(6)), newUnit.label.toLowerCase());
+        return new UnitModel(parseFloat(newValue.toFixed(newUnit.displayPrecision)), newUnit.label.toLowerCase());
     }
 
     add(deltaValue: number, deltaUnitStr?: string) {
@@ -118,7 +118,7 @@ export const MEASUREMENT_UNITS: { [key: string]: MeasurementUnit } = {
         longLabelPlural: 'grams',
         baseUnit: BASE_UNITS.MASS,
         ratio: 1,
-        displayPrecision: 3, // enable smallest precision of mg
+        displayPrecision: 9, // enable smallest precision of ng
     },
     mg: {
         label: 'mg',
@@ -126,7 +126,7 @@ export const MEASUREMENT_UNITS: { [key: string]: MeasurementUnit } = {
         longLabelPlural: 'milligrams',
         baseUnit: BASE_UNITS.MASS,
         ratio: 0.001,
-        displayPrecision: 0,
+        displayPrecision: 6,
     },
     kg: {
         label: 'kg',
@@ -134,7 +134,7 @@ export const MEASUREMENT_UNITS: { [key: string]: MeasurementUnit } = {
         longLabelPlural: 'kilograms',
         baseUnit: BASE_UNITS.MASS,
         ratio: 1000,
-        displayPrecision: 6, // enable smallest precision of mg
+        displayPrecision: 12, // enable smallest precision of ng
     },
     ml: {
         label: 'mL',
@@ -142,7 +142,7 @@ export const MEASUREMENT_UNITS: { [key: string]: MeasurementUnit } = {
         longLabelPlural: 'milliliters',
         baseUnit: BASE_UNITS.VOLUME,
         ratio: 1,
-        displayPrecision: 3,
+        displayPrecision: 6, // enable smallest precision of nanoliters
     },
     ul: {
         label: 'uL',
@@ -150,7 +150,7 @@ export const MEASUREMENT_UNITS: { [key: string]: MeasurementUnit } = {
         longLabelPlural: 'microliters',
         baseUnit: BASE_UNITS.VOLUME,
         ratio: 0.001,
-        displayPrecision: 0,
+        displayPrecision: 3,
     },
     l: {
         label: 'L',
@@ -158,7 +158,7 @@ export const MEASUREMENT_UNITS: { [key: string]: MeasurementUnit } = {
         longLabelPlural: 'liters',
         baseUnit: BASE_UNITS.VOLUME,
         ratio: 1000,
-        displayPrecision: 6,
+        displayPrecision: 9,
     },
     unit: {
         label: 'unit',
@@ -251,7 +251,7 @@ export function convertUnitsForInput(amount: number, unit: string, displayUnit: 
         return amount;
     }
     // show up to 6 decimal places
-    return parseFloat((amount * (currentUnit.ratio / targetUnit.ratio)).toFixed(6));
+    return parseFloat((amount * (currentUnit.ratio / targetUnit.ratio)).toFixed(targetUnit.displayPrecision));
 }
 
 export function convertUnitDisplay(
