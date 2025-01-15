@@ -27,6 +27,11 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: 3 January 2025
 - Issue 51879: App grid column header click area above column title should open the menu
 
+### version 6.10.2
+*Released*: 14 January 2025
+- Merge from release24.11-SNAPSHOT to release25.1-SNAPSHOT
+  - includes changes from 5.20.5 #1686
+
 ### version 6.10.1
 *Released*: 3 January 2025
 - Fix cross folder import templates
@@ -262,9 +267,9 @@ Components, models, actions, and utility functions for LabKey applications and p
     - EditorModel.getUpdatedData() to skip non-userEditable fields when comparing values
     - getIdentifyingFieldsEditableGridColumns() to take param for hasProductFolders to determine if Folder should be excluded
 
-### version 5.20.2
-*Released*: 4 November 2024
-- Issue 51563: LKSM: Add additional date and date/time formats
+### version 5.20.5
+*Released*: 13 January 2025
+- Issue 51967: Submit formatted date value from editable grid
 
 ### version 5.20.4
 *Released*: 9 November 2024
