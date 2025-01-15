@@ -4,6 +4,8 @@
  */
 import React, { FC, memo, useCallback, useMemo, useState } from 'react';
 
+import { User } from '@labkey/api';
+
 import { naturalSort } from '../../../../public/sort';
 
 import { useAppContext } from '../../../AppContext';
@@ -12,9 +14,9 @@ import { resolveErrorMessage } from '../../../util/messaging';
 
 import { getProjectPath } from '../../../app/utils';
 
-import { SelectInput, SelectInputOption, SelectInputProps } from './SelectInput';
 import { FetchedGroup } from '../../security/APIWrapper';
-import { User } from '@labkey/api';
+
+import { SelectInput, SelectInputOption, SelectInputProps } from './SelectInput';
 
 function generateKey(permissions?: string | string[], containerPath?: string): string {
     let key = 'allPermissions';
@@ -42,10 +44,18 @@ interface UserSelectInputProps extends Omit<SelectInputProps, 'delimiter' | 'loa
     useEmail?: boolean;
 }
 
-export const getUserGroupOptions = (users: User[], groups?: FetchedGroup[], input?: string, notifyList?: boolean, useEmail?: boolean, includeSiteGroups?: boolean) : SelectInputOption[] => {
+export const getUserGroupOptions = (
+    users: User[],
+    groups?: FetchedGroup[],
+    input?: string,
+    notifyList?: boolean,
+    useEmail?: boolean,
+    includeSiteGroups?: boolean
+): SelectInputOption[] => {
     let userOptions: SelectInputOption[];
     const sanitizedInput = input?.trim().toLowerCase();
-    userOptions = users?.filter(v => {
+    userOptions = users
+        ?.filter(v => {
             if (sanitizedInput) {
                 return v.displayName?.toLowerCase().indexOf(sanitizedInput) > -1;
             }
@@ -80,18 +90,17 @@ export const getUserGroupOptions = (users: User[], groups?: FetchedGroup[], inpu
                 options: groupOptions,
             };
             if (userOptions?.length > 0) {
-                return [groupedGroupOptions, groupedUserOptions,];
+                return [groupedGroupOptions, groupedUserOptions];
             } else {
                 return [groupedGroupOptions];
             }
-        }
-        else {
+        } else {
             return [groupedUserOptions];
         }
     }
 
     return userOptions;
-}
+};
 
 export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
     const {
@@ -113,12 +122,11 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
         async (input: string) => {
             try {
                 const users = await api.security.getUsersWithPermissions(permissions, containerPath, includeInactive);
-                let groups : FetchedGroup[];
+                let groups: FetchedGroup[];
                 if (includeGroups)
                     groups = await api.security.fetchGroups(getProjectPath(containerPath), permissions, true);
 
                 return getUserGroupOptions(users, groups, input, notifyList, useEmail, includeSiteGroups);
-
             } catch (e) {
                 setError(resolveErrorMessage(e) ?? 'Failed to load users');
             }
