@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.12.0
+*Released*: 15 January 2025
+- Issue 51908: increase precision for stored amounts to nanoliters and nanograms
+
 ### version 6.11.6
 *Released*: 15 January 2025
 - Merge from release25.1-SNAPSHOT to develop
