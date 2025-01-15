@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.11.6
+*Released*: 15 January 2025
+- Merge from release25.1-SNAPSHOT to develop
+    - includes changes from 6.10.2 #1689
+
 ### version 6.11.5
 *Released*: 10 January 2025
 - Issue 51824: TSV/CSV file import ignore lines that start with #
