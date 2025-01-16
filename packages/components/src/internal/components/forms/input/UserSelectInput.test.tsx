@@ -127,7 +127,7 @@ describe('getUserGroupOptions', () => {
                 ],
             },
         ]);
-       expect(getUserGroupOptions(users, groups)).toEqual([
+        expect(getUserGroupOptions(users, groups)).toEqual([
             {
                 label: 'Project Groups',
                 options: [

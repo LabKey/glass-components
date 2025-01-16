@@ -151,7 +151,7 @@ export function hasPermissions(
     checkIsAdmin = true,
     permissionCheck: 'all' | 'any' = 'all'
 ): boolean {
-    return checkPermissions(user.isAdmin, user.permissionsList, perms, checkIsAdmin, permissionCheck)
+    return checkPermissions(user.isAdmin, user.permissionsList, perms, checkIsAdmin, permissionCheck);
 }
 
 /**

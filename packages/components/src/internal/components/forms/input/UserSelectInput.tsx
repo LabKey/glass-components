@@ -48,7 +48,7 @@ export const getUserGroupOptions = (
     groups?: FetchedGroup[],
     input?: string,
     notifyList?: boolean,
-    useEmail?: boolean,
+    useEmail?: boolean
 ): SelectInputOption[] => {
     let userOptions: SelectInputOption[];
     const sanitizedInput = input?.trim().toLowerCase();

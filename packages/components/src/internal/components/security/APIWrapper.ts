@@ -205,7 +205,13 @@ export class ServerSecurityAPIWrapper implements SecurityAPIWrapper {
 
                     const perms = typeof permissions === 'string' ? [permissions] : permissions;
                     const groupsWithPerm = groups?.filter(group => {
-                        return checkPermissions(group.id === -1 /* Administrators group*/,  group.effectivePermissions, perms, checkIsAdmin, permissionCheck);
+                        return checkPermissions(
+                            group.id === -1 /* Administrators group*/,
+                            group.effectivePermissions,
+                            perms,
+                            checkIsAdmin,
+                            permissionCheck
+                        );
                     });
                     resolve(groupsWithPerm);
                 },
