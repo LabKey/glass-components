@@ -349,62 +349,6 @@ export const blurActiveElement = (): void => {
     (document.activeElement as HTMLElement).blur();
 };
 
-/**
- * Unique names are not enforced for samples when they belong to different sample types, or data from different data classes.
- * When generating SelectInput options, we want to append sample type or source type to entries with duplicate names so user know which item they are selecting.
- * @param rows
- * @param keyField
- * @param valueField
- * @param typeField
- */
-export function getDisambiguatedSelectInputOptions(
-    rows: List<Map<string, any>> | { [key: string]: any },
-    keyField: string,
-    valueField: string,
-    typeField: string
-) {
-    const options = [],
-        rawOptions = [];
-
-    if (Iterable.isIterable(rows)) {
-        rows.forEach(row => {
-            rawOptions.push({
-                value: row.getIn([keyField, 'value']),
-                label: row.getIn([valueField, 'value']),
-                type: row.getIn([typeField, 'value']),
-            });
-        });
-    } else {
-        Object.keys(rows).forEach(row => {
-            const data = rows[row];
-            rawOptions.push({
-                value: data[keyField]?.value,
-                label: data[valueField]?.value,
-                type: data[typeField]?.value,
-            });
-        });
-    }
-
-    rawOptions.sort((a, b) => {
-        return a.label.localeCompare(b.label);
-    });
-
-    const duplicateValues = [];
-    for (let i = 0; i < rawOptions.length - 1; i++) {
-        if (rawOptions[i + 1].label == rawOptions[i].label) {
-            if (duplicateValues.indexOf(rawOptions[i].label) === -1) duplicateValues.push(rawOptions[i].label);
-        }
-    }
-
-    rawOptions.forEach(option => {
-        const label =
-            duplicateValues.indexOf(option.label) > -1 ? option.label + ' (' + option.type + ')' : option.label;
-        options.push({ value: option.value, label });
-    });
-
-    return options;
-}
-
 const TRUE_STRINGS = ['true', 't', 'yes', 'y', 'on', '1'];
 const FALSE_STRINGS = ['false', 'f', 'no', 'n', 'off', '0'];
 
