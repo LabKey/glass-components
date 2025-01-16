@@ -1,6 +1,14 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.13.0
+*Released*: 16 January 2025
+- Add `OptionComponent` prop to `QuerySelect` in replacement of the `optionRenderer` prop which furnishes more useful props to the option rendering component.
+- Update `request` options to exclude `scope` and extend `Ajax.RequestOptions`. Package export `request`.
+- Introduce `useTimeout` hook that wraps timeout functionality for React components.
+- Add `abortOnDismount` optional parameter to the `useRequestHandler` hook so that requests can be aborted automatically when the hook is dismounted.
+- Remove unused utilities `intersect` and `toLowerReducer`.
+
 ### version 6.12.0
 *Released*: 15 January 2025
 - Issue 51908: increase precision for stored amounts to nanoliters and nanograms
