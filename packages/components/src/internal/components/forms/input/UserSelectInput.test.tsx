@@ -127,19 +127,7 @@ describe('getUserGroupOptions', () => {
                 ],
             },
         ]);
-        expect(getUserGroupOptions([], groups, null, false, false, true)).toEqual([
-            {
-                label: 'Project Groups',
-                options: [
-                    { label: 'Site Administrators', value: -1 },
-                    { label: 'group1', value: 1008 },
-                    { label: 'groupLimitedPerm', value: 1017 },
-                    { label: 'groupreader', value: 1018 },
-                    { label: 'megagroup', value: 1009 },
-                ],
-            },
-        ]);
-        expect(getUserGroupOptions(users, groups)).toEqual([
+       expect(getUserGroupOptions(users, groups)).toEqual([
             {
                 label: 'Project Groups',
                 options: [
@@ -179,14 +167,9 @@ describe('getUserGroupOptions', () => {
             },
         ]);
         expect(getUserGroupOptions(users, groups, 'user')).toEqual([
-            {
-                label: 'Users',
-                options: [
-                    { label: 'user1', value: 1006 },
-                    { label: 'user2', value: 1007 },
-                    { label: 'user21010', value: 1010 },
-                ],
-            },
+            { label: 'user1', value: 1006 },
+            { label: 'user2', value: 1007 },
+            { label: 'user21010', value: 1010 },
         ]);
     });
 });

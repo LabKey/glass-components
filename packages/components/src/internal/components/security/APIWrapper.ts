@@ -20,6 +20,7 @@ import { SchemaQuery } from '../../../public/SchemaQuery';
 import { deleteRows, processRequest, QueryCommandResponse } from '../../query/api';
 import { GroupMembership } from '../administration/models';
 import { getUsersWithPermissions } from '../forms/actions';
+import { checkPermissions } from '../base/models/User';
 
 type NonRequestCallback<T extends Utils.RequestCallbackOptions> = Omit<T, 'success' | 'failure' | 'scope'>;
 export type DeleteContainerOptions = NonRequestCallback<Security.DeleteContainerOptions>;
@@ -204,19 +205,7 @@ export class ServerSecurityAPIWrapper implements SecurityAPIWrapper {
 
                     const perms = typeof permissions === 'string' ? [permissions] : permissions;
                     const groupsWithPerm = groups?.filter(group => {
-                        if (checkIsAdmin && group.id === -1) {
-                            return perms?.length > 0;
-                        } else if (perms) {
-                            const allPerms = group.effectivePermissions ?? [];
-
-                            if (permissionCheck === 'any') {
-                                return perms.some(p => allPerms.indexOf(p) > -1);
-                            } else {
-                                return perms.every(p => allPerms.indexOf(p) > -1);
-                            }
-                        }
-
-                        return false;
+                        return checkPermissions(group.id === -1 /* Administrators group*/,  group.effectivePermissions, perms, checkIsAdmin, permissionCheck);
                     });
                     resolve(groupsWithPerm);
                 },

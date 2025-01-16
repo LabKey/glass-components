@@ -37,7 +37,6 @@ interface UserSelectInputProps extends Omit<SelectInputProps, 'delimiter' | 'loa
     containerPath?: string;
     includeGroups?: boolean;
     includeInactive?: boolean;
-    includeSiteGroups?: boolean;
     // specify whether this Select should correspond with a NotifyList on the server
     notifyList?: boolean;
     permissions?: string | string[];
@@ -50,7 +49,6 @@ export const getUserGroupOptions = (
     input?: string,
     notifyList?: boolean,
     useEmail?: boolean,
-    includeSiteGroups?: boolean
 ): SelectInputOption[] => {
     let userOptions: SelectInputOption[];
     const sanitizedInput = input?.trim().toLowerCase();
@@ -77,7 +75,6 @@ export const getUserGroupOptions = (
                     return false;
                 }
 
-                if (includeSiteGroups) return true;
                 return group.isProjectGroup;
             })
             .map(v => ({
@@ -94,8 +91,6 @@ export const getUserGroupOptions = (
             } else {
                 return [groupedGroupOptions];
             }
-        } else {
-            return [groupedUserOptions];
         }
     }
 
@@ -111,7 +106,6 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
         permissions,
         useEmail = false,
         includeGroups = false,
-        includeSiteGroups = false,
         ...selectInputProps
     } = props;
     const key = useMemo(() => generateKey(permissions, containerPath), [containerPath, permissions]);
@@ -126,7 +120,7 @@ export const UserSelectInput: FC<UserSelectInputProps> = memo(props => {
                 if (includeGroups)
                     groups = await api.security.fetchGroups(getProjectPath(containerPath), permissions, true);
 
-                return getUserGroupOptions(users, groups, input, notifyList, useEmail, includeSiteGroups);
+                return getUserGroupOptions(users, groups, input, notifyList, useEmail);
             } catch (e) {
                 setError(resolveErrorMessage(e) ?? 'Failed to load users');
             }
