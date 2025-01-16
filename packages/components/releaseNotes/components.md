@@ -9,6 +9,11 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Modify `FetchGroups` to check permissions
   - Modify `UserSelectInput` to include groups
 
+### version 6.14.0
+*Released*: 16 January 2025
+- Remove getDisambiguatedSelectInputOptions
+    - It is no longer used
+
 ### version 6.13.0
 *Released*: 16 January 2025
 - Add `OptionComponent` prop to `QuerySelect` in replacement of the `optionRenderer` prop which furnishes more useful props to the option rendering component.
