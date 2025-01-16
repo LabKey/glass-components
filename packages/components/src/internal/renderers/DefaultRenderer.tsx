@@ -19,6 +19,7 @@ import { List } from 'immutable';
 import { QueryColumn } from '../../public/QueryColumn';
 
 import { MultiValueRenderer } from './MultiValueRenderer';
+import { styleStringToObj } from '../util/utils';
 
 interface Props {
     col?: QueryColumn;
@@ -36,6 +37,7 @@ const URL_REL = 'noopener noreferrer';
  */
 export const DefaultRenderer: FC<Props> = memo(({ col, data, noLink }) => {
     let display = null;
+    let style;
     // Issue 43474: Prevent text wrapping for date columns
     const noWrap = col?.jsonType === 'date' || col?.jsonType === 'time';
     // Issue 36941: when using the default renderer, add css so that line breaks as preserved
@@ -50,6 +52,10 @@ export const DefaultRenderer: FC<Props> = memo(({ col, data, noLink }) => {
             // defensively return a MultiValueRenderer, this column likely wasn't declared properly as "multiValue"
             return <MultiValueRenderer data={data} />;
         } else {
+            if (data.has('style')) {
+                style = styleStringToObj(data.get('style'));
+            }
+
             if (data.has('formattedValue')) {
                 display = data.get('formattedValue');
             } else {
@@ -73,7 +79,11 @@ export const DefaultRenderer: FC<Props> = memo(({ col, data, noLink }) => {
         }
     }
 
-    return <span className={className}>{display}</span>;
+    return (
+        <span className={className} style={style}>
+            {display}
+        </span>
+    );
 });
 
 DefaultRenderer.displayName = 'DefaultRenderer';

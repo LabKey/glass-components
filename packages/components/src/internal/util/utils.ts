@@ -713,3 +713,20 @@ export function getValuesSummary<T>(values: T[], nounSingular: string, nounPlura
     const plural = nounPlural ?? nounSingular + 's';
     return `${values.length} ${plural} (${makeCommaSeparatedString(values)})`;
 }
+
+export function styleStringToObj(styleString: string): { [key: string]: string } {
+    const obj = styleString
+        .split(';')
+        .filter(token => token?.trim() !== '')
+        .reduce((prev, curr) => {
+            const tokens = curr.split(':');
+            prev[tokens[0]?.trim()] = tokens[1]?.replace('!important', '')?.trim();
+            return prev;
+        }, {});
+
+    return Object.keys(obj).reduce((prev, key) => {
+        var camelCased = key.replace(/-[a-z]/g, g => g[1].toUpperCase());
+        prev[camelCased] = obj[key];
+        return prev;
+    }, {});
+}

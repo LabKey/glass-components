@@ -23,6 +23,7 @@ import { GRID_SELECTION_INDEX, GRID_HEADER_CELL_BODY } from '../../constants';
 
 import { LabelHelpTip } from './LabelHelpTip';
 import { GridColumn } from './models/GridColumn';
+import { styleStringToObj } from '../../util/utils';
 
 function processColumns(columns: List<any>): List<GridColumn> {
     return columns
@@ -276,7 +277,7 @@ const GridRow: FC<GridRowProps> = memo(({ columns, highlight, row, rowIdx }) => 
                             {column.cell(row.get(column.index), row, column, rowIdx, c)}
                         </Fragment>
                     ) : (
-                        <td key={column.index} style={{ textAlign: column.align || 'left' } as any}>
+                        <td key={column.index} style={getTableDataStyling(column, row)}>
                             {column.cell(row.get(column.index), row, column, rowIdx, c)}
                         </td>
                     )
@@ -286,6 +287,14 @@ const GridRow: FC<GridRowProps> = memo(({ columns, highlight, row, rowIdx }) => 
     );
 });
 GridRow.displayName = 'GridRow';
+
+function getTableDataStyling(column: GridColumn, row: Map<string, any>): any {
+    let style = { textAlign: column.align || 'left' };
+    if (row.has(column.index) && Map.isMap(row.get(column.index)) && row.get(column.index).has('style')) {
+        style = { ...style, ...styleStringToObj(row.get(column.index).get('style')) };
+    }
+    return style;
+}
 
 interface EmptyGridRowProps {
     colSpan: number;
