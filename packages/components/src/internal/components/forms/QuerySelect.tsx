@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ComponentType, FC, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { List, Map } from 'immutable';
 import { Filter, Query, Utils } from '@labkey/api';
 
 import { SchemaQuery } from '../../../public/SchemaQuery';
 
 import { resolveErrorMessage } from '../../util/messaging';
+
+import { Row } from '../../query/selectRows';
+
+import { QueryInfo } from '../../../public/QueryInfo';
 
 import { SelectInputOption, SelectInput, SelectInputProps, SelectInputChange } from './input/SelectInput';
 import { resolveDetailFieldLabel } from './utils';
@@ -71,13 +75,29 @@ function getValue(model: QuerySelectModel, multiple: boolean): any {
 // when fetching async query results. They have already been filtered.
 const noopFilterOptions = options => options;
 
-const PreviewOption: FC<any> = props => {
-    const { model, label, value } = props;
+export interface QuerySelectOptionProps extends Pick<SelectInputOption, 'label' | 'value'> {
+    queryInfo: QueryInfo;
+    row: Row;
+}
+
+export type QuerySelectOptionComponent = ComponentType<QuerySelectOptionProps>;
+
+interface OptionRendererProps extends Pick<SelectInputOption, 'label' | 'value'> {
+    OptionComponent?: QuerySelectOptionComponent;
+    model: QuerySelectModel;
+}
+
+const OptionRenderer: FC<OptionRendererProps> = props => {
+    const { OptionComponent, label, model, value } = props;
     const { allResults, queryInfo } = model;
 
     if (queryInfo && allResults.size) {
         const columns = queryInfo.getLookupViewColumns(model.displayColumn);
         const item = allResults.find(result => value === result.getIn([model.valueColumn, 'value']));
+
+        if (OptionComponent) {
+            return <OptionComponent label={label} queryInfo={queryInfo} row={item?.toJS() as Row} value={value} />;
+        }
 
         return (
             <>
@@ -110,6 +130,7 @@ const PreviewOption: FC<any> = props => {
 
     return null;
 };
+OptionRenderer.displayName = 'OptionRenderer';
 
 // This "extends" the SelectInputChange type by adding additional parameters. This should always extend the
 // signature of SelectInputChange so onChange event handling can be coalesced.
@@ -138,11 +159,13 @@ type InheritedSelectInputProps = Omit<
     | 'loadOptions'
     | 'onChange' // overridden by QuerySelect. See onQSChange().
     | 'options'
+    | 'optionRenderer' // overridden by QuerySelect. Use "OptionComponent" instead.
     | 'selectedOptions'
     | 'valueKey'
 >;
 
 export interface QuerySelectOwnProps extends InheritedSelectInputProps {
+    OptionComponent?: QuerySelectOptionComponent;
     autoInit?: boolean;
     containerFilter?: Query.ContainerFilter;
     /** The path to the LK container that the queries should be scoped to. */
@@ -167,6 +190,7 @@ type DefaultOptions = boolean | SelectInputOption[];
 
 export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
     const {
+        OptionComponent,
         autoInit = DEFAULT_AUTO_LOAD,
         containerFilter,
         containerPath,
@@ -325,7 +349,12 @@ export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
         }
     }, [loadOptions, shouldLoadOnFocus]);
 
-    const optionRenderer = useCallback(p => <PreviewOption label={p.label} model={model} value={p.value} />, [model]);
+    const optionRenderer = useCallback(
+        option => (
+            <OptionRenderer OptionComponent={OptionComponent} label={option.label} model={model} value={option.value} />
+        ),
+        [OptionComponent, model]
+    );
 
     if (error) {
         return (
@@ -359,7 +388,6 @@ export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
             <SelectInput
                 filterOption={noopFilterOptions}
                 label={label !== undefined ? label : model.queryInfo.title}
-                optionRenderer={optionRenderer}
                 {...selectInputProps}
                 allowCreate={false}
                 autoValue={false} // QuerySelect directly controls value of SelectInput via "selectedOptions"
@@ -370,6 +398,7 @@ export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
                 loadOptions={loadOptions}
                 onChange={onChange}
                 onFocus={onFocus}
+                optionRenderer={optionRenderer}
                 options={undefined} // prevent override
                 selectedOptions={model.selectedOptions}
                 value={getValue(model, multiple)} // needed to initialize the Formsy "value" properly
@@ -405,5 +434,4 @@ export const QuerySelect: FC<QuerySelectOwnProps> = memo(props => {
 
     return null;
 });
-
 QuerySelect.displayName = 'QuerySelect';
