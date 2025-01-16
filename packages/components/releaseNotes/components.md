@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version 6.??.?
-*Released*: ? January 2025
+### version 6.14.0
+*Released*: 16 January 2025
 - Remove getDisambiguatedSelectInputOptions
     - It is no longer used
 
