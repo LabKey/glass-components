@@ -28,6 +28,12 @@ export enum Status {
     Archived = 'Archived',
 }
 
+export interface ProtocolTransformScript {
+    runOnEdit: boolean;
+    runOnImport: boolean;
+    scriptPath: string;
+}
+
 export class AssayProtocolModel extends ImmutableRecord({
     allowBackgroundUpload: false,
     allowEditableResults: false,
@@ -85,7 +91,7 @@ export class AssayProtocolModel extends ImmutableRecord({
     declare plateMetadata: boolean;
     declare protocolId: number;
     declare protocolParameters: any;
-    declare protocolTransformScripts: List<string>;
+    declare protocolTransformScripts: List<ProtocolTransformScript>;
     declare providerName: string;
     declare saveScriptFiles: boolean;
     declare selectedDetectionMethod: string;
@@ -106,7 +112,7 @@ export class AssayProtocolModel extends ImmutableRecord({
         }
 
         if (raw.protocolTransformScripts && Utils.isArray(raw.protocolTransformScripts)) {
-            raw.protocolTransformScripts = List<string>(raw.protocolTransformScripts);
+            raw.protocolTransformScripts = List(raw.protocolTransformScripts);
         }
         if (raw.moduleTransformScripts && Utils.isArray(raw.moduleTransformScripts)) {
             raw.moduleTransformScripts = List<string>(raw.moduleTransformScripts);
@@ -197,7 +203,7 @@ export class AssayProtocolModel extends ImmutableRecord({
 
         // make sure we don't have any script inputs that are empty strings
         const hasEmptyScript = this.protocolTransformScripts.some(
-            (script, i) => script === undefined || script === null || script.length === 0
+            config => config.scriptPath === undefined || config.scriptPath === null || config.scriptPath.length === 0
         );
         if (hasEmptyScript) {
             return 'Missing required transform script path.';
