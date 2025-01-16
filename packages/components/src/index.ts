@@ -41,6 +41,7 @@ import { SCHEMAS } from './internal/schemas';
 import { isLoading, LoadingState } from './public/LoadingState';
 import { ExtendedMap } from './public/ExtendedMap';
 import { useContainerUser } from './internal/components/container/actions';
+import { request } from './internal/request';
 
 import {
     ServerContextConsumer,
@@ -860,7 +861,7 @@ import { Discussions } from './internal/announcements/Discussions';
 import { Thread } from './internal/announcements/Thread';
 import { ThreadBlock } from './internal/announcements/ThreadBlock';
 import { ThreadEditor } from './internal/announcements/ThreadEditor';
-import { useNotAuthorized, useNotFound, usePortalRef } from './internal/hooks';
+import { useNotAuthorized, useNotFound, usePortalRef, useTimeout } from './internal/hooks';
 import {
     TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT,
     TEST_BIO_LIMS_STARTER_MODULE_CONTEXT,
@@ -1663,6 +1664,7 @@ export {
     encodePart,
     decodePart,
     DATE_FORMATS_TOPIC,
+    request,
     useRequestHandler,
     // devTools functions
     applyDevTools,
@@ -1821,6 +1823,7 @@ export {
     PrintLabelsModal,
     useLabelPrintingContext,
     usePortalRef,
+    useTimeout,
     ExtendedMap,
     FormButtons,
     ModalButtons,
@@ -1918,7 +1921,12 @@ export type {
     SelectInputProps,
 } from './internal/components/forms/input/SelectInput';
 export type { ISelectInitData } from './internal/components/forms/model';
-export type { QuerySelectChange, QuerySelectOwnProps } from './internal/components/forms/QuerySelect';
+export type {
+    QuerySelectChange,
+    QuerySelectOptionComponent,
+    QuerySelectOptionProps,
+    QuerySelectOwnProps,
+} from './internal/components/forms/QuerySelect';
 export type {
     EntityCreationTypeModel,
     SampleStatus,
@@ -2007,3 +2015,6 @@ export type { AppContextTestProviderProps } from './internal/test/testHelpers';
 export type { DisableableInputProps } from './internal/components/forms/input/DisableableInput';
 export type { ContainerFormats, DateTimeSettingProp } from './internal/util/Date';
 export type { ImportTemplate } from './public/QueryInfo';
+export type { RequestHandler, RequestOptions } from './internal/request';
+export type { UseRequestHandler } from './internal/util/RequestHandler';
+export type { UseTimeout } from './internal/hooks';

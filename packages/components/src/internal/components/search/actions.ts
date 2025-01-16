@@ -12,6 +12,8 @@ import { getContainerFilter } from '../../query/api';
 
 import { ModuleContext } from '../base/ServerContext';
 
+import { RequestHandler } from '../../request';
+
 import { getSearchScopeFromContainerFilter, escapeSearchQuery } from './utils';
 import { GetCardDataFn, SearchIdData, SearchResultCardData } from './models';
 import { SearchCategory, SearchField, SearchScope } from './constants';
@@ -54,7 +56,7 @@ export interface SearchOptions {
     normalizeUrls?: boolean;
     offset?: number;
     q: string;
-    requestHandler?: (request: XMLHttpRequest) => void;
+    requestHandler?: RequestHandler;
     scope?: SearchScope;
 }
 

@@ -35,6 +35,7 @@ import { QueryColumn, QueryLookup } from '../../public/QueryColumn';
 import { ViewInfo, ViewInfoJson } from '../ViewInfo';
 import { URLResolver } from '../url/URLResolver';
 import { ModuleContext } from '../components/base/ServerContext';
+import { RequestHandler } from '../request';
 
 let queryDetailsCache: Record<string, Promise<QueryInfo>> = {};
 
@@ -1336,7 +1337,7 @@ export function getContainerFilterForLookups(moduleContext?: ModuleContext): Que
 }
 
 export interface SelectDistinctOptions extends Omit<Query.SelectDistinctOptions, 'success' | 'failure'> {
-    requestHandler?: (request: XMLHttpRequest) => void;
+    requestHandler?: RequestHandler;
 }
 
 export function selectDistinctRows(options: SelectDistinctOptions): Promise<Query.SelectDistinctResponse> {
