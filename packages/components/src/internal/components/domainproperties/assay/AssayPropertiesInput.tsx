@@ -250,7 +250,7 @@ export const EditableResultsInput: FC<InputProps> = memo(props => (
                     level after the initial import is complete. New result rows cannot be added to existing runs. These
                     changes will be audited.
                 </p>
-                <p> Disabling this will set the Transform Script 'Run on Edit' values to be locked as disabled. </p>
+                <p> Disabling this option will set the Transform Script 'Run on Edit' values to be unchecked and disabled. </p>
             </>
         }
     >
