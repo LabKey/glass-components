@@ -859,6 +859,10 @@
 
 .transform-script-configuration {
     border-bottom: 1px solid $gray-border-light;
+
+    input[type=checkbox][disabled] {
+        cursor: not-allowed;
+    }
 }
 
 .transform-script-card.attachment-card {
