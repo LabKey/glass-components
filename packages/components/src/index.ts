@@ -42,6 +42,7 @@ import { isLoading, LoadingState } from './public/LoadingState';
 import { ExtendedMap } from './public/ExtendedMap';
 import { useContainerUser } from './internal/components/container/actions';
 import { request } from './internal/request';
+import { useLoadableState } from './internal/useLoadableState';
 
 import {
     ServerContextConsumer,
@@ -1664,6 +1665,7 @@ export {
     DATE_FORMATS_TOPIC,
     request,
     useRequestHandler,
+    useLoadableState,
     // devTools functions
     applyDevTools,
     devToolsActive,
