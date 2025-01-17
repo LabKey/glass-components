@@ -3,12 +3,13 @@ Components, models, actions, and utility functions for LabKey applications and p
 
 ### version TBD
 *Released*: TBD
-- Add support for conditional formaatting in LIMS and SDMS products
+- Add support for conditional formatting in LIMS and SDMS products
+  - Update `DetailDisplay` and `GridRow` rendering to use provided conditional formatting
+  - Export utility method `getDataStyling` for use in other components
 
 ### version 6.14.0
 *Released*: 16 January 2025
 - Remove getDisambiguatedSelectInputOptions
-    - It is no longer used
 
 ### version 6.13.0
 *Released*: 16 January 2025

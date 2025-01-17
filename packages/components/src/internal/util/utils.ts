@@ -15,10 +15,11 @@
  */
 import { Iterable, List, Map, Set as ImmutableSet } from 'immutable';
 import { getServerContext, Utils } from '@labkey/api';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, CSSProperties } from 'react';
 
 import { hasParameter, toggleParameter } from '../url/ActionURL';
 import { encodePart } from '../../public/SchemaQuery';
+import { GridColumn } from '../components/base/models/GridColumn';
 
 // Case-insensitive Object reference. Returns undefined if either object or prop does not resolve.
 // If both casings exist (e.g. 'x' and 'X' are props) then either value may be returned.
@@ -714,7 +715,35 @@ export function getValuesSummary<T>(values: T[], nounSingular: string, nounPlura
     return `${values.length} ${plural} (${makeCommaSeparatedString(values)})`;
 }
 
-export function styleStringToObj(styleString: string): { [key: string]: string } {
+/**
+ * given a data map, return the CSSProperties that correspond to the 'style' property for that map.
+ * If a column is provided, the map is expected to be a full row of data with the column being (possibly) one of the
+ * fields in that row. If no column is provided, the data is expected to be a single field's data.
+ * @param data either a row of data or a single field's data
+ * @param column the grid column corresponding to the data to extract styling for.
+ */
+export function getDataStyling(data: Map<string, any>, column?: GridColumn): CSSProperties {
+    let style = {};
+    if (!data) {
+        return style;
+    }
+    if (column) {
+        style = { textAlign: column.align || 'left' };
+        if (data.has(column.index) && Map.isMap(data.get(column.index)) && data.get(column.index).has('style')) {
+            style = { ...style, ...styleStringToObj(data.get(column.index).get('style')) };
+        }
+    } else if (data.has('style')) {
+        style = styleStringToObj(data.get('style'));
+    }
+    return style;
+}
+
+/**
+ * Converts a string containing css styling directives to an object consumable by react components in a style property
+ * Example input: ;font-style: italic;color: #7b64ff;background-color: #fe9200 !important;
+ * @param styleString
+ */
+export function styleStringToObj(styleString: string): CSSProperties {
     const obj = styleString
         .split(';')
         .filter(token => token?.trim() !== '')

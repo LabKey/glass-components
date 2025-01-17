@@ -41,6 +41,7 @@ import { ExpirationDateColumnRenderer } from '../../../renderers/ExpirationDateC
 import { getContainerFilterForLookups } from '../../../query/api';
 import { FolderColumnRenderer } from '../../../renderers/FolderColumnRenderer';
 import { FILELINK_RANGE_URI } from '../../domainproperties/constants';
+import { getDataStyling } from '../../../util/utils';
 
 export type Renderer = (data: any, row?: any) => ReactNode;
 
@@ -228,6 +229,9 @@ export const DetailDisplay: FC<DetailDisplayProps> = memo(props => {
                                                     className="text__wrap"
                                                     data-caption={field.title}
                                                     data-fieldkey={field.fieldKey}
+                                                    style={getDataStyling(
+                                                        newRow.get(decodePart(key)) ?? newRow.get(key)
+                                                    )}
                                                 >
                                                     {field.renderer(
                                                         newRow.get(decodePart(key)) ?? newRow.get(key),
