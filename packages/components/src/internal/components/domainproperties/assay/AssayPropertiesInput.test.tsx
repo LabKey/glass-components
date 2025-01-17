@@ -214,7 +214,7 @@ describe('AssayPropertiesInput', () => {
                 model={AssayProtocolModel.create({
                     protocolId: 1,
                     domains: [{ container: 'test' }],
-                    protocolTransformScripts: ['a', 'b'],
+                    protocolTransformScripts: [{ scriptPath: 'a' }, { scriptPath: 'b' }],
                 })}
                 onChange={jest.fn}
             />
@@ -224,7 +224,7 @@ describe('AssayPropertiesInput', () => {
         expect(labelHTML).toContain('Scripts');
         expect(labelHTML).not.toContain(' *');
         expect(labelHTML).toContain('label-help-icon');
-        expect(document.querySelectorAll('input').length).toBe(0);
+        expect(document.querySelectorAll('input').length).toBe(4);
         expect(document.querySelectorAll('.transform-script-card').length).toBe(2);
         const addButton = document.querySelector('.transform-script--add-button');
         expect(addButton.getAttribute('disabled')).toBe(null);
