@@ -104,7 +104,7 @@ const AssayPropertiesForm: FC<AssayPropertiesFormProps> = memo(props => {
     useEffect(() => {
         if (
             model.editableResults === false &&
-            model.protocolTransformScripts.filter(config => config.runOnEdit).size > 0
+            model.protocolTransformScripts?.filter(config => config.runOnEdit).size > 0
         ) {
             const newProtocolTransformScripts = model.protocolTransformScripts.map(config => {
                 return { ...config, runOnEdit: false };

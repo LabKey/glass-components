@@ -203,7 +203,7 @@ export class AssayProtocolModel extends ImmutableRecord({
 
         // make sure we don't have any script inputs that are empty strings
         const hasEmptyScript = this.protocolTransformScripts.some(
-            config => config.scriptPath === undefined || config.scriptPath === null || config.scriptPath.length === 0
+            config => config?.scriptPath === undefined || config.scriptPath === null || config.scriptPath.length === 0
         );
         if (hasEmptyScript) {
             return 'Missing required transform script path.';
