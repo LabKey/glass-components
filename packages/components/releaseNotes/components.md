@@ -4,8 +4,8 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version TBD
 *Released*: TBD
 - Add support for conditional formatting in LIMS and SDMS products
-  - Update `DetailDisplay` and `GridRow` rendering to use provided conditional formatting
-  - Export utility method `getDataStyling` for use in other components
+  - Update `DefaultRenderer`, `UserDetialsRenderer` and `AttachmentCard` to use provided conditional formatting
+  - Add utility method `getDataStyling` for use in other components
 
 ### version 6.14.0
 *Released*: 16 January 2025
