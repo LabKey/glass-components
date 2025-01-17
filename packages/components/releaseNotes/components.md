@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Add support for conditional formaatting in LIMS and SDMS products
+
 ### version 6.14.0
 *Released*: 16 January 2025
 - Remove getDisambiguatedSelectInputOptions
