@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useMemo, useState } from 'react';
+import React, { CSSProperties, FC, memo, useCallback, useMemo, useState } from 'react';
 import classNames from 'classnames';
 
 import { Modal } from '../Modal';
@@ -33,6 +33,7 @@ export interface AttachmentCardProps {
     onDownload?: (attachment: IAttachment) => void;
     onRemove?: (attachment: IAttachment) => void;
     outerCls?: string;
+    titleStyle?: CSSProperties;
 }
 
 export const AttachmentCard: FC<AttachmentCardProps> = memo(props => {
@@ -48,7 +49,9 @@ export const AttachmentCard: FC<AttachmentCardProps> = memo(props => {
         copyNoun = 'link',
         allowRemove = true,
         allowDownload = true,
+        titleStyle,
     } = props;
+    let titleClass = titleStyle?.backgroundColor ? 'attachment-card__name status-pill' : 'attachment-card__name ';
     const [showModal, setShowModal] = useState<boolean>();
 
     const _showModal = useCallback(() => {
@@ -113,7 +116,9 @@ export const AttachmentCard: FC<AttachmentCardProps> = memo(props => {
                         {(!_isImage || unavailable) && <i className={`attachment-card__icon_tile ${_iconFontCls}`} />}
                     </div>
                     <div className="attachment-card__content">
-                        <div className="attachment-card__name">{title ?? name}</div>
+                        <div className={titleClass} style={titleStyle}>
+                            {title ?? name}
+                        </div>
                         <div className="attachment-card__size">
                             {!isLoaded && <LoadingSpinner msg="Uploading..." />}
                             {isLoaded && recentlyCreated && (

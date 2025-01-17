@@ -723,17 +723,21 @@ export function getValuesSummary<T>(values: T[], nounSingular: string, nounPlura
  * @param column the grid column corresponding to the data to extract styling for.
  */
 export function getDataStyling(data: Map<string, any>, column?: GridColumn): CSSProperties {
-    let style = {};
     if (!data) {
-        return style;
+        return undefined;
     }
+    let style;
     if (column) {
         style = { textAlign: column.align || 'left' };
         if (data.has(column.index) && Map.isMap(data.get(column.index)) && data.get(column.index).has('style')) {
             style = { ...style, ...styleStringToObj(data.get(column.index).get('style')) };
         }
-    } else if (data.has('style')) {
-        style = styleStringToObj(data.get('style'));
+    } else if (Map.isMap(data)) {
+        if (data.has('style')) {
+            style = styleStringToObj(data.get('style'));
+        }
+    } else {
+        style = styleStringToObj(caseInsensitive(data, 'style'));
     }
     return style;
 }
@@ -743,6 +747,7 @@ export function getDataStyling(data: Map<string, any>, column?: GridColumn): CSS
  * Example input: ;font-style: italic;color: #7b64ff;background-color: #fe9200 !important;
  * @param styleString
  */
+// exported for jest testing
 export function styleStringToObj(styleString: string): CSSProperties {
     const obj = styleString
         .split(';')

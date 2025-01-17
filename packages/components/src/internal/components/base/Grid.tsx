@@ -277,7 +277,7 @@ const GridRow: FC<GridRowProps> = memo(({ columns, highlight, row, rowIdx }) => 
                             {column.cell(row.get(column.index), row, column, rowIdx, c)}
                         </Fragment>
                     ) : (
-                        <td key={column.index} style={getDataStyling(row, column)}>
+                        <td key={column.index} style={{ textAlign: column.align || 'left' } as any}>
                             {column.cell(row.get(column.index), row, column, rowIdx, c)}
                         </td>
                     )

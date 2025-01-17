@@ -229,9 +229,6 @@ export const DetailDisplay: FC<DetailDisplayProps> = memo(props => {
                                                     className="text__wrap"
                                                     data-caption={field.title}
                                                     data-fieldkey={field.fieldKey}
-                                                    style={getDataStyling(
-                                                        newRow.get(decodePart(key)) ?? newRow.get(key)
-                                                    )}
                                                 >
                                                     {field.renderer(
                                                         newRow.get(decodePart(key)) ?? newRow.get(key),

@@ -16,7 +16,7 @@
 import React, { ReactNode, PureComponent } from 'react';
 import { Iterable } from 'immutable';
 
-import { caseInsensitive, downloadAttachment, getIconFontCls, isImage } from '../util/utils';
+import { caseInsensitive, downloadAttachment, getDataStyling, getIconFontCls, isImage } from '../util/utils';
 
 import { AttachmentCard, AttachmentCardProps, IAttachment } from './AttachmentCard';
 
@@ -62,7 +62,7 @@ export const getAttachmentCardProp = (
         value = caseInsensitive(data, 'value');
         display = getFileDisplayValue(caseInsensitive(data, 'displayValue'));
     }
-
+    const titleStyle = getDataStyling(data);
     const filename = display.filename;
     const fileUnavailable = display.fileUnavailable;
     const name = filename || value;
@@ -87,6 +87,7 @@ export const getAttachmentCardProp = (
         imageURL: _isImage ? url : undefined,
         imageCls: 'attachment-card__img',
         allowRemove: onRemove !== undefined,
+        titleStyle,
         onRemove,
     };
 };
