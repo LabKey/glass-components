@@ -119,7 +119,22 @@ export type FilterOption = ((option: SelectInputOption, rawInput: string) => boo
 
 function initOptionFromPrimitive(value: string | number, props: SelectInputProps): SelectInputOption {
     const { labelKey = 'label', options, valueKey = 'value' } = props;
-    return options?.find(o => o[valueKey] === value) ?? { [labelKey]: value, [valueKey]: value };
+    const result = options?.find(o => o[valueKey] === value);
+    if (result) return result;
+
+    // if there are grouped options
+    if (options?.[0]?.options?.length > 0) {
+        let subResult;
+        options.forEach(optionGroup => {
+            if (subResult) return;
+            subResult = optionGroup?.options?.find(o => o[valueKey] === value);
+        });
+
+        if (!!subResult)
+            return subResult;
+    }
+
+    return { [labelKey]: value, [valueKey]: value };
 }
 
 // Used to initialize the selected options in `state` when `autoValue` is enabled.

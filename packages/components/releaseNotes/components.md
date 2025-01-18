@@ -1,6 +1,14 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.14.1
+*Released*: 17 January 2025
+- Workflow, Group Assignment & Notifications
+  - Add `groups` to User model
+  - Fix `SelectInput.initOptions` when options have subgroups
+  - Modify `FetchGroups` to check permissions
+  - Modify `UserSelectInput` to include groups
+
 ### version 6.14.0
 *Released*: 16 January 2025
 - Remove getDisambiguatedSelectInputOptions
