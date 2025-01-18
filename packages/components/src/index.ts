@@ -911,6 +911,7 @@ import { CheckboxLK } from './internal/Checkbox';
 import { ArchivedFolderTag } from './internal/components/folder/ArchivedFolderTag';
 import { FilterCriteriaRenderer } from './internal/FilterCriteriaRenderer';
 import { getQueryTestAPIWrapper } from './internal/query/APIWrapper';
+import { useLoadableState } from './internal/useLoadableState';
 
 // See Immer docs for why we do this: https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
 enableMapSet();
@@ -1850,6 +1851,7 @@ export {
     // Custom labels
     getModuleCustomLabels,
     FilterCriteriaRenderer,
+    useLoadableState,
 };
 
 //  Due to babel-loader & typescript babel plugins we need to export/import types separately. The babel plugins require
