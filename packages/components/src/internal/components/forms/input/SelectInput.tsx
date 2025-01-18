@@ -130,7 +130,8 @@ function initOptionFromPrimitive(value: string | number, props: SelectInputProps
             subResult = optionGroup?.options?.find(o => o[valueKey] === value);
         });
 
-        return subResult;
+        if (!!subResult)
+            return subResult;
     }
 
     return { [labelKey]: value, [valueKey]: value };
