@@ -1,6 +1,7 @@
 import { ActionURL, PermissionTypes, UserWithPermissions } from '@labkey/api';
 
 interface IUserProps extends UserWithPermissions {
+    groups?: number[];
     permissionsList: string[];
 }
 
@@ -29,6 +30,8 @@ const defaultUser: IUserProps = {
 
     maxAllowedPhi: undefined,
     permissionsList: undefined,
+
+    groups: undefined,
 };
 
 /**
@@ -59,6 +62,8 @@ export class User implements IUserProps {
 
     declare maxAllowedPhi: string;
     declare permissionsList: string[];
+
+    declare groups: number[];
 
     constructor(props) {
         Object.assign(this, defaultUser, props);
@@ -109,6 +114,28 @@ export class User implements IUserProps {
     }
 }
 
+export function checkPermissions(
+    isAdmin: boolean,
+    permissions: string[],
+    requiredPermission: string[],
+    checkIsAdmin = true,
+    permissionCheck: 'all' | 'any' = 'all'
+): boolean {
+    if (checkIsAdmin && isAdmin) {
+        return requiredPermission?.length > 0;
+    } else if (requiredPermission) {
+        const allPerms = permissions ?? [];
+
+        if (permissionCheck === 'any') {
+            return requiredPermission.some(p => allPerms.indexOf(p) > -1);
+        } else {
+            return requiredPermission.every(p => allPerms.indexOf(p) > -1);
+        }
+    }
+
+    return false;
+}
+
 /**
  * Determines if a user has the permissions given.
  * @param user User in question
@@ -124,19 +151,7 @@ export function hasPermissions(
     checkIsAdmin = true,
     permissionCheck: 'all' | 'any' = 'all'
 ): boolean {
-    if (checkIsAdmin && user.isAdmin) {
-        return perms?.length > 0;
-    } else if (perms) {
-        const allPerms = user.permissionsList ?? [];
-
-        if (permissionCheck === 'any') {
-            return perms.some(p => allPerms.indexOf(p) > -1);
-        } else {
-            return perms.every(p => allPerms.indexOf(p) > -1);
-        }
-    }
-
-    return false;
+    return checkPermissions(user.isAdmin, user.permissionsList, perms, checkIsAdmin, permissionCheck);
 }
 
 /**
