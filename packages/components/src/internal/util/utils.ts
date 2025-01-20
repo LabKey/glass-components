@@ -722,7 +722,7 @@ export function getValuesSummary<T>(values: T[], nounSingular: string, nounPlura
  * @param data either a row of data or a single field's data
  * @param column the grid column corresponding to the data to extract styling for.
  */
-export function getDataStyling(data: Map<string, any>, column?: GridColumn): CSSProperties {
+export function getDataStyling(data: Map<string, any> | any, column?: GridColumn): CSSProperties {
     if (!data) {
         return undefined;
     }
@@ -736,7 +736,7 @@ export function getDataStyling(data: Map<string, any>, column?: GridColumn): CSS
         if (data.has('style')) {
             style = styleStringToObj(data.get('style'));
         }
-    } else {
+    } else if (Utils.isObject(data)) {
         style = styleStringToObj(caseInsensitive(data, 'style'));
     }
     return style;
