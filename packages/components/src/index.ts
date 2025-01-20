@@ -42,7 +42,6 @@ import { isLoading, LoadingState } from './public/LoadingState';
 import { ExtendedMap } from './public/ExtendedMap';
 import { useContainerUser } from './internal/components/container/actions';
 import { request } from './internal/request';
-import { useLoadableState } from './internal/useLoadableState';
 
 import {
     ServerContextConsumer,
@@ -861,7 +860,7 @@ import { Discussions } from './internal/announcements/Discussions';
 import { Thread } from './internal/announcements/Thread';
 import { ThreadBlock } from './internal/announcements/ThreadBlock';
 import { ThreadEditor } from './internal/announcements/ThreadEditor';
-import { useNotAuthorized, useNotFound, usePortalRef, useTimeout } from './internal/hooks';
+import { useModalState, useNotAuthorized, useNotFound, usePortalRef, useTimeout } from './internal/hooks';
 import {
     TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT,
     TEST_BIO_LIMS_STARTER_MODULE_CONTEXT,
@@ -1666,7 +1665,6 @@ export {
     DATE_FORMATS_TOPIC,
     request,
     useRequestHandler,
-    useLoadableState,
     // devTools functions
     applyDevTools,
     devToolsActive,
@@ -1852,6 +1850,7 @@ export {
     getModuleCustomLabels,
     FilterCriteriaRenderer,
     useLoadableState,
+    useModalState,
 };
 
 //  Due to babel-loader & typescript babel plugins we need to export/import types separately. The babel plugins require
