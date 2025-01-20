@@ -48,9 +48,9 @@ import {
 } from './sampleModels';
 
 export interface AdminAppContext {
-    NotebookNotificationSettingsComponent: NotebookNotificationSettings;
-    NotebookContainerSettingsComponent: NotebookContainerSettings;
     FolderStorageSelectionComponent?: FolderStorageSelection;
+    NotebookContainerSettingsComponent: NotebookContainerSettings;
+    NotebookNotificationSettingsComponent: NotebookNotificationSettings;
     WorkflowNotificationSettingsComponent: WorkflowNotificationSettings;
     extraPermissionRoles: string[][];
     folderDataTypes?: EntityDataType[];
@@ -79,7 +79,8 @@ export interface SampleTypeAppContext {
     getWorkflowGridQueryConfigs?: (
         visibleTabs: string[],
         gridPrefix: string,
-        user: User,
+        userId: number,
+        userGroupIds: number[],
         schemaQuery?: SchemaQuery,
         initialFilters?: Filter.IFilter[],
         sampleLSID?: string,

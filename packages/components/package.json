@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "6.14.1-conditionalFormatting.2",
+  "version": "6.14.2-conditionalFormatting.3",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [
