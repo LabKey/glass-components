@@ -457,11 +457,9 @@ export function isCustomImportTemplatesEnabled(moduleContext?: ModuleContext): b
     return isFeatureEnabled(ProductFeature.CustomImportTemplates, moduleContext);
 }
 
+// Everything except sample manager gets conditional formatting.
 export function isConditionalFormattingEnabled(moduleContext?: ModuleContext): boolean {
-    return (
-        !isSampleManagerDistribution() &&
-        (!isApp() || isFeatureEnabled(ProductFeature.ConditionalFormatting, moduleContext))
-    );
+    return !isSampleManagerDistribution(moduleContext);
 }
 
 export function isFeatureEnabled(flag: ProductFeature, moduleContext?: ModuleContext): boolean {
