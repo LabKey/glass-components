@@ -27,7 +27,7 @@ export interface PicklistEditModalProps {
     picklistProductId?: string;
     queryModel?: QueryModel;
     sampleFieldKey?: string;
-    sampleIds?: string[];
+    sampleIds?: number[];
     showNotification?: boolean;
 }
 
@@ -231,7 +231,7 @@ PicklistEditModalDisplay.displayName = 'PicklistEditModalDisplay';
 // FIXME: This does not need to be a separate component. It is solely initializing the "sampleIds" prop.
 export const PicklistEditModal: FC<PicklistEditModalProps> = memo(props => {
     const { queryModel, sampleFieldKey, sampleIds } = props;
-    const [ids, setIds] = useState<string[]>(sampleIds);
+    const [ids, setIds] = useState<number[]>(sampleIds);
     const { api } = useAppContext();
 
     useEffect(() => {

@@ -528,8 +528,8 @@ export async function getFieldLookupFromSelection(
     queryName: string,
     selected: any[],
     fieldKey: string
-): Promise<string[]> {
-    const sampleIds = new Set<string>();
+): Promise<number[]> {
+    const sampleIds = new Set<number>();
 
     if (fieldKey) {
         const rowIdFieldKey = `${fieldKey}/RowId`; // Pull the rowId of the lookup
@@ -545,7 +545,7 @@ export async function getFieldLookupFromSelection(
         }
     }
 
-    return [...sampleIds];
+    return Array.from(sampleIds);
 }
 
 // optional timezone param used for teamcity jest test only

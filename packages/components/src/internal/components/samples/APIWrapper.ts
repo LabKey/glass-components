@@ -43,7 +43,7 @@ export interface SamplesAPIWrapper {
         queryName: string,
         selected: any[],
         fieldKey: string
-    ) => Promise<string[]>;
+    ) => Promise<number[]>;
 
     getGroupedSampleDomainFields: (sampleType: string) => Promise<GroupedSampleFields>;
 

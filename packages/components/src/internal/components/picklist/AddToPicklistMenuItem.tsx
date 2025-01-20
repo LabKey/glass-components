@@ -20,7 +20,7 @@ interface Props {
     picklistProductId?: string;
     queryModel?: QueryModel;
     sampleFieldKey?: string;
-    sampleIds?: string[];
+    sampleIds?: number[];
     user: User;
 }
 
