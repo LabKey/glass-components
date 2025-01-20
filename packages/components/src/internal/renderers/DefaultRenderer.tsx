@@ -20,6 +20,7 @@ import { QueryColumn } from '../../public/QueryColumn';
 
 import { MultiValueRenderer } from './MultiValueRenderer';
 import { styleStringToObj } from '../util/utils';
+import { isConditionalFormattingEnabled } from '../app/utils';
 
 interface Props {
     col?: QueryColumn;
@@ -52,7 +53,7 @@ export const DefaultRenderer: FC<Props> = memo(({ col, data, noLink }) => {
             // defensively return a MultiValueRenderer, this column likely wasn't declared properly as "multiValue"
             return <MultiValueRenderer data={data} />;
         } else {
-            if (data.has('style')) {
+            if (data.has('style') && isConditionalFormattingEnabled()) {
                 style = styleStringToObj(data.get('style'));
                 if (style.backgroundColor) {
                     className += ' status-pill';

@@ -19,6 +19,7 @@ import { Iterable } from 'immutable';
 import { caseInsensitive, downloadAttachment, getDataStyling, getIconFontCls, isImage } from '../util/utils';
 
 import { AttachmentCard, AttachmentCardProps, IAttachment } from './AttachmentCard';
+import { isConditionalFormattingEnabled } from '../app/utils';
 
 interface OwnProps {
     data?: any;
@@ -62,7 +63,7 @@ export const getAttachmentCardProp = (
         value = caseInsensitive(data, 'value');
         display = getFileDisplayValue(caseInsensitive(data, 'displayValue'));
     }
-    const titleStyle = getDataStyling(data);
+    const titleStyle = isConditionalFormattingEnabled() ? getDataStyling(data) : undefined;
     const filename = display.filename;
     const fileUnavailable = display.fileUnavailable;
     const name = filename || value;

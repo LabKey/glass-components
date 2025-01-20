@@ -7,6 +7,11 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Update `DefaultRenderer`, `UserDetialsRenderer` and `AttachmentCard` to use provided conditional formatting
   - Add utility method `getDataStyling` for use in other components
 
+### version 6.15.0
+*Released*: 20 January 2025
+- Export useLoadableState
+- Add useModalState
+
 ### version 6.14.1
 *Released*: 17 January 2025
 - Workflow, Group Assignment & Notifications

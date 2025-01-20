@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const useNotAuthorized = (identifier?: any, initialState = false) => {
     const [notAuthorized, setNotAuthorized] = useState(initialState);
@@ -147,4 +147,26 @@ export function useTimeout(): UseTimeout {
     useEffect(() => clear, [clear]);
 
     return useMemo(() => ({ clear, set }), [clear, set]);
+}
+
+interface ModalState {
+    close: () => void;
+    open: () => void;
+    show: boolean;
+}
+
+type voidFn = () => void;
+
+/**
+ * Hook that provides the basic state management boilerplate necessary to open/close a modal.
+ * @param openCallback an optional callback to be called when the modal is opened
+ */
+export function useModalState(openCallback?: voidFn): ModalState {
+    const [show, setShow] = useState<boolean>(false);
+    const open = useCallback(() => {
+        if (openCallback !== undefined) openCallback();
+        setShow(true);
+    }, [openCallback]);
+    const close = useCallback(() => setShow(false), []);
+    return useMemo(() => ({ close, open, show }), [close, open, show]);
 }
