@@ -272,7 +272,6 @@ export function addSamplesToPicklist(
     selectionKey?: string,
     sampleIds?: number[]
 ): Promise<QueryCommandResponse> {
-    console.log('Add samples to picklist', sampleIds);
     return new Promise((resolve, reject) => {
         return getSamplesNotInList(listName, selectionKey, useSnapshotSelection, sampleIds)
             .then(sampleIdsToAdd => {

@@ -432,10 +432,10 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
     const [ids, setIds] = useState<number[]>(sampleIds);
     const [validCount, setValidCount] = useState<number>(numSelected);
     const [selectionsLoading, setSelectionsLoading] = useState<LoadingState>(LoadingState.INITIALIZED);
-    const useSnapshotSelection = queryModel?.filterArray.length > 0;
-
-    const schemaQuery = queryModel?.schemaQuery;
-    const selections = queryModel?.selections;
+    const useSnapshotSelection = queryModel.filterArray.length > 0;
+    const schemaQuery = queryModel.schemaQuery;
+    const selections = queryModel.selections;
+    const intSelections = queryModel.getSelectedIdsAsInts();
     const { api } = useAppContext();
 
     useEffect(() => {
@@ -493,14 +493,14 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
                         ids_ = await api.samples.getFieldLookupFromSelection(
                             schemaQuery.schemaName,
                             schemaQuery.queryName,
-                            [...selections],
+                            intSelections,
                             sampleFieldKey
                         );
                     } catch (e) {
                         setError(resolveErrorMessage(e) ?? 'Failed to retrieve picklist selection.');
                     }
-                } else if (selections) {
-                    ids_ = Array.from(selections).map(s => parseInt(s, 10));
+                } else if (intSelections) {
+                    ids_ = intSelections;
                 }
                 setIds(ids_);
                 setValidCount(ids_?.length ?? 0);
@@ -509,12 +509,12 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
         }
     }, [
         api.samples,
+        intSelections,
         selectionsLoading,
         sampleFieldKey,
         sampleIds,
         schemaQuery,
         selectionKey,
-        selections,
         useSnapshotSelection,
     ]);
 
