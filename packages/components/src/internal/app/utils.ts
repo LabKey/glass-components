@@ -457,7 +457,8 @@ export function isCustomImportTemplatesEnabled(moduleContext?: ModuleContext): b
     return isFeatureEnabled(ProductFeature.CustomImportTemplates, moduleContext);
 }
 
-// Everything except sample manager gets conditional formatting.
+// This is enabled for all distributions except sample manager-only distributions. LKS distributions don't
+// currently supply feature flags, so a pure flag check is not sufficient.
 export function isConditionalFormattingEnabled(moduleContext?: ModuleContext): boolean {
     return isFeatureEnabled(ProductFeature.ConditionalFormatting) || !isSampleManagerDistribution(moduleContext);
 }
