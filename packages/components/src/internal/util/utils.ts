@@ -749,6 +749,9 @@ export function getDataStyling(data: Map<string, any> | any, column?: GridColumn
  */
 // exported for jest testing
 export function styleStringToObj(styleString: string): CSSProperties {
+    if (!styleString) {
+        return undefined;
+    }
     const obj = styleString
         .split(';')
         .filter(token => token?.trim() !== '')
