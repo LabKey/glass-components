@@ -51,7 +51,7 @@ export const AttachmentCard: FC<AttachmentCardProps> = memo(props => {
         allowDownload = true,
         titleStyle,
     } = props;
-    let titleClass = titleStyle?.backgroundColor ? 'attachment-card__name status-pill' : 'attachment-card__name ';
+    const titleClass = titleStyle?.backgroundColor ? 'attachment-card__name status-pill' : 'attachment-card__name ';
     const [showModal, setShowModal] = useState<boolean>();
 
     const _showModal = useCallback(() => {
