@@ -358,7 +358,7 @@ export class UsersGridPanelImpl extends PureComponent<Props, State> {
                 )}
                 {user.hasManageUsersPermission() && (showDialog === 'reactivate' || showDialog === 'deactivate') && (
                     <UserActivateChangeConfirmModal
-                        userIds={model.getSelectedIdsAsInts()}
+                        userIds={model.intSelections}
                         reactivate={showDialog === 'reactivate'}
                         onComplete={this.onUsersStateChangeComplete}
                         onCancel={this.closeDialog}
@@ -366,7 +366,7 @@ export class UsersGridPanelImpl extends PureComponent<Props, State> {
                 )}
                 {user.hasManageUsersPermission() && showDialog === 'delete' && (
                     <UserDeleteConfirmModal
-                        userIds={model.getSelectedIdsAsInts()}
+                        userIds={model.intSelections}
                         onComplete={this.onUsersStateChangeComplete}
                         onCancel={this.closeDialog}
                     />

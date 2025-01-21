@@ -435,7 +435,7 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
     const useSnapshotSelection = queryModel.filterArray.length > 0;
     const schemaQuery = queryModel.schemaQuery;
     const selections = queryModel.selections;
-    const intSelections = queryModel.getSelectedIdsAsInts();
+    const intSelections = queryModel.intSelections;
     const { api } = useAppContext();
 
     useEffect(() => {

@@ -982,7 +982,7 @@ export class QueryModel {
     /**
      * Return the selection ids as an array of integers.
      */
-    getSelectedIdsAsInts(): number[] {
+    get intSelections(): number[] {
         if (this.selections) {
             return Array.from(this.selections).map(id => parseInt(id));
         }
