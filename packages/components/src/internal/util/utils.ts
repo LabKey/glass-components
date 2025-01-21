@@ -720,19 +720,13 @@ export function getValuesSummary<T>(values: T[], nounSingular: string, nounPlura
  * If a column is provided, the map is expected to be a full row of data with the column being (possibly) one of the
  * fields in that row. If no column is provided, the data is expected to be a single field's data.
  * @param data either a row of data or a single field's data
- * @param column the grid column corresponding to the data to extract styling for.
  */
-export function getDataStyling(data: Map<string, any> | any, column?: GridColumn): CSSProperties {
+export function getDataStyling(data: Map<string, any> | any): CSSProperties {
     if (!data) {
         return undefined;
     }
     let style;
-    if (column) {
-        style = { textAlign: column.align || 'left' };
-        if (data.has(column.index) && Map.isMap(data.get(column.index)) && data.get(column.index).has('style')) {
-            style = { ...style, ...styleStringToObj(data.get(column.index).get('style')) };
-        }
-    } else if (Map.isMap(data)) {
+    if (Map.isMap(data)) {
         if (data.has('style')) {
             style = styleStringToObj(data.get('style'));
         }
