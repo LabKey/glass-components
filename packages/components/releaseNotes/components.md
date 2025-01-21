@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.16.0
+*Released*: 20 January 2025
 - Update Assay Design Transform Script config to include 'Run on Import/Edit' boolean options
 
 ### version 6.15.0
