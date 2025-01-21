@@ -23,7 +23,6 @@ import { GRID_HEADER_CELL_BODY, GRID_SELECTION_INDEX } from '../../constants';
 
 import { LabelHelpTip } from './LabelHelpTip';
 import { GridColumn } from './models/GridColumn';
-import { getDataStyling } from '../../util/utils';
 
 function processColumns(columns: List<any>): List<GridColumn> {
     return columns
