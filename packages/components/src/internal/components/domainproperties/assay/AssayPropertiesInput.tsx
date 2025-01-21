@@ -27,7 +27,7 @@ import { resolveErrorMessage } from '../../../util/messaging';
 import { FilterCriteriaRenderer } from '../../../FilterCriteriaRenderer';
 import { DisableableButton } from '../../buttons/DisableableButton';
 
-import { AssayProtocolModel } from './models';
+import { AssayProtocolModel, ProtocolTransformScript } from './models';
 import { FORM_IDS, SCRIPTS_DIR } from './constants';
 import { getScriptEngineForExtension, getValidPublishTargets } from './actions';
 import { useFilterCriteriaContext } from './FilterCriteriaContext';
@@ -244,11 +244,14 @@ export const EditableResultsInput: FC<InputProps> = memo(props => (
         label="Editable Results"
         hideAdvancedProperties={props.hideAdvancedProperties}
         helpTipBody={
-            <p>
-                If enabled, users with sufficient permissions can edit and delete at the individual results row level
-                after the initial import is complete. New result rows cannot be added to existing runs. These changes
-                will be audited.
-            </p>
+            <>
+                <p>
+                    If enabled, users with sufficient permissions can edit and delete at the individual results row
+                    level after the initial import is complete. New result rows cannot be added to existing runs. These
+                    changes will be audited.
+                </p>
+                <p> Disabling this option will set the Transform Script 'Run on Edit' values to be unchecked and disabled. </p>
+            </>
         }
     >
         <input
@@ -424,15 +427,11 @@ export class TransformScriptsInput extends React.PureComponent<TransformScriptsI
     };
 
     addScript = (path?: string) => {
-        const scripts = this.props.model.protocolTransformScripts
+        const scriptConfigs = this.props.model.protocolTransformScripts
             ? this.props.model.protocolTransformScripts
-            : List<string>();
-        this.applyChanges(scripts.push(path ?? ''));
+            : List<ProtocolTransformScript>();
+        this.applyChanges(scriptConfigs.push({ scriptPath: path ?? '', runOnImport: true, runOnEdit: false }));
         this.toggleAddingScript();
-    };
-
-    removeScript = (index: number) => {
-        this.applyChanges(this.props.model.protocolTransformScripts.filter((script, i) => i !== index));
     };
 
     applyChanges(updatedScripts: any) {
@@ -485,7 +484,9 @@ export class TransformScriptsInput extends React.PureComponent<TransformScriptsI
 
     onRemoveScript = (attachment: IAttachment): void => {
         this.applyChanges(
-            this.props.model.protocolTransformScripts.filter(script => script !== attachment.description)
+            this.props.model.protocolTransformScripts.filter(
+                scriptConfig => scriptConfig.scriptPath !== attachment.description
+            )
         );
     };
 
@@ -529,12 +530,36 @@ export class TransformScriptsInput extends React.PureComponent<TransformScriptsI
         );
     }
 
+    toggleRunOnCheckboxes = (e: React.ChangeEvent<HTMLInputElement>, field: string): void => {
+        const { model } = this.props;
+        const index = parseInt(e.target.id.split(FORM_IDS.PROTOCOL_TRANSFORM_SCRIPTS).pop(), 10);
+        const curr = model.protocolTransformScripts.get(index);
+
+        this.props.onChange(
+            FORM_IDS.PROTOCOL_TRANSFORM_SCRIPTS,
+            model.protocolTransformScripts.set(index, { ...curr, [field]: !curr[field] })
+        );
+    };
+
+    onCheckRunOnImport = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        this.toggleRunOnCheckboxes(e, 'runOnImport');
+    };
+
+    onCheckRunOnEdit = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        this.toggleRunOnCheckboxes(e, 'runOnEdit');
+    };
+
     render(): ReactNode {
         const { model } = this.props;
         const { error, addingScript, addingScriptPath } = this.state;
-        const protocolTransformScripts = model.protocolTransformScripts || List<string>();
-        const protocolTransformAttachments = protocolTransformScripts.map(script => {
-            return { name: getAttachmentTitleFromName(script), description: script };
+        const protocolTransformScripts = model.protocolTransformScripts || List<ProtocolTransformScript>();
+        const protocolTransformAttachments = protocolTransformScripts.map(config => {
+            return {
+                name: getAttachmentTitleFromName(config.scriptPath),
+                description: config.scriptPath,
+                runOnImport: config.runOnImport,
+                runOnEdit: config.runOnEdit,
+            };
         });
 
         return (
@@ -544,16 +569,40 @@ export class TransformScriptsInput extends React.PureComponent<TransformScriptsI
                         <div key={i} className="row margin-top">
                             {i === 0 ? this.renderLabel() : <div className="col col-xs-3 col-lg-4" />}
                             <div className="col col-xs-9 col-lg-8">
-                                <AttachmentCard
-                                    outerCls="transform-script-card"
-                                    allowRemove
-                                    allowDownload={false}
-                                    attachment={attachment}
-                                    copyNoun="path"
-                                    noun="path"
-                                    onRemove={this.onRemoveScript}
-                                    onCopyLink={this.onCopyScriptPath}
-                                />
+                                <div className="transform-script-configuration">
+                                    <AttachmentCard
+                                        outerCls="transform-script-card"
+                                        allowRemove
+                                        allowDownload={false}
+                                        attachment={attachment}
+                                        copyNoun="path"
+                                        noun="path"
+                                        onRemove={this.onRemoveScript}
+                                        onCopyLink={this.onCopyScriptPath}
+                                    />
+                                    <div className="margin-bottom small-margin-top">
+                                        <span className="margin-right-more">
+                                            <input
+                                                type="checkbox"
+                                                id={FORM_IDS.PROTOCOL_TRANSFORM_SCRIPTS + i}
+                                                checked={attachment.runOnImport}
+                                                onChange={this.onCheckRunOnImport}
+                                            />
+                                            Run on Import
+                                        </span>
+
+                                        <span>
+                                            <input
+                                                type="checkbox"
+                                                id={FORM_IDS.PROTOCOL_TRANSFORM_SCRIPTS + i}
+                                                checked={attachment.runOnEdit}
+                                                onChange={this.onCheckRunOnEdit}
+                                                disabled={!model.editableResults}
+                                            />
+                                            Run on Edit
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     );

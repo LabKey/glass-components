@@ -5,6 +5,15 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD
 - Issue 39517: Assay importRun to include display value in the row data for sample lookup columns
 
+### version 6.16.0
+*Released*: 20 January 2025
+- Update Assay Design Transform Script config to include 'Run on Import/Edit' boolean options
+
+### version 6.15.0
+*Released*: 20 January 2025
+- Export useLoadableState
+- Add useModalState
+
 ### version 6.14.1
 *Released*: 17 January 2025
 - Workflow, Group Assignment & Notifications
