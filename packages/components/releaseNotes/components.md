@@ -7,6 +7,10 @@ Components, models, actions, and utility functions for LabKey applications and p
   - Update `DefaultRenderer`, `UserDetialsRenderer` and `AttachmentCard` to use provided conditional formatting
   - Add utility method `getDataStyling` for use in other components
 
+### version 6.16.0
+*Released*: 20 January 2025
+- Update Assay Design Transform Script config to include 'Run on Import/Edit' boolean options
+
 ### version 6.15.0
 *Released*: 20 January 2025
 - Export useLoadableState

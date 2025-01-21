@@ -1,4 +1,4 @@
-import React, { FC, memo, PropsWithChildren, useCallback, useState } from 'react';
+import React, { FC, memo, PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { Utils } from '@labkey/api';
 
 import { DEFINE_ASSAY_SCHEMA_TOPIC } from '../../../util/helpLinks';
@@ -40,7 +40,7 @@ import {
     SaveScriptDataInput,
     TransformScriptsInput,
 } from './AssayPropertiesInput';
-import { BOOLEAN_FIELDS, FORM_ID_PREFIX, PROPERTIES_HEADER_ID } from './constants';
+import { BOOLEAN_FIELDS, FORM_ID_PREFIX, FORM_IDS, PROPERTIES_HEADER_ID } from './constants';
 
 interface AssayPropertiesFormProps extends PropsWithChildren {
     appPropertiesOnly?: boolean;
@@ -100,6 +100,18 @@ const AssayPropertiesForm: FC<AssayPropertiesFormProps> = memo(props => {
         },
         [model, onChange]
     );
+
+    useEffect(() => {
+        if (
+            model.editableResults === false &&
+            model.protocolTransformScripts?.filter(config => config.runOnEdit).size > 0
+        ) {
+            const newProtocolTransformScripts = model.protocolTransformScripts.map(config => {
+                return { ...config, runOnEdit: false };
+            });
+            onValueChange(FORM_IDS.PROTOCOL_TRANSFORM_SCRIPTS, newProtocolTransformScripts);
+        }
+    }, [model.editableResults, model.protocolTransformScripts, onValueChange]);
 
     return (
         <form>

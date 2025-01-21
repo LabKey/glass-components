@@ -211,26 +211,26 @@ describe('AssayProtocolModel', () => {
         expect(
             AssayProtocolModel.create({
                 ...base,
-                protocolTransformScripts: ['foo.pl', 'bar.R'],
+                protocolTransformScripts: [{ scriptPath: 'foo.pl' }, { scriptPath: 'bar.R' }],
             }).validateTransformScripts()
         ).toBe(undefined);
 
         expect(
             AssayProtocolModel.create({
                 ...base,
-                protocolTransformScripts: ['foo.pl', 'bar.R', ''],
+                protocolTransformScripts: [{ scriptPath: 'foo.pl' }, { scriptPath: 'bar.R' }, { scriptPath: '' }],
             }).validateTransformScripts()
         ).toContain('Missing required');
         expect(
             AssayProtocolModel.create({
                 ...base,
-                protocolTransformScripts: ['foo.pl', null, 'bar.R'],
+                protocolTransformScripts: [{ scriptPath: 'foo.pl' }, null, { scriptPath: 'bar.R' }],
             }).validateTransformScripts()
         ).toContain('Missing required');
         expect(
             AssayProtocolModel.create({
                 ...base,
-                protocolTransformScripts: [undefined, 'foo.pl', 'bar.R'],
+                protocolTransformScripts: [undefined, { scriptPath: 'foo.pl' }, { scriptPath: 'bar.R' }],
             }).validateTransformScripts()
         ).toContain('Missing required');
 
@@ -238,28 +238,28 @@ describe('AssayProtocolModel', () => {
             AssayProtocolModel.create({
                 ...base,
                 saveScriptFiles: false,
-                protocolTransformScripts: ['foo.pl', 'bar.R'],
+                protocolTransformScripts: [{ scriptPath: 'foo.pl' }, { scriptPath: 'bar.R' }],
             }).validateTransformScripts()
         ).toBe(undefined);
         expect(
             AssayProtocolModel.create({
                 ...base,
                 saveScriptFiles: true,
-                protocolTransformScripts: ['foo.pl', 'bar.R'],
+                protocolTransformScripts: [{ scriptPath: 'foo.pl' }, { scriptPath: 'bar.R' }],
             }).validateTransformScripts()
         ).toBe(undefined);
         expect(
             AssayProtocolModel.create({
                 ...base,
                 saveScriptFiles: false,
-                protocolTransformScripts: ['foo.pl', '/path with space/bar.R'],
+                protocolTransformScripts: [{ scriptPath: 'foo.pl' }, { scriptPath: '/path with space/bar.R' }],
             }).validateTransformScripts()
         ).toBe(undefined);
         expect(
             AssayProtocolModel.create({
                 ...base,
                 saveScriptFiles: true,
-                protocolTransformScripts: ['foo.pl', '/path with space/bar.R'],
+                protocolTransformScripts: [{ scriptPath: 'foo.pl' }, { scriptPath: '/path with space/bar.R' }],
             }).validateTransformScripts()
         ).toBe(undefined);
     });
