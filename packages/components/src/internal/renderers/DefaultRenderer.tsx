@@ -19,7 +19,7 @@ import { List } from 'immutable';
 import { QueryColumn } from '../../public/QueryColumn';
 
 import { MultiValueRenderer } from './MultiValueRenderer';
-import { styleStringToObj } from '../util/utils';
+import { getDataStyling } from '../util/utils';
 import { isConditionalFormattingEnabled } from '../app/utils';
 
 interface Props {
@@ -53,9 +53,9 @@ export const DefaultRenderer: FC<Props> = memo(({ col, data, noLink }) => {
             // defensively return a MultiValueRenderer, this column likely wasn't declared properly as "multiValue"
             return <MultiValueRenderer data={data} />;
         } else {
-            if (data.has('style') && isConditionalFormattingEnabled()) {
-                style = styleStringToObj(data.get('style'));
-                if (style.backgroundColor) {
+            if (isConditionalFormattingEnabled()) {
+                style = getDataStyling(data);
+                if (style?.backgroundColor) {
                     className += ' status-pill';
                 }
             }
