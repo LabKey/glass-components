@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.20.6
+*Released*: TBD
+- Issue 52038: Fix problem with editable grid not saving changes for fields whose names and fieldKeys are different
+
+
 ### version 5.20.5
 *Released*: 13 January 2025
 - Issue 51967: Submit formatted date value from editable grid

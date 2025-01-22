@@ -758,13 +758,19 @@ export class EditorModel
             });
             const originalRow = originalData.get(id.toString());
             if (originalRow) {
+                // N.B. key here is almost always the column name (not the fieldKey) and should remain so since that is
+                // the key we need to send to the server when saving the rows. For lineage columns, key is actually more like
+                // the fieldKey (that is, the parts of that lineage lookup have been encoded for Query names (e.g., / becomes $S)
+                // The Lineage field key parts need to be sent encoded so parsing of the field key parts (that is, splitting on the
+                // '/' character) can be done without a problem on the server side. Ideally, we would be able to send field keys in
+                // all cases, but that is for a later day.
                 const row = editedRow.reduce((row, value, key) => {
                     // We can skip the idField for the diff check, that will be added to the updated rows later
                     if (key === pkFieldKey) return row;
 
-                    let originalValue = originalRow.get(key, undefined);
                     // For lineage grids the parent columns aren't on the queryInfo
-                    const col = queryInfo.getColumn(key) ?? this.columnMap.get(key.toLowerCase());
+                    const col = queryInfo.getColumnFromName(key) ?? this.columnMap.get(key.toLowerCase());
+                    let originalValue = originalRow.get(col.fieldKey, undefined);
 
                     // we can skip any readOnly columns
                     if (col?.readOnly) return row;
