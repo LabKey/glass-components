@@ -758,7 +758,7 @@ export class EditorModel
             });
             const originalRow = originalData.get(id.toString());
             if (originalRow) {
-                // N.B. key here is almost always the column name (not the fieldKey) and should remain so since that is
+                // Issue 52038: key here is almost always the column name (not the fieldKey) and should remain so since that is
                 // the key we need to send to the server when saving the rows. For lineage columns, key is actually more like
                 // the fieldKey (that is, the parts of that lineage lookup have been encoded for Query names (e.g., / becomes $S)
                 // The Lineage field key parts need to be sent encoded so parsing of the field key parts (that is, splitting on the
