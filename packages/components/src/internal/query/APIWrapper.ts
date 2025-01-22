@@ -147,7 +147,7 @@ export interface QueryAPIWrapper {
         filters?: Filter.IFilter[],
         queryParameters?: Record<string, any>
     ) => Promise<SelectResponse>;
-    setSnapshotSelections: (key: string, ids: string[] | string, containerPath?: string) => Promise<SelectResponse>;
+    setSnapshotSelections: (key: string, ids: string[] | string | number[], containerPath?: string) => Promise<SelectResponse>;
     updateRows: (options: UpdateRowsOptions) => Promise<QueryCommandResponse>;
     updateRowsByContainer: (
         schemaQuery: SchemaQuery,
