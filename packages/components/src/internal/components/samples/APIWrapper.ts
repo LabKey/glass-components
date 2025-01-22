@@ -14,7 +14,7 @@ import {
     createSessionAssayRunSummaryQuery,
     getDefaultDiscardStatus,
     getDistinctAssaysPerSample,
-    getFieldLookupFromSelection,
+    getLookupRowIdsFromSelection,
     getGroupedSampleDomainFields,
     getSampleAliquotRows,
     getSampleAssayResultViewConfigs,
@@ -38,7 +38,7 @@ export interface SamplesAPIWrapper {
 
     getDistinctAssaysPerSample: (sampleIds: number[]) => Promise<string[]>;
 
-    getFieldLookupFromSelection: (
+    getLookupRowIdsFromSelection: (
         schemaName: string,
         queryName: string,
         selected: any[],
@@ -100,7 +100,7 @@ export class SamplesServerAPIWrapper implements SamplesAPIWrapper {
     getDefaultDiscardStatus = getDefaultDiscardStatus;
     getSampleOperationConfirmationData = getSampleOperationConfirmationData;
     getSampleStorageId = getSampleStorageId;
-    getFieldLookupFromSelection = getFieldLookupFromSelection;
+    getLookupRowIdsFromSelection = getLookupRowIdsFromSelection;
     getTimelineEvents = getTimelineEvents;
     getSampleTypeDetails = getSampleTypeDetails;
     getDistinctAssaysPerSample = getDistinctAssaysPerSample;
@@ -126,7 +126,7 @@ export function getSamplesTestAPIWrapper(
         getDefaultDiscardStatus: mockFn(),
         getSampleOperationConfirmationData: mockFn(),
         getSampleStorageId: mockFn(),
-        getFieldLookupFromSelection: mockFn(),
+        getLookupRowIdsFromSelection: mockFn(),
         getTimelineEvents: mockFn(),
         getSampleTypeDetails: mockFn(),
         getDistinctAssaysPerSample: mockFn(),

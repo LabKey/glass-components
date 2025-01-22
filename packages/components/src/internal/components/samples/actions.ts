@@ -174,7 +174,7 @@ export async function getSelectedSampleIdsFromSelectionKey(searchParams: URLSear
             response = await getSelection(searchParams, schemaName, queryName);
         }
 
-        sampleIds = await getFieldLookupFromSelection(schemaName, queryName, response?.selected, sampleFieldKey);
+        sampleIds = await getLookupRowIdsFromSelection(schemaName, queryName, response?.selected, sampleFieldKey);
     } else {
         const picklistName = searchParams.get('picklistName');
         let response;
@@ -523,7 +523,7 @@ export async function getDefaultDiscardStatus(containerPath?: string): Promise<n
  * @param selected rowIds to pull sampleIds for
  * @param fieldKey field key for the Lookup
  */
-export async function getFieldLookupFromSelection(
+export async function getLookupRowIdsFromSelection(
     schemaName: string,
     queryName: string,
     selected: any[],

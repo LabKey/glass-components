@@ -389,7 +389,7 @@ import {
 import {
     deleteSampleSet,
     fetchSamples,
-    getFieldLookupFromSelection,
+    getLookupRowIdsFromSelection,
     getGroupedSampleDisplayColumns,
     getGroupedSampleDomainFields,
     getSampleSet,
@@ -1370,7 +1370,7 @@ export {
     fetchSamples,
     getSampleSet,
     getSampleTypeDetails,
-    getFieldLookupFromSelection,
+    getLookupRowIdsFromSelection,
     getSelectionLineageData,
     getGroupedSampleDomainFields,
     getGroupedSampleDisplayColumns,

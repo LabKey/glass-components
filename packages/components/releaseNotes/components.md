@@ -6,6 +6,8 @@ Components, models, actions, and utility functions for LabKey applications and p
 - QueryModel: rename getSelectedIdsAsInts to intSelections, convert to `get` method
 - Fix types for "sampleIds" variable
     - Despite being typed as string[] it is actually always number[]
+- Rename getFieldLookupFromSelection to getLookupRowIdsFromSelection
+
 ### version 6.17.0
 *Released*: 23 January 2025
 - Add support for conditional formatting in LIMS and SDMS products

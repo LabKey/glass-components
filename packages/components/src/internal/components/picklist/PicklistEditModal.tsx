@@ -240,7 +240,7 @@ export const PicklistEditModal: FC<PicklistEditModalProps> = memo(props => {
             // Using sampleFieldKey as proxy flag to determine if lookup is needed
             if (sampleFieldKey && queryModel && !queryModel.isLoadingSelections) {
                 try {
-                    const ids_ = await api.samples.getFieldLookupFromSelection(
+                    const ids_ = await api.samples.getLookupRowIdsFromSelection(
                         queryModel.schemaQuery.schemaName,
                         queryModel.schemaQuery.queryName,
                         [...queryModel.selections],

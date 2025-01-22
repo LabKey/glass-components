@@ -490,7 +490,7 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
                     // Look up SampleIds from the selected row ids.
                     // Using sampleFieldKey as proxy flag to determine if lookup is needed.
                     try {
-                        ids_ = await api.samples.getFieldLookupFromSelection(
+                        ids_ = await api.samples.getLookupRowIdsFromSelection(
                             schemaQuery.schemaName,
                             schemaQuery.queryName,
                             intSelections,
