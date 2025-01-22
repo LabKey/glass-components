@@ -156,12 +156,13 @@ export function getJobCreationHref(
     targetProductId?: string,
     ignoreFilter?: boolean
 ): string {
+    const hasFilters = model.filterArray.length > 0;
     const params = getURLParamsForSampleSelectionKey(model, picklistName, isAssay, sampleFieldKey, ignoreFilter);
 
     if (templateId) params['templateId'] = templateId;
     if (!samplesIncluded) params['sampleTab'] = 'search'; // i.e. JOB_SAMPLE_SEARCH_TAB_ID
-    // The assumption here is that if we're explicitly ignoring filters it means that we're using a selection snapshot
-    if (ignoreFilter) params.selectionKeyType = SELECTION_KEY_TYPE.snapshot;
+    // If we have filters and are explicitly ignoring filters, then we're using a selection snapshot
+    if (ignoreFilter && hasFilters) params.selectionKeyType = SELECTION_KEY_TYPE.snapshot;
 
     const actionUrl = createProductUrlFromParts(targetProductId, currentProductId, params, WORKFLOW_KEY, 'new');
     return actionUrl instanceof AppURL ? actionUrl.toHref() : actionUrl;
