@@ -61,7 +61,7 @@ describe('ConditionalFormattingAndValidation', () => {
         expect(validatorStrings.length).toEqual(2);
     });
 
-    test('decimal field', () => {
+    test('boolean field', () => {
         const props = {
             index: 1,
             domainIndex: 1,
