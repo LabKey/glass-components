@@ -1,6 +1,11 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 6.X
+*Released*: X January 2025
+- Ability to Edit Sample IDs in the Grid
+  - Add `canEditName` to `OperationConfirmationData`
+
 ### version 6.16.0
 *Released*: 20 January 2025
 - Update Assay Design Transform Script config to include 'Run on Import/Edit' boolean options

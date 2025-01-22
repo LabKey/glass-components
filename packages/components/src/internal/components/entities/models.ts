@@ -518,6 +518,7 @@ interface OperationContainerInfo {
     id: string;
     path: string;
     permitted: boolean;
+    canEditName?: boolean;
 }
 
 export class OperationConfirmationData {
@@ -599,6 +600,10 @@ export class OperationConfirmationData {
 
     getContainerPaths(permittedOnly = true): string[] {
         return this.containers?.filter(c => !permittedOnly || c.permitted).map(c => c.id) ?? [];
+    }
+
+    canEditName(): boolean {
+        return this.containers?.every(c => c.canEditName);
     }
 }
 
