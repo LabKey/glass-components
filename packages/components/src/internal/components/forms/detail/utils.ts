@@ -27,7 +27,8 @@ export function extractChanges(
     const changedValues = {};
     // Loop through submitted formValues and check against existing currentData from server
     Object.keys(formValues).forEach(field => {
-        let existingValue = currentData.get(field);
+        const col = queryInfo.getColumn(field);
+        let existingValue = currentData.get(col.name);
         const changedValue = formValues[field];
 
         // If nested value, will need to do deeper check
@@ -36,26 +37,28 @@ export function extractChanges(
             if (!changedValue && existingValue.size === 0) {
                 return false;
             }
+            // Issue 52038: storage changed values using column name as key not fieldKey since server won't recognize
+                // the fields if you use fieldKey and thus no changes will be saved.
             // If the submitted value is empty and there is an existing value, should update field
             else if (!changedValue && existingValue.size > 0) {
                 // Issue 46102
                 // Do not set the field to changedValue, it may be undefined, which causes us to treat the value as if
                 // it has not changed, making it impossible to clear the value.
-                changedValues[field] = [];
+                changedValues[col.name] = [];
             } else {
                 // If submitted value array and existing value array are different size, should update field
                 if (changedValue.length !== existingValue.size) {
-                    changedValues[field] = changedValue;
+                    changedValues[col.name] = changedValue;
                 }
                 // If submitted value array and existing array are the same size, need to compare full contents
                 else if (changedValue.length === existingValue.size) {
                     if (!arrayListIsEqual(changedValue, existingValue)) {
-                        changedValues[field] = changedValue;
+                        changedValues[col.name] = changedValue;
                     }
                 }
             }
-        } else if (changedValue != currentData.getIn([field, 'value'])) {
-            existingValue = currentData.getIn([field, 'value']);
+        } else if (changedValue != currentData.getIn([col.name, 'value'])) {
+            existingValue = currentData.getIn([col.name, 'value']);
             const column = queryInfo.getColumn(field);
             let newValue = changedValue;
             // A date field needs to be checked specially
@@ -89,7 +92,7 @@ export function extractChanges(
                 }
             }
 
-            changedValues[field] = newValue === undefined ? null : newValue;
+            changedValues[col.name] = newValue === undefined ? null : newValue;
         }
     });
 
