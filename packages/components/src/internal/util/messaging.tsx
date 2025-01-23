@@ -180,6 +180,9 @@ export function resolveErrorMessage(
             return verbPresent === 'import'
                 ? 'Import file contains unsupported characters.'
                 : 'Unsupported characters detected.';
+        } else if (errorMsg.indexOf('null value in column "name"') > -1) {
+            const noun = errorMsg.indexOf('material') > -1 ? 'Sample ID' : 'ID';
+            return noun + ' cannot be blank.'
         }
     }
     return errorMsg;
