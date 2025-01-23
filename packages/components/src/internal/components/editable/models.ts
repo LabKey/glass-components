@@ -301,9 +301,13 @@ export class EditorModel
      * Formats the values for an entire row into a Map<string, any>
      * @param rowIdx
      * @param useRawValues If false we format the raw values
-     * @param includeSampleDisplayVal If true we want to include the sample lookup display values in the row data
+     * @param includeDisplayValForCol Optional callback function to decide if the display value should be included for a lookup column
      */
-    getRowValue(rowIdx: number, useRawValues = true, includeSampleDisplayVal = false): Map<string, any> {
+    getRowValue(
+        rowIdx: number,
+        useRawValues = true,
+        includeDisplayValForCol?: (col: QueryColumn) => boolean
+    ): Map<string, any> {
         let row = Map<string, any>();
 
         this.columnMap.forEach(col => {
@@ -346,9 +350,9 @@ export class EditorModel
                     if (values.size === 1) val = values.first()?.raw;
                     row = row.set(col.name, val);
 
-                    // Issue 39517: include display value in the row data for sample lookup columns
+                    // Issue 39517: include display value in the row data for lookup columns
                     const displayVal = values.size === 1 ? values.first()?.display : undefined;
-                    if (includeSampleDisplayVal && col.isSampleLookup() && val !== displayVal) {
+                    if (val !== displayVal && includeDisplayValForCol?.(col)) {
                         row = row.set(col.name + '/' + col.lookup.displayColumn, displayVal);
                     }
                 }
@@ -372,13 +376,16 @@ export class EditorModel
     /**
      * This method formats the EditorModel data, so we can upload the data to LKS via insert/updateRows
      * @param useRawValues If false we format the raw values
-     * @param includeSampleDisplayVal If true we want to include the sample lookup display values in the row data
+     * @param includeDisplayValForCol Optional callback function to decide if the display value should be included for a lookup column
      */
-    getDataForServerUpload(useRawValues = true, includeSampleDisplayVal = false): List<Map<string, any>> {
+    getDataForServerUpload(
+        useRawValues = true,
+        includeDisplayValForCol?: (col: QueryColumn) => boolean
+    ): List<Map<string, any>> {
         let rawData = List<Map<string, any>>();
 
         for (let rn = 0; rn < this.rowCount; rn++) {
-            const row = this.getRowValue(rn, useRawValues, includeSampleDisplayVal);
+            const row = this.getRowValue(rn, useRawValues, includeDisplayValForCol);
             rawData = rawData.push(row);
         }
 
