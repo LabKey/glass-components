@@ -1,8 +1,8 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
-### version TBD
-*Released*: TBD
+### version 6.17.0
+*Released*: 23 January 2025
 - Add support for conditional formatting in LIMS and SDMS products
   - Update `DefaultRenderer`, `UserDetialsRenderer` and `AttachmentCard` to use provided conditional formatting
   - Add utility method `getDataStyling` for use in other components
