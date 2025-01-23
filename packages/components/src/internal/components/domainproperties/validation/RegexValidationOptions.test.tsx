@@ -1,5 +1,6 @@
-import { mount } from 'enzyme';
 import React from 'react';
+
+import { render } from '@testing-library/react';
 
 import { PropertyValidator } from '../models';
 import { INTEGER_TYPE } from '../PropDescType';
@@ -34,35 +35,34 @@ describe('RegexValidationOptions', () => {
             onChange: jest.fn(),
         };
 
-        const validator = mount(<RegexValidationOptions {...props} />);
+        render(<RegexValidationOptions {...props} />);
 
-        const expression = validator.find({
-            id: createFormInputId(DOMAIN_VALIDATOR_EXPRESSION, domainIndex, validatorIndex),
-        });
-        expect(expression.at(0).props().value).toEqual('$[abc]');
+        const expression = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_EXPRESSION, domainIndex, validatorIndex)
+        );
+        expect(expression.innerHTML).toEqual('$[abc]');
 
-        const name = validator.find({ id: createFormInputId(DOMAIN_VALIDATOR_NAME, domainIndex, validatorIndex) });
-        expect(name.at(0).props().value).toEqual('Test Validator');
+        const name = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_NAME, domainIndex, validatorIndex)
+        );
+        expect(name.getAttribute('value')).toEqual('Test Validator');
 
-        const description = validator.find({
-            id: createFormInputId(DOMAIN_VALIDATOR_DESCRIPTION, domainIndex, validatorIndex),
-        });
-        expect(description.at(0).props().value).toEqual('This is my validator description');
+        const description = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_DESCRIPTION, domainIndex, validatorIndex)
+        );
+        expect(description.innerHTML).toEqual('This is my validator description');
 
-        const errorMsg = validator.find({
-            id: createFormInputId(DOMAIN_VALIDATOR_ERRORMESSAGE, domainIndex, validatorIndex),
-        });
-        expect(errorMsg.at(0).props().value).toEqual('Test Validation Failure');
+        const errorMsg = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_ERRORMESSAGE, domainIndex, validatorIndex)
+        );
+        expect(errorMsg.innerHTML).toEqual('Test Validation Failure');
 
-        const failOnMatch = validator.find({
-            id: createFormInputId(DOMAIN_VALIDATOR_FAILONMATCH, domainIndex, validatorIndex),
-        });
-        expect(failOnMatch.at(0).props().checked).toEqual(true);
+        const failOnMatch = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_FAILONMATCH, domainIndex, validatorIndex)
+        );
+        expect(failOnMatch.getAttribute('checked')).toEqual('');
 
         expect(RegexValidationOptions.isValid(validatorModel)).toEqual(true);
-
-        expect(validator).toMatchSnapshot();
-        validator.unmount();
     });
 
     test('Regex Validator - collapsed', () => {
@@ -83,12 +83,9 @@ describe('RegexValidationOptions', () => {
             onChange: jest.fn(),
         };
 
-        const validator = mount(<RegexValidationOptions {...props} />);
+        render(<RegexValidationOptions {...props} />);
 
-        const collapsed = validator.find({ id: 'domain-regex-validator-' + validatorIndex });
-        expect(collapsed.children().children().text()).toEqual('Test Validator: $[abc]');
-
-        expect(validator).toMatchSnapshot();
-        validator.unmount();
+        const collapsed = document.querySelector('#domain-regex-validator-' + validatorIndex);
+        expect(collapsed.textContent).toEqual('Test Validator: $[abc]');
     });
 });

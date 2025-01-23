@@ -103,3 +103,24 @@ exports[`DefaultRenderer value 1`] = `
   </span>
 </div>
 `;
+
+exports[`DefaultRenderer with style, conditional formatting enabled 1`] = `
+<div>
+  <span
+    class="ws-pre-wrap status-pill"
+    style="background-color: blue;"
+  >
+    Value 1.00
+  </span>
+</div>
+`;
+
+exports[`DefaultRenderer with style, conditional formatting not enabled 1`] = `
+<div>
+  <span
+    class="ws-pre-wrap"
+  >
+    Value 1.00
+  </span>
+</div>
+`;

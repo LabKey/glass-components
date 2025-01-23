@@ -457,6 +457,12 @@ export function isCustomImportTemplatesEnabled(moduleContext?: ModuleContext): b
     return isFeatureEnabled(ProductFeature.CustomImportTemplates, moduleContext);
 }
 
+// This is enabled for all distributions except sample manager-only distributions. LKS distributions don't
+// currently supply feature flags, so a pure flag check is not sufficient.
+export function isConditionalFormattingEnabled(moduleContext?: ModuleContext): boolean {
+    return isFeatureEnabled(ProductFeature.ConditionalFormatting) || !isSampleManagerDistribution(moduleContext);
+}
+
 export function isFeatureEnabled(flag: ProductFeature, moduleContext?: ModuleContext): boolean {
     return resolveModuleContext(moduleContext)?.core?.productFeatures?.indexOf(flag) >= 0;
 }
@@ -475,6 +481,10 @@ export function hasPremiumModule(moduleContext?: ModuleContext): boolean {
 
 export function isCommunityDistribution(moduleContext?: ModuleContext): boolean {
     return !hasModule('SampleManagement', moduleContext) && !hasPremiumModule(moduleContext);
+}
+
+export function isSampleManagerDistribution(moduleContext?: ModuleContext): boolean {
+    return hasModule('SampleManagement', moduleContext) && !hasPremiumModule(moduleContext);
 }
 
 export function isRestrictedIssueListSupported(moduleContext?: ModuleContext): boolean {
