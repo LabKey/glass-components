@@ -38,7 +38,12 @@ function trimExceptionPrefix(exceptionMessage: string, message: string): string 
     return message.substring(startIndex + exceptionMessage.length).trim();
 }
 
-function resolveDuplicatesAsName(errorMsg: string, noun: string, nounPlural?: string, verbPresParticiple?: string): string {
+function resolveDuplicatesAsName(
+    errorMsg: string,
+    noun: string,
+    nounPlural?: string,
+    verbPresParticiple?: string
+): string {
     // N.B. Issues 48050 and 48209: only for Postgres since the error message from SQL server doesn't provide a
     // reasonable way to parse a multi-field key in the face of names that may contain commas and spaces. Seems
     // better to show a generic message instead of an incorrectly parsed name.
@@ -87,7 +92,12 @@ export function resolveErrorMessage(
     noun = 'data',
     nounPlural?: string,
     verbPresent?: string,
-    duplicatesMessageResolver?: (errorMsg: string, noun: string, nounPlural?: string, verbPresParticiple?: string) => string,
+    duplicatesMessageResolver?: (
+        errorMsg: string,
+        noun: string,
+        nounPlural?: string,
+        verbPresParticiple?: string
+    ) => string,
     returnInitialMsg = false
 ): string {
     const verbPresParticiple = makePresentParticiple(verbPresent);
@@ -169,9 +179,13 @@ export function resolveErrorMessage(
                 startIndex > -1 ? 'for field ' + lcMessage.substring(startIndex + 13, lcMessage.indexOf(')=(')) : '';
             return `Unable to create a unique constraint ${fieldname} because duplicate values already exists in the data.`;
         } else if (errorMsg.indexOf('Invalid SampleSet name "') >= 0) {
-            return errorMsg.replace('. SampleSet', '. Sample type').replace('Invalid SampleSet name "', 'Invalid sample type name "');
+            return errorMsg
+                .replace('. SampleSet', '. Sample type')
+                .replace('Invalid SampleSet name "', 'Invalid sample type name "');
         } else if (errorMsg.indexOf('Invalid DataClass name "') >= 0) {
-            return errorMsg.replace('. DataClass', '. Source type').replace('Invalid DataClass name "', 'Invalid source type name "');
+            return errorMsg
+                .replace('. DataClass', '. Source type')
+                .replace('Invalid DataClass name "', 'Invalid source type name "');
         } else if (errorMsg.indexOf('ERROR: invalid byte sequence for encoding') > -1) {
             if (errorMsg.indexOf('0x00') > 0)
                 return verbPresent === 'import'
@@ -180,6 +194,9 @@ export function resolveErrorMessage(
             return verbPresent === 'import'
                 ? 'Import file contains unsupported characters.'
                 : 'Unsupported characters detected.';
+        } else if (errorMsg.indexOf('null value in column "name"') > -1) {
+            const noun = errorMsg.indexOf('material') > -1 ? 'Sample ID' : 'ID';
+            return noun + ' cannot be blank.';
         }
     }
     return errorMsg;

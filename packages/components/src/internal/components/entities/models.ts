@@ -515,6 +515,7 @@ export interface EntityDataType {
 }
 
 interface OperationContainerInfo {
+    canEditName?: boolean;
     id: string;
     path: string;
     permitted: boolean;
@@ -599,6 +600,10 @@ export class OperationConfirmationData {
 
     getContainerPaths(permittedOnly = true): string[] {
         return this.containers?.filter(c => !permittedOnly || c.permitted).map(c => c.id) ?? [];
+    }
+
+    canEditName(): boolean {
+        return this.containers?.every(c => c.canEditName);
     }
 }
 
