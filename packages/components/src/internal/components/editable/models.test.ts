@@ -894,10 +894,10 @@ describe('EditorModel', () => {
             });
             expect(editorModel.getRowValue(1, false).get('SampleID')).toBe(123);
             expect(editorModel.getRowValue(1, false).get('SampleID/Name')).toBe(undefined);
-            expect(editorModel.getRowValue(1, false, false).get('SampleID')).toBe(123);
-            expect(editorModel.getRowValue(1, false, false).get('SampleID/Name')).toBe(undefined);
-            expect(editorModel.getRowValue(1, false, true).get('SampleID')).toBe(123);
-            expect(editorModel.getRowValue(1, false, true).get('SampleID/Name')).toBe('Sample-123');
+            expect(editorModel.getRowValue(1, false, () => false).get('SampleID')).toBe(123);
+            expect(editorModel.getRowValue(1, false, () => false).get('SampleID/Name')).toBe(undefined);
+            expect(editorModel.getRowValue(1, false, () => true).get('SampleID')).toBe(123);
+            expect(editorModel.getRowValue(1, false, () => true).get('SampleID/Name')).toBe('Sample-123');
         });
     });
 
