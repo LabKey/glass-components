@@ -515,10 +515,10 @@ export interface EntityDataType {
 }
 
 interface OperationContainerInfo {
+    canEditName?: boolean;
     id: string;
     path: string;
     permitted: boolean;
-    canEditName?: boolean;
 }
 
 export class OperationConfirmationData {
