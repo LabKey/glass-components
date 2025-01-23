@@ -1,6 +1,6 @@
 {
   "name": "@labkey/components",
-  "version": "6.16.1-fb-editSampleIds.2",
+  "version": "6.17.1-fb-editSampleIds.1",
   "description": "Components, models, actions, and utility functions for LabKey applications and pages",
   "sideEffects": false,
   "files": [

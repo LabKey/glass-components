@@ -3,6 +3,8 @@ import { render } from '@testing-library/react';
 import { fromJS, List } from 'immutable';
 
 import { DefaultRenderer } from './DefaultRenderer';
+import { ProductFeature } from '../app/constants';
+import { TEST_LKS_STARTER_MODULE_CONTEXT, TEST_LKSM_STARTER_MODULE_CONTEXT } from '../productFixtures';
 
 describe('DefaultRenderer', () => {
     test('undefined', () => {
@@ -65,6 +67,38 @@ describe('DefaultRenderer', () => {
 
     test('new line', () => {
         const component = <DefaultRenderer data={'test1\ntest2'} />;
+        const { container } = render(component);
+        expect(container).toMatchSnapshot();
+    });
+
+    test('with style, conditional formatting enabled', () => {
+        LABKEY.moduleContext = { ...TEST_LKS_STARTER_MODULE_CONTEXT };
+        const component = (
+            <DefaultRenderer
+                data={fromJS({
+                    value: 1,
+                    displayValue: 'Value 1',
+                    formattedValue: 'Value 1.00',
+                    style: ';background-color: blue',
+                })}
+            />
+        );
+        const { container } = render(component);
+        expect(container).toMatchSnapshot();
+    });
+
+    test('with style, conditional formatting not enabled', () => {
+        LABKEY.moduleContext = { ...TEST_LKSM_STARTER_MODULE_CONTEXT };
+        const component = (
+            <DefaultRenderer
+                data={fromJS({
+                    value: 1,
+                    displayValue: 'Value 1',
+                    formattedValue: 'Value 1.00',
+                    style: ';background-color: blue',
+                })}
+            />
+        );
         const { container } = render(component);
         expect(container).toMatchSnapshot();
     });

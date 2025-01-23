@@ -1,0 +1,477 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Filters Date Range 1`] = `
+<div>
+  <div
+    class="row domain-validator-filter-type-row"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-type-label-1"
+      >
+        First Condition *
+      </div>
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <select
+          class="form-control"
+          id="domainpropertiesrow-firstFilterType-1-1"
+          name="domainpropertiesrow-firstFilterType"
+          required=""
+        >
+          <option
+            value="dateeq"
+          >
+            Equals
+          </option>
+          <option
+            value="dateneq"
+          >
+            Does Not Equal
+          </option>
+          <option
+            value="dategt"
+          >
+            Is Greater Than
+          </option>
+          <option
+            value="dategte"
+          >
+            Is Greater Than or Equal To
+          </option>
+          <option
+            value="datelt"
+          >
+            Is Less Than
+          </option>
+          <option
+            value="datelte"
+          >
+            Is Less Than or Equal To
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div
+    class="row domain-validator-filter-row"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-value-label-1"
+      />
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <input
+          class="form-control"
+          id="domainpropertiesrow-firstFilterValue-1-1"
+          name="domainpropertiesrow-firstFilterValue"
+          required=""
+          type="date"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="row domain-validator-filter-type-row"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-type-label-2"
+      >
+        Second Condition
+      </div>
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <select
+          class="form-control"
+          id="domainpropertiesrow-secondFilterType-1-1"
+          name="domainpropertiesrow-secondFilterType"
+        >
+          <option
+            value="None"
+          >
+            No other filter
+          </option>
+          <option
+            value="dateeq"
+          >
+            Equals
+          </option>
+          <option
+            value="dateneq"
+          >
+            Does Not Equal
+          </option>
+          <option
+            value="dategt"
+          >
+            Is Greater Than
+          </option>
+          <option
+            value="dategte"
+          >
+            Is Greater Than or Equal To
+          </option>
+          <option
+            value="datelt"
+          >
+            Is Less Than
+          </option>
+          <option
+            value="datelte"
+          >
+            Is Less Than or Equal To
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div
+    class="row domain-validator-filter-bottom"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-value-label-2"
+      />
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <input
+          class="form-control"
+          disabled=""
+          id="domainpropertiesrow-secondFilterValue-1-1"
+          name="domainpropertiesrow-secondFilterValue"
+          type="date"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Filters Empty Filters - string type 1`] = `
+<div>
+  <div
+    class="row domain-validator-filter-type-row"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-type-label-1"
+      >
+        TypeLabel1
+      </div>
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <select
+          class="form-control"
+          id="domainpropertiesrow-firstFilterType-1-3"
+          name="domainpropertiesrow-firstFilterType"
+          required=""
+        >
+          <option
+            value="HAS_ANY_VALUE"
+          >
+            Has Any Value
+          </option>
+          <option
+            value="eq"
+          >
+            Equals
+          </option>
+          <option
+            value="neqornull"
+          >
+            Does Not Equal
+          </option>
+          <option
+            value="isblank"
+          >
+            Is Blank
+          </option>
+          <option
+            value="isnonblank"
+          >
+            Is Not Blank
+          </option>
+          <option
+            value="gt"
+          >
+            Is Greater Than
+          </option>
+          <option
+            value="lt"
+          >
+            Is Less Than
+          </option>
+          <option
+            value="gte"
+          >
+            Is Greater Than or Equal To
+          </option>
+          <option
+            value="lte"
+          >
+            Is Less Than or Equal To
+          </option>
+          <option
+            value="contains"
+          >
+            Contains
+          </option>
+          <option
+            value="doesnotcontain"
+          >
+            Does Not Contain
+          </option>
+          <option
+            value="doesnotstartwith"
+          >
+            Does Not Start With
+          </option>
+          <option
+            value="startswith"
+          >
+            Starts With
+          </option>
+          <option
+            value="in"
+          >
+            Equals One Of
+          </option>
+          <option
+            value="notin"
+          >
+            Does Not Equal Any Of
+          </option>
+          <option
+            value="containsoneof"
+          >
+            Contains One Of
+          </option>
+          <option
+            value="containsnoneof"
+          >
+            Does Not Contain Any Of
+          </option>
+          <option
+            value="between"
+          >
+            Between, Inclusive (example usage: -4,4)
+          </option>
+          <option
+            value="notbetween"
+          >
+            Not Between, Exclusive (example usage: -4,4)
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div
+    class="row domain-validator-filter-row"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-value-label-1"
+      >
+        ValueLabel1
+      </div>
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <input
+          class="form-control"
+          id="domainpropertiesrow-firstFilterValue-1-3"
+          name="domainpropertiesrow-firstFilterValue"
+          required=""
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="row domain-validator-filter-type-row"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-type-label-2"
+      >
+        TypeLabel2
+      </div>
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <select
+          class="form-control"
+          id="domainpropertiesrow-secondFilterType-1-3"
+          name="domainpropertiesrow-secondFilterType"
+        >
+          <option
+            value="None"
+          >
+            No other filter
+          </option>
+          <option
+            value="HAS_ANY_VALUE"
+          >
+            Has Any Value
+          </option>
+          <option
+            value="eq"
+          >
+            Equals
+          </option>
+          <option
+            value="neqornull"
+          >
+            Does Not Equal
+          </option>
+          <option
+            value="isblank"
+          >
+            Is Blank
+          </option>
+          <option
+            value="isnonblank"
+          >
+            Is Not Blank
+          </option>
+          <option
+            value="gt"
+          >
+            Is Greater Than
+          </option>
+          <option
+            value="lt"
+          >
+            Is Less Than
+          </option>
+          <option
+            value="gte"
+          >
+            Is Greater Than or Equal To
+          </option>
+          <option
+            value="lte"
+          >
+            Is Less Than or Equal To
+          </option>
+          <option
+            value="contains"
+          >
+            Contains
+          </option>
+          <option
+            value="doesnotcontain"
+          >
+            Does Not Contain
+          </option>
+          <option
+            value="doesnotstartwith"
+          >
+            Does Not Start With
+          </option>
+          <option
+            value="startswith"
+          >
+            Starts With
+          </option>
+          <option
+            value="in"
+          >
+            Equals One Of
+          </option>
+          <option
+            value="notin"
+          >
+            Does Not Equal Any Of
+          </option>
+          <option
+            value="containsoneof"
+          >
+            Contains One Of
+          </option>
+          <option
+            value="containsnoneof"
+          >
+            Does Not Contain Any Of
+          </option>
+          <option
+            value="between"
+          >
+            Between, Inclusive (example usage: -4,4)
+          </option>
+          <option
+            value="notbetween"
+          >
+            Not Between, Exclusive (example usage: -4,4)
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div
+    class="row domain-validator-filter-bottom"
+  >
+    <div
+      class="col-xs-4"
+    >
+      <div
+        id="domain-filter-value-label-2"
+      >
+        ValueLabel2
+      </div>
+    </div>
+    <div
+      class="col-xs-8"
+    >
+      <div>
+        <input
+          class="form-control"
+          disabled=""
+          id="domainpropertiesrow-secondFilterValue-1-3"
+          name="domainpropertiesrow-secondFilterValue"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

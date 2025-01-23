@@ -19,7 +19,7 @@ import { fromJS, List, Map } from 'immutable';
 
 import { HelpTipRenderer } from '../forms/HelpTipRenderer';
 
-import { GRID_SELECTION_INDEX, GRID_HEADER_CELL_BODY } from '../../constants';
+import { GRID_HEADER_CELL_BODY, GRID_SELECTION_INDEX } from '../../constants';
 
 import { LabelHelpTip } from './LabelHelpTip';
 import { GridColumn } from './models/GridColumn';

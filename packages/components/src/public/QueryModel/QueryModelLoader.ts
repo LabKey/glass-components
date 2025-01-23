@@ -124,6 +124,7 @@ export const DefaultQueryModelLoader: QueryModelLoader = {
             schemaName: model.schemaName,
             queryName: model.queryName,
             includeTotalCount: false, // if requesting to includeTotalCount, it will be loaded separately via loadTotalCount
+            includeStyle: true, // Issue 49100
         });
         const { key, models, orderedModels, rowCount, messages } = result;
 

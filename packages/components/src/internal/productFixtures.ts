@@ -89,6 +89,7 @@ export const TEST_BIO_LIMS_STARTER_MODULE_CONTEXT = {
             ProductFeature.CalculatedFields,
             ProductFeature.DataChangeCommentRequirement,
             ProductFeature.CustomImportTemplates,
+            ProductFeature.ConditionalFormatting,
         ],
     },
     inventory: {
@@ -116,6 +117,7 @@ export const TEST_BIO_LIMS_ENTERPRISE_MODULE_CONTEXT = {
             ProductFeature.DataChangeCommentRequirement,
             ProductFeature.Media,
             ProductFeature.CustomImportTemplates,
+            ProductFeature.ConditionalFormatting,
         ],
     },
     inventory: {
