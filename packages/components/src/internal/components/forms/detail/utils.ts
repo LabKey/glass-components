@@ -27,7 +27,10 @@ export function extractChanges(
     const changedValues = {};
     // Loop through submitted formValues and check against existing currentData from server
     Object.keys(formValues).forEach(field => {
-        const col = queryInfo.getColumn(field);
+        // Issue 52038: we expect the field values here to be fieldKey, but fall back to looking for the column by name
+        let col = queryInfo.getColumn(field);
+        if (!col) col = queryInfo.getColumnFromName(field);
+
         let existingValue = currentData.get(col.name);
         const changedValue = formValues[field];
 
