@@ -37,7 +37,8 @@ export async function selectRows(options: SelectRowsOptions): Promise<SelectRows
         schemaQuery,
         ...selectRowsOptions
     } = options;
-    const { queryName, schemaName, viewName } = schemaQuery;
+    const { queryName, schemaName } = schemaQuery;
+    const viewName = options.viewName ?? schemaQuery.viewName; // favor explicit viewName param over schemaQuery.viewName
 
     const [queryInfo, response] = await Promise.all([
         getQueryDetails({ containerPath: options.containerPath, schemaQuery }),
