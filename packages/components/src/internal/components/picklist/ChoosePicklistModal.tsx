@@ -435,7 +435,10 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
     const useSnapshotSelection = queryModel.filterArray.length > 0;
     const schemaQuery = queryModel.schemaQuery;
     const selections = queryModel.selections;
-    const intSelections = queryModel.intSelections;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intSelections is keyed off of selections because that's
+    // what is what backs the getter. Without this useMemo we'll generate a new intSelections every render cycle and
+    // trigger an infinite number of calls to getLookupRowIdsFromSelection in the useEffect below.
+    const intSelections = useMemo(() => queryModel.intSelections, [selections]);
     const { api } = useAppContext();
 
     useEffect(() => {
