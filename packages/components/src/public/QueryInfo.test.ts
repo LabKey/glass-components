@@ -506,12 +506,17 @@ describe('QueryInfo', () => {
 
         test('invalid name', () => {
             expect(queryInfo.getColumnFromName("nonesuch")).toBeUndefined();
-            expect(queryInfo.getColumnFromName("NAME")).toBeUndefined();
+            expect(queryInfo.getColumnFromName("NAMEe")).toBeUndefined();
         });
 
         test('valid name', () => {
             const col = queryInfo.getColumnFromName("Name");
             expect(col.name).toBe("Name");
-        })
-    })
+        });
+
+        test('case-insensitive', () => {
+            const col = queryInfo.getColumnFromName("NAME");
+            expect(col.name).toBe("Name");
+        });
+    });
 });
