@@ -25,7 +25,7 @@ import {
     getCellKeyColumnMap,
     getEntityDescription,
     getEntityNoun,
-    getIdentifyingFieldKeys,
+    getIdentifyingColumns,
     getInitialParentChoices,
     getJobCreationHref,
     getSampleIdCellKey,
@@ -318,11 +318,11 @@ describe('getJobCreationHref', () => {
     });
 });
 
-describe('getIdentifyingFieldKeys', () => {
+describe('getIdentifyingColumns', () => {
     const columns = [
-        { fieldKey: 'intCol', jsonType: 'int' },
-        { fieldKey: 'doubleCol', jsonType: 'double' },
-        { fieldKey: 'textCol', jsonType: 'string' },
+        { fieldKey: 'intCol', jsonType: 'int', name: 'intCol' },
+        { fieldKey: 'doubleCol$S', jsonType: 'double', name: 'doubleCol/' },
+        { fieldKey: 'textCol', jsonType: 'string', name: 'textCol' },
     ];
     const QUERY_INFO_NO_ID_VIEW = QueryInfo.fromJsonForTests(
         {
@@ -350,16 +350,23 @@ describe('getIdentifyingFieldKeys', () => {
     );
 
     test('no view defined', () => {
-        expect(getIdentifyingFieldKeys(undefined)).toStrictEqual([]);
-        expect(getIdentifyingFieldKeys(QUERY_INFO_NO_ID_VIEW)).toStrictEqual([]);
+        expect(getIdentifyingColumns(undefined)).toStrictEqual([]);
+        expect(getIdentifyingColumns(QUERY_INFO_NO_ID_VIEW)).toStrictEqual([]);
     });
 
     test('view with default labels', () => {
-        expect(getIdentifyingFieldKeys(QUERY_INFO_WITH_ID_VIEW)).toStrictEqual(['intCol', 'doubleCol', 'textCol']);
+        const cols = getIdentifyingColumns(QUERY_INFO_WITH_ID_VIEW);
+        expect(cols).toHaveLength(3);
+        expect(cols[1].name).toBe('doubleCol/');
+        expect(cols[1].fieldKey).toBe('doubleCol$S');
+        expect(cols[0].name).toBe('intCol');
+        expect(cols[0].fieldKey).toBe('intCol');
+        expect(cols[2].name).toBe('textCol');
+        expect(cols[2].fieldKey).toBe('textCol');
     });
 
     test('view with custom labels', () => {
-        const newColumn = { fieldKey: 'intCol', jsonType: 'int', title: 'Counter' };
+        const newColumn = { fieldKey: 'intCol', jsonType: 'int', title: 'Counter', name: 'intCol' };
         const queryInfo = QueryInfo.fromJsonForTests(
             {
                 columns: [newColumn, columns[1], columns[2]],
@@ -372,7 +379,12 @@ describe('getIdentifyingFieldKeys', () => {
             },
             true
         );
-        expect(getIdentifyingFieldKeys(queryInfo)).toStrictEqual(['doubleCol', 'intCol']);
+        const cols = getIdentifyingColumns(queryInfo);
+        expect(cols).toHaveLength(2);
+        expect(cols[0].name).toBe('doubleCol/');
+        expect(cols[0].fieldKey).toBe('doubleCol$S');
+        expect(cols[1].name).toBe('intCol');
+        expect(cols[1].fieldKey).toBe('intCol');
     });
 });
 
