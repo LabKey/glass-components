@@ -299,7 +299,7 @@ export class DatePickerInputImpl extends DisableableInput<DatePickerInputImplPro
                         label={label}
                         labelOverlayProps={{
                             isFormsy: false,
-                            inputId: queryColumn.fieldKey,
+                            inputId: queryColumn.name,
                             required: queryColumn.required,
                             addLabelAsterisk,
                             labelClass: allowDisable ? undefined : labelClassName,
