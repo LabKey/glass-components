@@ -857,6 +857,48 @@ describe('EditorModel', () => {
             // "Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)"
             expect(updatedRow[dateColumn.fieldKey]).toEqual('2025-01-01 00:00:00');
         });
+
+        test('include sample lookup display value', () => {
+            const sampleColumn = new QueryColumn({
+                caption: 'Sample ID',
+                fieldKey: 'sampleId',
+                fieldKeyArray: ['sampleId'],
+                jsonType: 'int',
+                name: 'SampleID',
+                shownInInsertView: true,
+                shownInUpdateView: true,
+                required: true,
+                userEditable: true,
+                lookup: {
+                    schemaName: 'exp',
+                    queryName: 'Materials',
+                    displayColumn: 'Name',
+                    keyColumn: 'RowId',
+                },
+            });
+            const sampleColFk = sampleColumn.fieldKey.toLowerCase();
+            const cellValues = fromJS({
+                [genCellKey(sampleColFk, 0)]: List<ValueDescriptor>([{ display: undefined, raw: undefined }]),
+                [genCellKey(sampleColFk, 1)]: List<ValueDescriptor>([
+                    {
+                        display: 'Sample-123',
+                        raw: 123,
+                    },
+                ]),
+            });
+            const editorModel = modifyEm({
+                cellValues: basicEditorModel.cellValues.merge(cellValues),
+                columnMap: basicEditorModel.columnMap.set(sampleColFk, sampleColumn),
+                orderedColumns: basicEditorModel.orderedColumns.push(sampleColFk),
+                rowCount: 2,
+            });
+            expect(editorModel.getRowValue(1, false).get('SampleID')).toBe(123);
+            expect(editorModel.getRowValue(1, false).get('SampleID/Name')).toBe(undefined);
+            expect(editorModel.getRowValue(1, false, () => false).get('SampleID')).toBe(123);
+            expect(editorModel.getRowValue(1, false, () => false).get('SampleID/Name')).toBe(undefined);
+            expect(editorModel.getRowValue(1, false, () => true).get('SampleID')).toBe(123);
+            expect(editorModel.getRowValue(1, false, () => true).get('SampleID/Name')).toBe('Sample-123');
+        });
     });
 
     describe('utils', () => {

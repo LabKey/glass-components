@@ -1,6 +1,10 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version TBD
+*Released*: TBD
+- Issue 39517: Assay importRun to include display value in the row data for sample lookup columns
+
 ### version 6.17.0
 *Released*: 23 January 2025
 - Add support for conditional formatting in LIMS and SDMS products
