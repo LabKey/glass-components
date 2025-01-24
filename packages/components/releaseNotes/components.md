@@ -6,6 +6,7 @@ Components, models, actions, and utility functions for LabKey applications and p
 - Issue 52038: Fix problems fields whose names and fieldKeys are different
  - Editable grid needs to find columns using names not field key
  - detail editing needs to use name instead of fieldKey for changed values
+ - Fixes for identifying field retrieval and population in the grid
 
 ### version 5.20.5
 *Released*: 13 January 2025
