@@ -173,7 +173,8 @@ export class QueryInfo {
 
     getColumnFromName(name: string): QueryColumn {
         if (name) {
-            const matchingCols = this.columns.filter(col => col.name === name).valueArray;
+            const lcName = name.toLowerCase();
+            const matchingCols = this.columns.filter(col => col.name.toLowerCase() === lcName).valueArray;
             if (matchingCols.length > 1)
                 console.warn("Found " + matchingCols.length + " columns with name " + name + ". Returning first.", matchingCols);
             if (matchingCols.length > 0)
