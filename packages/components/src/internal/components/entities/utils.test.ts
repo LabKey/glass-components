@@ -286,7 +286,7 @@ describe('getJobCreationHref', () => {
         const queryModelWithFilters = queryModel.mutate({ filterArray: [Filter.create('TEST COL', 'TEST VALUE')] });
         expect(
             getJobCreationHref(queryModelWithFilters, undefined, true, undefined, false, null, null, null, true)
-        ).toBe('#/workflow/new?selectionKey=id');
+        ).toBe('#/workflow/new?selectionKey=id&selectionKeyType=snapshot');
     });
     test('templateId', () => {
         expect(getJobCreationHref(queryModel).indexOf('templateId')).toBe(-1);

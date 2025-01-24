@@ -57,7 +57,7 @@ export function createPicklist(
     shared: boolean,
     selectionKey: string,
     useSnapshotSelection: boolean,
-    sampleIds: string[]
+    sampleIds: number[]
 ): Promise<Picklist> {
     return new Promise((resolve, reject) => {
         Domain.create({
@@ -183,7 +183,7 @@ export function getPicklistCountsBySampleType(listName: string): Promise<SampleT
     });
 }
 
-export function getPicklistSamples(listName: string): Promise<Set<string>> {
+export function getPicklistSamples(listName: string): Promise<Set<number>> {
     return new Promise((resolve, reject) => {
         const schemaName = SCHEMAS.PICKLIST_TABLES.SCHEMA;
         selectRowsDeprecated({
@@ -193,7 +193,7 @@ export function getPicklistSamples(listName: string): Promise<Set<string>> {
             .then(response => {
                 const { models } = response;
                 const dataKey = resolveKey(schemaName, listName);
-                resolve(new Set(Object.values(models[dataKey]).map((row: any) => row.SampleID.value.toString())));
+                resolve(new Set(Object.values(models[dataKey]).map((row: any) => row.SampleID.value)));
             })
             .catch(reason => {
                 console.error(reason);
@@ -254,11 +254,11 @@ export async function getSamplesNotInList(
     listName: string,
     selectionKey?: string,
     useSnapshotSelection?: boolean,
-    sampleIds?: string[]
-): Promise<string[]> {
+    sampleIds?: number[]
+): Promise<number[]> {
     const existingSamples = await getPicklistSamples(listName);
     if (sampleIds) {
-        return sampleIds.filter(id => !existingSamples.has(id.toString()));
+        return sampleIds.filter(id => !existingSamples.has(id));
     } else if (selectionKey) {
         const response = await getSelected(selectionKey, useSnapshotSelection);
         return response.selected.filter(id => !existingSamples.has(id.toString()));
@@ -270,7 +270,7 @@ export function addSamplesToPicklist(
     listName: string,
     useSnapshotSelection?: boolean,
     selectionKey?: string,
-    sampleIds?: string[]
+    sampleIds?: number[]
 ): Promise<QueryCommandResponse> {
     return new Promise((resolve, reject) => {
         return getSamplesNotInList(listName, selectionKey, useSnapshotSelection, sampleIds)

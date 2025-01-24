@@ -418,7 +418,7 @@ interface ChoosePicklistModalProps {
     picklistProductId?: string;
     queryModel?: QueryModel;
     sampleFieldKey?: string;
-    sampleIds?: string[];
+    sampleIds?: number[];
     selectionKey?: string;
     user: User;
 }
@@ -429,13 +429,16 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
     const [items, setItems] = useState<Picklist[]>([]);
     const [idsLoading, setIdsLoading] = useState<LoadingState>(LoadingState.INITIALIZED);
     const [itemsLoading, setItemsLoading] = useState<LoadingState>(LoadingState.INITIALIZED);
-    const [ids, setIds] = useState<string[]>(sampleIds);
+    const [ids, setIds] = useState<number[]>(sampleIds);
     const [validCount, setValidCount] = useState<number>(numSelected);
     const [selectionsLoading, setSelectionsLoading] = useState<LoadingState>(LoadingState.INITIALIZED);
-    const useSnapshotSelection = queryModel?.filterArray.length > 0;
-
-    const schemaQuery = queryModel?.schemaQuery;
-    const selections = queryModel?.selections;
+    const useSnapshotSelection = queryModel.filterArray.length > 0;
+    const schemaQuery = queryModel.schemaQuery;
+    const selections = queryModel.selections;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intSelections is keyed off of selections because that's
+    // what is what backs the getter. Without this useMemo we'll generate a new intSelections every render cycle and
+    // trigger an infinite number of calls to getLookupRowIdsFromSelection in the useEffect below.
+    const intSelections = useMemo(() => queryModel.intSelections, [selections]);
     const { api } = useAppContext();
 
     useEffect(() => {
@@ -483,24 +486,24 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
                 // This method is responsible for:
                 // 1. Determining the sample IDs for the set of samples to be added to the picklist.
                 // 2. Verifying what operations are allowed for those samples.
-                let ids_: string[];
+                let ids_: number[];
                 if (sampleIds) {
                     ids_ = sampleIds;
                 } else if (sampleFieldKey && schemaQuery) {
                     // Look up SampleIds from the selected row ids.
                     // Using sampleFieldKey as proxy flag to determine if lookup is needed.
                     try {
-                        ids_ = await api.samples.getFieldLookupFromSelection(
+                        ids_ = await api.samples.getLookupRowIdsFromSelection(
                             schemaQuery.schemaName,
                             schemaQuery.queryName,
-                            [...selections],
+                            intSelections,
                             sampleFieldKey
                         );
                     } catch (e) {
                         setError(resolveErrorMessage(e) ?? 'Failed to retrieve picklist selection.');
                     }
-                } else if (selections) {
-                    ids_ = [...selections];
+                } else if (intSelections) {
+                    ids_ = intSelections;
                 }
                 setIds(ids_);
                 setValidCount(ids_?.length ?? 0);
@@ -509,12 +512,12 @@ export const ChoosePicklistModal: FC<ChoosePicklistModalProps> = memo(props => {
         }
     }, [
         api.samples,
+        intSelections,
         selectionsLoading,
         sampleFieldKey,
         sampleIds,
         schemaQuery,
         selectionKey,
-        selections,
         useSnapshotSelection,
     ]);
 

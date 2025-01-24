@@ -234,16 +234,16 @@ describe('QueryModel', () => {
         expect(model.hasSelections).toBeTruthy();
     });
 
-    test('getSelectedIdsAsInts', () => {
+    test('intSelections', () => {
         let model = new QueryModel({ schemaQuery: SCHEMA_QUERY });
-        expect(model.getSelectedIdsAsInts()).toBe(undefined);
+        expect(model.intSelections).toBe(undefined);
         model = model.mutate({ selections: new Set([]) });
-        expect(model.getSelectedIdsAsInts().length).toBe(0);
+        expect(model.intSelections.length).toBe(0);
         model = model.mutate({ selections: new Set(['1', '3', '2']) });
-        expect(model.getSelectedIdsAsInts().length).toBe(3);
-        expect(model.getSelectedIdsAsInts()[0]).toBe(1);
-        expect(model.getSelectedIdsAsInts()[1]).toBe(3);
-        expect(model.getSelectedIdsAsInts()[2]).toBe(2);
+        expect(model.intSelections.length).toBe(3);
+        expect(model.intSelections[0]).toBe(1);
+        expect(model.intSelections[1]).toBe(3);
+        expect(model.intSelections[2]).toBe(2);
     });
 
     test('getSelectedIds', () => {

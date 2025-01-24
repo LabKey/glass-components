@@ -18,7 +18,7 @@ interface Props {
     metricFeatureArea?: string;
     model: QueryModel;
     picklistProductId?: string;
-    sampleIds?: string[];
+    sampleIds?: number[];
     user: User;
 }
 
@@ -27,11 +27,7 @@ export const PicklistButton: FC<Props> = memo(props => {
 
     return (
         <RequiresPermission permissionCheck="any" perms={PermissionTypes.ManagePicklists}>
-            <ResponsiveMenuButton
-                className="samples-picklist-menu"
-                text="Picklists"
-                asSubMenu={asSubMenu}
-            >
+            <ResponsiveMenuButton className="samples-picklist-menu" text="Picklists" asSubMenu={asSubMenu}>
                 <AddToPicklistMenuItem
                     queryModel={model}
                     user={user}

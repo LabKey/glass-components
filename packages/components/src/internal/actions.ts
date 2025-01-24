@@ -547,7 +547,7 @@ export function replaceSelected(options: ReplaceSelectedOptions): Promise<Select
  */
 export function setSnapshotSelections(
     key: string,
-    ids: string[] | string,
+    ids: string[] | string | number[],
     containerPath?: string
 ): Promise<SelectResponse> {
     return new Promise((resolve, reject) => {
