@@ -466,7 +466,7 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
 
         const _sorts = view ? sorts.concat(view.sorts) : sorts;
         _sorts.forEach((sort): void => {
-            const column = model.getColumn(sort.fieldKey);
+            const column = model.getColumnByFieldKey(sort.fieldKey);
             if (column) {
                 actionValues.push(this.gridActions.sort.actionValueFromSort(sort, column?.shortCaption));
             }
@@ -475,7 +475,7 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
         // handle the view's saved filters (which will be shown as read only)
         if (view && view.filters.length) {
             view.filters.forEach((filter): void => {
-                const column = model.getColumn(filter.getColumnName());
+                const column = model.getColumnByFieldKey(filter.getColumnName());
                 if (column) {
                     actionValues.push(
                         this.gridActions.filter.actionValueFromFilter(filter, column, 'Locked (saved with view)')
@@ -494,11 +494,11 @@ export class GridPanel<T = {}> extends PureComponent<Props<T>, State> {
                 const searchAction = this.gridActions.search.actionValueFromFilter(filter);
                 searchActionValues.push(searchAction);
             } else {
-                const column = model.getColumn(filter.getColumnName());
+                const column = model.getColumnByFieldKey(filter.getColumnName());
                 if (column) {
                     actionValues.push(this.gridActions.filter.actionValueFromFilter(filter, column));
                 } else if (filter.getColumnName().indexOf('/') > -1) {
-                    const lookupCol = model.getColumn(filter.getColumnName().split('/')[0]);
+                    const lookupCol = model.getColumnByFieldKey(filter.getColumnName().split('/')[0]);
                     if (lookupCol) actionValues.push(this.gridActions.filter.actionValueFromFilter(filter, column));
                 }
             }

@@ -496,4 +496,27 @@ describe('QueryInfo', () => {
             expect(cols[3].readOnly).toBe(true);
         });
     });
+
+    describe('getColumnFromName', () => {
+        test('no name', () => {
+            expect(queryInfo.getColumnFromName(undefined)).toBeUndefined();
+            expect(queryInfo.getColumnFromName("")).toBeUndefined();
+            expect(queryInfo.getColumnFromName(null)).toBeUndefined();
+        });
+
+        test('invalid name', () => {
+            expect(queryInfo.getColumnFromName("nonesuch")).toBeUndefined();
+            expect(queryInfo.getColumnFromName("NAMEe")).toBeUndefined();
+        });
+
+        test('valid name', () => {
+            const col = queryInfo.getColumnFromName("Name");
+            expect(col.name).toBe("Name");
+        });
+
+        test('case-insensitive', () => {
+            const col = queryInfo.getColumnFromName("NAME");
+            expect(col.name).toBe("Name");
+        });
+    });
 });

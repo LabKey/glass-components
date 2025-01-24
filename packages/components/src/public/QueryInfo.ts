@@ -171,6 +171,18 @@ export class QueryInfo {
         return this.appEditableTable && this.getPkCols().length > 0;
     }
 
+    getColumnFromName(name: string): QueryColumn {
+        if (name) {
+            const lcName = name.toLowerCase();
+            const matchingCols = this.columns.filter(col => col.name.toLowerCase() === lcName).valueArray;
+            if (matchingCols.length > 1)
+                console.warn("Found " + matchingCols.length + " columns with name " + name + ". Returning first.", matchingCols);
+            if (matchingCols.length > 0)
+                return matchingCols[0];
+        }
+        return undefined;
+    }
+
     getColumn(fieldKey: string): QueryColumn {
         if (fieldKey) {
             return this.columns.get(fieldKey.toLowerCase());

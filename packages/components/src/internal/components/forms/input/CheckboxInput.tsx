@@ -30,7 +30,6 @@ interface CheckboxInputProps extends DisableableInputProps {
     formsy?: boolean;
     label?: any;
     labelClassName?: string;
-    name?: string;
     queryColumn: QueryColumn;
     renderFieldLabel?: (queryColumn: QueryColumn, label?: string, description?: string) => ReactNode;
     rowClassName?: any[] | string;
@@ -93,7 +92,6 @@ class CheckboxInputImpl extends DisableableInput<CheckboxInputImplProps, Checkbo
             formsy,
             label,
             labelClassName,
-            name,
             queryColumn,
             showLabel,
             renderFieldLabel,
@@ -135,7 +133,7 @@ class CheckboxInputImpl extends DisableableInput<CheckboxInputImplProps, Checkbo
                 <div className={wrapperClassName}>
                     <input
                         disabled={isDisabled}
-                        name={name ?? queryColumn.fieldKey}
+                        name={queryColumn.fieldKey}
                         // Issue 43299: Ignore "required" property for boolean columns as this will
                         // cause any false value (i.e. unchecked) to prevent submission.
                         // required={queryColumn.required}
@@ -159,7 +157,7 @@ const CheckboxInputFormsy = withFormsy<CheckboxInputProps, boolean>(CheckboxInpu
 export const CheckboxInput: FC<CheckboxInputProps> = props => {
     const { formsy = true } = props;
     if (formsy) {
-        return <CheckboxInputFormsy name={props.name ?? props.queryColumn.name} {...props} formsy />;
+        return <CheckboxInputFormsy name={props.queryColumn.fieldKey} {...props} formsy />;
     }
     return <CheckboxInputImpl {...(props as CheckboxInputImplProps)} formsy={false} />;
 };

@@ -1,6 +1,14 @@
 # @labkey/components
 Components, models, actions, and utility functions for LabKey applications and pages
 
+### version 5.20.6
+*Released*: TBD
+- Issue 52038: Fix problems fields whose names and fieldKeys are different
+ - Editable grid needs to find columns using names not field key
+ - detail editing needs to use name instead of fieldKey for changed values
+ - Fixes for identifying field retrieval and population in the grid
+ - Update CheckboxInput.tsx and DatePickerInput.tsx to use column.fieldKey for input name prop (to match other input types)
+
 ### version 5.20.5
 *Released*: 13 January 2025
 - Issue 51967: Submit formatted date value from editable grid

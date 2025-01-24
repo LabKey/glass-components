@@ -33,7 +33,7 @@ import { genCellKey, parseCellKey } from '../editable/utils';
 import { EditorModel } from '../editable/models';
 
 import {
-    getIdentifyingFieldKeys,
+    getIdentifyingColumns,
     getInitialParentChoices,
     getSampleIdCellKey,
     isAssayDesignEntity,
@@ -59,12 +59,12 @@ import {
     EntityIdCreationModel,
     EntityParentType,
     EntityTypeOption,
+    FolderConfigurableDataType,
     IEntityTypeOption,
     IImportAlias,
     IParentAlias,
     IParentOption,
     OperationConfirmationData,
-    FolderConfigurableDataType,
     RemappedKeyValues,
 } from './models';
 
@@ -1384,9 +1384,9 @@ export function getSampleIdentifyingFieldGridData(
     includeDefaultColumns = true
 ): Promise<Record<string, Record<string, any>>> {
     const columns = [...DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS];
-    const sampleIdentifyingFieldKeys = [...getIdentifyingFieldKeys(sampleQueryInfo)];
-    if (sampleIdentifyingFieldKeys.length > 0) {
-        columns.push(...sampleIdentifyingFieldKeys);
+    const sampleIdentifyingColumns = getIdentifyingColumns(sampleQueryInfo);
+    if (sampleIdentifyingColumns.length > 0) {
+        columns.push(...sampleIdentifyingColumns.map(col => col.fieldKey));
     } else {
         return Promise.resolve({}); // if we don't have any additional data to retrieve, return early
     }
@@ -1407,10 +1407,11 @@ export function getSampleIdentifyingFieldGridData(
                           sampleId: caseInsensitive(row, 'Name')?.value,
                       }
                     : {};
-                sampleIdentifyingFieldKeys.forEach(c => {
-                    const colData = caseInsensitive(row, c);
-                    if (colData.value) {
-                        d[c] = colData?.formattedValue ?? colData?.displayValue ?? colData?.value;
+                sampleIdentifyingColumns.forEach(c => {
+                    // Issue 52038: the Row has data keyed by name, but we want editable grid data to be keyed by fieldKey
+                    const colData = caseInsensitive(row, c.name);
+                    if (colData?.value) {
+                        d[c.fieldKey] = colData?.formattedValue ?? colData?.displayValue ?? colData?.value;
                     }
                 });
                 samplesData[rowId] = d;
@@ -1435,14 +1436,14 @@ export function updateCellValuesForSampleIds(
     return new Promise((resolve, reject) => {
         const sampleFieldKeyPrefix_ = sampleFieldKeyPrefix?.toLowerCase();
         const sampleFieldKey = sampleFieldKeyPrefix_ ?? SAMPLE_ID_FIELD_KEY;
-        const identifyingFieldKeys = getIdentifyingFieldKeys(samplesQueryInfo);
+        const identifyingColumns = getIdentifyingColumns(samplesQueryInfo);
         const cellKeyChanges = {
             toRemove: [],
             toAddOrUpdate: {},
         };
 
         // only need to update cell values if we have identifyingFieldKeys for the given sample type
-        if (identifyingFieldKeys.length > 0 && editorModelChanges?.cellValues) {
+        if (identifyingColumns.length > 0 && editorModelChanges?.cellValues) {
             // map from wellLabel to sampleId
             const samplesToRetrieve = [];
             const sampleIdToRowInd = {};
@@ -1471,11 +1472,12 @@ export function updateCellValuesForSampleIds(
             if (dataRemovedIndexes.length > 0) {
                 let updates = Map<string, List<any>>();
                 dataRemovedIndexes.forEach(rowInd => {
-                    identifyingFieldKeys
-                        .filter(key => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(key.toLowerCase()) === -1)
-                        .forEach(key => {
+                    identifyingColumns
+                        .filter(col => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(col.name.toLowerCase()) === -1)
+                        .forEach(col => {
                             updates = updates.set(
-                                genCellKey(key, rowInd, sampleFieldKeyPrefix_),
+                                // Issue 52038: cell keys are based on fieldKey currently
+                                genCellKey(col.fieldKey, rowInd, sampleFieldKeyPrefix_),
                                 List<any>([
                                     {
                                         display: undefined,
@@ -1502,17 +1504,18 @@ export function updateCellValuesForSampleIds(
                                         },
                                     ])
                                 );
-                                identifyingFieldKeys
+                                identifyingColumns
                                     .filter(
-                                        key => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(key.toLowerCase()) === -1
+                                        col => DEFAULT_SAMPLE_EDITABLE_GRID_COLUMNS.indexOf(col.name.toLowerCase()) === -1
                                     )
-                                    .forEach(key => {
+                                    .forEach(col => {
                                         updates = updates.set(
-                                            genCellKey(key, rowInd, sampleFieldKeyPrefix_),
+                                            genCellKey(col.fieldKey, rowInd, sampleFieldKeyPrefix_),
+                                            // Issue 52038: getSampleIdentifyingFieldGridData returns data keyed by fieldKey
                                             List<any>([
                                                 {
-                                                    display: data[key],
-                                                    raw: data[key],
+                                                    display: data[col.fieldKey],
+                                                    raw: data[col.fieldKey],
                                                 },
                                             ])
                                         );
