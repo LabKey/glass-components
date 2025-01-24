@@ -7,6 +7,7 @@ Components, models, actions, and utility functions for LabKey applications and p
  - Editable grid needs to find columns using names not field key
  - detail editing needs to use name instead of fieldKey for changed values
  - Fixes for identifying field retrieval and population in the grid
+ - Update CheckboxInput.tsx and DatePickerInput.tsx to use column.fieldKey for input name prop (to match other input types)
 
 ### version 5.20.5
 *Released*: 13 January 2025

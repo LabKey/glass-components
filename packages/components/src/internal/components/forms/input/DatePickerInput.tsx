@@ -328,7 +328,7 @@ const DatePickerInputFormsy = withFormsy<DatePickerInputProps, string>(DatePicke
 export const DatePickerInput: FC<DatePickerInputProps> = props => {
     const { formsy = true } = props;
     if (formsy) {
-        return <DatePickerInputFormsy name={props.name ?? props.queryColumn.name} {...props} formsy />;
+        return <DatePickerInputFormsy name={props.name ?? props.queryColumn.fieldKey} {...props} formsy />;
     }
     return <DatePickerInputImpl {...(props as DatePickerInputImplProps)} formsy={false} />;
 };
