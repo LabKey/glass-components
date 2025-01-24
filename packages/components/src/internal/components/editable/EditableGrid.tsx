@@ -1283,7 +1283,7 @@ export class EditableGrid extends PureComponent<EditableGridProps, EditableGridS
         const insertData = OrderedMap<string, any>().asMutable();
         this.props.editorModel.queryInfo
             .getInsertColumns(this.props.bulkAddProps.isIncludedColumn)
-            .forEach(col => insertData.set(col.name, undefined));
+            .forEach(col => insertData.set(col.fieldKey, undefined));
         return insertData.merge(data).asImmutable();
     };
 
