@@ -1,5 +1,6 @@
-import { mount } from 'enzyme';
 import React from 'react';
+
+import { render } from '@testing-library/react';
 
 import { PropertyValidator } from '../models';
 import { INTEGER_TYPE } from '../PropDescType';
@@ -34,31 +35,34 @@ describe('RangeValidationOptions', () => {
             onChange: jest.fn(),
         };
 
-        const validator = mount(<RangeValidationOptions {...props} />);
+        render(<RangeValidationOptions {...props} />);
 
-        let value = validator.find({ id: createFormInputId(DOMAIN_FIRST_FILTER_VALUE, domainIndex, validatorIndex) });
-        expect(value.at(0).props().value).toEqual('0');
+        let value = document.querySelector(
+            '#' + createFormInputId(DOMAIN_FIRST_FILTER_VALUE, domainIndex, validatorIndex)
+        );
+        expect(value.getAttribute('value')).toEqual('0');
 
-        value = validator.find({ id: createFormInputId(DOMAIN_SECOND_FILTER_VALUE, domainIndex, validatorIndex) });
-        expect(value.at(0).props().value).toEqual('10');
+        value = document.querySelector(
+            '#' + createFormInputId(DOMAIN_SECOND_FILTER_VALUE, domainIndex, validatorIndex)
+        );
+        expect(value.getAttribute('value')).toEqual('10');
 
-        const name = validator.find({ id: createFormInputId(DOMAIN_VALIDATOR_NAME, domainIndex, validatorIndex) });
-        expect(name.at(0).props().value).toEqual('Test range validator');
+        const name = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_NAME, domainIndex, validatorIndex)
+        );
+        expect(name.getAttribute('value')).toEqual('Test range validator');
 
-        const description = validator.find({
-            id: createFormInputId(DOMAIN_VALIDATOR_DESCRIPTION, domainIndex, validatorIndex),
-        });
-        expect(description.at(0).props().value).toEqual('This is a range validator');
+        const description = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_DESCRIPTION, domainIndex, validatorIndex)
+        );
+        expect(description.innerHTML).toEqual('This is a range validator');
 
-        const errorMsg = validator.find({
-            id: createFormInputId(DOMAIN_VALIDATOR_ERRORMESSAGE, domainIndex, validatorIndex),
-        });
-        expect(errorMsg.at(0).props().value).toEqual('Range validation failed');
+        const errorMsg = document.querySelector(
+            '#' + createFormInputId(DOMAIN_VALIDATOR_ERRORMESSAGE, domainIndex, validatorIndex)
+        );
+        expect(errorMsg.innerHTML).toEqual('Range validation failed');
 
         expect(RangeValidationOptions.isValid(validatorModel)).toEqual(true);
-
-        expect(validator).toMatchSnapshot();
-        validator.unmount();
     });
 
     test('Range Validator - collapsed', () => {
@@ -79,12 +83,11 @@ describe('RangeValidationOptions', () => {
             onChange: jest.fn(),
         };
 
-        const validator = mount(<RangeValidationOptions {...props} />);
+        render(<RangeValidationOptions {...props} />);
 
-        const collapsed = validator.find(`#domain-range-validator-${validatorIndex} .domain-validator-collapse`);
-        expect(collapsed.text()).toEqual('Test range validator: Is Greater Than 0 and Is Less Than 10');
-
-        expect(validator).toMatchSnapshot();
-        validator.unmount();
+        const collapsed = document.querySelector(
+            `#domain-range-validator-${validatorIndex} .domain-validator-collapse`
+        );
+        expect(collapsed.textContent).toEqual('Test range validator: Is Greater Than 0 and Is Less Than 10');
     });
 });

@@ -211,6 +211,7 @@ import { createGridModelId } from './internal/models';
 import { initQueryGridState } from './internal/global';
 import {
     deleteRows,
+    ensureAllFieldsInAllRows,
     getContainerFilter,
     getContainerFilterForFolder,
     getContainerFilterForLookups,
@@ -228,7 +229,6 @@ import {
     selectDistinctRows,
     selectRowsDeprecated,
     updateRows,
-    ensureAllFieldsInAllRows,
 } from './internal/query/api';
 import { processSchemas } from './internal/query/utils';
 import {
@@ -725,6 +725,8 @@ import {
     isAssayQCEnabled,
     isAssayRequestsEnabled,
     isBiologicsEnabled,
+    isConditionalFormattingEnabled,
+    isCustomImportTemplatesEnabled,
     isDataChangeCommentRequirementFeatureEnabled,
     isELNEnabled,
     isExperimentAliasEnabled,
@@ -745,7 +747,6 @@ import {
     isSharedContainer,
     isSourceTypeEnabled,
     isWorkflowEnabled,
-    isCustomImportTemplatesEnabled,
     limsIsPrimaryApp,
     setFolderDataExclusion,
     setProductFolders,
@@ -898,7 +899,7 @@ import { getLabelsTestAPIWrapper } from './internal/components/labels/APIWrapper
 import { OverlayTrigger, useOverlayTriggerState } from './internal/OverlayTrigger';
 import { Tooltip } from './internal/Tooltip';
 import { Popover } from './internal/Popover';
-import { DropdownMenu, DropdownButton, MenuDivider, MenuHeader, MenuItem, SplitButton } from './internal/dropdowns';
+import { DropdownButton, DropdownMenu, MenuDivider, MenuHeader, MenuItem, SplitButton } from './internal/dropdowns';
 import { DropdownSection } from './internal/DropdownSection';
 import { isLoginAutoRedirectEnabled, showPremiumFeatures } from './internal/components/administration/utils';
 import { LineageGridModel, LineageResult } from './internal/components/lineage/models';
@@ -944,6 +945,7 @@ const App = {
     isRegistryEnabled,
     isSourceTypeEnabled,
     isCustomImportTemplatesEnabled,
+    isConditionalFormattingEnabled,
     isMediaEnabled,
     isWorkflowEnabled,
     isELNEnabled,

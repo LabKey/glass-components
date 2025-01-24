@@ -4,6 +4,7 @@ import { FILELINK_RANGE_URI } from '../components/domainproperties/constants';
 
 import { getAttachmentCardProp, getAttachmentTitleFromName } from './FileColumnRenderer';
 import { AttachmentCardProps, IAttachment } from './AttachmentCard';
+import { TEST_BIO_LIMS_STARTER_MODULE_CONTEXT, TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT } from '../productFixtures';
 
 const DEFAULT_DATA = fromJS({ url: 'testurl', value: 'test.txt', displayValue: 'Test.txt' });
 
@@ -99,6 +100,20 @@ describe('getAttachmentCardProp', () => {
     test('allowRemove', () => {
         validate(getAttachmentCardProp(DEFAULT_DATA.toJS(), false, jest.fn()), true, 'attachment', true);
         validate(getAttachmentCardProp(DEFAULT_DATA, false, jest.fn()), true, 'attachment', true);
+    });
+
+    test('styling, not enabled', () => {
+        LABKEY.moduleContext = { ...TEST_LKSM_PROFESSIONAL_MODULE_CONTEXT };
+        const data = { url: 'testurl', value: 'test.png', displayValue: 'Test.png', style: ';font-style: italic' };
+        const result = getAttachmentCardProp(data);
+        expect(result.titleStyle).toBeUndefined();
+    });
+
+    test('styling, enabled', () => {
+        LABKEY.moduleContext = { ...TEST_BIO_LIMS_STARTER_MODULE_CONTEXT };
+        const data = { url: 'testurl', value: 'test.png', displayValue: 'Test.png', style: ';font-style: italic' };
+        const result = getAttachmentCardProp(data);
+        expect(result.titleStyle).toStrictEqual({ fontStyle: 'italic' });
     });
 });
 

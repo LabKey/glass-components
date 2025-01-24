@@ -94,6 +94,17 @@ describe('AttachmentCard', () => {
         expect(document.querySelector('.attachment-card__name').innerHTML).toBe(attachment.title);
     });
 
+    test('with title and styling', () => {
+        const attachment = { name: 'dir/name.txt', title: 'name.txt', iconFontCls: 'fa-test' };
+        render(<AttachmentCard attachment={attachment} titleStyle={{ backgroundColor: 'green' }} />);
+        validate();
+        expect(document.querySelector('.attachment-card').getAttribute('title')).toBe(attachment.name);
+        const cardName = document.querySelector('.attachment-card__name');
+        expect(cardName.innerHTML).toBe(attachment.title);
+        expect(cardName.getAttribute('class')).toContain('status-pill');
+        expect(cardName.getAttribute('style')).toBe('background-color: green;');
+    });
+
     test('iconFontCls from name', () => {
         const attachment = { name: 'dir/name.txt', title: 'name.txt' };
         render(<AttachmentCard attachment={attachment} />);

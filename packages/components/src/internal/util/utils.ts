@@ -15,10 +15,11 @@
  */
 import { Iterable, List, Map, Set as ImmutableSet } from 'immutable';
 import { getServerContext, Utils } from '@labkey/api';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, CSSProperties } from 'react';
 
 import { hasParameter, toggleParameter } from '../url/ActionURL';
 import { encodePart } from '../../public/SchemaQuery';
+import { GridColumn } from '../components/base/models/GridColumn';
 
 // Case-insensitive Object reference. Returns undefined if either object or prop does not resolve.
 // If both casings exist (e.g. 'x' and 'X' are props) then either value may be returned.
@@ -712,4 +713,51 @@ export function getValuesSummary<T>(values: T[], nounSingular: string, nounPlura
 
     const plural = nounPlural ?? nounSingular + 's';
     return `${values.length} ${plural} (${makeCommaSeparatedString(values)})`;
+}
+
+/**
+ * given a data map, return the CSSProperties that correspond to the 'style' property for that map.
+ * If a column is provided, the map is expected to be a full row of data with the column being (possibly) one of the
+ * fields in that row. If no column is provided, the data is expected to be a single field's data.
+ * @param data either a row of data or a single field's data
+ */
+export function getDataStyling(data: Map<string, any> | any): CSSProperties {
+    if (!data) {
+        return undefined;
+    }
+    let style;
+    if (Map.isMap(data)) {
+        if (data.has('style')) {
+            style = styleStringToObj(data.get('style'));
+        }
+    } else if (Utils.isObject(data)) {
+        style = styleStringToObj(caseInsensitive(data, 'style'));
+    }
+    return style;
+}
+
+/**
+ * Converts a string containing css styling directives to an object consumable by react components in a style property
+ * Example input: ;font-style: italic;color: #7b64ff;background-color: #fe9200 !important;
+ * @param styleString
+ */
+// exported for jest testing
+export function styleStringToObj(styleString: string): CSSProperties {
+    if (!styleString) {
+        return undefined;
+    }
+    const obj = styleString
+        .split(';')
+        .filter(token => token?.trim() !== '')
+        .reduce((prev, curr) => {
+            const tokens = curr.split(':');
+            prev[tokens[0]?.trim()] = tokens[1]?.replace('!important', '')?.trim();
+            return prev;
+        }, {});
+
+    return Object.keys(obj).reduce((prev, key) => {
+        var camelCased = key.replace(/-[a-z]/g, g => g[1].toUpperCase());
+        prev[camelCased] = obj[key];
+        return prev;
+    }, {});
 }

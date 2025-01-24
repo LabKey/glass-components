@@ -5,6 +5,12 @@ Components, models, actions, and utility functions for LabKey applications and p
 *Released*: TBD
 - Issue 39517: Assay importRun to include display value in the row data for sample lookup columns
 
+### version 6.17.0
+*Released*: 23 January 2025
+- Add support for conditional formatting in LIMS and SDMS products
+  - Update `DefaultRenderer`, `UserDetialsRenderer` and `AttachmentCard` to use provided conditional formatting
+  - Add utility method `getDataStyling` for use in other components
+
 ### version 6.16.0
 *Released*: 20 January 2025
 - Update Assay Design Transform Script config to include 'Run on Import/Edit' boolean options
@@ -25,7 +31,6 @@ Components, models, actions, and utility functions for LabKey applications and p
 ### version 6.14.0
 *Released*: 16 January 2025
 - Remove getDisambiguatedSelectInputOptions
-    - It is no longer used
 
 ### version 6.13.0
 *Released*: 16 January 2025

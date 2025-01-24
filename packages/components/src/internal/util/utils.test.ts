@@ -16,33 +16,35 @@
 import { fromJS, List, Map } from 'immutable';
 
 import {
+    arrayEquals,
     camelCaseToTitleCase,
+    capitalizeFirstChar,
     caseInsensitive,
-    quoteValueWithDelimiters,
     findMissingValues,
     formatBytes,
     getCommonDataValues,
+    getDataStyling,
     getIconFontCls,
     getUpdatedData,
+    getValueFromRow,
+    getValuesSummary,
     handleRequestFailure,
+    isBoolean,
     isImage,
     isInteger,
     isIntegerInRange,
     isNonNegativeFloat,
     isNonNegativeInteger,
+    isQuotedWithDelimiters,
+    makeCommaSeparatedString,
     parseCsvString,
     parseScientificInt,
+    quoteValueWithDelimiters,
+    styleStringToObj,
     toLowerSafe,
-    unorderedEqual,
-    arrayEquals,
-    capitalizeFirstChar,
     uncapitalizeFirstChar,
+    unorderedEqual,
     withTransformedKeys,
-    getValueFromRow,
-    isBoolean,
-    isQuotedWithDelimiters,
-    getValuesSummary,
-    makeCommaSeparatedString,
 } from './utils';
 
 const emptyList = List<string>();
@@ -1360,5 +1362,100 @@ describe('getValuesSummary', () => {
         );
         expect(getValuesSummary([123, 456], 'sample')).toBe('2 samples (123 and 456)');
         expect(getValuesSummary([123, 'blood', true], 'sample')).toBe('3 samples (123, blood and true)');
+    });
+});
+
+describe('getDataStylingString', () => {
+    test('no data', () => {
+        expect(getDataStyling(undefined)).toBeUndefined();
+        expect(getDataStyling(null)).toBeUndefined();
+        expect(getDataStyling('')).toBeUndefined();
+    });
+
+    test('not an object', () => {
+        expect(getDataStyling('abc')).toBeUndefined();
+        expect(getDataStyling(['a', 'b'])).toBeUndefined();
+        expect(getDataStyling(1)).toBeUndefined();
+    });
+
+    test('data is Object', () => {
+        expect(getDataStyling({ value: 1 })).toBeUndefined();
+        expect(getDataStyling({ value: '', style: '' })).toBeUndefined();
+        expect(getDataStyling({ value: '', style: undefined })).toBeUndefined();
+        expect(
+            getDataStyling({
+                value: 1,
+                style: ';font-style: italic;color: #7b64ff;background-color: #fe9200 !important;'
+            })
+        ).toStrictEqual({
+            fontStyle: 'italic',
+            color: '#7b64ff',
+            backgroundColor: '#fe9200',
+        });
+        expect(
+            getDataStyling({
+                value: 'abc',
+                style: 'color: #7b64ff',
+            })
+        ).toStrictEqual({
+            color: '#7b64ff',
+        });
+    });
+
+    test('data is Map', () => {
+        expect(getDataStyling(Map())).toBeUndefined();
+        expect(getDataStyling(Map({ value: 1 }))).toBeUndefined();
+        expect(getDataStyling(Map({ value: 1, style: '' }))).toBeUndefined();
+        expect(getDataStyling(Map({ style: undefined }))).toBeUndefined();
+        expect(
+            getDataStyling(
+                Map({
+                    value: 1,
+                    style: ';font-style: italic;color: #7b64ff;background-color: #fe9200 !important;',
+                })
+            )
+        ).toStrictEqual({
+            fontStyle: 'italic',
+            color: '#7b64ff',
+            backgroundColor: '#fe9200',
+        });
+    });
+});
+
+describe('styleStringToObj', () => {
+    test('no styleString', () => {
+        expect(styleStringToObj(undefined)).toBeUndefined();
+        expect(styleStringToObj('')).toBeUndefined();
+    });
+    test('with stylesString', () => {
+        expect(styleStringToObj('   ')).toStrictEqual({});
+        expect(
+            styleStringToObj(';font-style: italic;color: #7b64ff;background-color: #fe9200 !important;')
+        ).toStrictEqual({
+            fontStyle: 'italic',
+            color: '#7b64ff',
+            backgroundColor: '#fe9200',
+        });
+        expect(
+            styleStringToObj('font-style: italic')
+        ).toStrictEqual({
+            fontStyle: 'italic',
+        });
+        expect(
+            styleStringToObj('font-style: italic; color: blue')
+        ).toStrictEqual({
+            fontStyle: 'italic',
+            color: 'blue',
+        });
+        expect(
+            styleStringToObj('; color: blue')
+        ).toStrictEqual({
+            color: 'blue',
+        });
+        expect(
+            styleStringToObj(' background-color: blue;  ')
+        ).toStrictEqual({
+            backgroundColor: 'blue',
+        });
     });
 });
